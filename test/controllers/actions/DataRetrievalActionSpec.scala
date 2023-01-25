@@ -16,50 +16,54 @@
 
 package controllers.actions
 
-import base.SpecBase
-import models.UserAnswers
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import models.requests.{IdentifierRequest, OptionalDataRequest}
+import models.{EoriNumber, LocalReferenceNumber, UserAnswers}
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
-import org.scalatestplus.mockito.MockitoSugar
+import play.api.mvc.{AnyContent, Request, Results}
 import play.api.test.FakeRequest
-import repositories.SessionRepository
+import play.api.test.Helpers._
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class DataRetrievalActionSpec extends SpecBase with MockitoSugar {
+class DataRetrievalActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  class Harness(sessionRepository: SessionRepository) extends DataRetrievalActionImpl(sessionRepository) {
-    def callTransform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = transform(request)
+  def harness(lrn: LocalReferenceNumber, f: OptionalDataRequest[AnyContent] => Unit): Unit = {
+
+    lazy val actionProvider = app.injector.instanceOf[DataRetrievalActionProviderImpl]
+
+    actionProvider(lrn)
+      .invokeBlock(
+        IdentifierRequest(FakeRequest(GET, "/").asInstanceOf[Request[AnyContent]], EoriNumber("")),
+        {
+          request: OptionalDataRequest[AnyContent] =>
+            f(request)
+            Future.successful(Results.Ok)
+        }
+      )
+      .futureValue
   }
 
-  "Data Retrieval Action" - {
+  "a data retrieval action" - {
 
-    "when there is no data in the cache" - {
+    "must return an OptionalDataRequest with an empty UserAnswers" - {
 
-      "must set userAnswers to 'None' in the request" in {
+      "where there are no existing answers for this LRN" in {
 
-        val sessionRepository = mock[SessionRepository]
-        when(sessionRepository.get("id")) thenReturn Future(None)
-        val action = new Harness(sessionRepository)
+        when(mockSessionRepository.get(any())(any())) thenReturn Future.successful(None)
 
-        val result = action.callTransform(IdentifierRequest(FakeRequest(), "id")).futureValue
-
-        result.userAnswers must not be defined
+        harness(lrn, request => request.userAnswers must not be defined)
       }
     }
 
-    "when there is data in the cache" - {
+    "must return an OptionalDataRequest with some defined UserAnswers" - {
 
-      "must build a userAnswers object and add it to the request" in {
+      "when there are existing answers for this LRN" in {
 
-        val sessionRepository = mock[SessionRepository]
-        when(sessionRepository.get("id")) thenReturn Future(Some(UserAnswers("id")))
-        val action = new Harness(sessionRepository)
+        when(mockSessionRepository.get(any())(any())) thenReturn Future.successful(Some(UserAnswers(lrn, eoriNumber)))
 
-        val result = action.callTransform(new IdentifierRequest(FakeRequest(), "id")).futureValue
-
-        result.userAnswers mustBe defined
+        harness(lrn, request => request.userAnswers mustBe defined)
       }
     }
   }

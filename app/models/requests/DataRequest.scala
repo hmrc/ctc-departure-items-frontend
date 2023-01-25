@@ -17,8 +17,23 @@
 package models.requests
 
 import play.api.mvc.{Request, WrappedRequest}
-import models.UserAnswers
+import models.{EoriNumber, UserAnswers}
 
-case class OptionalDataRequest[A] (request: Request[A], userId: String, userAnswers: Option[UserAnswers]) extends WrappedRequest[A](request)
+case class OptionalDataRequest[A](
+  request: Request[A],
+  eoriNumber: EoriNumber,
+  userAnswers: Option[UserAnswers]
+) extends WrappedRequest[A](request)
 
-case class DataRequest[A] (request: Request[A], userId: String, userAnswers: UserAnswers) extends WrappedRequest[A](request)
+trait MandatoryDataRequest[A] {
+  val request: Request[A]
+  val eoriNumber: EoriNumber
+  val userAnswers: UserAnswers
+}
+
+case class DataRequest[A](
+  request: Request[A],
+  eoriNumber: EoriNumber,
+  userAnswers: UserAnswers
+) extends WrappedRequest[A](request)
+    with MandatoryDataRequest[A]

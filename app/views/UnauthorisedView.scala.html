@@ -14,18 +14,19 @@
  * limitations under the License.
  *@
 
+@import views.html.components.Heading
+
 @this(
-    layout: templates.Layout
+    mainTemplate: MainTemplate,
+    heading: Heading
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = titleNoForm(messages("unauthorised.title")),
-    timeout   = false
+@mainTemplate(
+    title = messages("unauthorised.title")
 ) {
+    @heading(messages("unauthorised.heading"))
 
-    <h1 class="govuk-heading-xl">@messages("unauthorised.heading")</h1>
-
-    <p class="govuk-body">@messages("unauthorised.guidance")</p>
+    <p class="govuk-body">@messages("unauthorised.paragraph1")</p>
 }

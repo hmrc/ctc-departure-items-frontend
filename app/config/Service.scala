@@ -20,27 +20,29 @@ import play.api.{ConfigLoader, Configuration}
 
 import scala.language.implicitConversions
 
-final case class Service(host: String, port: String, protocol: String) {
+final case class Service(host: String, port: String, protocol: String, startUrl: String) {
 
   def baseUrl: String =
     s"$protocol://$host:$port"
 
+  def fullServiceUrl: String =
+    s"$baseUrl/$startUrl"
+
   override def toString: String =
-    baseUrl
+    fullServiceUrl
 }
 
 object Service {
 
   implicit lazy val configLoader: ConfigLoader[Service] = ConfigLoader {
-    config =>
-      prefix =>
+    config => prefix =>
+      val service  = Configuration(config).get[Configuration](prefix)
+      val host     = service.get[String]("host")
+      val port     = service.get[String]("port")
+      val protocol = service.get[String]("protocol")
+      val startUrl = service.get[String]("startUrl")
 
-        val service  = Configuration(config).get[Configuration](prefix)
-        val host     = service.get[String]("host")
-        val port     = service.get[String]("port")
-        val protocol = service.get[String]("protocol")
-
-        Service(host, port, protocol)
+      Service(host, port, protocol, startUrl)
   }
 
   implicit def convertToString(service: Service): String =
