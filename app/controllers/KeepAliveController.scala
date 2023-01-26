@@ -16,7 +16,9 @@
 
 package controllers
 
-import controllers.actions.{DataRetrievalAction, IdentifierAction}
+import controllers.actions.IdentifierAction
+import models.LocalReferenceNumber
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -24,20 +26,29 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class KeepAliveController @Inject()(
-                                     val controllerComponents: MessagesControllerComponents,
-                                     identify: IdentifierAction,
-                                     getData: DataRetrievalAction,
-                                     sessionRepository: SessionRepository
-                                   )(implicit ec: ExecutionContext) extends FrontendBaseController {
+class KeepAliveController @Inject() (
+  identify: IdentifierAction,
+  val controllerComponents: MessagesControllerComponents,
+  sessionRepository: SessionRepository
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
-  def keepAlive: Action[AnyContent] = (identify andThen getData).async {
+  def keepAlive(lrn: Option[LocalReferenceNumber]): Action[AnyContent] = identify.async {
     implicit request =>
-      request.userAnswers
-        .map {
-          answers =>
-            sessionRepository.keepAlive(answers.id).map(_ => Ok)
-        }
-        .getOrElse(Future.successful(Ok))
+      lrn match {
+        case Some(refNumber) =>
+          sessionRepository.get(refNumber) flatMap {
+            case Some(ua) =>
+              sessionRepository
+                .set(ua)
+                .map(
+                  _ => NoContent
+                )
+            case _ =>
+              Future.successful(NoContent)
+          }
+        case _ => Future.successful(NoContent)
+      }
   }
 }

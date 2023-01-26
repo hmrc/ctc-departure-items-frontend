@@ -16,37 +16,83 @@
 
 package base
 
-import controllers.actions._
-import models.UserAnswers
+import config.FrontendAppConfig
+import models.{EoriNumber, LocalReferenceNumber, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
-import org.scalatest.{OptionValues, TryValues}
-import play.api.Application
+import org.scalatest.{EitherValues, OptionValues, TryValues}
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import pages.QuestionPage
 import play.api.i18n.{Messages, MessagesApi}
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.inject.Injector
+import play.api.libs.json.{Format, Json, Reads}
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
+import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Content, Key, Value}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+
+import scala.concurrent.Future
 
 trait SpecBase
-  extends AnyFreeSpec
+    extends AnyFreeSpec
     with Matchers
-    with TryValues
     with OptionValues
+    with EitherValues
+    with GuiceOneAppPerSuite
+    with TryValues
     with ScalaFutures
     with IntegrationPatience {
 
-  val userAnswersId: String = "id"
+  val eoriNumber: EoriNumber    = EoriNumber("GB1234567891234")
+  val lrn: LocalReferenceNumber = LocalReferenceNumber("ABCD1234567890123").get
 
-  def emptyUserAnswers : UserAnswers = UserAnswers(userAnswersId)
+  def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")
 
-  def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
+  val emptyUserAnswers: UserAnswers = UserAnswers(lrn, eoriNumber, Json.obj())
 
-  protected def applicationBuilder(userAnswers: Option[UserAnswers] = None): GuiceApplicationBuilder =
-    new GuiceApplicationBuilder()
-      .overrides(
-        bind[DataRequiredAction].to[DataRequiredActionImpl],
-        bind[IdentifierAction].to[FakeIdentifierAction],
-        bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers))
-      )
+  implicit val hc: HeaderCarrier = HeaderCarrier()
+
+  def injector: Injector = app.injector
+
+  def messagesApi: MessagesApi    = injector.instanceOf[MessagesApi]
+  implicit def messages: Messages = messagesApi.preferred(fakeRequest)
+
+  def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
+
+  implicit class RichUserAnswers(userAnswers: UserAnswers) {
+
+    def getValue[T](page: QuestionPage[T])(implicit rds: Reads[T]): T =
+      userAnswers.get(page).value
+
+    def setValue[T](page: QuestionPage[T], value: T)(implicit format: Format[T]): UserAnswers =
+      userAnswers.set(page, value).success.value
+
+    def setValue[T](page: QuestionPage[T], value: Option[T])(implicit format: Format[T]): UserAnswers =
+      value.map(setValue(page, _)).getOrElse(userAnswers)
+
+    def setValue[T](page: QuestionPage[T], f: UserAnswers => T)(implicit format: Format[T]): UserAnswers =
+      setValue(page, f(userAnswers))
+
+    def removeValue(page: QuestionPage[_]): UserAnswers =
+      userAnswers.remove(page).success.value
+  }
+
+  implicit class RichContent(c: Content) {
+    def value: String = c.asHtml.toString()
+  }
+
+  implicit class RichKey(k: Key) {
+    def value: String = k.content.value
+  }
+
+  implicit class RichValue(v: Value) {
+    def value: String = v.content.value
+  }
+
+  implicit class RichAction(ai: ActionItem) {
+    def id: String = ai.attributes.get("id").value
+  }
+
+  def response(status: Int): Future[HttpResponse] = Future.successful(HttpResponse(status, ""))
 }

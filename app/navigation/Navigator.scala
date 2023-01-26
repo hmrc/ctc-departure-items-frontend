@@ -16,22 +16,21 @@
 
 package navigation
 
+import models._
+import pages._
+import play.api.mvc.Call
+
 import javax.inject.{Inject, Singleton}
 
-import play.api.mvc.Call
-import controllers.routes
-import pages._
-import models._
-
 @Singleton
-class Navigator @Inject()() {
+class Navigator @Inject() () {
 
   private val normalRoutes: Page => UserAnswers => Call = {
-    case _ => _ => routes.IndexController.onPageLoad
+    case _ => _ => ???
   }
 
   private val checkRouteMap: Page => UserAnswers => Call = {
-    case _ => _ => routes.CheckYourAnswersController.onPageLoad
+    case _ => _ => ???
   }
 
   def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = mode match {

@@ -16,23 +16,41 @@
 
 package controllers.actions
 
+import com.google.inject.Singleton
+import models.LocalReferenceNumber
+
 import javax.inject.Inject
 import models.requests.{IdentifierRequest, OptionalDataRequest}
 import play.api.mvc.ActionTransformer
 import repositories.SessionRepository
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DataRetrievalActionImpl @Inject()(
-                                         val sessionRepository: SessionRepository
-                                       )(implicit val executionContext: ExecutionContext) extends DataRetrievalAction {
+@Singleton
+class DataRetrievalActionProviderImpl @Inject() (sessionRepository: SessionRepository)(implicit ec: ExecutionContext) extends DataRetrievalActionProvider {
+
+  def apply(lrn: LocalReferenceNumber): ActionTransformer[IdentifierRequest, OptionalDataRequest] =
+    new DataRetrievalAction(lrn, sessionRepository)
+}
+
+trait DataRetrievalActionProvider {
+
+  def apply(lrn: LocalReferenceNumber): ActionTransformer[IdentifierRequest, OptionalDataRequest]
+}
+
+class DataRetrievalAction(
+  lrn: LocalReferenceNumber,
+  sessionRepository: SessionRepository
+)(implicit protected val executionContext: ExecutionContext)
+    extends ActionTransformer[IdentifierRequest, OptionalDataRequest] {
 
   override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = {
-
-    sessionRepository.get(request.userId).map {
-      OptionalDataRequest(request.request, request.userId, _)
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+    sessionRepository.get(lrn).map {
+      userAnswers =>
+        OptionalDataRequest(request.request, request.eoriNumber, userAnswers)
     }
   }
 }
-
-trait DataRetrievalAction extends ActionTransformer[IdentifierRequest, OptionalDataRequest]

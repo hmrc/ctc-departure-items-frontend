@@ -16,16 +16,31 @@
 
 package controllers.actions
 
-import models.UserAnswers
 import models.requests.{IdentifierRequest, OptionalDataRequest}
+import models.{LocalReferenceNumber, UserAnswers}
+import repositories.SessionRepository
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
-class FakeDataRetrievalAction(dataToReturn: Option[UserAnswers]) extends DataRetrievalAction {
+class FakeDataRetrievalAction(
+  lrn: LocalReferenceNumber,
+  sessionRepository: SessionRepository,
+  dataToReturn: Option[UserAnswers]
+) extends DataRetrievalAction(lrn, sessionRepository) {
 
   override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] =
-    Future(OptionalDataRequest(request.request, request.userId, dataToReturn))
+    Future.successful(OptionalDataRequest(request.request, request.eoriNumber, dataToReturn))
+}
 
-  override protected implicit val executionContext: ExecutionContext =
-    scala.concurrent.ExecutionContext.Implicits.global
+object FakeDataRetrievalAction {
+
+  class FakeDataRetrievalActionProvider(dataToReturn: Option[UserAnswers]) {
+
+    def apply(
+      lrn: LocalReferenceNumber,
+      sessionRepository: SessionRepository
+    ): FakeDataRetrievalAction =
+      new FakeDataRetrievalAction(lrn, sessionRepository, dataToReturn)
+  }
 }

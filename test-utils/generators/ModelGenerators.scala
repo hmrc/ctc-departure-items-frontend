@@ -16,9 +16,23 @@
 
 package generators
 
-import models._
-import org.scalacheck.Arbitrary.arbitrary
+import models.{EoriNumber, LocalReferenceNumber}
 import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
+  self: Generators =>
+
+  implicit lazy val arbitraryLocalReferenceNumber: Arbitrary[LocalReferenceNumber] =
+    Arbitrary {
+      for {
+        lrn <- stringsWithMaxLength(22: Int, Gen.alphaNumChar)
+      } yield new LocalReferenceNumber(lrn)
+    }
+
+  implicit lazy val arbitraryEoriNumber: Arbitrary[EoriNumber] =
+    Arbitrary {
+      for {
+        number <- stringsWithMaxLength(17: Int)
+      } yield EoriNumber(number)
+    }
 }

@@ -35,13 +35,15 @@ trait UserAnswersGenerator extends TryValues {
 
     Arbitrary {
       for {
-        id      <- nonEmptyString
-        data    <- generators match {
+        lrn        <- arbitrary[LocalReferenceNumber]
+        eoriNumber <- arbitrary[EoriNumber]
+        data <- generators match {
           case Nil => Gen.const(Map[QuestionPage[_], JsValue]())
           case _   => Gen.mapOf(oneOf(generators))
         }
-      } yield UserAnswers (
-        id = id,
+      } yield UserAnswers(
+        lrn = lrn,
+        eoriNumber = eoriNumber,
         data = data.foldLeft(Json.obj()) {
           case (obj, (path, value)) =>
             obj.setObject(path.path, value).get

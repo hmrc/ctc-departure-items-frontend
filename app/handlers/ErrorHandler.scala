@@ -16,19 +16,65 @@
 
 package handlers
 
-import javax.inject.{Inject, Singleton}
-import play.api.i18n.{I18nSupport, MessagesApi}
+import config.FrontendAppConfig
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.Request
 import play.twirl.api.Html
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
-import views.html.ErrorTemplate
+import views.html.templates.ErrorTemplate
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
-class ErrorHandler @Inject()(
-                              val messagesApi: MessagesApi,
-                              view: ErrorTemplate
-                            ) extends FrontendErrorHandler with I18nSupport {
+class ErrorHandler @Inject() (
+  val messagesApi: MessagesApi,
+  view: ErrorTemplate,
+  config: FrontendAppConfig
+) extends FrontendErrorHandler
+    with I18nSupport {
+
+  def errorTemplate(pageTitle: String, heading: String, html: Html)(implicit rh: Request[_]): Html =
+    view(pageTitle, heading, html)
 
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit rh: Request[_]): Html =
-    view(pageTitle, heading, message)
+    errorTemplate(pageTitle, heading, Html(s"""<p class="govuk-body">${Messages(message)}</p>"""))
+
+  override def notFoundTemplate(implicit request: Request[_]): Html = {
+    super.notFoundTemplate
+    errorTemplate(
+      Messages("global.error.pageNotFound404.title"),
+      Messages("global.error.pageNotFound404.heading"),
+      Html(s"""
+          |<p class="govuk-body">${Messages("pageNotFound.paragraph1")}</p>
+          |<p class="govuk-body">${Messages("pageNotFound.paragraph2")}</p>
+          |<p class="govuk-body">${Messages("pageNotFound.paragraph3Start")}
+          |    <a
+          |        class="govuk-link"
+          |        id="contact"
+          |        href=${config.nctsGuidanceUrl}
+          |        target="_blank"
+          |        rel="noreferrer noopener"
+          |    >${Messages("pageNotFound.contactLink")}</a>.
+          |</p>
+          |""".stripMargin)
+    )
+  }
+
+  def technicalDifficultiesErrorTemplate(implicit request: Request[_]): Html =
+    errorTemplate(
+      Messages("global.error.InternalServerError500.title"),
+      Messages("global.error.InternalServerError500.heading"),
+      Html(s"""
+          |<p class="govuk-body">${Messages("technicalDifficulties.tryAgain")}</p>
+          |<p class="govuk-body">${Messages("technicalDifficulties.contact")}
+          |    <a
+          |        class="govuk-link"
+          |        id="contact"
+          |        href=${config.nctsEnquiriesUrl}
+          |        target="_blank"
+          |        rel="noreferrer noopener"
+          |    >${Messages("technicalDifficulties.contact.link")}</a>.
+          |</p>
+          |""".stripMargin)
+    )
 }

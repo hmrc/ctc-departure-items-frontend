@@ -1,57 +1,37 @@
-service.name = ctc-departure-items-frontend
+site.service_name = Manage your transit movements
+site.section = This section is
 
-site.back = Back
-site.remove = Remove
+site.edit = Change
+site.delete = Remove
 site.change = Change
+site.delete.hidden = Remove {0}
+site.edit.hidden = Change {0}
 site.no = No
 site.yes = Yes
 site.continue = Continue
-site.start = Start now
-site.startAgain = Start again
-site.signIn = Sign in
-site.govuk = GOV.UK
-
-date.day = Day
-date.month = Month
-date.year = Year
-
-timeout.title = You’re about to be signed out
-timeout.message = For security reasons, you will be signed out of this service in
-timeout.keepAlive = Stay signed in
-timeout.signOut = Sign out
+site.saveAndContinue = Save and continue
 
 error.browser.title.prefix = Error:
-error.boolean = Please give an answer
-error.invalid_date = Give a correct date
-error.date.day_blank = Enter a day
-error.date.day_invalid = Give a correct day using numbers 1 to 31
-error.date.month_blank = Enter a month
-error.date.month_invalid = Give a correct month using numbers 1 to 12
-error.date.year_blank = Enter a year
-error.date.year_invalid = Give a correct year
-error.integer = Give an answer in whole numbers
-error.non_numeric = Give a value using only numbers
-error.number = Please enter a valid number
-error.required = Please enter a value
 error.summary.title = There is a problem
 
-index.title = ctc-departure-items-frontend
-index.heading = ctc-departure-items-frontend
-index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
+session_expired.title = For your security, we signed you out
+session_expired.heading = For your security, we signed you out
+session_expired.guidance = We did not save your answers.
+session_expired.button = Sign in
 
-checkYourAnswers.title = Check Your Answers
-checkYourAnswers.heading = Check Your Answers
+unauthorised.title = You cannot use this service
+unauthorised.heading = You cannot use this service
+unauthorised.paragraph1 = You must have an account with an activated EORI number.
 
-journeyRecovery.continue.title = Sorry, there is a problem with the service
-journeyRecovery.continue.heading = Sorry, there is a problem with the service
-journeyRecovery.continue.guidance = [Add content to explain how to proceed.]
-journeyRecovery.startAgain.title = Sorry, there is a problem with the service
-journeyRecovery.startAgain.heading = Sorry, there is a problem with the service
-journeyRecovery.startAgain.guidance = [Add content to explain why the user needs to start again.]
+unauthorisedWithGroupAccess.title = You cannot use this service
+unauthorisedWithGroupAccess.heading = You cannot use this service
+unauthorisedWithGroupAccess.paragraph = If you already have access, you must contact your group administrator to update your access rights.
 
-signedOut.title = For your security, we signed you out
-signedOut.heading = For your security, we signed you out
-signedOut.guidance = We did not save your answers.
+pageNotFound.paragraph1 = If you typed the web address, check it is correct.
+pageNotFound.paragraph2 = If you pasted the web address, check you copied the entire address.
+pageNotFound.paragraph3Start = If the web address is correct or you selected a link or button,
+pageNotFound.contactLink = contact the New Computerised Transit System (NCTS) helpdesk if you need to speak to someone about your transit movement (opens in a new tab)
 
-unauthorised.title = You can’t access this service with this account
-unauthorised.heading = You can’t access this service with this account
+technicalDifficulties.tryAgain = Try again later.
+technicalDifficulties.contact = You can
+technicalDifficulties.contact.link = contact the New Computerised Transit System helpdesk if you need to speak to someone about your transit movement (opens in a new tab)
