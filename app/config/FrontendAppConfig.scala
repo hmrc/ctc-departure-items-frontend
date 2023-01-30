@@ -17,14 +17,15 @@
 package config
 
 import com.google.inject.{Inject, Singleton}
+import models.LocalReferenceNumber
 import play.api.Configuration
 
 @Singleton
-class FrontendAppConfig @Inject() (configuration: Configuration) {
+class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig: MyServicesConfig) {
 
   val appName: String = configuration.get[String]("appName")
 
-  val enrolmentProxyUrl: String            = configuration.get[Service]("microservice.services.enrolment-store-proxy").fullServiceUrl
+  val enrolmentProxyUrl: String            = servicesConfig.fullServiceUrl("enrolment-store-proxy")
   val eccEnrolmentSplashPage: String       = configuration.get[String]("urls.eccEnrolmentSplashPage")
   val legacyEnrolmentKey: String           = configuration.get[String]("keys.legacy.enrolmentKey")
   val legacyEnrolmentIdentifierKey: String = configuration.get[String]("keys.legacy.enrolmentIdentifierKey")
@@ -37,8 +38,12 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   val nctsEnquiriesUrl: String = configuration.get[String]("urls.nctsEnquiries")
   val nctsGuidanceUrl: String  = configuration.get[String]("urls.nctsGuidance")
 
-  val manageTransitMovementsUrl: String = configuration.get[String]("urls.manageTransitMovementsFrontend")
-  val serviceUrl: String                = s"$manageTransitMovementsUrl/what-do-you-want-to-do"
+  val hubUrl: String     = servicesConfig.fullServiceUrl("manage-transit-movements-frontend")
+  val serviceUrl: String = s"$hubUrl/what-do-you-want-to-do"
 
-  lazy val cacheUrl: String = configuration.get[Service]("microservice.services.manage-transit-movements-departure-cache").fullServiceUrl
+  val departureHubUrl: String = servicesConfig.fullServiceUrl("manage-transit-movements-departure-frontend")
+
+  def taskListUrl(lrn: LocalReferenceNumber): String = s"$departureHubUrl/$lrn/task-list"
+
+  val cacheUrl: String = servicesConfig.fullServiceUrl("manage-transit-movements-departure-cache")
 }
