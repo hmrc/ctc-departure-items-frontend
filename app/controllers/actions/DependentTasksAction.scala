@@ -19,21 +19,21 @@ package controllers.actions
 import config.FrontendAppConfig
 import models.requests.DataRequest
 import play.api.mvc.Results.Redirect
-import play.api.mvc.{ActionRefiner, Result}
+import play.api.mvc.{ActionFilter, Result}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class DependentTasksActionImpl @Inject() (implicit val executionContext: ExecutionContext, config: FrontendAppConfig) extends DependentTasksAction {
 
-  override protected def refine[A](request: DataRequest[A]): Future[Either[Result, DataRequest[A]]] = {
+  override protected def filter[A](request: DataRequest[A]): Future[Option[Result]] = {
     val dependentTasks = Seq(".preTaskList", ".traderDetails", ".routeDetails", ".transportDetails")
     if (dependentTasks.forall(request.userAnswers.tasks.get(_).exists(_.isCompleted))) {
-      Future.successful(Right(request))
+      Future.successful(None)
     } else {
-      Future.successful(Left(Redirect(config.taskListUrl(request.userAnswers.lrn))))
+      Future.successful(Some(Redirect(config.taskListUrl(request.userAnswers.lrn))))
     }
   }
 }
 
-trait DependentTasksAction extends ActionRefiner[DataRequest, DataRequest]
+trait DependentTasksAction extends ActionFilter[DataRequest]

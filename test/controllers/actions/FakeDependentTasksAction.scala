@@ -24,8 +24,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class FakeDependentTasksAction @Inject() () extends DependentTasksAction {
 
-  override protected def refine[A](request: DataRequest[A]): Future[Either[Result, DataRequest[A]]] =
-    Future.successful(Right(request))
+  override protected def filter[A](request: DataRequest[A]): Future[Option[Result]] =
+    Future.successful(None)
 
   override protected def executionContext: ExecutionContext =
     scala.concurrent.ExecutionContext.Implicits.global

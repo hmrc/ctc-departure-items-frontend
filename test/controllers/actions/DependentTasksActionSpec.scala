@@ -29,9 +29,9 @@ class DependentTasksActionSpec extends SpecBase with AppWithDefaultMockFixtures 
 
   private class Harness extends DependentTasksActionImpl() {
 
-    def callRefine(tasks: Map[String, TaskStatus]): Future[Either[Result, DataRequest[_]]] = {
+    def callFilter(tasks: Map[String, TaskStatus]): Future[Option[Result]] = {
       val request = DataRequest(fakeRequest, eoriNumber, emptyUserAnswers.copy(tasks = tasks))
-      refine(request)
+      filter(request)
     }
   }
 
@@ -50,9 +50,9 @@ class DependentTasksActionSpec extends SpecBase with AppWithDefaultMockFixtures 
           ".transportDetails" -> TaskStatus.NotStarted
         )
 
-        whenReady(action.callRefine(tasks)) {
+        whenReady(action.callFilter(tasks)) {
           r =>
-            val result = Future.successful(r.left.value)
+            val result = Future.successful(r.value)
             status(result) mustEqual SEE_OTHER
             redirectLocation(result).value mustEqual
               s"http://localhost:10120/manage-transit-movements/departures/$lrn/task-list"
@@ -60,7 +60,7 @@ class DependentTasksActionSpec extends SpecBase with AppWithDefaultMockFixtures 
       }
     }
 
-    "must return data request" - {
+    "must return None" - {
 
       "when all dependent tasks have been completed" in {
 
@@ -73,9 +73,9 @@ class DependentTasksActionSpec extends SpecBase with AppWithDefaultMockFixtures 
           ".transportDetails" -> TaskStatus.Completed
         )
 
-        whenReady(action.callRefine(tasks)) {
+        whenReady(action.callFilter(tasks)) {
           r =>
-            r mustBe Symbol("right")
+            r mustBe None
         }
       }
     }
