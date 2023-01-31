@@ -38,10 +38,10 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   val nctsEnquiriesUrl: String = configuration.get[String]("urls.nctsEnquiries")
   val nctsGuidanceUrl: String  = configuration.get[String]("urls.nctsGuidance")
 
-  val hubUrl: String     = servicesConfig.fullServiceUrl("manage-transit-movements-frontend")
+  val hubUrl: String     = configuration.get[String]("urls.manageTransitMovementsFrontend")
   val serviceUrl: String = s"$hubUrl/what-do-you-want-to-do"
 
-  val departureHubUrl: String = servicesConfig.fullServiceUrl("manage-transit-movements-departure-frontend")
+  val departureHubUrl: String = configuration.get[String]("urls.manageTransitMovementsDepartureFrontend")
 
   def taskListUrl(lrn: LocalReferenceNumber): String = s"$departureHubUrl/$lrn/task-list"
 
