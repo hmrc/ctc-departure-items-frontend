@@ -17,8 +17,9 @@
 package forms.mappings
 
 import java.time.LocalDate
-
 import play.api.data.validation.{Constraint, Invalid, Valid}
+
+import scala.util.matching.Regex
 
 trait Constraints {
 
@@ -67,21 +68,22 @@ trait Constraints {
         }
     }
 
-  protected def regexp(regex: String, errorKey: String): Constraint[String] =
+  protected def regexp(regex: Regex, errorKey: String): Constraint[String] =
+    regexp(regex, errorKey, Seq(regex.regex))
+
+  protected def regexp(regex: Regex, errorKey: String, args: Seq[Any]): Constraint[String] =
     Constraint {
-      case str if str.matches(regex) =>
+      case str if str.matches(regex.pattern.pattern()) =>
         Valid
       case _ =>
-        Invalid(errorKey, regex)
+        Invalid(errorKey, args: _*)
     }
 
   protected def maxLength(maximum: Int, errorKey: String): Constraint[String] =
-    Constraint {
-      case str if str.length <= maximum =>
-        Valid
-      case _ =>
-        Invalid(errorKey, maximum)
-    }
+    maxLength(maximum, errorKey, Seq(maximum))
+
+  protected def maxLength(maximum: Int, errorKey: String, args: Seq[Any], trim: Boolean = false): Constraint[String] =
+    lengthConstraint(errorKey, x => (if (trim) x.replaceAll("\\s", "").length else x.length) <= maximum, args)
 
   protected def maxDate(maximum: LocalDate, errorKey: String, args: Any*): Constraint[LocalDate] =
     Constraint {
@@ -105,5 +107,13 @@ trait Constraints {
         Valid
       case _ =>
         Invalid(errorKey)
+    }
+
+  private def lengthConstraint(errorKey: String, predicate: String => Boolean, args: Seq[Any]): Constraint[String] =
+    Constraint {
+      case str if predicate(str) =>
+        Valid
+      case _ =>
+        Invalid(errorKey, args: _*)
     }
 }

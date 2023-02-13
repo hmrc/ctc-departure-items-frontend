@@ -1,0 +1,61 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.govukfrontend.views.Implicits.RichSelect
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.accessibleautocomplete.AccessibleAutocomplete
+@import viewModels.components.InputSelectViewModel
+@import viewModels.components.InputSelectViewModel._
+@import views.html.components.Heading
+
+@this(
+    govukSelect: GovukSelect,
+    hmrcHeading: Heading
+)
+
+@(
+    field: Field,
+    selectType: InputSelectViewModel,
+    placeholder: String,
+    selectItems: Seq[SelectItem],
+    hint: Option[String] = None
+)(implicit messages: Messages)
+
+@select = @{
+    Select(
+        hint = hint.map(x => Hint(content = Text(x))),
+        items = SelectItem(value = None, text = placeholder) +: selectItems,
+        errorMessage = field.error.map { e =>
+            ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(e.message, e.args: _*)))
+        }
+    )
+    .withFormField(field)
+    .asAccessibleAutocomplete(Some(AccessibleAutocomplete(showAllValues = true)))
+}
+
+@selectType match {
+    case OrdinarySelect(heading, caption) => {
+        @govukSelect(select.withHeadingAndCaption(heading, caption))
+    }
+    case x @ SelectWithAdditionalHtml(heading, caption, additionalHtml) => {
+        @hmrcHeading(heading, caption, Some(x.headingClasses))
+        @additionalHtml
+        @govukSelect(select.copy(label = Label(content = Text(heading), isPageHeading = false, classes = "govuk-visually-hidden")))
+    }
+    case AddressCountrySelect(label) => {
+        @govukSelect(select.copy(label = Label(content = Text(label), isPageHeading = false)))
+    }
+}
