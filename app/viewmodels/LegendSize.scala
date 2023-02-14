@@ -14,27 +14,13 @@
  * limitations under the License.
  */
 
-package viewModels.components
+package viewmodels
 
-import play.twirl.api.Html
+sealed trait LegendSize
 
-sealed trait InputSelectViewModel
-
-object InputSelectViewModel {
-
-  case class OrdinarySelect(
-    heading: String,
-    caption: Option[String] = None
-  ) extends InputSelectViewModel
-
-  case class SelectWithAdditionalHtml(
-    heading: String,
-    caption: Option[String] = None,
-    additionalHtml: Html
-  ) extends InputSelectViewModel
-      with AdditionalHtmlViewModel
-
-  case class AddressCountrySelect(
-    label: String
-  ) extends InputSelectViewModel
+object LegendSize {
+  case object ExtraLarge extends WithCssClass("govuk-fieldset__legend--xl") with LegendSize
+  case object Large extends WithCssClass("govuk-fieldset__legend--l") with LegendSize
+  case object Medium extends WithCssClass("govuk-fieldset__legend--m") with LegendSize
+  case object Small extends WithCssClass("govuk-fieldset__legend--s") with LegendSize
 }

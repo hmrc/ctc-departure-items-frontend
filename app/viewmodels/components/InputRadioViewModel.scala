@@ -14,8 +14,23 @@
  * limitations under the License.
  */
 
-package viewModels
+package viewmodels.components
 
-abstract class WithName(name: String) {
-  override val toString: String = name
+import play.twirl.api.Html
+
+sealed trait InputRadioViewModel
+
+object InputRadioViewModel {
+
+  case class Radio(
+    heading: String,
+    caption: Option[String] = None
+  ) extends InputRadioViewModel
+
+  case class RadioWithAdditionalHtml(
+    heading: String,
+    caption: Option[String] = None,
+    additionalHtml: Html
+  ) extends InputRadioViewModel
+      with AdditionalHtmlViewModel
 }

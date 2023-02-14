@@ -14,19 +14,11 @@
  * limitations under the License.
  */
 
-package viewModels
+package viewmodels.components
 
-sealed abstract class LabelSize(val className: String) {
+import play.twirl.api.Html
 
-  override val toString: String = className
-
-}
-
-object LabelSize {
-  case object ExtraLarge extends LabelSize("govuk-label--xl")
-  case object Large extends LabelSize("govuk-label--l")
-  case object Medium extends LabelSize("govuk-label--m")
-  case object Small extends LabelSize("govuk-label--s")
-
-  implicit def sizeToOptionString(size: LabelSize): Option[String] = Some(size.toString)
+trait AdditionalHtmlViewModel {
+  val additionalHtml: Html
+  val headingClasses = "govuk-!-margin-top-0 govuk-!-margin-bottom-2"
 }

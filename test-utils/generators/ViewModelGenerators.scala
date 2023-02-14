@@ -20,10 +20,10 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.FormError
 import play.twirl.api.Html
-import viewModels.sections.Section
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-import viewModels.{Link, ListItem}
+import viewmodels.sections.Section
+import viewmodels.{Link, ListItem}
 
 trait ViewModelGenerators {
   self: Generators =>

@@ -16,7 +16,9 @@
 
 package forms.behaviours
 
-import play.api.data.{Form, FormError}
+import org.scalacheck.Gen
+import play.api.data.{Field, Form, FormError}
+import wolfendale.scalacheck.regexp.RegexpGen
 
 trait StringFieldBehaviours extends FieldBehaviours {
 
@@ -29,4 +31,43 @@ trait StringFieldBehaviours extends FieldBehaviours {
           result.errors must contain only lengthError
       }
     }
+
+  def fieldWithMaxLength(
+    form: Form[_],
+    fieldName: String,
+    maxLength: Int,
+    lengthError: FormError,
+    gen: Gen[String]
+  ): Unit =
+    s"must not bind strings longer than $maxLength characters" in {
+
+      forAll(gen -> "longString") {
+        string =>
+          val result = form.bind(Map(fieldName -> string)).apply(fieldName)
+          result.errors mustEqual Seq(lengthError)
+      }
+    }
+
+  def fieldWithInvalidCharacters(form: Form[_], fieldName: String, error: FormError, length: Int = 100): Unit =
+    "must not bind strings with invalid characters" in {
+
+      val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~<>,±üçñèé]{$length}")
+
+      forAll(generator) {
+        invalidString =>
+          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
+          result.errors must contain(error)
+      }
+    }
+
+  def mandatoryTrimmedField(form: Form[_], fieldName: String, requiredError: FormError): Unit = {
+
+    mandatoryField(form, fieldName, requiredError)
+
+    "must not bind values that trim to empty" in {
+
+      val result = form.bind(Map(fieldName -> "   ")).apply(fieldName)
+      result.errors mustEqual Seq(requiredError)
+    }
+  }
 }

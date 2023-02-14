@@ -14,23 +14,13 @@
  * limitations under the License.
  */
 
-package viewModels.components
+package viewmodels
 
-import play.twirl.api.Html
+sealed trait LabelSize
 
-sealed trait InputRadioViewModel
-
-object InputRadioViewModel {
-
-  case class Radio(
-    heading: String,
-    caption: Option[String] = None
-  ) extends InputRadioViewModel
-
-  case class RadioWithAdditionalHtml(
-    heading: String,
-    caption: Option[String] = None,
-    additionalHtml: Html
-  ) extends InputRadioViewModel
-      with AdditionalHtmlViewModel
+object LabelSize {
+  case object ExtraLarge extends WithCssClass("govuk-label--xl") with LabelSize
+  case object Large extends WithCssClass("govuk-label--l") with LabelSize
+  case object Medium extends WithCssClass("govuk-label--m") with LabelSize
+  case object Small extends WithCssClass("govuk-label--s") with LabelSize
 }

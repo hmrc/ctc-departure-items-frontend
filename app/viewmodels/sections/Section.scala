@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package viewModels.sections
+package viewmodels.sections
 
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewModels.Link
+import viewmodels.Link
 
 case class Section(sectionTitle: Option[String], rows: Seq[SummaryListRow], addAnotherLink: Option[Link]) {
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package viewModels
+package viewmodels
 
 import play.api.data.Field
 import play.api.i18n.Messages

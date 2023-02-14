@@ -14,21 +14,8 @@
  * limitations under the License.
  */
 
-package viewModels
+package viewmodels
 
-sealed abstract class InputSize(val className: String) {
-
+abstract class WithCssClass(className: String) {
   override val toString: String = className
-
-}
-
-object InputSize {
-  case object Width20 extends InputSize("govuk-input--width-20")
-  case object Width10 extends InputSize("govuk-input--width-10")
-  case object Width5 extends InputSize("govuk-input--width-5")
-  case object Width4 extends InputSize("govuk-input--width-4")
-  case object Width3 extends InputSize("govuk-input--width-3")
-  case object Width2 extends InputSize("govuk-input--width-2")
-
-  implicit def sizeToOptionString(size: InputSize): Option[String] = Some(size.toString)
 }

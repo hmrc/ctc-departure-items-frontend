@@ -22,7 +22,7 @@ import models.CustomsOfficeList
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.twirl.api.Html
-import viewModels.components.InputSelectViewModel.{AddressCountrySelect, OrdinarySelect, SelectWithAdditionalHtml}
+import viewmodels.components.InputSelectViewModel.{AddressCountrySelect, OrdinarySelect, SelectWithAdditionalHtml}
 import views.html.components.InputSelect
 import views.html.templates.MainTemplate
 

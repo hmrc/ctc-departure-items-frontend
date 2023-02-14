@@ -14,27 +14,36 @@
  * limitations under the License.
  */
 
-package viewModels.components
+package viewmodels.components
 
 import play.twirl.api.Html
 
-sealed trait InputYesNoViewModel
+sealed trait InputTextViewModel
 
-object InputYesNoViewModel {
+object InputTextViewModel {
 
-  case class OrdinaryYesNo(
+  case class OrdinaryTextInput(
     heading: String,
     caption: Option[String] = None
-  ) extends InputYesNoViewModel
+  ) extends InputTextViewModel
 
-  case class YesNoWithAdditionalHtml(
+  case class TextInputWithHiddenLabel(
     heading: String,
     caption: Option[String] = None,
     additionalHtml: Html
-  ) extends InputYesNoViewModel
+  ) extends InputTextViewModel
       with AdditionalHtmlViewModel
 
-  case class YesNoWithLegend(
-    legend: String
-  ) extends InputYesNoViewModel
+  case class TextInputWithStatementHeading(
+    heading: String,
+    caption: Option[String] = None,
+    label: String,
+    additionalHtml: Html
+  ) extends InputTextViewModel
+      with AdditionalHtmlViewModel
+
+  case class MultiTextInput(
+    label: String
+  ) extends InputTextViewModel
+
 }

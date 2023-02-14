@@ -14,10 +14,22 @@
  * limitations under the License.
  */
 
-package viewModels
+package viewmodels
 
-case class ListItem(
-  name: String,
-  changeUrl: String,
-  removeUrl: Option[String]
-)
+package object govuk {
+
+  object all
+      extends ImplicitConversions
+      with BackLinkFluency
+      with ButtonFluency
+      with CheckboxFluency
+      with DateFluency
+      with ErrorSummaryFluency
+      with FieldsetFluency
+      with HintFluency
+      with InputFluency
+      with LabelFluency
+      with RadiosFluency
+      with SummaryListFluency
+      with TagFluency
+}

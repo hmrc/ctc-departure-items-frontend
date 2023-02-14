@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-package viewModels
+package viewmodels
 
-sealed abstract class LegendSize(val className: String) {
+sealed abstract class InputSize(val className: String) {
 
   override val toString: String = className
 
 }
 
-object LegendSize {
-  case object XL extends LegendSize("govuk-fieldset__legend--xl")
-  case object L extends LegendSize("govuk-fieldset__legend--l")
-  case object M extends LegendSize("govuk-fieldset__legend--m")
-  case object S extends LegendSize("govuk-fieldset__legend--s")
+object InputSize {
+  case object Width20 extends InputSize("govuk-input--width-20")
+  case object Width10 extends InputSize("govuk-input--width-10")
+  case object Width5 extends InputSize("govuk-input--width-5")
+  case object Width4 extends InputSize("govuk-input--width-4")
+  case object Width3 extends InputSize("govuk-input--width-3")
+  case object Width2 extends InputSize("govuk-input--width-2")
 
-  implicit def sizeToOptionString(size: LegendSize): Option[String] = Some(size.toString)
-  implicit def sizeToString(size: LegendSize): String               = size.toString
+  implicit def sizeToOptionString(size: InputSize): Option[String] = Some(size.toString)
 }

@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 
-package viewModels
+package viewmodels
 
 case class Link(id: String, text: String, href: String)

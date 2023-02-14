@@ -14,21 +14,27 @@
  * limitations under the License.
  */
 
-package viewModels
+package viewmodels.components
 
-import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.Key
+import play.twirl.api.Html
 
-import scala.language.implicitConversions
+sealed trait InputSelectViewModel
 
-object implicits extends ImplicitConversions
+object InputSelectViewModel {
 
-trait ImplicitConversions {
+  case class OrdinarySelect(
+    heading: String,
+    caption: Option[String] = None
+  ) extends InputSelectViewModel
 
-  implicit def stringToText(string: String)(implicit messages: Messages): Text =
-    Text(messages(string))
+  case class SelectWithAdditionalHtml(
+    heading: String,
+    caption: Option[String] = None,
+    additionalHtml: Html
+  ) extends InputSelectViewModel
+      with AdditionalHtmlViewModel
 
-  implicit def stringToKey(string: String)(implicit messages: Messages): Key =
-    Key(content = Text(messages(string)))
+  case class AddressCountrySelect(
+    label: String
+  ) extends InputSelectViewModel
 }
