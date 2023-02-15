@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,21 +12,26 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import views.html.components.Heading
+package models
 
-@this(
-    mainTemplate: MainTemplate,
-    heading: Heading
-)
+import base.SpecBase
+import generators.Generators
+import models.reference.UnLocode
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-@()(implicit request: Request[_], messages: Messages)
+class UnLocodeListSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
 
-@mainTemplate(
-    title = messages("unauthorised.title")
-) {
-    @heading(messages("unauthorised.heading"))
+  "getAll" - {
+    "return the full list of unLocodes" in {
+      forAll(nonEmptyListOf[UnLocode](10)) {
+        unLocodes =>
+          val unLocodeList = UnLocodeList(unLocodes.toList)
 
-    <p class="govuk-body">@messages("unauthorised.paragraph1")</p>
+          unLocodeList.getAll must contain theSameElementsAs unLocodes.toList
+      }
+    }
+  }
+
 }

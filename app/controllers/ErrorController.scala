@@ -16,37 +16,52 @@
 
 package controllers
 
-import handlers.ErrorHandler
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.templates.ErrorTemplate
+import views.html.{NotFoundView, TechnicalDifficultiesView}
 
 import javax.inject.Inject
 
 class ErrorController @Inject() (
   val controllerComponents: MessagesControllerComponents,
-  errorHandler: ErrorHandler
+  errorTemplate: ErrorTemplate,
+  notFoundView: NotFoundView,
+  technicalDifficultiesView: TechnicalDifficultiesView
 ) extends FrontendBaseController
     with I18nSupport {
 
-  def badRequest(): Action[AnyContent] = Action {
+  def badRequest: Action[AnyContent] = Action {
     implicit request =>
-      BadRequest(errorHandler.badRequestTemplate)
+      BadRequest(
+        errorTemplate(
+          title = "global.error.badRequest400.title",
+          header = "global.error.badRequest400.heading",
+          message = "global.error.badRequest400.message"
+        )
+      )
   }
 
-  def notFound(): Action[AnyContent] = Action {
+  def notFound: Action[AnyContent] = Action {
     implicit request =>
-      NotFound(errorHandler.notFoundTemplate)
+      NotFound(notFoundView())
   }
 
-  def technicalDifficulties(): Action[AnyContent] = Action {
+  def technicalDifficulties: Action[AnyContent] = Action {
     implicit request =>
-      InternalServerError(errorHandler.technicalDifficultiesErrorTemplate)
+      InternalServerError(technicalDifficultiesView())
   }
 
-  def internalServerError(): Action[AnyContent] = Action {
+  def internalServerError: Action[AnyContent] = Action {
     implicit request =>
-      InternalServerError(errorHandler.internalServerErrorTemplate)
+      InternalServerError(
+        errorTemplate(
+          title = "global.error.InternalServerError500.title",
+          header = "global.error.InternalServerError500.heading",
+          message = "global.error.InternalServerError500.message"
+        )
+      )
   }
 
 }

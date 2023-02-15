@@ -15,18 +15,27 @@
  *@
 
 @import views.html.components.Heading
+@import config.FrontendAppConfig
 
 @this(
     mainTemplate: MainTemplate,
-    heading: Heading
+    heading: Heading,
+    config: FrontendAppConfig
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("unauthorised.title")
+    title = messages("technicalDifficulties.title"),
+    showBackLink = true
 ) {
-    @heading(messages("unauthorised.heading"))
 
-    <p class="govuk-body">@messages("unauthorised.paragraph1")</p>
+    @heading(messages("technicalDifficulties.heading"))
+
+    <p class="govuk-body">@messages("technicalDifficulties.tryAgain")</p>
+
+    <p class="govuk-body">@messages("technicalDifficulties.contact")
+        <a class="govuk-link" rel="noreferrer noopener" href=@config.nctsEnquiriesUrl target="_blank" id="contact">@messages("technicalDifficulties.contact.link")</a>.
+    </p>
+
 }

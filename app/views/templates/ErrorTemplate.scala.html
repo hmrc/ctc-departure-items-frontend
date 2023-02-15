@@ -14,14 +14,23 @@
  * limitations under the License.
  *@
 
+@import views.html.components.Heading
+
 @this(
-    mainTemplate: MainTemplate
+    main_template: MainTemplate,
+    heading: Heading
 )
 
-@(pageTitle: String, heading: String, html: Html)(implicit request: Request[_], messages: Messages)
+@(title: String, header: String, message: String)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = pageTitle, showBackLink = true) {
-    <h1 class="govuk-heading-xl">@messages(heading)</h1>
+@main_template(
+    title = messages(title),
+    showBackLink = true
+) {
 
-    @html
+    @heading(messages(header))
+
+    <p class="govuk-body">
+        @messages(message)
+    </p>
 }

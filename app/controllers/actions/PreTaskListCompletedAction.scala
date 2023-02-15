@@ -16,7 +16,7 @@
 
 package controllers.actions
 
-import config.FrontendAppConfig
+import controllers.routes
 import models.requests.DataRequest
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionFilter, Result}
@@ -24,16 +24,14 @@ import play.api.mvc.{ActionFilter, Result}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DependentTasksActionImpl @Inject() (implicit val executionContext: ExecutionContext, config: FrontendAppConfig) extends DependentTasksAction {
+class PreTaskListCompletedActionImpl @Inject() (implicit val executionContext: ExecutionContext) extends PreTaskListCompletedAction {
 
-  override protected def filter[A](request: DataRequest[A]): Future[Option[Result]] = {
-    val dependentTasks = Seq(".preTaskList", ".traderDetails", ".routeDetails", ".transportDetails")
-    if (dependentTasks.forall(request.userAnswers.tasks.get(_).exists(_.isCompleted))) {
-      Future.successful(None)
+  override protected def filter[A](request: DataRequest[A]): Future[Option[Result]] =
+    if (request.userAnswers.tasks.get(PreTaskListTask.section).exists(_.isCompleted)) {
+      Future.successful(Some(Redirect(routes.TaskListController.onPageLoad(request.userAnswers.lrn))))
     } else {
-      Future.successful(Some(Redirect(config.taskListUrl(request.userAnswers.lrn))))
+      Future.successful(None)
     }
-  }
 }
 
-trait DependentTasksAction extends ActionFilter[DataRequest]
+trait PreTaskListCompletedAction extends ActionFilter[DataRequest]

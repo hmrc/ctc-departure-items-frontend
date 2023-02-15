@@ -21,8 +21,9 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Assertion
 import play.twirl.api.HtmlFormat
-import play.twirl.api.TwirlHelperImports._
 import views.base.ViewSpecAssertions
+
+import scala.jdk.CollectionConverters._
 
 trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
 
@@ -52,9 +53,9 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
       val metas = getElementsByTag(doc, "meta")
       assertElementExists(metas, _.attr("name") == "hmrc-timeout-dialog")
       if (urlContainsLrn) {
-        assertElementExists(metas, _.attr("data-keep-alive-url") == s"/manage-transit-movements/departures/items/$lrn/keep-alive")
+        assertElementExists(metas, _.attr("data-keep-alive-url") == s"/manage-transit-movements/departures/$lrn/keep-alive")
       } else {
-        assertElementExists(metas, _.attr("data-keep-alive-url") == "/manage-transit-movements/departures/items/keep-alive")
+        assertElementExists(metas, _.attr("data-keep-alive-url") == "/manage-transit-movements/departures/keep-alive")
       }
     }
   } else {
@@ -82,7 +83,7 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
   "must render accessibility statement link" in {
     val link = doc
       .select(".govuk-footer__inline-list-item > .govuk-footer__link")
-      .toList
+      .asScala
       .find(_.text() == "Accessibility statement")
       .get
 
@@ -206,7 +207,7 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
     "must render list" in {
       val list      = getElementByClass(doc, listClass)
       val listItems = list.getElementsByTag("li")
-      listItems.toList.map(_.text()) mustEqual expectedListItems
+      listItems.asScala.map(_.text()) mustEqual expectedListItems
     }
 
   def pageWithFormAction(expectedUrl: String): Unit =

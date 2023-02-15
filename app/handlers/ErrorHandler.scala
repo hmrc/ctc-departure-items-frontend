@@ -16,65 +16,60 @@
 
 package handlers
 
-import config.FrontendAppConfig
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.mvc.Request
-import play.twirl.api.Html
-import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
-import views.html.templates.ErrorTemplate
+import play.api.http.HttpErrorHandler
+import play.api.http.Status._
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.Results._
+import play.api.mvc.{RequestHeader, Result}
+import play.api.{Logging, PlayException}
+import uk.gov.hmrc.play.bootstrap.frontend.http.ApplicationException
 
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.Future
 
+// NOTE: There should be changes to bootstrap to make this easier, the API in bootstrap should allow a `Future[Html]` rather than just an `Html`
 @Singleton
 class ErrorHandler @Inject() (
-  val messagesApi: MessagesApi,
-  view: ErrorTemplate,
-  config: FrontendAppConfig
-) extends FrontendErrorHandler
-    with I18nSupport {
+  val messagesApi: MessagesApi
+) extends HttpErrorHandler
+    with I18nSupport
+    with Logging {
 
-  def errorTemplate(pageTitle: String, heading: String, html: Html)(implicit rh: Request[_]): Html =
-    view(pageTitle, heading, html)
+  override def onClientError(request: RequestHeader, statusCode: Int, message: String = ""): Future[Result] =
+    statusCode match {
+      case NOT_FOUND =>
+        Future.successful(Redirect(controllers.routes.ErrorController.notFound()))
+      case result if isClientError(result) =>
+        Future.successful(Redirect(controllers.routes.ErrorController.badRequest()))
+      case _ =>
+        Future.successful(Redirect(controllers.routes.ErrorController.technicalDifficulties()))
+    }
 
-  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit rh: Request[_]): Html =
-    errorTemplate(pageTitle, heading, Html(s"""<p class="govuk-body">${Messages(message)}</p>"""))
+  override def onServerError(request: RequestHeader, exception: Throwable): Future[Result] = {
 
-  override def notFoundTemplate(implicit request: Request[_]): Html = {
-    super.notFoundTemplate
-    errorTemplate(
-      Messages("global.error.pageNotFound404.title"),
-      Messages("global.error.pageNotFound404.heading"),
-      Html(s"""
-          |<p class="govuk-body">${Messages("pageNotFound.paragraph1")}</p>
-          |<p class="govuk-body">${Messages("pageNotFound.paragraph2")}</p>
-          |<p class="govuk-body">${Messages("pageNotFound.paragraph3Start")}
-          |    <a
-          |        class="govuk-link"
-          |        id="contact"
-          |        href=${config.nctsGuidanceUrl}
-          |        target="_blank"
-          |        rel="noreferrer noopener"
-          |    >${Messages("pageNotFound.contactLink")}</a>.
-          |</p>
-          |""".stripMargin)
-    )
+    logError(request, exception)
+
+    exception match {
+      case ApplicationException(result, _) =>
+        Future.successful(result)
+      case _ =>
+        Future.successful(Redirect(controllers.routes.ErrorController.internalServerError()))
+    }
   }
 
-  def technicalDifficultiesErrorTemplate(implicit request: Request[_]): Html =
-    errorTemplate(
-      Messages("global.error.InternalServerError500.title"),
-      Messages("global.error.InternalServerError500.heading"),
-      Html(s"""
-          |<p class="govuk-body">${Messages("technicalDifficulties.tryAgain")}</p>
-          |<p class="govuk-body">${Messages("technicalDifficulties.contact")}
-          |    <a
-          |        class="govuk-link"
-          |        id="contact"
-          |        href=${config.nctsEnquiriesUrl}
-          |        target="_blank"
-          |        rel="noreferrer noopener"
-          |    >${Messages("technicalDifficulties.contact.link")}</a>.
-          |</p>
-          |""".stripMargin)
+  private def logError(request: RequestHeader, ex: Throwable): Unit =
+    logger.error(
+      """
+        |
+        |! %sInternal server error, for (%s) [%s] ->
+        | """.stripMargin.format(
+        ex match {
+          case p: PlayException => "@" + p.id + " - "
+          case _                => ""
+        },
+        request.method,
+        request.uri
+      ),
+      ex
     )
 }

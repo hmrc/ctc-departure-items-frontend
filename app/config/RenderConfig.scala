@@ -22,7 +22,7 @@ import play.api.mvc.RequestHeader
 import uk.gov.hmrc.play.bootstrap.binders.SafeRedirectUrl
 
 @Singleton
-class RenderConfig @Inject() (configuration: Configuration) {
+class RenderConfigImpl @Inject() (configuration: Configuration) extends RenderConfig {
 
   private val contactHost: String                  = configuration.get[String]("contact-frontend.host")
   private val contactFormServiceIdentifier: String = "CTCTraders"
@@ -31,11 +31,21 @@ class RenderConfig @Inject() (configuration: Configuration) {
   def feedbackUrl(implicit request: RequestHeader): String =
     s"$contactHost/contact/beta-feedback?service=$contactFormServiceIdentifier&backUrl=${SafeRedirectUrl(host + request.uri).encodedUrl}"
 
-  val signOutUrl: String = configuration.get[String]("urls.logoutContinue") + configuration.get[String]("urls.feedback")
+  override val signOutUrl: String = configuration.get[String]("urls.logoutContinue") + configuration.get[String]("urls.feedback")
 
-  val timeoutSeconds: Int   = configuration.get[Int]("session.timeoutSeconds")
-  val countdownSeconds: Int = configuration.get[Int]("session.countdownSeconds")
+  override val timeoutSeconds: Int = configuration.get[Int]("session.timeoutSeconds")
 
-  val showUserResearchBanner: Boolean = configuration.get[Boolean]("banners.showUserResearch")
-  val userResearchUrl: String         = configuration.get[String]("urls.userResearch")
+  override val countdownSeconds: Int = configuration.get[Int]("session.countdownSeconds")
+
+  override val showUserResearchBanner: Boolean = configuration.get[Boolean]("banners.showUserResearch")
+  override val userResearchUrl: String         = configuration.get[String]("urls.userResearch")
+}
+
+trait RenderConfig {
+  def feedbackUrl(implicit request: RequestHeader): String
+  val signOutUrl: String
+  val timeoutSeconds: Int
+  val countdownSeconds: Int
+  val showUserResearchBanner: Boolean
+  val userResearchUrl: String
 }

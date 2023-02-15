@@ -25,13 +25,12 @@ import javax.inject.Inject
 class Actions @Inject() (
   identifierAction: IdentifierAction,
   dataRetrievalActionProvider: DataRetrievalActionProvider,
-  dataRequiredAction: DataRequiredAction,
-  dependentTasksAction: DependentTasksAction
+  dataRequiredAction: DataRequiredAction
 ) {
 
   def getData(lrn: LocalReferenceNumber): ActionBuilder[OptionalDataRequest, AnyContent] =
     identifierAction andThen dataRetrievalActionProvider(lrn)
 
   def requireData(lrn: LocalReferenceNumber): ActionBuilder[DataRequest, AnyContent] =
-    getData(lrn) andThen dataRequiredAction andThen dependentTasksAction
+    getData(lrn) andThen dataRequiredAction
 }
