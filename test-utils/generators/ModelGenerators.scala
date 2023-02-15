@@ -16,11 +16,32 @@
 
 package generators
 
-import models.{EoriNumber, LocalReferenceNumber}
+import models._
+import models.reference._
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
+import play.api.mvc.Call
+import uk.gov.hmrc.http.HttpVerbs._
 
 trait ModelGenerators {
   self: Generators =>
+
+  implicit lazy val arbitraryCountryCode: Arbitrary[CountryCode] =
+    Arbitrary {
+      Gen
+        .pick(CountryCode.Constants.countryCodeLength, 'A' to 'Z')
+        .map(
+          code => CountryCode(code.mkString)
+        )
+    }
+
+  implicit lazy val arbitraryCountry: Arbitrary[Country] =
+    Arbitrary {
+      for {
+        code <- arbitrary[CountryCode]
+        name <- nonEmptyString
+      } yield Country(code, name)
+    }
 
   implicit lazy val arbitraryLocalReferenceNumber: Arbitrary[LocalReferenceNumber] =
     Arbitrary {
@@ -35,4 +56,44 @@ trait ModelGenerators {
         number <- stringsWithMaxLength(17: Int)
       } yield EoriNumber(number)
     }
+
+  implicit lazy val arbitraryMode: Arbitrary[Mode] = Arbitrary {
+    Gen.oneOf(NormalMode, CheckMode)
+  }
+
+  implicit lazy val arbitraryCountryList: Arbitrary[CountryList] = Arbitrary {
+    for {
+      countries <- listWithMaxLength[Country]()
+    } yield CountryList(countries)
+  }
+
+  implicit lazy val arbitraryCustomsOffice: Arbitrary[CustomsOffice] =
+    Arbitrary {
+      for {
+        id          <- nonEmptyString
+        name        <- nonEmptyString
+        phoneNumber <- Gen.option(Gen.alphaNumStr)
+      } yield CustomsOffice(id, name, phoneNumber)
+    }
+
+  implicit lazy val arbitraryCustomsOfficeList: Arbitrary[CustomsOfficeList] =
+    Arbitrary {
+      for {
+        customsOffices <- listWithMaxLength[CustomsOffice]()
+      } yield CustomsOfficeList(customsOffices)
+    }
+
+  implicit lazy val arbitraryIndex: Arbitrary[Index] = Arbitrary {
+    for {
+      position <- Gen.choose(0: Int, 10: Int)
+    } yield Index(position)
+  }
+
+  implicit lazy val arbitraryCall: Arbitrary[Call] = Arbitrary {
+    for {
+      method <- Gen.oneOf(GET, POST)
+      url    <- nonEmptyString
+    } yield Call(method, url)
+  }
+
 }

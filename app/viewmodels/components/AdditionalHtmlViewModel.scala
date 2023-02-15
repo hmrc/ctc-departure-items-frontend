@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-package models.domain
+package viewmodels.components
 
-import scala.util.matching.Regex
+import play.twirl.api.Html
 
-object StringFieldRegex {
-
-  val stringFieldRegex: Regex            = "[\\sa-zA-Z0-9&'@/.\\-? ]*".r
-  val alphaNumericRegex: Regex           = "^[a-zA-Z0-9]*$".r
-  val alphaNumericWithSpacesRegex: Regex = "^[a-zA-Z\\s0-9]*$".r
+trait AdditionalHtmlViewModel {
+  val additionalHtml: Html
+  val headingClasses = "govuk-!-margin-top-0 govuk-!-margin-bottom-2"
 }

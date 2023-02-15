@@ -14,13 +14,6 @@
  * limitations under the License.
  */
 
-package models.domain
+package viewmodels
 
-import scala.util.matching.Regex
-
-object StringFieldRegex {
-
-  val stringFieldRegex: Regex            = "[\\sa-zA-Z0-9&'@/.\\-? ]*".r
-  val alphaNumericRegex: Regex           = "^[a-zA-Z0-9]*$".r
-  val alphaNumericWithSpacesRegex: Regex = "^[a-zA-Z\\s0-9]*$".r
-}
+case class Link(id: String, text: String, href: String)

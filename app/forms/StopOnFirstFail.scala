@@ -14,13 +14,22 @@
  * limitations under the License.
  */
 
-package models.domain
+package forms
 
-import scala.util.matching.Regex
+import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
 
-object StringFieldRegex {
+object StopOnFirstFail {
 
-  val stringFieldRegex: Regex            = "[\\sa-zA-Z0-9&'@/.\\-? ]*".r
-  val alphaNumericRegex: Regex           = "^[a-zA-Z0-9]*$".r
-  val alphaNumericWithSpacesRegex: Regex = "^[a-zA-Z\\s0-9]*$".r
+  def apply[T](constraints: Constraint[T]*): Constraint[T] = Constraint {
+    field: T =>
+      constraints.toList dropWhile (_(field) == Valid) match {
+        case Nil             => Valid
+        case constraint :: _ => constraint(field)
+      }
+  }
+
+  def constraint[T](message: String, validator: T => Boolean): Constraint[T] =
+    Constraint(
+      (data: T) => if (validator(data)) Valid else Invalid(Seq(ValidationError(message)))
+    )
 }

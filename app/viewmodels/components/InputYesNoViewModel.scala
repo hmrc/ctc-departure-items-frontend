@@ -14,13 +14,27 @@
  * limitations under the License.
  */
 
-package models.domain
+package viewmodels.components
 
-import scala.util.matching.Regex
+import play.twirl.api.Html
 
-object StringFieldRegex {
+sealed trait InputYesNoViewModel
 
-  val stringFieldRegex: Regex            = "[\\sa-zA-Z0-9&'@/.\\-? ]*".r
-  val alphaNumericRegex: Regex           = "^[a-zA-Z0-9]*$".r
-  val alphaNumericWithSpacesRegex: Regex = "^[a-zA-Z\\s0-9]*$".r
+object InputYesNoViewModel {
+
+  case class OrdinaryYesNo(
+    heading: String,
+    caption: Option[String] = None
+  ) extends InputYesNoViewModel
+
+  case class YesNoWithAdditionalHtml(
+    heading: String,
+    caption: Option[String] = None,
+    additionalHtml: Html
+  ) extends InputYesNoViewModel
+      with AdditionalHtmlViewModel
+
+  case class YesNoWithLegend(
+    legend: String
+  ) extends InputYesNoViewModel
 }

@@ -14,13 +14,25 @@
  * limitations under the License.
  */
 
-package models.domain
+package forms
 
-import scala.util.matching.Regex
+import forms.Constants.maxNameLength
+import models.domain.StringFieldRegex.stringFieldRegex
+import forms.mappings.Mappings
+import play.api.data.Form
 
-object StringFieldRegex {
+import javax.inject.Inject
 
-  val stringFieldRegex: Regex            = "[\\sa-zA-Z0-9&'@/.\\-? ]*".r
-  val alphaNumericRegex: Regex           = "^[a-zA-Z0-9]*$".r
-  val alphaNumericWithSpacesRegex: Regex = "^[a-zA-Z\\s0-9]*$".r
+class NameFormProvider @Inject() extends Mappings {
+
+  def apply(prefix: String): Form[String] =
+    Form(
+      "value" -> text(s"$prefix.error.required")
+        .verifying(
+          StopOnFirstFail[String](
+            maxLength(maxNameLength, s"$prefix.error.length"),
+            regexp(stringFieldRegex, s"$prefix.error.invalid")
+          )
+        )
+    )
 }
