@@ -14,11 +14,19 @@
  * limitations under the License.
  */
 
-package navigation
+package models
 
-import models.UserAnswers
-import play.api.mvc.Call
+import play.api.libs.json.{Json, OFormat}
 
-class FakeNavigator(desiredRoute: Call) extends Navigator {
-  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
+case class DynamicAddress(
+  numberAndStreet: String,
+  city: String,
+  postalCode: Option[String]
+) {
+
+  override def toString: String = Seq(Some(numberAndStreet), Some(city), postalCode).flatten.mkString("<br>")
+}
+
+object DynamicAddress {
+  implicit val format: OFormat[DynamicAddress] = Json.format[DynamicAddress]
 }

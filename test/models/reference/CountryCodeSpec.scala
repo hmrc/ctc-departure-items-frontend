@@ -14,34 +14,32 @@
  * limitations under the License.
  */
 
-package navigation
+package models.reference
 
 import base.SpecBase
-import models._
-import pages._
+import org.scalacheck.Gen
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import play.api.libs.json.{JsString, Json}
 
-class NavigatorSpec extends SpecBase {
+class CountryCodeSpec extends SpecBase with ScalaCheckPropertyChecks {
 
-  val navigator = new Navigator
+  "CountryCode" - {
 
-  "Navigator" - {
-
-    "in Normal mode" - {
-
-      "must go from a page that doesn't exist in the route map to Index" ignore {
-
-        case object UnknownPage extends Page
-        navigator.nextPage(UnknownPage, NormalMode, emptyUserAnswers) mustBe ???
+    "must serialise" in {
+      forAll(Gen.alphaNumStr) {
+        code =>
+          val countryCode = CountryCode(code)
+          Json.toJson(countryCode) mustBe JsString(code)
       }
     }
 
-    "in Check mode" - {
-
-      "must go from a page that doesn't exist in the edit route map to CheckYourAnswers" ignore {
-
-        case object UnknownPage extends Page
-        navigator.nextPage(UnknownPage, CheckMode, emptyUserAnswers) mustBe ???
+    "must deserialise" in {
+      forAll(Gen.alphaNumStr) {
+        code =>
+          val countryCode = CountryCode(code)
+          JsString(code).as[CountryCode] mustBe countryCode
       }
     }
   }
+
 }

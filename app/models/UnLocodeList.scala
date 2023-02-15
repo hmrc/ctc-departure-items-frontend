@@ -14,8 +14,27 @@
  * limitations under the License.
  */
 
-package generators
+package models
 
-trait UserAnswersEntryGenerators {
-  self: Generators =>
+import models.reference.UnLocode
+
+case class UnLocodeList(unLocodes: Seq[UnLocode]) {
+
+  def getAll: Seq[UnLocode] =
+    unLocodes
+
+  def getUnLocode(unLocodeExtendedCode: String): Option[UnLocode] =
+    unLocodes.find(_.unLocodeExtendedCode == unLocodeExtendedCode)
+
+  override def equals(obj: Any): Boolean = obj match {
+    case x: UnLocodeList => x.getAll == getAll
+    case _               => false
+  }
+
+}
+
+object UnLocodeList {
+
+  def apply(unLocodes: Seq[UnLocode]): UnLocodeList =
+    new UnLocodeList(unLocodes)
 }

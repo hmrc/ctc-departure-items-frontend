@@ -14,11 +14,8 @@
  * limitations under the License.
  */
 
-package navigation
+package generators
 
-import models.UserAnswers
-import play.api.mvc.Call
-
-class FakeNavigator(desiredRoute: Call) extends Navigator {
-  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
+trait MessagesModelGenerators {
+  self: Generators =>
 }

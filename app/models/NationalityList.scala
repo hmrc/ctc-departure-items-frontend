@@ -14,11 +14,27 @@
  * limitations under the License.
  */
 
-package navigation
+package models
 
-import models.UserAnswers
-import play.api.mvc.Call
+import models.reference.Nationality
 
-class FakeNavigator(desiredRoute: Call) extends Navigator {
-  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
+case class NationalityList(nationalities: Seq[Nationality]) {
+
+  def getAll: Seq[Nationality] =
+    nationalities
+
+  def getNationality(code: String): Option[Nationality] =
+    nationalities.find(_.code == code)
+
+  override def equals(obj: Any): Boolean = obj match {
+    case x: NationalityList => x.getAll == getAll
+    case _                  => false
+  }
+
+}
+
+object NationalityList {
+
+  def apply(nationalities: Seq[Nationality]): NationalityList =
+    new NationalityList(nationalities)
 }

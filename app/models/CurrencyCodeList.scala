@@ -14,6 +14,27 @@
  * limitations under the License.
  */
 
-package generators
+package models
 
-trait PageGenerators {}
+import models.reference.CurrencyCode
+
+case class CurrencyCodeList(currencyCodes: Seq[CurrencyCode]) {
+
+  def getAll: Seq[CurrencyCode] =
+    currencyCodes
+
+  def getCurrencyCode(currency: String): Option[CurrencyCode] =
+    currencyCodes.find(_.currency == currency)
+
+  override def equals(obj: Any): Boolean = obj match {
+    case x: CurrencyCodeList => x.getAll == getAll
+    case _                   => false
+  }
+
+}
+
+object CurrencyCodeList {
+
+  def apply(currencyCodes: Seq[CurrencyCode]): CurrencyCodeList =
+    new CurrencyCodeList(currencyCodes)
+}

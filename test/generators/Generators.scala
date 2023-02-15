@@ -17,6 +17,7 @@
 package generators
 
 import cats.data.NonEmptyList
+import models.DateTime
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen._
 import org.scalacheck.{Arbitrary, Gen, Shrink}
@@ -26,7 +27,7 @@ import java.time._
 import scala.util.matching.Regex
 
 // scalastyle:off number.of.methods
-trait Generators extends UserAnswersGenerator with ModelGenerators with ViewModelGenerators {
+trait Generators extends UserAnswersGenerator with ModelGenerators with DomainModelGenerators {
 
   lazy val stringMaxLength = 36
 
@@ -223,6 +224,17 @@ trait Generators extends UserAnswersGenerator with ModelGenerators with ViewMode
     ).map(
       x => x.withNano(0).withSecond(0)
     )
+  }
+
+  implicit lazy val arbitraryDateTime: Arbitrary[DateTime] = Arbitrary {
+    dateTimesBetween(
+      min = LocalDateTime.of(2000, 1, 1, 23, 55, 0),
+      max = LocalDateTime.now(ZoneOffset.UTC)
+    ).map {
+      localDateTime =>
+        val dateTimeWithoutSeconds = localDateTime.minusSeconds(localDateTime.getSecond).minusNanos(localDateTime.getNano)
+        DateTime(dateTimeWithoutSeconds)
+    }
   }
 
   lazy val genExemptNationalityCode: Gen[Int] =

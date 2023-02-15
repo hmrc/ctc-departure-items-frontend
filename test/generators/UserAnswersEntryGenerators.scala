@@ -14,11 +14,16 @@
  * limitations under the License.
  */
 
-package navigation
+package generators
 
-import models.UserAnswers
-import play.api.mvc.Call
+import org.scalacheck.Gen
+import play.api.libs.json._
+import queries.Gettable
 
-class FakeNavigator(desiredRoute: Call) extends Navigator {
-  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
+// scalastyle:off number.of.methods
+trait UserAnswersEntryGenerators {
+  self: Generators =>
+
+  def generateAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = ???
 }
+// scalastyle:on number.of.methods

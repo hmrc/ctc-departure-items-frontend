@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package navigation
+package models.domain
 
-import models.UserAnswers
-import play.api.mvc.Call
+import base.SpecBase
+import generators.Generators
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-class FakeNavigator(desiredRoute: Call) extends Navigator {
-  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
-}
+class StringFieldRegexSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {}
