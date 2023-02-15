@@ -14,25 +14,11 @@
  * limitations under the License.
  */
 
-package queries
+package models.journeyDomain
 
-import models.{Mode, UserAnswers}
-import pages.Page
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+sealed trait Stage
 
-import scala.util.{Success, Try}
-
-sealed trait Query extends Page {
-  def path: JsPath
-}
-
-trait Gettable[A] extends Query {
-  def route(userAnswers: UserAnswers, mode: Mode): Option[Call] = None
-}
-
-trait Settable[A] extends Query {
-
-  def cleanup(value: Option[A], userAnswers: UserAnswers): Try[UserAnswers] =
-    Success(userAnswers)
+object Stage {
+  case object AccessingJourney extends Stage
+  case object CompletingJourney extends Stage
 }

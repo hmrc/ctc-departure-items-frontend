@@ -14,25 +14,14 @@
  * limitations under the License.
  */
 
-package queries
+package models.journeyDomain
 
-import models.{Mode, UserAnswers}
-import pages.Page
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import queries.{Gettable, Query, Settable}
 
-import scala.util.{Success, Try}
-
-sealed trait Query extends Page {
-  def path: JsPath
+sealed trait OpsError {
+  val page: Query
+  val message: Option[String]
 }
 
-trait Gettable[A] extends Query {
-  def route(userAnswers: UserAnswers, mode: Mode): Option[Call] = None
-}
-
-trait Settable[A] extends Query {
-
-  def cleanup(value: Option[A], userAnswers: UserAnswers): Try[UserAnswers] =
-    Success(userAnswers)
-}
+case class ReaderError(page: Gettable[_], message: Option[String] = None) extends OpsError
+case class WriterError(page: Settable[_], message: Option[String] = None) extends OpsError
