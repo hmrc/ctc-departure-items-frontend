@@ -9,7 +9,10 @@ object AppDependencies {
     play.sbt.PlayImport.ws,
     "uk.gov.hmrc"       %% "play-frontend-hmrc"             % "6.0.0-play-28",
     "uk.gov.hmrc"       %% "play-conditional-form-mapping"  % "1.12.0-play-28",
-    "uk.gov.hmrc"       %% "bootstrap-frontend-play-28"     % bootstrapVersion
+    "uk.gov.hmrc"       %% "bootstrap-frontend-play-28"     % bootstrapVersion,
+    "org.typelevel"     %% "cats-core"                      % "2.9.0",
+    "com.chuusai"       %% "shapeless"                      % "2.3.10",
+    "uk.gov.hmrc"       %% "play-allowlist-filter"          % "1.1.0",
   )
 
   val test: Seq[ModuleID] = Seq(
