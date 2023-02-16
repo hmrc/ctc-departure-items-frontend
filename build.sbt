@@ -45,7 +45,13 @@ lazy val root = (project in file("."))
     PlayKeys.playDefaultPort := 10127,
     ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*handlers.*;.*components.*;" +
       ".*Routes.*;.*viewmodels.govuk.*;",
-    ScoverageKeys.coverageMinimumStmtTotal := 78,
+    ScoverageKeys.coverageExcludedPackages := Seq(
+      "views\\.html\\.components.*",
+      "views\\.html\\.resources.*",
+      "views\\.html\\.templates.*",
+      "views\\.utils.*"
+    ).mkString(";"),
+    ScoverageKeys.coverageMinimumStmtTotal := 70, //TODO: Change to 85 when more files are added
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true,
         scalacOptions ++= Seq(

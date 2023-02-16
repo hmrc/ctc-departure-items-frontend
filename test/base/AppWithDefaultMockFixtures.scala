@@ -66,6 +66,7 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[DataRequiredAction].to[DataRequiredActionImpl],
         bind[IdentifierAction].to[FakeIdentifierAction],
         bind[SessionRepository].toInstance(mockSessionRepository),
-        bind[DataRetrievalActionProvider].toInstance(mockDataRetrievalActionProvider)
+        bind[DataRetrievalActionProvider].toInstance(mockDataRetrievalActionProvider),
+        bind[DependentTasksAction].to[FakeDependentTasksAction]
       )
 }
