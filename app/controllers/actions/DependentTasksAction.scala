@@ -16,31 +16,24 @@
 
 package controllers.actions
 
+import config.FrontendAppConfig
 import models.requests.DataRequest
+import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionFilter, Result}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DependentTasksCompletedActionProviderImpl @Inject() (implicit ec: ExecutionContext) extends DependentTasksCompletedActionProvider {
-
-  override def apply(dependentTasks: String*): DependentTasksCompletedAction =
-    new DependentTasksCompletedAction(dependentTasks: _*)
-}
-
-trait DependentTasksCompletedActionProvider {
-  def apply(dependentTasks: String*): DependentTasksCompletedAction
-}
-
-class DependentTasksCompletedAction(dependentTasks: String*)(implicit val executionContext: ExecutionContext) extends ActionFilter[DataRequest] {
+class DependentTasksActionImpl @Inject() (implicit val executionContext: ExecutionContext, config: FrontendAppConfig) extends DependentTasksAction {
 
   override protected def filter[A](request: DataRequest[A]): Future[Option[Result]] = {
-
-    def isTaskCompleted(task: String): Boolean =
-      request.userAnswers.tasks.get(task).exists(_.isCompleted)
-
-    Future.successful(None)
-
+    val dependentTasks = Seq(".preTaskList", ".traderDetails", ".routeDetails", ".transportDetails")
+    if (dependentTasks.forall(request.userAnswers.tasks.get(_).exists(_.isCompleted))) {
+      Future.successful(None)
+    } else {
+      Future.successful(Some(Redirect(config.taskListUrl(request.userAnswers.lrn))))
+    }
   }
-
 }
+
+trait DependentTasksAction extends ActionFilter[DataRequest]

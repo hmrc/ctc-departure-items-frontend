@@ -19,21 +19,19 @@ package config
 import com.google.inject.AbstractModule
 import controllers.actions._
 
-import java.time.Clock
+import java.time.{Clock, ZoneOffset}
 
 class Module extends AbstractModule {
 
   override def configure(): Unit = {
 
-    bind(classOf[IdentifierAction]).to(classOf[AuthenticatedIdentifierAction])
-    bind(classOf[DataRetrievalActionProvider]).to(classOf[DataRetrievalActionProviderImpl])
-    bind(classOf[DataRequiredAction]).to(classOf[DataRequiredActionImpl])
-    bind(classOf[PreTaskListCompletedAction]).to(classOf[PreTaskListCompletedActionImpl])
-    bind(classOf[DependentTasksCompletedActionProvider]).to(classOf[DependentTasksCompletedActionProviderImpl])
-    bind(classOf[SpecificDataRequiredActionProvider]).to(classOf[SpecificDataRequiredActionImpl]).asEagerSingleton()
+    bind(classOf[DataRetrievalActionProvider]).to(classOf[DataRetrievalActionProviderImpl]).asEagerSingleton()
+    bind(classOf[DataRequiredAction]).to(classOf[DataRequiredActionImpl]).asEagerSingleton()
+    bind(classOf[DependentTasksAction]).to(classOf[DependentTasksActionImpl]).asEagerSingleton()
 
-    bind(classOf[RenderConfig]).to(classOf[RenderConfigImpl]).asEagerSingleton()
+    // For session based storage instead of cred based, change to SessionIdentifierAction
+    bind(classOf[IdentifierAction]).to(classOf[IdentifierActionImpl]).asEagerSingleton()
 
-    bind(classOf[Clock]).toInstance(Clock.systemUTC)
+    bind(classOf[Clock]).toInstance(Clock.systemDefaultZone.withZone(ZoneOffset.UTC))
   }
 }
