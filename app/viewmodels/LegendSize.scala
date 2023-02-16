@@ -16,11 +16,18 @@
 
 package viewmodels
 
-sealed trait LegendSize
+sealed abstract class LegendSize(val className: String) {
+
+  override val toString: String = className
+
+}
 
 object LegendSize {
-  case object ExtraLarge extends WithCssClass("govuk-fieldset__legend--xl") with LegendSize
-  case object Large extends WithCssClass("govuk-fieldset__legend--l") with LegendSize
-  case object Medium extends WithCssClass("govuk-fieldset__legend--m") with LegendSize
-  case object Small extends WithCssClass("govuk-fieldset__legend--s") with LegendSize
+  case object XL extends LegendSize("govuk-fieldset__legend--xl")
+  case object L extends LegendSize("govuk-fieldset__legend--l")
+  case object M extends LegendSize("govuk-fieldset__legend--m")
+  case object S extends LegendSize("govuk-fieldset__legend--s")
+
+  implicit def sizeToOptionString(size: LegendSize): Option[String] = Some(size.toString)
+  implicit def sizeToString(size: LegendSize): String               = size.toString
 }

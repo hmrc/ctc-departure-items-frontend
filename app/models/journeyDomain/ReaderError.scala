@@ -1,0 +1,27 @@
+/*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package models.journeyDomain
+
+import queries.{Gettable, Query, Settable}
+
+sealed trait OpsError {
+  val page: Query
+  val message: Option[String]
+}
+
+case class ReaderError(page: Gettable[_], message: Option[String] = None) extends OpsError
+case class WriterError(page: Settable[_], message: Option[String] = None) extends OpsError

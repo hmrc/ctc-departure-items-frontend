@@ -17,11 +17,12 @@
 package base
 
 import config.FrontendAppConfig
-import models.{EoriNumber, LocalReferenceNumber, UserAnswers}
+import models.{EoriNumber, Index, LocalReferenceNumber, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{EitherValues, OptionValues, TryValues}
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import pages.QuestionPage
 import play.api.i18n.{Messages, MessagesApi}
@@ -42,10 +43,24 @@ trait SpecBase
     with GuiceOneAppPerSuite
     with TryValues
     with ScalaFutures
-    with IntegrationPatience {
+    with IntegrationPatience
+    with MockitoSugar {
 
   val eoriNumber: EoriNumber    = EoriNumber("GB1234567891234")
   val lrn: LocalReferenceNumber = LocalReferenceNumber("ABCD1234567890123").get
+
+  val index: Index              = Index(0)
+  val referenceIndex: Index     = Index(0)
+  val documentIndex: Index      = Index(0)
+  val itemIndex: Index          = Index(0)
+  val packageIndex: Index       = Index(0)
+  val containerIndex: Index     = Index(0)
+  val activeIndex: Index        = Index(0)
+  val actorIndex: Index         = Index(0)
+  val authorisationIndex: Index = Index(0)
+  val equipmentIndex: Index     = Index(0)
+  val sealIndex: Index          = Index(0)
+  val itemNumberIndex: Index    = Index(0)
 
   def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")
 
@@ -58,7 +73,7 @@ trait SpecBase
   def messagesApi: MessagesApi    = injector.instanceOf[MessagesApi]
   implicit def messages: Messages = messagesApi.preferred(fakeRequest)
 
-  implicit def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
+  def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
 
   implicit class RichUserAnswers(userAnswers: UserAnswers) {
 

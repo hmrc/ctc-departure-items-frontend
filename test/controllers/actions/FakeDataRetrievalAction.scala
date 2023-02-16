@@ -18,29 +18,21 @@ package controllers.actions
 
 import models.requests.{IdentifierRequest, OptionalDataRequest}
 import models.{LocalReferenceNumber, UserAnswers}
-import repositories.SessionRepository
+import play.api.mvc.ActionTransformer
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-class FakeDataRetrievalAction(
-  lrn: LocalReferenceNumber,
-  sessionRepository: SessionRepository,
-  dataToReturn: Option[UserAnswers]
-) extends DataRetrievalAction(lrn, sessionRepository) {
+class FakeDataRetrievalActionProvider(dataToReturn: Option[UserAnswers]) extends DataRetrievalActionProvider {
 
-  override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] =
-    Future.successful(OptionalDataRequest(request.request, request.eoriNumber, dataToReturn))
+  def apply(lrn: LocalReferenceNumber): ActionTransformer[IdentifierRequest, OptionalDataRequest] =
+    new FakeDataRetrievalAction(dataToReturn)
 }
 
-object FakeDataRetrievalAction {
+class FakeDataRetrievalAction(dataToReturn: Option[UserAnswers]) extends ActionTransformer[IdentifierRequest, OptionalDataRequest] {
 
-  class FakeDataRetrievalActionProvider(dataToReturn: Option[UserAnswers]) {
+  override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] =
+    Future(OptionalDataRequest(request.request, request.eoriNumber, dataToReturn))
 
-    def apply(
-      lrn: LocalReferenceNumber,
-      sessionRepository: SessionRepository
-    ): FakeDataRetrievalAction =
-      new FakeDataRetrievalAction(lrn, sessionRepository, dataToReturn)
-  }
+  implicit override protected val executionContext: ExecutionContext =
+    scala.concurrent.ExecutionContext.Implicits.global
 }

@@ -16,9 +16,9 @@
 
 package base
 
-import controllers.actions.FakeDataRetrievalAction.FakeDataRetrievalActionProvider
 import controllers.actions._
 import models.UserAnswers
+import navigation._
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, TestSuite}
@@ -27,13 +27,19 @@ import org.scalatestplus.play.guice.{GuiceFakeApplicationFactory, GuiceOneAppPer
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.mvc.Call
 import repositories.SessionRepository
 
+import scala.concurrent.Future
+
 trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerSuite with GuiceFakeApplicationFactory with MockitoSugar {
-  self: TestSuite with SpecBase =>
+  self: TestSuite =>
 
   override def beforeEach(): Unit = {
     reset(mockSessionRepository); reset(mockDataRetrievalActionProvider)
+
+    when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+
   }
 
   final val mockSessionRepository: SessionRepository                     = mock[SessionRepository]
@@ -48,8 +54,11 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   protected def setNoExistingUserAnswers(): Unit = setUserAnswers(None)
 
   private def setUserAnswers(userAnswers: Option[UserAnswers]): Unit =
-    when(mockDataRetrievalActionProvider.apply(any())) thenReturn
-      new FakeDataRetrievalActionProvider(userAnswers).apply(lrn, mockSessionRepository)
+    when(mockDataRetrievalActionProvider.apply(any())) thenReturn new FakeDataRetrievalAction(userAnswers)
+
+  protected val onwardRoute: Call = Call("GET", "/foo")
+
+  protected val fakeNavigator: Navigator = new FakeNavigator(onwardRoute)
 
   def guiceApplicationBuilder(): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
