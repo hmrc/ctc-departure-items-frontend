@@ -16,18 +16,43 @@
 
 package controllers.actions
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
+import generators.Generators
 import models.requests.{IdentifierRequest, OptionalDataRequest}
 import models.{EoriNumber, LocalReferenceNumber, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalatest.OptionValues
+import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
+import org.scalatestplus.mockito.MockitoSugar
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.Application
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{AnyContent, Request, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import repositories.SessionRepository
 
 import scala.concurrent.Future
 
-class DataRetrievalActionSpec extends SpecBase with AppWithDefaultMockFixtures {
+class DataRetrievalActionSpec extends AnyFreeSpec with Matchers with GuiceOneAppPerSuite with ScalaFutures with MockitoSugar with Generators with OptionValues {
+
+  val sessionRepository: SessionRepository = mock[SessionRepository]
+  val lrn: LocalReferenceNumber            = arbitrary[LocalReferenceNumber].sample.value
+  val eoriNumber: EoriNumber               = arbitrary[EoriNumber].sample.value
+
+  override lazy val app: Application = {
+
+    import play.api.inject._
+
+    new GuiceApplicationBuilder()
+      .overrides(
+        bind[SessionRepository].toInstance(sessionRepository)
+      )
+      .build()
+  }
 
   def harness(lrn: LocalReferenceNumber, f: OptionalDataRequest[AnyContent] => Unit): Unit = {
 
@@ -51,7 +76,7 @@ class DataRetrievalActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
       "where there are no existing answers for this LRN" in {
 
-        when(mockSessionRepository.get(any())(any())) thenReturn Future.successful(None)
+        when(sessionRepository.get(any())(any())) thenReturn Future.successful(None)
 
         harness(lrn, request => request.userAnswers must not be defined)
       }
@@ -61,7 +86,7 @@ class DataRetrievalActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
       "when there are existing answers for this LRN" in {
 
-        when(mockSessionRepository.get(any())(any())) thenReturn Future.successful(Some(UserAnswers(lrn, eoriNumber)))
+        when(sessionRepository.get(any())(any())) thenReturn Future.successful(Some(UserAnswers(lrn, eoriNumber)))
 
         harness(lrn, request => request.userAnswers mustBe defined)
       }

@@ -17,7 +17,6 @@
 package controllers.actions
 
 import models.requests.DataRequest
-import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionFilter, Result}
 
 import javax.inject.Inject
@@ -40,17 +39,8 @@ class DependentTasksCompletedAction(dependentTasks: String*)(implicit val execut
     def isTaskCompleted(task: String): Boolean =
       request.userAnswers.tasks.get(task).exists(_.isCompleted)
 
-    if (dependentTasks.forall(isTaskCompleted)) {
-      Future.successful(None)
-    } else {
-      Future.successful(Option(Redirect {
-        if (isTaskCompleted(PreTaskListTask.section)) {
-          controllers.routes.TaskListController.onPageLoad(request.userAnswers.lrn)
-        } else {
-          controllers.preTaskList.routes.LocalReferenceNumberController.onPageLoad()
-        }
-      }))
-    }
+    Future.successful(None)
+
   }
 
 }
