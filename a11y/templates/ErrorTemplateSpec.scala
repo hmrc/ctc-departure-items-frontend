@@ -17,7 +17,6 @@
 package templates
 
 import a11ySpecBase.A11ySpecBase
-import play.twirl.api.Html
 import views.html.templates.ErrorTemplate
 
 class ErrorTemplateSpec extends A11ySpecBase {
@@ -25,11 +24,11 @@ class ErrorTemplateSpec extends A11ySpecBase {
   "the 'error' template" must {
     val template = app.injector.instanceOf[ErrorTemplate]
 
-    val title  = nonEmptyString.sample.value
-    val header = nonEmptyString.sample.value
-    val html   = Html(nonEmptyString.sample.value)
+    val title   = nonEmptyString.sample.value
+    val header  = nonEmptyString.sample.value
+    val message = nonEmptyString.sample.value
 
-    val content = template.apply(title, header, html)
+    val content = template.apply(title, header, message)
 
     "pass accessibility checks" in {
       content.toString() must passAccessibilityChecks
