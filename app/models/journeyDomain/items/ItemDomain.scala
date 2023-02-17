@@ -17,15 +17,17 @@
 package models.journeyDomain.items
 
 import models.Index
-import models.journeyDomain.{JourneyDomainModel, UserAnswersReader}
+import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
+import pages.ItemDescriptionPage
 
 import scala.language.implicitConversions
 
 case class ItemDomain(
   itemDescription: String
-)(itemIndex: Index)
-    extends JourneyDomainModel {}
+) extends JourneyDomainModel
 
 object ItemDomain {
-  implicit def userAnswersReader(itemIndex: Index): UserAnswersReader[ItemDomain] = ???
+
+  implicit def userAnswersReader(itemIndex: Index): UserAnswersReader[ItemDomain] =
+    ItemDescriptionPage(itemIndex).reader.map(ItemDomain.apply)
 }

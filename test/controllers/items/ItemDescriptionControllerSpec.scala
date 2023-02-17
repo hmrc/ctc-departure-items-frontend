@@ -19,16 +19,29 @@ package controllers.items
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.items.ItemDescriptionFormProvider
 import models.NormalMode
+import navigation.items.ItemNavigatorProvider
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
+import pages.ItemDescriptionPage
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.items.ItemDescriptionView
+import play.api.inject.bind
+
+import scala.concurrent.Future
 
 class ItemDescriptionControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private lazy val itemDescriptionRoute = routes.ItemDescriptionController.onPageLoad(lrn, NormalMode, itemIndex).url
   private val formProvider              = new ItemDescriptionFormProvider()
-  private val form                      = formProvider("items.itemDescription")
+  private val form                      = formProvider("items.itemDescription", itemIndex.display)
   private val mode                      = NormalMode
+  private lazy val itemDescriptionRoute = routes.ItemDescriptionController.onPageLoad(lrn, mode, itemIndex).url
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(bind(classOf[ItemNavigatorProvider]).toInstance(fakeItemNavigatorProvider))
 
   "ItemDescription Controller" - {
 
@@ -45,6 +58,87 @@ class ItemDescriptionControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
       contentAsString(result) mustEqual
         view(form, lrn, mode, itemIndex)(request, messages).toString
+    }
+
+    "must populate the view correctly on a GET when the question has previously been answered" in {
+
+      val userAnswers = emptyUserAnswers.setValue(ItemDescriptionPage(itemIndex), "testString")
+      setExistingUserAnswers(userAnswers)
+
+      val request = FakeRequest(GET, itemDescriptionRoute)
+
+      val result = route(app, request).value
+
+      val filledForm = form.bind(Map("value" -> "testString"))
+
+      val view = injector.instanceOf[ItemDescriptionView]
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual
+        view(filledForm, lrn, mode, itemIndex)(request, messages).toString
+    }
+
+    "must redirect to the next page when valid data is submitted" in {
+
+      setExistingUserAnswers(emptyUserAnswers)
+
+      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+
+      val request = FakeRequest(POST, itemDescriptionRoute)
+        .withFormUrlEncodedBody(("value", "testString"))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual onwardRoute.url
+    }
+
+    "must return a Bad Request and errors when invalid data is submitted" in {
+
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val invalidAnswer = ""
+
+      val request    = FakeRequest(POST, itemDescriptionRoute).withFormUrlEncodedBody(("value", ""))
+      val filledForm = form.bind(Map("value" -> invalidAnswer))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual BAD_REQUEST
+
+      val view = injector.instanceOf[ItemDescriptionView]
+
+      contentAsString(result) mustEqual
+        view(filledForm, lrn, mode, itemIndex)(request, messages).toString
+    }
+
+    "must redirect to Session Expired for a GET if no existing data is found" in {
+
+      setNoExistingUserAnswers()
+
+      val request = FakeRequest(GET, itemDescriptionRoute)
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+    }
+
+    "must redirect to Session Expired for a POST if no existing data is found" in {
+
+      setNoExistingUserAnswers()
+
+      val request = FakeRequest(POST, itemDescriptionRoute)
+        .withFormUrlEncodedBody(("value", "test string"))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
     }
   }
 }
