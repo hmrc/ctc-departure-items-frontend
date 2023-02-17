@@ -14,26 +14,19 @@
  * limitations under the License.
  */
 
-package generators
+package pages.items
 
-import org.scalacheck.Gen
-import play.api.libs.json._
-import queries.Gettable
+import pages.ItemDescriptionPage
+import pages.behaviours.PageBehaviours
 
-// scalastyle:off number.of.methods
-trait UserAnswersEntryGenerators {
-  self: Generators =>
+class ItemDescriptionPageSpec extends PageBehaviours {
 
-  def generateAnswer: PartialFunction[Gettable[_], Gen[JsValue]] =
-    generateItemsAnswer
+  "ItemDescriptionPage" - {
 
-  private def generateItemsAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
-    import pages._
-    {
-      case ItemDescriptionPage(_) => Gen.alphaNumStr.map(JsString)
-    }
+    beRetrievable[String](ItemDescriptionPage(itemIndex))
 
+    beSettable[String](ItemDescriptionPage(itemIndex))
+
+    beRemovable[String](ItemDescriptionPage(itemIndex))
   }
-
 }
-// scalastyle:on number.of.methods

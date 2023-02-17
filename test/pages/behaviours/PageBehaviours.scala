@@ -16,32 +16,34 @@
 
 package pages.behaviours
 
-import generators.Generators
+import base.SpecBase
+import generators.{Generators, UserAnswersGenerator}
 import models.UserAnswers
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import org.scalatest.{OptionValues, TryValues}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
 import pages.QuestionPage
 import play.api.libs.json._
 
-trait PageBehaviours extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with Generators with OptionValues with TryValues {
+trait PageBehaviours extends SpecBase with ScalaCheckPropertyChecks with Generators with UserAnswersGenerator {
 
   class BeRetrievable[A] {
 
-    def apply[P <: QuestionPage[A]](genP: Gen[P])(implicit ev1: Arbitrary[A], ev2: Format[A]): Unit =
-      "when being retrieved from UserAnswers" - {
+    def apply[P <: QuestionPage[A]](genP: Gen[P])(implicit ev1: Arbitrary[A], ev2: Format[A]): Unit = {
 
-        "and the question has not been answered" - {
+      import models.RichJsObject
 
-          "must return None" in {
+      "must return None" - {
 
-            val gen = for {
+        "when being retrieved from UserAnswers" - {
+
+          "and the question has not been answered" in {
+
+            val gen: Gen[(P, UserAnswers)] = for {
               page        <- genP
               userAnswers <- arbitrary[UserAnswers]
-            } yield (page, userAnswers.remove(page).success.value)
+              json = userAnswers.data.removeObject(page.path).asOpt.getOrElse(userAnswers.data)
+            } yield (page, userAnswers.copy(data = json))
 
             forAll(gen) {
               case (page, userAnswers) =>
@@ -49,16 +51,20 @@ trait PageBehaviours extends AnyFreeSpec with Matchers with ScalaCheckPropertyCh
             }
           }
         }
+      }
 
-        "and the question has been answered" - {
+      "must return the saved value" - {
 
-          "must return the saved value" in {
+        "when being retrieved from UserAnswers" - {
+
+          "and the question has been answered" in {
 
             val gen = for {
               page        <- genP
               savedValue  <- arbitrary[A]
               userAnswers <- arbitrary[UserAnswers]
-            } yield (page, savedValue, userAnswers.set(page, savedValue).success.value)
+              json = userAnswers.data.setObject(page.path, Json.toJson(savedValue)).asOpt.value
+            } yield (page, savedValue, userAnswers.copy(data = json))
 
             forAll(gen) {
               case (page, savedValue, userAnswers) =>
@@ -67,6 +73,7 @@ trait PageBehaviours extends AnyFreeSpec with Matchers with ScalaCheckPropertyCh
           }
         }
       }
+    }
   }
 
   class BeSettable[A] {
@@ -82,7 +89,7 @@ trait PageBehaviours extends AnyFreeSpec with Matchers with ScalaCheckPropertyCh
 
         forAll(gen) {
           case (page, newValue, userAnswers) =>
-            val updatedAnswers = userAnswers.set(page, newValue).success.value
+            val updatedAnswers = userAnswers.setValue(page, newValue)
             updatedAnswers.get(page).value mustEqual newValue
         }
       }
@@ -97,11 +104,11 @@ trait PageBehaviours extends AnyFreeSpec with Matchers with ScalaCheckPropertyCh
           page        <- genP
           savedValue  <- arbitrary[A]
           userAnswers <- arbitrary[UserAnswers]
-        } yield (page, userAnswers.set(page, savedValue).success.value)
+        } yield (page, userAnswers.setValue(page, savedValue))
 
         forAll(gen) {
           case (page, userAnswers) =>
-            val updatedAnswers = userAnswers.remove(page).success.value
+            val updatedAnswers = userAnswers.removeValue(page)
             updatedAnswers.get(page) must be(empty)
         }
       }
