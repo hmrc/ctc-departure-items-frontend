@@ -14,9 +14,21 @@
  * limitations under the License.
  */
 
-package forms
+package pages
 
-object Constants {
-  lazy val maxNameLength: Int       = 70
-  lazy val maxItemDescriptionLength = 512
+import controllers.items.routes
+
+import models.{Index, Mode, UserAnswers}
+import pages.sections.ItemSection
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
+
+case class ItemDescriptionPage(itemIndex: Index) extends QuestionPage[String] {
+
+  override def path: JsPath = ItemSection(itemIndex).path \ toString
+
+  override def toString: String = "itemDescription"
+
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.ItemDescriptionController.onPageLoad(userAnswers.lrn, mode, itemIndex))
 }

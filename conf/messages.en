@@ -53,3 +53,6 @@ technicalDifficulties.tryAgain = Try again later.
 technicalDifficulties.savedAnswers = We saved your answers. They will be available for up to 28 days.
 technicalDifficulties.contact = You can
 technicalDifficulties.contact.link = contact the New Computerised Transit System helpdesk if you need to speak to someone about your transit movement(opens in a new tab).
+
+items.itemDescription.title = Enter a description of item {0}
+items.itemDescription.heading = Enter a description of item {0}

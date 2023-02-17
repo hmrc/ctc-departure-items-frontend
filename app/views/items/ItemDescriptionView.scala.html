@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,11 +12,23 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package forms
+@import models.LocalReferenceNumber
+@import views.html.components.Heading
 
-object Constants {
-  lazy val maxNameLength: Int       = 70
-  lazy val maxItemDescriptionLength = 512
+@this(
+    mainTemplate: MainTemplate,
+    heading: Heading
+)
+
+@(form: Form[String], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index)(implicit request: Request[_], messages: Messages)
+
+@mainTemplate(
+    title = messages("items.itemDescription.title"),
+    showBackLink = true,
+    lrn = Some(lrn)
+) {
+
+    @heading(messages("items.itemDescription.heading"))
 }

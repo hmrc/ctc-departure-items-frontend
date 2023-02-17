@@ -10,7 +10,7 @@ if [ ! -f ../conf/app.$package$.routes ]; then
   awk '/health.Routes/ {\
     print;\
     print "";\
-    print "->         /manage-transit-movements/departures                   app.$package$.Routes"
+    print "->         /manage-transit-movements/departures/items                   app.$package$.Routes"
     next }1' ../conf/prod.routes >> tmp && mv tmp ../conf/prod.routes
 fi
 

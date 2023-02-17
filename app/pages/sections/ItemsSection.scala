@@ -14,9 +14,13 @@
  * limitations under the License.
  */
 
-package forms
+package pages.sections
 
-object Constants {
-  lazy val maxNameLength: Int       = 70
-  lazy val maxItemDescriptionLength = 512
+import play.api.libs.json.{JsArray, JsPath}
+
+case object ItemsSection extends Section[JsArray] {
+
+  override def path: JsPath = JsPath \ toString
+
+  override def toString: String = "items"
 }

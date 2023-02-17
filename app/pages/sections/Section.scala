@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package forms
+package pages.sections
 
-object Constants {
-  lazy val maxNameLength: Int       = 70
-  lazy val maxItemDescriptionLength = 512
-}
+import pages.QuestionPage
+import play.api.libs.json.JsValue
+
+trait Section[T <: JsValue] extends QuestionPage[T]
