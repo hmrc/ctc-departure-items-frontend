@@ -18,9 +18,13 @@ package controllers.items
 
 import controllers.actions._
 import forms.items.ItemDescriptionFormProvider
-
+import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
+import repositories.SessionRepository
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 import models.{Index, LocalReferenceNumber, Mode}
+import navigation.UserAnswersNavigator
+import navigation.items.ItemNavigatorProvider
 import pages.ItemDescriptionPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -29,25 +33,37 @@ import views.html.items.ItemDescriptionView
 
 class ItemDescriptionController @Inject() (
   override val messagesApi: MessagesApi,
+  implicit val sessionRepository: SessionRepository,
   actions: Actions,
+  navigatorProvider: ItemNavigatorProvider,
   val controllerComponents: MessagesControllerComponents,
   formProvider: ItemDescriptionFormProvider,
   view: ItemDescriptionView
-) extends FrontendBaseController
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("items.itemDescription")
+  private def form(itemIndex: Index) = formProvider("items.itemDescription", itemIndex.display)
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
       val preparedForm = request.userAnswers.get(ItemDescriptionPage(itemIndex)) match {
-        case None        => form
-        case Some(value) => form.fill(value)
+        case None        => form(itemIndex)
+        case Some(value) => form(itemIndex).fill(value)
       }
       Ok(view(preparedForm, lrn, mode, itemIndex))
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
-    implicit request => ???
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
+    implicit request =>
+      form(itemIndex)
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex))),
+          value => {
+            implicit lazy val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
+            ItemDescriptionPage(itemIndex).writeToUserAnswers(value).writeToSession().navigate()
+          }
+        )
   }
 }

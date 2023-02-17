@@ -14,21 +14,43 @@
  * limitations under the License.
  *@
 
+@import controllers.items.routes
+@import forms.Constants.maxItemDescriptionLength
 @import models.LocalReferenceNumber
-@import views.html.components.Heading
+@import viewmodels.components.InputCharacterCountViewModel._
+@import views.html.components.{Button, ErrorSummary, InputCharacterCount}
 
 @this(
     mainTemplate: MainTemplate,
-    heading: Heading
+    formHelper: FormWithCSRF,
+    inputCharacterCount: InputCharacterCount,
+    errorSummary: ErrorSummary,
+    button: Button
 )
 
 @(form: Form[String], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("items.itemDescription.title"),
+    title = messages("items.itemDescription.title", itemIndex.display),
     showBackLink = true,
     lrn = Some(lrn)
 ) {
 
-    @heading(messages("items.itemDescription.heading"))
+    @formHelper(action = routes.ItemDescriptionController.onSubmit(lrn, mode, itemIndex), Symbol("autoComplete") -> "off") {
+
+        @errorSummary(form.errors)
+
+        @inputCharacterCount(
+            field = form("value"),
+            inputCharacterCountType = InputCharacterCountWithHiddenLabel(
+                heading = messages("items.itemDescription.heading", itemIndex.display),
+                caption = Some(messages("items.caption", itemIndex.display)),
+                additionalHtml = messages("items.itemDescription.paragraph").toParagraph
+            ),
+            label = messages("items.itemDescription.heading", itemIndex.display),
+            maxLength = maxItemDescriptionLength
+        )
+
+        @button(attributes = Map("id" -> "submit"))
+    }
 }

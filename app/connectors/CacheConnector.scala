@@ -51,4 +51,12 @@ class CacheConnector @Inject() (
       _.status == OK
     }
   }
+
+  def put(lrn: LocalReferenceNumber)(implicit hc: HeaderCarrier): Future[Boolean] = {
+    val url = s"$baseUrl/user-answers"
+
+    http.PUT[String, HttpResponse](url, lrn.toString).map {
+      _.status == OK
+    }
+  }
 }
