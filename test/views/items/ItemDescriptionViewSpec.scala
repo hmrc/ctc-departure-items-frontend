@@ -1,21 +1,51 @@
-package views.consignment
+/*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
+package views.items
+
+import forms.Constants.maxItemDescriptionLength
+import forms.items.ItemDescriptionFormProvider
+import models.NormalMode
+import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.ViewBehaviours
-import views.html.consignment.ItemDescriptionView
+import views.behaviours.CharacterCountViewBehaviours
+import views.html.items.ItemDescriptionView
 
-class ItemDescriptionViewSpec extends ViewBehaviours {
+class ItemDescriptionViewSpec extends CharacterCountViewBehaviours {
 
   override val urlContainsLrn: Boolean = true
 
-  override def view: HtmlFormat.Appendable =
-    injector.instanceOf[ItemDescriptionView].apply(lrn)(fakeRequest, messages)
+  override def form: Form[String] = new ItemDescriptionFormProvider()(prefix, itemIndex.display)
 
-  override val prefix: String = "consignment.itemDescription"
+  override def applyView(form: Form[String]): HtmlFormat.Appendable =
+    injector.instanceOf[ItemDescriptionView].apply(form, lrn, NormalMode, itemIndex)(fakeRequest, messages)
 
-  behave like pageWithTitle()
+  override val prefix: String = "items.itemDescription"
+
+  behave like pageWithTitle(args = itemIndex.display)
 
   behave like pageWithBackLink()
 
-  behave like pageWithHeading()
+  behave like pageWithSectionCaption(s"Item ${itemIndex.display}")
+
+  behave like pageWithHeading(args = itemIndex.display)
+
+  behave like pageWithContent("p", "This should be clear and detailed enough for anyone involved in the transit movement to understand its contents.")
+
+  behave like pageWithCharacterCount(maxItemDescriptionLength)
+
+  behave like pageWithSubmitButton("Save and continue")
 }
