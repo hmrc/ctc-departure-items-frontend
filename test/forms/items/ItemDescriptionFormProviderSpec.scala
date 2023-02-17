@@ -27,7 +27,7 @@ class ItemDescriptionFormProviderSpec extends StringFieldBehaviours {
   private val prefix      = Gen.alphaNumStr.sample.value
   private val requiredKey = s"$prefix.error.required"
   private val invalidKey  = s"$prefix.error.invalidCharacters"
-  private val lengthKey   = s"$prefix.error.maxLength"
+  private val lengthKey   = s"$prefix.error.length"
 
   private val form = new ItemDescriptionFormProvider()(prefix)
 

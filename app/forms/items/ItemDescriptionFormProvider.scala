@@ -31,7 +31,7 @@ class ItemDescriptionFormProvider @Inject() extends Mappings {
         .verifying(
           forms.StopOnFirstFail[String](
             regexp(stringFieldRegex, s"$prefix.error.invalidCharacters"),
-            maxLength(maxItemDescriptionLength, s"$prefix.error.maxLength")
+            maxLength(maxItemDescriptionLength, s"$prefix.error.length")
           )
         )
     )
