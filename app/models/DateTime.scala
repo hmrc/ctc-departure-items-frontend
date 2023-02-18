@@ -17,7 +17,6 @@
 package models
 
 import play.api.libs.json._
-import utils.Format.{RichLocalDateTime, RichString}
 
 import java.time.format.DateTimeParseException
 import java.time.{LocalDate, LocalDateTime, LocalTime}
@@ -27,6 +26,7 @@ case class DateTime(date: LocalDate, time: LocalTime) {
 }
 
 object DateTime {
+  import utils.Format._
 
   def apply(localDateTime: LocalDateTime): DateTime = {
     val date = localDateTime.toLocalDate
