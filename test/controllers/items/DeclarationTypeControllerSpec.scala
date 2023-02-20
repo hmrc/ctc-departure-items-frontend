@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.EnumerableFormProvider
 import models.NormalMode
 import models.items.DeclarationType
-import navigation.items.ItemNavigatorProvider
+import navigation.ItemNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.items.DeclarationTypePage
