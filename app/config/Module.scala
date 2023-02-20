@@ -18,7 +18,7 @@ package config
 
 import com.google.inject.AbstractModule
 import controllers.actions._
-import navigation.items.{ItemNavigatorProvider, ItemNavigatorProviderImpl}
+import navigation._
 
 import java.time.{Clock, ZoneOffset}
 
@@ -30,6 +30,7 @@ class Module extends AbstractModule {
     bind(classOf[DataRequiredAction]).to(classOf[DataRequiredActionImpl]).asEagerSingleton()
     bind(classOf[DependentTasksAction]).to(classOf[DependentTasksActionImpl]).asEagerSingleton()
 
+    bind(classOf[ItemsNavigatorProvider]).to(classOf[ItemsNavigatorProviderImpl])
     bind(classOf[ItemNavigatorProvider]).to(classOf[ItemNavigatorProviderImpl])
 
     // For session based storage instead of cred based, change to SessionIdentifierAction

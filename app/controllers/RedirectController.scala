@@ -17,7 +17,8 @@
 package controllers
 
 import controllers.actions.Actions
-import models.LocalReferenceNumber
+import models.{LocalReferenceNumber, NormalMode}
+import navigation.ItemsNavigatorProvider
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -26,12 +27,13 @@ import javax.inject.Inject
 
 class RedirectController @Inject() (
   actions: Actions,
-  val controllerComponents: MessagesControllerComponents
+  val controllerComponents: MessagesControllerComponents,
+  navigatorProvider: ItemsNavigatorProvider
 ) extends FrontendBaseController
     with I18nSupport {
 
   def redirect(lrn: LocalReferenceNumber): Action[AnyContent] = actions.requireData(lrn) {
-    _ =>
-      Redirect(routes.ErrorController.notFound())
+    implicit request =>
+      Redirect(navigatorProvider.apply(NormalMode).nextPage(request.userAnswers))
   }
 }

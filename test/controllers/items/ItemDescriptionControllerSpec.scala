@@ -19,7 +19,7 @@ package controllers.items
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.items.ItemDescriptionFormProvider
 import models.NormalMode
-import navigation.items.ItemNavigatorProvider
+import navigation.ItemNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.ItemDescriptionPage
