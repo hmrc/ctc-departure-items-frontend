@@ -1,3 +1,19 @@
+/*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package views.items
 
 import forms.CountryFormProvider
@@ -15,7 +31,7 @@ class ItemCountryOfDestinationViewSpec extends InputSelectViewBehaviours[Country
   override def form: Form[Country] = new CountryFormProvider()(prefix, CountryList(values))
 
   override def applyView(form: Form[Country]): HtmlFormat.Appendable =
-    injector.instanceOf[ItemCountryOfDestinationView].apply(form, lrn, values, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[ItemCountryOfDestinationView].apply(form, lrn, values, NormalMode, itemIndex)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[Country] = arbitraryCountry
 
@@ -25,13 +41,15 @@ class ItemCountryOfDestinationViewSpec extends InputSelectViewBehaviours[Country
 
   behave like pageWithBackLink()
 
+  behave like pageWithSectionCaption(s"Item ${itemIndex.display}")
+
   behave like pageWithHeading()
 
+  behave like pageWithContent("p", "This is where the goods complete their journey. It may not be the final CTC country of the transit route.")
+
+  behave like pageWithHint("Enter the country, like Albania or Montenegro.")
+
   behave like pageWithSelect()
-
-  behave like pageWithHint("What is the item’s country of destination? hint")
-
-  behave like pageWithContent("label", "What is the item’s country of destination? label")
 
   behave like pageWithSubmitButton("Save and continue")
 }

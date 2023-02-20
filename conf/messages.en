@@ -55,9 +55,9 @@ items.itemCountryDispatch.error.required = Enter the item’s country of dispatc
 
 items.itemCountryOfDestination.title = What is the item’s country of destination?
 items.itemCountryOfDestination.heading = What is the item’s country of destination?
-items.itemCountryOfDestination.hint = What is the item’s country of destination? hint
-items.itemCountryOfDestination.label = What is the item’s country of destination? label
+items.itemCountryOfDestination.hint = Enter the country, like Albania or Montenegro.
+items.itemCountryOfDestination.paragraph = This is where the goods complete their journey. It may not be the final CTC country of the transit route.
 items.itemCountryOfDestination.placeholder = Select a country
-items.itemCountryOfDestination.change.hidden = What is the item’s country of destination?
-items.itemCountryOfDestination.checkYourAnswersLabel = What is the item’s country of destination?
-items.itemCountryOfDestination.error.required = Select the country
+items.itemCountryOfDestination.change.hidden = What is the item’s country of destination
+items.itemCountryOfDestination.checkYourAnswersLabel = What is the item’s country of destination
+items.itemCountryOfDestination.error.required = Enter the item’s country of destination
