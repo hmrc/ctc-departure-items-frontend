@@ -18,8 +18,8 @@
 @import models.LocalReferenceNumber
 @import models.items.DeclarationType
 @import views.html.components.{Button, ErrorSummary, InputRadio}
-@import viewModels.components.InputRadioViewModel
-@import viewModels.components.InputRadioViewModel._
+@import viewmodels.components.InputRadioViewModel
+@import viewmodels.components.InputRadioViewModel._
 
 @this(
     mainTemplate: MainTemplate,
@@ -29,7 +29,7 @@
     button: Button
 )
 
-@(form: Form[DeclarationType], lrn: LocalReferenceNumber, radios: (String, Option[DeclarationType]) => Seq[RadioItem], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[DeclarationType], lrn: LocalReferenceNumber, radios: (String, Option[DeclarationType]) => Seq[RadioItem], mode: Mode, itemIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("items.declarationType.title"),
@@ -37,7 +37,7 @@
     lrn = Some(lrn)
 ) {
 
-    @formHelper(action = routes.DeclarationTypeController.onSubmit(lrn, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.DeclarationTypeController.onSubmit(lrn, mode, itemIndex), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
