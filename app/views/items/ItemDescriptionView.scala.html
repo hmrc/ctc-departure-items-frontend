@@ -42,7 +42,7 @@
 
         @inputCharacterCount(
             field = form("value"),
-            inputCharacterCountType = InputCharacterCountWithHiddenLabel(
+            inputCharacterCountType = InputCharacterCountWithAdditionalHtml(
                 heading = messages("items.itemDescription.heading", itemIndex.display),
                 caption = Some(messages("items.caption", itemIndex.display)),
                 additionalHtml = messages("items.itemDescription.paragraph").toParagraph

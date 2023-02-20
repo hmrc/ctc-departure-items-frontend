@@ -21,7 +21,7 @@ import forms.NameFormProvider
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.twirl.api.Html
-import viewmodels.components.InputCharacterCountViewModel.{InputCharacterCountWithHiddenLabel, OrdinaryInputCharacterCount}
+import viewmodels.components.InputCharacterCountViewModel.{InputCharacterCountWithAdditionalHtml, OrdinaryInputCharacterCount}
 import views.html.components.InputCharacterCount
 import views.html.templates.MainTemplate
 
@@ -52,7 +52,7 @@ class InputCharacterCountSpec extends A11ySpecBase {
 
       "input character count with additional html" in {
         val content = template.apply(title) {
-          component.apply(form("value"), label, maxLength, caption, hint, rows, InputCharacterCountWithHiddenLabel(title, caption, additionalHtml))
+          component.apply(form("value"), label, maxLength, caption, hint, rows, InputCharacterCountWithAdditionalHtml(title, caption, additionalHtml))
         }
         content.toString() must passAccessibilityChecks
       }

@@ -234,19 +234,24 @@ class RichJsValueSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
       value.set(JsPath, Json.obj()) mustEqual JsError("path cannot be empty")
     }
 
-    "must return a success and the object if the path does not contain a value" in {
+    "must return an error if the path does not contain a value" in {
 
-      val gen: Gen[(JsObject, JsPath)] = for {
+      val gen = for {
         originalKey   <- nonEmptyAlphaStr
         originalValue <- nonEmptyAlphaStr
         pathKey       <- nonEmptyAlphaStr suchThat (_ != originalKey)
-        emptyPath = JsPath \ pathKey
-      } yield (Json.obj(originalKey -> originalValue), emptyPath)
+      } yield (originalKey, originalValue, pathKey)
 
       forAll(gen) {
-        case (jsObject, emptyPath) =>
-          jsObject.remove(emptyPath) mustEqual JsSuccess(jsObject)
+        case (originalKey, originalValue, pathKey) =>
+          val value = Json.obj(originalKey -> originalValue)
+
+          val path = JsPath \ pathKey
+
+          value.remove(path) mustEqual JsError("cannot find value at path")
+
       }
+
     }
 
     "must remove a value given a keyPathNode and return the new object" in {

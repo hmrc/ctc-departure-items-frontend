@@ -15,8 +15,10 @@
  */
 
 import cats.data.ReaderT
+import models.TaskStatus.{Completed, InProgress}
 import models.UserAnswers
-import models.journeyDomain.WriterError
+import models.journeyDomain.items.ItemsDomain
+import models.journeyDomain.{UserAnswersReader, WriterError}
 import models.requests.MandatoryDataRequest
 import navigation.UserAnswersNavigator
 import pages.QuestionPage
@@ -58,23 +60,20 @@ package object controllers {
 
   implicit class SettableOpsRunner[A](userAnswersWriter: UserAnswersWriter[Write[A]]) {
 
-    //   def updateTask[T <: JourneyDomainModel]()(implicit reads: UserAnswersReader[T]): UserAnswersWriter[Write[A]] =
-//      userAnswersWriter.flatMapF {
-//        case (page, userAnswers) =>
-//          page.path.path.headOption.map(_.toJsonString) match {
-//            case Some(section) =>
-//              val status = UserAnswersReader[T].run(userAnswers) match {
-//                case Left(_)  => InProgress
-//                case Right(_) => Completed
-//              }
-//              Task.apply(section, status) match {
-//                case Some(task) => Right((page, userAnswers.updateTask(task)))
-//                case None       => Left(WriterError(page, Some(s"Failed to find task for section $section")))
-//              }
-//            case None =>
-//              Left(WriterError(page, Some(s"Failed to find section in JSON path ${page.path}")))
-//          }
-//      }
+    def updateTask(): UserAnswersWriter[Write[A]] =
+      userAnswersWriter.flatMapF {
+        case (page, userAnswers) =>
+          page.path.path.headOption.map(_.toJsonString) match {
+            case Some(section) =>
+              val status = UserAnswersReader[ItemsDomain].run(userAnswers) match {
+                case Left(_)  => InProgress
+                case Right(_) => Completed
+              }
+              Right((page, userAnswers.updateTask(section, status)))
+            case None =>
+              Left(WriterError(page, Some(s"Failed to find section in JSON path ${page.path}")))
+          }
+      }
 
     def writeToSession(
       userAnswers: UserAnswers

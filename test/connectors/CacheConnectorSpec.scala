@@ -105,35 +105,6 @@ class CacheConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with W
         result mustBe false
       }
     }
-
-    "put" - {
-
-      val url = s"/manage-transit-movements-departure-cache/user-answers"
-
-      "must return true when status is Ok" in {
-        server.stubFor(
-          put(urlEqualTo(url))
-            .willReturn(aResponse().withStatus(OK))
-        )
-
-        val result: Boolean = await(connector.put(lrn))
-
-        result mustBe true
-      }
-
-      "return false for 4xx or 5xx response" in {
-        val status = Gen.choose(400: Int, 599: Int).sample.value
-
-        server.stubFor(
-          put(urlEqualTo(url))
-            .willReturn(aResponse().withStatus(status))
-        )
-
-        val result: Boolean = await(connector.put(lrn))
-
-        result mustBe false
-      }
-    }
   }
 
 }

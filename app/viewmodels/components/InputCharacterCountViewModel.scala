@@ -27,7 +27,7 @@ object InputCharacterCountViewModel {
     caption: Option[String] = None
   ) extends InputCharacterCountViewModel
 
-  case class InputCharacterCountWithHiddenLabel(
+  case class InputCharacterCountWithAdditionalHtml(
     heading: String,
     caption: Option[String] = None,
     additionalHtml: Html

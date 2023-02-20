@@ -34,7 +34,4 @@ class SessionRepository @Inject() (
   def set(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Boolean] =
     cacheConnector.post(userAnswers)
 
-  def put(lrn: LocalReferenceNumber)(implicit hc: HeaderCarrier): Future[Boolean] =
-    cacheConnector.put(lrn)
-
 }

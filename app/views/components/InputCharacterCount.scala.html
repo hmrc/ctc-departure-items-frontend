@@ -54,7 +54,7 @@
     case OrdinaryInputCharacterCount(heading, caption) => {
         @govukCharacterCount(inputCharacterCount.withHeadingAndCaption(heading, caption))
     }
-    case x @ InputCharacterCountWithHiddenLabel(heading, caption, additionalHtml) => {
+    case x @ InputCharacterCountWithAdditionalHtml(heading, caption, additionalHtml) => {
         @hmrcHeading(heading, caption, Some(x.headingClasses))
         @additionalHtml
         @govukCharacterCount(inputCharacterCount.copy(label = Label(isPageHeading = false, content = Text(heading), classes = "govuk-visually-hidden")))
