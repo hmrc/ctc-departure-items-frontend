@@ -22,13 +22,15 @@ sealed trait DeclarationType
 
 object DeclarationType extends RadioModel[DeclarationType] {
 
-  case object Option1 extends WithName("option1") with DeclarationType
-  case object Option2 extends WithName("option2") with DeclarationType
+  case object T1 extends WithName("T1") with DeclarationType
+  case object T2 extends WithName("T2") with DeclarationType
+  case object T2F extends WithName("T2F") with DeclarationType
 
   override val messageKeyPrefix: String = "items.declarationType"
 
   val values: Seq[DeclarationType] = Seq(
-    Option1,
-    Option2
+    T1,
+    T2,
+    T2F
   )
 }

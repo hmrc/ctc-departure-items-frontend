@@ -44,7 +44,7 @@
         @inputRadio(
             field = form("value"),
             radioType = Radio(
-                caption = None,
+                caption = Some(messages("items.caption", itemIndex.display)),
                 heading = messages("items.declarationType.heading")
             ),
             radioItems = fieldId => radios(fieldId, form.value)

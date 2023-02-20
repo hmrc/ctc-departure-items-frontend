@@ -63,10 +63,10 @@ items.itemDescription.error.required = Enter a description of item {0}
 items.itemDescription.error.invalidCharacters = The description must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
 items.itemDescription.paragraph = This should be clear and detailed enough for anyone involved in the transit movement to understand its contents.
 
-
-items.declarationType.title = Which type of declaration do you want to create for this item
-items.declarationType.heading = Which type of declaration do you want to create for this item
-items.declarationType.option1 = Option 1
-items.declarationType.option2 = Option 2
-items.declarationType.checkYourAnswersLabel = Which type of declaration do you want to create for this item
-items.declarationType.error.required = Select  Which type of declaration do you want to create for this item
+items.declarationType.title = Which type of declaration do you want to create for this item?
+items.declarationType.heading = Which type of declaration do you want to create for this item?
+items.declarationType.T1 = T1 - goods that are not in free circulation within the EU
+items.declarationType.T2 = T2 - goods that are in free circulation within the EU
+items.declarationType.T2F = T2F - goods moving to, from or between the European Union special territories
+items.declarationType.checkYourAnswersLabel = Which type of declaration do you want to create for this item?
+items.declarationType.error.required = Select the type of declaration you want to create for this item
