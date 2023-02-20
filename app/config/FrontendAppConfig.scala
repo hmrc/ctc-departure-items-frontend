@@ -48,7 +48,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   val sessionExpiredUrl: String = s"$departureHubUrl/this-service-has-been-reset"
 
   val unauthorisedUrl: String                = s"$departureHubUrl/error/cannot-use-service-no-eori"
-  val unauthorisedWithGroupAccessUrl: String = s"$departureHubUrl/error/cannot-use-service-no-eori"
+  val unauthorisedWithGroupAccessUrl: String = s"$departureHubUrl/unauthorised-group-access"
 
   def keepAliveUrl(lrn: Option[LocalReferenceNumber]): String = lrn.fold(
     s"$departureHubUrl/keep-alive"
