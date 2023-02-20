@@ -19,10 +19,9 @@ package controllers.items
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
-import models.{Index, LocalReferenceNumber, Mode}
 import models.items.DeclarationType
-import navigation.UserAnswersNavigator
-import navigation.items.ItemNavigatorProvider
+import models.{Index, LocalReferenceNumber, Mode}
+import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
 import pages.items.DeclarationTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
