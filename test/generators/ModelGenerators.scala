@@ -27,6 +27,11 @@ import uk.gov.hmrc.http.HttpVerbs._
 trait ModelGenerators {
   self: Generators =>
 
+  implicit lazy val arbitraryDeclarationType: Arbitrary[models.items.DeclarationType] =
+    Arbitrary {
+      Gen.oneOf(models.items.DeclarationType.values)
+    }
+
   implicit lazy val arbitraryCountryCode: Arbitrary[CountryCode] =
     Arbitrary {
       Gen
