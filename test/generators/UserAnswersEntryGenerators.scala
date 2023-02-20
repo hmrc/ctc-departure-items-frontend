@@ -24,6 +24,16 @@ import queries.Gettable
 trait UserAnswersEntryGenerators {
   self: Generators =>
 
-  def generateAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = ???
+  def generateAnswer: PartialFunction[Gettable[_], Gen[JsValue]] =
+    generateItemsAnswer
+
+  private def generateItemsAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+    import pages._
+    {
+      case ItemDescriptionPage(_) => Gen.alphaNumStr.map(JsString)
+    }
+
+  }
+
 }
 // scalastyle:on number.of.methods

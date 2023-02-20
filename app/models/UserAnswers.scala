@@ -33,24 +33,6 @@ final case class UserAnswers(
   id: Id = Id()
 ) {
 
-  def getOptional[A](page: Gettable[A])(implicit rds: Reads[A]): Either[String, Option[A]] =
-    Reads
-      .optionNoError(Reads.at(page.path))
-      .reads(data)
-      .asOpt
-      .toRight(
-        "Something went wrong"
-      )
-
-  def getAsEither[A](page: Gettable[A])(implicit rds: Reads[A]): Either[String, A] =
-    Reads
-      .optionNoError(Reads.at(page.path))
-      .reads(data)
-      .getOrElse(None)
-      .toRight(
-        "Something went wrong"
-      )
-
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
 
@@ -79,8 +61,8 @@ final case class UserAnswers(
     page.cleanup(None, updatedAnswers)
   }
 
-  def updateTask(status: TaskStatus): UserAnswers = {
-    val tasks = this.tasks.updated(".items", status)
+  def updateTask(section: String, status: TaskStatus): UserAnswers = {
+    val tasks = this.tasks.updated(section, status)
     this.copy(tasks = tasks)
   }
 }

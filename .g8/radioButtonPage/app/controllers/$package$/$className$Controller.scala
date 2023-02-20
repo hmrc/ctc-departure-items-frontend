@@ -2,7 +2,6 @@ package controllers.$package$
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.EnumerableFormProvider
 import models.{Mode, LocalReferenceNumber}
 import models.$package$.$className$
 import navigation.UserAnswersNavigator
@@ -46,7 +45,7 @@ class $className$Controller @Inject()(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, $className$.radioItems, mode))),
         value => {
           implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-          $className$Page.writeToUserAnswers(value).updateTask[$navRoute$Domain]().writeToSession().navigate()
+          $className$Page.writeToUserAnswers(value).updateTask().writeToSession().navigate()
         }
       )
   }

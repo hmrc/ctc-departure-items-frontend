@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import cats.implicits._
+import models.journeyDomain.UserAnswersReader
 import play.api.libs.json._
 
 import scala.annotation.nowarn
@@ -27,6 +29,45 @@ package object models {
 
     def removeObject(path: JsPath): JsResult[JsObject] =
       jsObject.remove(path).flatMap(_.validate[JsObject])
+  }
+
+  implicit class RichJsArray(arr: JsArray) {
+
+    def zipWithIndex: List[(JsValue, Index)] = arr.value.toList.zipWithIndex.map(
+      x => (x._1, Index(x._2))
+    )
+
+    def filterWithIndex(f: (JsValue, Index) => Boolean): Seq[(JsValue, Index)] =
+      arr.zipWithIndex.filter {
+        case (value, i) => f(value, i)
+      }
+
+    def isEmpty: Boolean = arr.value.isEmpty
+
+    def traverse[T](implicit userAnswersReader: Index => UserAnswersReader[T]): UserAnswersReader[Seq[T]] =
+      arr.zipWithIndex
+        .traverse[UserAnswersReader, T] {
+          case (_, index) => userAnswersReader(index)
+        }
+        .map(_.toSeq)
+  }
+
+  implicit class RichOptionalJsArray(arr: Option[JsArray]) {
+
+    def mapWithIndex[T](f: (JsValue, Index) => Option[T]): Seq[T] =
+      arr
+        .map {
+          _.zipWithIndex.flatMap {
+            case (value, i) => f(value, i)
+          }
+        }
+        .getOrElse(Nil)
+
+    def validate[T](implicit rds: Reads[T]): Option[T] =
+      arr.flatMap(_.validate[T].asOpt)
+
+    def length: Int = arr.getOrElse(JsArray()).value.length
+
   }
 
   implicit class RichJsValue(jsValue: JsValue) {
@@ -152,5 +193,9 @@ package object models {
             }
       }
     // scalastyle:on cyclomatic.complexity
+  }
+
+  implicit class RichString(string: String) {
+    def removeSpaces(): String = string.replaceAll(" ", "")
   }
 }

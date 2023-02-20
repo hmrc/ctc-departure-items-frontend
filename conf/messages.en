@@ -53,3 +53,13 @@ technicalDifficulties.tryAgain = Try again later.
 technicalDifficulties.savedAnswers = We saved your answers. They will be available for up to 28 days.
 technicalDifficulties.contact = You can
 technicalDifficulties.contact.link = contact the New Computerised Transit System helpdesk if you need to speak to someone about your transit movement(opens in a new tab).
+
+items.caption = Item {0}
+
+items.itemDescription.title = Enter a description of item {0}
+items.itemDescription.heading = Enter a description of item {0}
+items.itemDescription.error.length = The description must be 512 characters or less
+items.itemDescription.error.required = Enter a description of item {0}
+items.itemDescription.error.invalidCharacters = The description must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
+items.itemDescription.paragraph = This should be clear and detailed enough for anyone involved in the transit movement to understand its contents.
+

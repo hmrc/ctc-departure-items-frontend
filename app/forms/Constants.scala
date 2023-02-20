@@ -17,5 +17,6 @@
 package forms
 
 object Constants {
-  lazy val maxNameLength: Int = 70
+  lazy val maxNameLength: Int       = 70
+  lazy val maxItemDescriptionLength = 512
 }

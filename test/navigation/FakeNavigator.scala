@@ -16,9 +16,14 @@
 
 package navigation
 
-import models.UserAnswers
+import models.{Index, Mode, UserAnswers}
+import navigation.items.ItemNavigator
 import play.api.mvc.Call
 
 class FakeNavigator(desiredRoute: Call) extends Navigator {
+  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
+}
+
+class FakeItemNavigator(desiredRoute: Call, mode: Mode, index: Index) extends ItemNavigator(mode, index) {
   override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }

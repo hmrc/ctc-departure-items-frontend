@@ -102,4 +102,8 @@ object ViewUtils {
         case None        => characterCount.withHeading(Text(heading))
       }
   }
+
+  implicit class StringImplicits(string: String) {
+    def toParagraph: Html = Html(s"""<p class="govuk-body">$string</p>""")
+  }
 }

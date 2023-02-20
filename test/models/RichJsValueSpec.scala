@@ -226,6 +226,7 @@ class RichJsValueSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
   }
 
   "remove" - {
+
     "must return an error if the path is empty" in {
 
       val value = Json.obj()
@@ -304,7 +305,7 @@ class RichJsValueSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
       }
     }
 
-    "remove a value from one of many arrays" in {
+    "must remove a value from one of many arrays" in {
 
       val input = Json.obj(
         "key"  -> JsArray(Seq(Json.toJson(1), Json.toJson(2))),
@@ -319,7 +320,7 @@ class RichJsValueSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
     }
   }
 
-  "remove a value when there are nested arrays" in {
+  "must remove a value when there are nested arrays" in {
 
     val input = Json.obj(
       "key"  -> JsArray(Seq(JsArray(Seq(Json.toJson(1), Json.toJson(2))), Json.toJson(2))),
@@ -336,7 +337,8 @@ class RichJsValueSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
     )
   }
 
-  "remove the value if the last value is deleted from an array" in {
+  "must remove the value if the last value is deleted from an array" in {
+
     val input = Json.obj(
       "key"  -> JsArray(Seq(Json.toJson(1))),
       "key2" -> JsArray(Seq(Json.toJson(1), Json.toJson(2)))
