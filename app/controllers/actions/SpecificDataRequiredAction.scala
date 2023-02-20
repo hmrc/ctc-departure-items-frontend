@@ -16,6 +16,7 @@
 
 package controllers.actions
 
+import config.FrontendAppConfig
 import models.UserAnswers
 import models.requests._
 import play.api.Logging
@@ -29,7 +30,7 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 // scalastyle:off no.whitespace.after.left.bracket
-class SpecificDataRequiredActionImpl @Inject() (implicit val ec: ExecutionContext) extends SpecificDataRequiredActionProvider {
+class SpecificDataRequiredActionImpl @Inject() (implicit val ec: ExecutionContext, config: FrontendAppConfig) extends SpecificDataRequiredActionProvider {
 
   override def getFirst[T1](
     pages: Gettable[T1]*
@@ -83,9 +84,10 @@ trait SpecificDataRequiredActionProvider {
 
 trait SpecificDataRequiredAction extends Logging {
 
-  lazy val defaultRedirect: Result = Redirect(controllers.routes.SessionExpiredController.onPageLoad())
+  def defaultRedirect(implicit config: FrontendAppConfig): Result =
+    Redirect(config.sessionExpiredUrl)
 
-  def getPage[T, R](userAnswers: UserAnswers, page: Gettable[T])(block: T => R)(implicit rds: Reads[T]): Future[Either[Result, R]] =
+  def getPage[T, R](userAnswers: UserAnswers, page: Gettable[T])(block: T => R)(implicit rds: Reads[T], config: FrontendAppConfig): Future[Either[Result, R]] =
     Future.successful {
       userAnswers.get(page) match {
         case Some(value) =>
@@ -99,7 +101,7 @@ trait SpecificDataRequiredAction extends Logging {
 
 class SpecificDataRequiredAction1[T1](
   pages: Gettable[T1]*
-)(implicit val executionContext: ExecutionContext, rds: Reads[T1])
+)(implicit val executionContext: ExecutionContext, config: FrontendAppConfig, rds: Reads[T1])
     extends ActionRefiner[
       DataRequest,
       SpecificDataRequestProvider1[T1]#SpecificDataRequest
@@ -134,7 +136,7 @@ class SpecificDataRequiredAction1[T1](
 
 class SpecificDataRequiredAction2[T1, T2](
   page: Gettable[T2]
-)(implicit val executionContext: ExecutionContext, rds: Reads[T2])
+)(implicit val executionContext: ExecutionContext, config: FrontendAppConfig, rds: Reads[T2])
     extends ActionRefiner[
       SpecificDataRequestProvider1[T1]#SpecificDataRequest,
       SpecificDataRequestProvider2[T1, T2]#SpecificDataRequest
@@ -157,7 +159,7 @@ class SpecificDataRequiredAction2[T1, T2](
 
 class SpecificDataRequiredAction3[T1, T2, T3](
   page: Gettable[T3]
-)(implicit val executionContext: ExecutionContext, rds: Reads[T3])
+)(implicit val executionContext: ExecutionContext, config: FrontendAppConfig, rds: Reads[T3])
     extends ActionRefiner[
       SpecificDataRequestProvider2[T1, T2]#SpecificDataRequest,
       SpecificDataRequestProvider3[T1, T2, T3]#SpecificDataRequest

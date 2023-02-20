@@ -43,6 +43,8 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
 
   val departureHubUrl: String = configuration.get[String]("urls.manageTransitMovementsDepartureFrontend")
 
+  val sessionExpiredUrl: String = s"$departureHubUrl/this-service-has-been-reset"
+
   lazy val maxItems: Int = configuration.get[Int]("limits.maxItems")
 
   def taskListUrl(lrn: LocalReferenceNumber): String = s"$departureHubUrl/$lrn/task-list"

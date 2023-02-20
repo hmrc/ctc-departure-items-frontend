@@ -16,6 +16,7 @@
 
 package navigation
 
+import config.FrontendAppConfig
 import models.{Index, Mode, UserAnswers}
 import play.api.mvc.Call
 
@@ -23,10 +24,10 @@ class FakeNavigator(desiredRoute: Call) extends Navigator {
   override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }
 
-class FakeItemsNavigator(desiredRoute: Call, mode: Mode) extends ItemsNavigator(mode) {
+class FakeItemsNavigator(desiredRoute: Call, mode: Mode)(implicit config: FrontendAppConfig) extends ItemsNavigator(mode) {
   override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }
 
-class FakeItemNavigator(desiredRoute: Call, mode: Mode, index: Index) extends ItemNavigator(mode, index) {
+class FakeItemNavigator(desiredRoute: Call, mode: Mode, index: Index)(implicit config: FrontendAppConfig) extends ItemNavigator(mode, index) {
   override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }

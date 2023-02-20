@@ -36,7 +36,7 @@ class ErrorHandlerSpec extends SpecBase with AppWithDefaultMockFixtures {
     val result: Future[Result] = handler.onClientError(new FakeRequestHeader, 404)
 
     status(result) mustBe SEE_OTHER
-    redirectLocation(result).value mustBe controllers.routes.ErrorController.notFound().url
+    redirectLocation(result).value mustBe s"${frontendAppConfig.departureHubUrl}/not-found"
   }
 
   "must redirect to BadRequest page when given a client error (400-499)" in {
@@ -48,7 +48,7 @@ class ErrorHandlerSpec extends SpecBase with AppWithDefaultMockFixtures {
         val result: Future[Result] = handler.onClientError(new FakeRequestHeader, clientErrorCode)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe controllers.routes.ErrorController.badRequest().url
+        redirectLocation(result).value mustBe s"${frontendAppConfig.departureHubUrl}/bad-request"
     }
   }
 
@@ -61,7 +61,7 @@ class ErrorHandlerSpec extends SpecBase with AppWithDefaultMockFixtures {
         val result: Future[Result] = handler.onClientError(new FakeRequestHeader, serverErrorCode)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe controllers.routes.ErrorController.technicalDifficulties().url
+        redirectLocation(result).value mustBe s"${frontendAppConfig.departureHubUrl}/technical-difficulties"
     }
   }
 
