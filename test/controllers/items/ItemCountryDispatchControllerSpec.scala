@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.CountryFormProvider
 import models.{CountryList, NormalMode}
 import generators.Generators
-import navigation.items.ItemNavigatorProvider
+import navigation.ItemNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.items.ItemCountryDispatchPage
