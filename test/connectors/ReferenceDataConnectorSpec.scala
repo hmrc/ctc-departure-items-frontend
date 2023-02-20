@@ -19,15 +19,11 @@ package connectors
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
 import helper.WireMockServerHandler
-import models.CustomsOfficeList
 import models.reference._
 import org.scalacheck.Gen
 import org.scalatest.Assertion
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.mvc.Http.HeaderNames.CONTENT_TYPE
-import play.mvc.Http.MimeTypes.JSON
-import play.mvc.Http.Status._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -44,20 +40,6 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
   private lazy val connector: ReferenceDataConnector = app.injector.instanceOf[ReferenceDataConnector]
 
-  private val customsOfficeDestinationResponseJson: String =
-    """
-      |[
-      | {
-      |   "id" : "GB1",
-      |   "name" : "testName1"
-      | },
-      | {
-      |   "id" : "GB2",
-      |   "name" : "testName2"
-      | }
-      |]
-      |""".stripMargin
-
   private val countriesResponseJson: String =
     """
       |[
@@ -72,105 +54,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       |]
       |""".stripMargin
 
-  private val currencyCodesResponseJson: String =
-    """
-      |[
-      | {
-      |   "currency":"GBP",
-      |   "description":"Sterling"
-      | },
-      | {
-      |   "currency":"CHF",
-      |   "description":"Swiss Franc"
-      | }
-      |]
-      |""".stripMargin
-
-  private val countriesWithoutZipResponseJson: String =
-    """
-      |[
-      | "AE",
-      | "AG"
-      |]
-      |""".stripMargin
-
   "Reference Data" - {
-
-    "getCustomsOfficesOfTransitForCountry" - {
-      "must return a successful future response with a sequence of CustomsOffices" in {
-        server.stubFor(
-          get(urlEqualTo(s"/$baseUrl/customs-offices/GB?role=TRA"))
-            .willReturn(okJson(customsOfficeDestinationResponseJson))
-        )
-
-        val expectedResult =
-          CustomsOfficeList(
-            Seq(
-              CustomsOffice("GB1", "testName1", None),
-              CustomsOffice("GB2", "testName2", None)
-            )
-          )
-
-        connector.getCustomsOfficesOfTransitForCountry(CountryCode("GB")).futureValue mustBe expectedResult
-      }
-
-      "must return a successful future response when CustomsOffice is not found" in {
-        server.stubFor(
-          get(urlEqualTo(s"/$baseUrl/customs-offices/AR?role=TRA")).willReturn(
-            aResponse()
-              .withStatus(NOT_FOUND)
-              .withHeader(CONTENT_TYPE, JSON)
-          )
-        )
-
-        val expectedResult =
-          CustomsOfficeList(Nil)
-
-        connector.getCustomsOfficesOfTransitForCountry(CountryCode("AR")).futureValue mustBe expectedResult
-      }
-
-      "must return an exception when an error response is returned" in {
-        checkErrorResponse(s"/$baseUrl/customs-offices/GB?role=TRA", connector.getCustomsOfficesOfTransitForCountry(CountryCode("GB")))
-      }
-    }
-
-    "getCustomsOfficesOfDestinationForCountry" - {
-      "must return a successful future response with a sequence of CustomsOffices" in {
-        server.stubFor(
-          get(urlEqualTo(s"/$baseUrl/customs-offices/GB?role=DES"))
-            .willReturn(okJson(customsOfficeDestinationResponseJson))
-        )
-
-        val expectedResult =
-          CustomsOfficeList(
-            Seq(
-              CustomsOffice("GB1", "testName1", None),
-              CustomsOffice("GB2", "testName2", None)
-            )
-          )
-
-        connector.getCustomsOfficesOfDestinationForCountry(CountryCode("GB")).futureValue mustBe expectedResult
-      }
-
-      "must return a successful future response when CustomsOffice is not found" in {
-        server.stubFor(
-          get(urlEqualTo(s"/$baseUrl/customs-offices/AR?role=DES")).willReturn(
-            aResponse()
-              .withStatus(NOT_FOUND)
-              .withHeader(CONTENT_TYPE, JSON)
-          )
-        )
-
-        val expectedResult =
-          CustomsOfficeList(Nil)
-
-        connector.getCustomsOfficesOfDestinationForCountry(CountryCode("AR")).futureValue mustBe expectedResult
-      }
-
-      "must return an exception when an error response is returned" in {
-        checkErrorResponse(s"/$baseUrl/customs-offices/GB?role=DES", connector.getCustomsOfficesOfDestinationForCountry(CountryCode("GB")))
-      }
-    }
 
     "getCountries" - {
       "must return Seq of Country when successful" in {
@@ -199,106 +83,6 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       }
     }
 
-    "getCustomsSecurityAgreementAreaCountries" - {
-      "must return Seq of Country when successful" in {
-        server.stubFor(
-          get(urlEqualTo(s"/$baseUrl/country-customs-office-security-agreement-area"))
-            .willReturn(okJson(countriesResponseJson))
-        )
-
-        val expectedResult: Seq[Country] = Seq(
-          Country(CountryCode("GB"), "United Kingdom"),
-          Country(CountryCode("AD"), "Andorra")
-        )
-
-        connector.getCustomsSecurityAgreementAreaCountries().futureValue mustEqual expectedResult
-      }
-
-      "must return an exception when an error response is returned" in {
-        checkErrorResponse(s"/$baseUrl/country-customs-office-security-agreement-area", connector.getCustomsSecurityAgreementAreaCountries())
-      }
-    }
-
-    "getCountryCodesCTC" - {
-      "must return Seq of Country when successful" in {
-        server.stubFor(
-          get(urlEqualTo(s"/$baseUrl/country-codes-ctc"))
-            .willReturn(okJson(countriesResponseJson))
-        )
-
-        val expectedResult: Seq[Country] = Seq(
-          Country(CountryCode("GB"), "United Kingdom"),
-          Country(CountryCode("AD"), "Andorra")
-        )
-
-        connector.getCountryCodesCTC().futureValue mustEqual expectedResult
-      }
-
-      "must return an exception when an error response is returned" in {
-        checkErrorResponse(s"/$baseUrl/country-codes-ctc", connector.getCountryCodesCTC())
-      }
-    }
-
-    "getAddressPostcodeBasedCountries" - {
-      "must return Seq of Country when successful" in {
-        server.stubFor(
-          get(urlEqualTo(s"/$baseUrl/country-address-postcode-based"))
-            .willReturn(okJson(countriesResponseJson))
-        )
-
-        val expectedResult: Seq[Country] = Seq(
-          Country(CountryCode("GB"), "United Kingdom"),
-          Country(CountryCode("AD"), "Andorra")
-        )
-
-        connector.getAddressPostcodeBasedCountries().futureValue mustEqual expectedResult
-      }
-
-      "must return an exception when an error response is returned" in {
-        checkErrorResponse(s"/$baseUrl/country-address-postcode-based", connector.getAddressPostcodeBasedCountries())
-      }
-    }
-
-    "getCountriesWithoutZip" - {
-      "must return Seq of Country when successful" in {
-        server.stubFor(
-          get(urlEqualTo(s"/$baseUrl/country-without-zip"))
-            .willReturn(okJson(countriesWithoutZipResponseJson))
-        )
-
-        val expectedResult: Seq[CountryCode] = Seq(
-          CountryCode("AE"),
-          CountryCode("AG")
-        )
-
-        connector.getCountriesWithoutZip().futureValue mustEqual expectedResult
-      }
-
-      "must return an exception when an error response is returned" in {
-        checkErrorResponse(s"/$baseUrl/country-without-zip", connector.getCountriesWithoutZip())
-      }
-    }
-
-    "getCurrencyCodes" - {
-      "must return a successful future response with a sequence of currency codes" in {
-        server.stubFor(
-          get(urlEqualTo(s"/$baseUrl/currency-codes"))
-            .willReturn(okJson(currencyCodesResponseJson))
-        )
-
-        val expectedResult =
-          Seq(
-            CurrencyCode("GBP", Some("Sterling")),
-            CurrencyCode("CHF", Some("Swiss Franc"))
-          )
-
-        connector.getCurrencyCodes().futureValue mustBe expectedResult
-      }
-
-      "must return an exception when an error response is returned" in {
-        checkErrorResponse(s"/$baseUrl/currency-codes", connector.getCurrencyCodes())
-      }
-    }
   }
 
   private def checkErrorResponse(url: String, result: => Future[_]): Assertion = {

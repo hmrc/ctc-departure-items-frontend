@@ -18,7 +18,7 @@ package services
 
 import connectors.ReferenceDataConnector
 import models.CountryList
-import models.reference.{Country, CountryCode}
+import models.reference.Country
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -29,47 +29,10 @@ class CountriesService @Inject() (referenceDataConnector: ReferenceDataConnector
   def getCountries()(implicit hc: HeaderCarrier): Future[CountryList] =
     getCountries(Nil)
 
-  def getTransitCountries()(implicit hc: HeaderCarrier): Future[CountryList] = {
-    val queryParameters = Seq("membership" -> "ctc")
-    getCountries(queryParameters)
-  }
-
-  def getNonEuTransitCountries()(implicit hc: HeaderCarrier): Future[CountryList] = {
-    val queryParameters = Seq("membership" -> "non_eu")
-    getCountries(queryParameters)
-  }
-
-  def getAddressPostcodeBasedCountries()(implicit hc: HeaderCarrier): Future[CountryList] =
-    referenceDataConnector
-      .getAddressPostcodeBasedCountries()
-      .map(sort)
-
-  def getCommunityCountries()(implicit hc: HeaderCarrier): Future[CountryList] = {
-    val queryParameters = Seq("membership" -> "eu")
-    getCountries(queryParameters)
-  }
-
-  def getCustomsSecurityAgreementAreaCountries()(implicit hc: HeaderCarrier): Future[CountryList] =
-    referenceDataConnector
-      .getCustomsSecurityAgreementAreaCountries()
-      .map(sort)
-
-  def getCountryCodesCTC()(implicit hc: HeaderCarrier): Future[CountryList] =
-    referenceDataConnector
-      .getCountryCodesCTC()
-      .map(sort)
-
-  def getCountriesWithoutZip()(implicit hc: HeaderCarrier): Future[Seq[CountryCode]] =
-    referenceDataConnector
-      .getCountriesWithoutZip()
-
   private def getCountries(queryParameters: Seq[(String, String)])(implicit hc: HeaderCarrier): Future[CountryList] =
     referenceDataConnector
       .getCountries(queryParameters)
       .map(sort)
-
-  def doesCountryRequireZip(country: Country)(implicit hc: HeaderCarrier): Future[Boolean] =
-    getCountriesWithoutZip().map(!_.contains(country.code))
 
   private def sort(countries: Seq[Country]): CountryList =
     CountryList(countries.sortBy(_.description.toLowerCase))
