@@ -136,7 +136,7 @@ class ItemCountryDispatchControllerSpec extends SpecBase with AppWithDefaultMock
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
@@ -150,7 +150,7 @@ class ItemCountryDispatchControllerSpec extends SpecBase with AppWithDefaultMock
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
     }
   }
 }
