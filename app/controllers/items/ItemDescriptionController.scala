@@ -20,11 +20,11 @@ import controllers.actions._
 import forms.items.ItemDescriptionFormProvider
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import repositories.SessionRepository
+
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import models.{Index, LocalReferenceNumber, Mode}
-import navigation.UserAnswersNavigator
-import navigation.items.ItemNavigatorProvider
+import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
 import pages.ItemDescriptionPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

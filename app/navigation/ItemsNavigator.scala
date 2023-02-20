@@ -14,30 +14,29 @@
  * limitations under the License.
  */
 
-package navigation.items
+package navigation
 
+import models.Mode
 import models.journeyDomain.UserAnswersReader
-import models.journeyDomain.items.ItemDomain
-import models.{Index, Mode}
-import navigation.UserAnswersNavigator
+import models.journeyDomain.items.ItemsDomain
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class ItemNavigatorProviderImpl @Inject() () extends ItemNavigatorProvider {
+class ItemsNavigatorProviderImpl @Inject() () extends ItemsNavigatorProvider {
 
-  override def apply(mode: Mode, itemIndex: Index): UserAnswersNavigator =
-    new ItemNavigator(mode, itemIndex)
+  override def apply(mode: Mode): UserAnswersNavigator =
+    new ItemsNavigator(mode)
 }
 
-trait ItemNavigatorProvider {
-  def apply(mode: Mode, itemIndex: Index): UserAnswersNavigator
+trait ItemsNavigatorProvider {
+  def apply(mode: Mode): UserAnswersNavigator
 }
 
-class ItemNavigator(override val mode: Mode, itemIndex: Index) extends UserAnswersNavigator {
+class ItemsNavigator(override val mode: Mode) extends UserAnswersNavigator {
 
-  override type T = ItemDomain
+  override type T = ItemsDomain
 
-  implicit override val reader: UserAnswersReader[ItemDomain] =
-    ItemDomain.userAnswersReader(itemIndex)
+  implicit override val reader: UserAnswersReader[ItemsDomain] =
+    ItemsDomain.userAnswersReader
 }
