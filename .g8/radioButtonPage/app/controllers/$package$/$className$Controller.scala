@@ -2,7 +2,6 @@ package controllers.$package$
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.EnumerableFormProvider
 import models.{Mode, LocalReferenceNumber}
 import models.$package$.$className$
 import navigation.UserAnswersNavigator

@@ -1,6 +1,5 @@
 package views.$package$
 
-import forms.EnumerableFormProvider
 import models.NormalMode
 import models.$package$.$className$
 import play.api.data.Form
