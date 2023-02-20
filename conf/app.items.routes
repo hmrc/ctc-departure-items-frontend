@@ -1,5 +1,10 @@
 
-GET        /:lrn/items/:itemIndex/description                     controllers.items.ItemDescriptionController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
-POST       /:lrn/items/:itemIndex/description                     controllers.items.ItemDescriptionController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
-GET        /:lrn/items/:itemIndex/change-description              controllers.items.ItemDescriptionController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
-POST       /:lrn/items/:itemIndex/change-description              controllers.items.ItemDescriptionController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+GET        /:itemIndex/description/:lrn                             controllers.items.ItemDescriptionController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+POST       /:itemIndex/description/:lrn                             controllers.items.ItemDescriptionController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+GET        /:itemIndex/change-description/:lrn                      controllers.items.ItemDescriptionController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+POST       /:itemIndex/change-description/:lrn                      controllers.items.ItemDescriptionController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+
+GET        /:itemIndex/declaration-type/:lrn                        controllers.items.DeclarationTypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+POST       /:itemIndex/declaration-type/:lrn                        controllers.items.DeclarationTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+GET        /:itemIndex/change-declaration-type/:lrn                 controllers.items.DeclarationTypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+POST       /:itemIndex/change-declaration-type/:lrn                 controllers.items.DeclarationTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
