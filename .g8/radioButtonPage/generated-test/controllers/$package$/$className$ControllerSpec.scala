@@ -1,6 +1,7 @@
 package controllers.$package$
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import forms.EnumerableFormProvider
 import models.NormalMode
 import models.$package$.$className$
 import org.mockito.ArgumentMatchers.any
