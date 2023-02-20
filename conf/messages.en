@@ -70,3 +70,12 @@ items.declarationType.T2 = T2 - goods that are in free circulation within the EU
 items.declarationType.T2F = T2F - goods moving to, from or between the European Union special territories
 items.declarationType.checkYourAnswersLabel = Which type of declaration do you want to create for this item?
 items.declarationType.error.required = Select the type of declaration you want to create for this item
+
+items.itemCountryDispatch.title = What is the item’s country of dispatch?
+items.itemCountryDispatch.heading = What is the item’s country of dispatch?
+items.itemCountryDispatch.hint = Enter the country, like France or Portugal.
+items.itemCountryDispatch.paragraph = This is the country the item was originally dispatched from. It might not be where the CTC transit movement begins.
+items.itemCountryDispatch.placeholder = Select a country
+items.itemCountryDispatch.change.hidden = What is the item’s country of dispatch
+items.itemCountryDispatch.checkYourAnswersLabel = What is the item’s country of dispatch
+items.itemCountryDispatch.error.required = Enter the item’s country of dispatch
