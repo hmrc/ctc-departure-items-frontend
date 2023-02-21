@@ -53,9 +53,9 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
       val metas = getElementsByTag(doc, "meta")
       assertElementExists(metas, _.attr("name") == "hmrc-timeout-dialog")
       if (urlContainsLrn) {
-        assertElementExists(metas, _.attr("data-keep-alive-url") == s"/manage-transit-movements/departures/items/$lrn/keep-alive")
+        assertElementExists(metas, _.attr("data-keep-alive-url") endsWith s"/manage-transit-movements/departures/$lrn/keep-alive")
       } else {
-        assertElementExists(metas, _.attr("data-keep-alive-url") == "/manage-transit-movements/departures/items/keep-alive")
+        assertElementExists(metas, _.attr("data-keep-alive-url") endsWith "/manage-transit-movements/departures/keep-alive")
       }
     }
   } else {

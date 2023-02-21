@@ -1,22 +1,8 @@
 # microservice specific routes
 
-->         /                                             app.items.Routes
+->          /                                            app.items.Routes
 
 ->          /hmrc-frontend                               hmrcfrontend.Routes
 GET         /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
 
-GET         /this-service-has-been-reset                 controllers.SessionExpiredController.onPageLoad()
-POST        /this-service-has-been-reset                 controllers.SessionExpiredController.onSubmit()
-
-GET         /keep-alive                                  controllers.KeepAliveController.keepAlive(lrn: Option[LocalReferenceNumber] = None)
-GET         /:lrn/keep-alive                             controllers.KeepAliveController.keepAlive(lrn: Option[LocalReferenceNumber])
-
-GET         /error/cannot-use-service-no-eori            controllers.UnauthorisedController.onPageLoad()
-GET         /unauthorised-group-access                   controllers.UnauthorisedWithGroupAccessController.onPageLoad()
-
-GET         /bad-request                                 controllers.ErrorController.badRequest()
-GET         /not-found                                   controllers.ErrorController.notFound()
-GET         /technical-difficulties                      controllers.ErrorController.technicalDifficulties()
-GET         /internal-server-error                       controllers.ErrorController.internalServerError()
-
-GET         /:lrn                                        controllers.RedirectController.redirect(lrn: LocalReferenceNumber)
+GET         /:lrn/items                                  controllers.RedirectController.redirect(lrn: LocalReferenceNumber)

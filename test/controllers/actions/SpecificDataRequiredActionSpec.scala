@@ -85,7 +85,7 @@ class SpecificDataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChe
               r =>
                 val result = Future.successful(r.left.value)
                 status(result) mustEqual SEE_OTHER
-                redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+                redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
             }
           }
         }
@@ -160,7 +160,7 @@ class SpecificDataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChe
               r =>
                 val result = Future.successful(r.left.value)
                 status(result) mustEqual SEE_OTHER
-                redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+                redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
             }
           }
         }
@@ -185,7 +185,7 @@ class SpecificDataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChe
                 r =>
                   val result = Future.successful(r.left.value)
                   status(result) mustEqual SEE_OTHER
-                  redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+                  redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
               }
           }
         }
@@ -234,7 +234,7 @@ class SpecificDataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChe
                 r =>
                   val result = Future.successful(r.left.value)
                   status(result) mustEqual SEE_OTHER
-                  redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+                  redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
               }
           }
         }

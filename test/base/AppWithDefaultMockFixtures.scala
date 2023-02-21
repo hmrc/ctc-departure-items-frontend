@@ -33,13 +33,12 @@ import repositories.SessionRepository
 import scala.concurrent.Future
 
 trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerSuite with GuiceFakeApplicationFactory with MockitoSugar {
-  self: TestSuite =>
+  self: TestSuite with SpecBase =>
 
   override def beforeEach(): Unit = {
     reset(mockSessionRepository); reset(mockDataRetrievalActionProvider)
 
     when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
-
   }
 
   final val mockSessionRepository: SessionRepository                     = mock[SessionRepository]

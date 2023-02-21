@@ -16,13 +16,17 @@
 
 package navigation
 
+import config.FrontendAppConfig
 import models.journeyDomain.Stage.CompletingJourney
 import models.journeyDomain.{JourneyDomainModel, ReaderError, Stage, UserAnswersReader}
 import models.{Mode, UserAnswers}
 import play.api.Logging
 import play.api.mvc.Call
+import uk.gov.hmrc.http.HttpVerbs.GET
 
 trait UserAnswersNavigator extends Navigator {
+
+  implicit val config: FrontendAppConfig
 
   type T <: JourneyDomainModel
 
@@ -40,8 +44,8 @@ object UserAnswersNavigator extends Logging {
     userAnswers: UserAnswers,
     mode: Mode,
     stage: Stage = CompletingJourney
-  )(implicit userAnswersReader: UserAnswersReader[T]): Call = {
-    lazy val errorCall = controllers.routes.ErrorController.notFound()
+  )(implicit userAnswersReader: UserAnswersReader[T], config: FrontendAppConfig): Call = {
+    lazy val errorCall = Call(GET, config.sessionExpiredUrl)
 
     userAnswersReader.run(userAnswers) match {
       case Left(ReaderError(page, _)) =>

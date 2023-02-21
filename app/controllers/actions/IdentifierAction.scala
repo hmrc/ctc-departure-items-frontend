@@ -19,7 +19,6 @@ package controllers.actions
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.EnrolmentStoreConnector
-import controllers.routes
 import models.EoriNumber
 import models.requests.IdentifierRequest
 import play.api.mvc.Results._
@@ -65,7 +64,7 @@ class IdentifierActionImpl @Inject() (
               identifier match {
                 case Some(eoriNumber) =>
                   block(IdentifierRequest(request, EoriNumber(eoriNumber.value)))
-                case _ => Future.successful(Redirect(routes.UnauthorisedController.onPageLoad()))
+                case _ => Future.successful(Redirect(config.unauthorisedUrl))
               }
             case None => checkForGroupEnrolment(maybeGroupId, config)
           }
@@ -74,7 +73,7 @@ class IdentifierActionImpl @Inject() (
     case _: NoActiveSession =>
       Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
     case _: AuthorisationException =>
-      Redirect(routes.UnauthorisedController.onPageLoad())
+      Redirect(config.unauthorisedUrl)
   }
 
   private def checkForGroupEnrolment[A](maybeGroupId: Option[String], config: FrontendAppConfig)(implicit
@@ -90,7 +89,7 @@ class IdentifierActionImpl @Inject() (
         } yield newGroupEnrolment || legacyGroupEnrolment
 
         hasGroupEnrolment map {
-          case true  => Redirect(controllers.routes.UnauthorisedWithGroupAccessController.onPageLoad())
+          case true  => Redirect(config.unauthorisedWithGroupAccessUrl)
           case false => Redirect(config.eccEnrolmentSplashPage)
         }
       case _ => Future.successful(Redirect(config.eccEnrolmentSplashPage))
