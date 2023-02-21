@@ -16,8 +16,8 @@
 
 package generators
 
-import models.journeyDomain.items.{ItemDomain, ItemsDomain}
-import models.journeyDomain.{ReaderError, UserAnswersReader}
+import models.journeyDomain.item.ItemDomain
+import models.journeyDomain.{ItemsDomain, ReaderError, UserAnswersReader}
 import models.reference.Country
 import models.{CountryList, EoriNumber, Index, LocalReferenceNumber, RichJsObject, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary

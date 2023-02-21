@@ -16,11 +16,12 @@
 
 package forms.mappings
 
-import java.time.LocalDate
+import models.reference.Country
+import models.{CountryList, Enumerable}
 import play.api.data.FieldMapping
 import play.api.data.Forms.of
-import models.{CountryList, CustomsOfficeList, Enumerable}
-import models.reference.{Country, CustomsOffice}
+
+import java.time.LocalDate
 
 trait Mappings extends Formatters with Constraints {
 
@@ -30,10 +31,11 @@ trait Mappings extends Formatters with Constraints {
   protected def trimmedText(errorKey: String = "error.required", args: Seq[Any] = Seq.empty): FieldMapping[String] =
     of(trimmedStringFormatter(errorKey, args))
 
-  protected def int(requiredKey: String = "error.required",
-                    wholeNumberKey: String = "error.wholeNumber",
-                    nonNumericKey: String = "error.nonNumeric",
-                    args: Seq[String] = Seq.empty
+  protected def int(
+    requiredKey: String = "error.required",
+    wholeNumberKey: String = "error.wholeNumber",
+    nonNumericKey: String = "error.nonNumeric",
+    args: Seq[String] = Seq.empty
   ): FieldMapping[Int] =
     of(intFormatter(requiredKey, wholeNumberKey, nonNumericKey, args))
 
@@ -45,20 +47,14 @@ trait Mappings extends Formatters with Constraints {
   ): FieldMapping[A] =
     of(enumerableFormatter[A](requiredKey, invalidKey, args))
 
-  protected def localDate(invalidKey: String,
-                          allRequiredKey: String,
-                          twoRequiredKey: String,
-                          requiredKey: String,
-                          args: Seq[String] = Seq.empty
+  protected def localDate(
+    invalidKey: String,
+    allRequiredKey: String,
+    twoRequiredKey: String,
+    requiredKey: String,
+    args: Seq[String] = Seq.empty
   ): FieldMapping[LocalDate] =
     of(new LocalDateFormatter(invalidKey, allRequiredKey, twoRequiredKey, requiredKey, args))
-
-  protected def customsOffice(
-    customsOfficeList: CustomsOfficeList,
-    errorKey: String = "error.required",
-    args: Seq[Any] = Seq.empty
-  ): FieldMapping[CustomsOffice] =
-    of(customsOfficeFormatter(customsOfficeList, errorKey, args))
 
   protected def country(
     countryList: CountryList,

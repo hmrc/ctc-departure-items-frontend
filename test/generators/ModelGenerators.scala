@@ -27,9 +27,9 @@ import uk.gov.hmrc.http.HttpVerbs._
 trait ModelGenerators {
   self: Generators =>
 
-  implicit lazy val arbitraryDeclarationType: Arbitrary[models.items.DeclarationType] =
+  implicit lazy val arbitraryDeclarationType: Arbitrary[DeclarationType] =
     Arbitrary {
-      Gen.oneOf(models.items.DeclarationType.values)
+      Gen.oneOf(DeclarationType.values)
     }
 
   implicit lazy val arbitraryCountryCode: Arbitrary[CountryCode] =
@@ -63,45 +63,6 @@ trait ModelGenerators {
       } yield EoriNumber(number)
     }
 
-  implicit lazy val arbitraryCustomsOffice: Arbitrary[CustomsOffice] =
-    Arbitrary {
-      for {
-        id          <- nonEmptyString
-        name        <- nonEmptyString
-        phoneNumber <- Gen.option(Gen.alphaNumStr)
-      } yield CustomsOffice(id, name, phoneNumber)
-    }
-
-  lazy val arbitraryXiCustomsOffice: Arbitrary[CustomsOffice] =
-    Arbitrary {
-      for {
-        id          <- stringsWithMaxLength(stringMaxLength)
-        name        <- stringsWithMaxLength(stringMaxLength)
-        phoneNumber <- Gen.option(stringsWithMaxLength(stringMaxLength))
-      } yield CustomsOffice(id, name, phoneNumber)
-    }
-
-  lazy val arbitraryGbCustomsOffice: Arbitrary[CustomsOffice] =
-    Arbitrary {
-      for {
-        id          <- stringsWithMaxLength(stringMaxLength)
-        name        <- stringsWithMaxLength(stringMaxLength)
-        phoneNumber <- Gen.option(stringsWithMaxLength(stringMaxLength))
-      } yield CustomsOffice(id, name, phoneNumber)
-    }
-
-  lazy val arbitraryOfficeOfDeparture: Arbitrary[CustomsOffice] =
-    Arbitrary {
-      Gen.oneOf(arbitraryGbCustomsOffice.arbitrary, arbitraryXiCustomsOffice.arbitrary)
-    }
-
-  implicit lazy val arbitraryCustomsOfficeList: Arbitrary[CustomsOfficeList] =
-    Arbitrary {
-      for {
-        customsOffices <- listWithMaxLength[CustomsOffice]()
-      } yield CustomsOfficeList(customsOffices)
-    }
-
   implicit lazy val arbitraryDynamicAddress: Arbitrary[DynamicAddress] =
     Arbitrary {
       for {
@@ -120,15 +81,6 @@ trait ModelGenerators {
       } yield DynamicAddress(numberAndStreet, city, Some(postalCode))
     }
 
-  implicit lazy val arbitraryPostalCodeAddress: Arbitrary[PostalCodeAddress] =
-    Arbitrary {
-      for {
-        streetNumber <- stringsWithMaxLength(StreetNumber.length, Gen.alphaNumChar)
-        postalCode   <- stringsWithMaxLength(PostalCode.length, Gen.alphaNumChar)
-        country      <- arbitrary[Country]
-      } yield PostalCodeAddress(streetNumber, postalCode, country)
-    }
-
   implicit lazy val arbitraryMode: Arbitrary[Mode] = Arbitrary {
     Gen.oneOf(NormalMode, CheckMode)
   }
@@ -145,35 +97,11 @@ trait ModelGenerators {
     } yield Index(position)
   }
 
-  implicit lazy val arbitraryUnLocode: Arbitrary[UnLocode] =
-    Arbitrary {
-      for {
-        unLocodeExtendedCode <- nonEmptyString
-        name                 <- nonEmptyString
-      } yield UnLocode(unLocodeExtendedCode, name)
-    }
-
   implicit lazy val arbitraryCall: Arbitrary[Call] = Arbitrary {
     for {
       method <- Gen.oneOf(GET, POST)
       url    <- nonEmptyString
     } yield Call(method, url)
   }
-
-  implicit lazy val arbitraryNationality: Arbitrary[Nationality] =
-    Arbitrary {
-      for {
-        code <- nonEmptyString
-        desc <- nonEmptyString
-      } yield Nationality(code, desc)
-    }
-
-  implicit lazy val arbitraryCurrencyCode: Arbitrary[CurrencyCode] =
-    Arbitrary {
-      for {
-        currency <- nonEmptyString
-        desc     <- Gen.option(nonEmptyString)
-      } yield CurrencyCode(currency, desc)
-    }
 
 }

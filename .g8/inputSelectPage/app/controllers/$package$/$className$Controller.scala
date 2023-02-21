@@ -27,11 +27,13 @@ class $className$Controller @Inject()(
   view: $className$View
 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
+  private val prefix: String = "$package$.$className;format="decap"$"
+
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
       service.$lookupReferenceListMethod$.map {
         $referenceListClass;format="decap"$ =>
-          val form = formProvider("$package$.$className;format="decap"$", $referenceListClass;format="decap"$)
+          val form = formProvider(prefix, $referenceListClass;format="decap"$)
           val preparedForm = request.userAnswers.get($className$Page) match {
             case None => form
             case Some(value) => form.fill(value)
@@ -45,7 +47,7 @@ class $className$Controller @Inject()(
     implicit request =>
       service.$lookupReferenceListMethod$.flatMap {
         $referenceListClass;format="decap"$ =>
-          val form = formProvider("$package$.$className;format="decap"$", $referenceListClass;format="decap"$)
+          val form = formProvider(prefix, $referenceListClass;format="decap"$)
           form.bindFromRequest().fold(
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, $referenceListClass;format="decap"$.$referenceClassPlural;format="decap"$, mode))),
             value => {

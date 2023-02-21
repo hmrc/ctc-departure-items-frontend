@@ -16,10 +16,10 @@
 
 package forms.mappings
 
-import models.reference.{Country, CustomsOffice}
+import models.reference.Country
+import models.{CountryList, Enumerable}
 import play.api.data.FormError
 import play.api.data.format.Formatter
-import models.{CountryList, CustomsOfficeList, Enumerable}
 
 import scala.util.control.Exception.nonFatalCatch
 
@@ -58,10 +58,9 @@ trait Formatters {
 
       private val baseFormatter = stringFormatter(requiredKey, args)
 
-      override def bind(key: String, data: Map[String, String]) =
+      override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Boolean] =
         baseFormatter
           .bind(key, data)
-          .right
           .flatMap {
             case "true"  => Right(true)
             case "false" => Right(false)
@@ -78,12 +77,10 @@ trait Formatters {
 
       private val baseFormatter = stringFormatter(requiredKey, args)
 
-      override def bind(key: String, data: Map[String, String]) =
+      override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Int] =
         baseFormatter
           .bind(key, data)
-          .right
           .map(_.replace(",", ""))
-          .right
           .flatMap {
             case s if s.matches(decimalRegexp) =>
               Left(Seq(FormError(key, wholeNumberKey, args)))
@@ -96,7 +93,7 @@ trait Formatters {
                 )
           }
 
-      override def unbind(key: String, value: Int) =
+      override def unbind(key: String, value: Int): Map[String, String] =
         baseFormatter.unbind(key, value.toString)
     }
 
@@ -108,7 +105,7 @@ trait Formatters {
       private val baseFormatter = stringFormatter(requiredKey, args)
 
       override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], A] =
-        baseFormatter.bind(key, data).right.flatMap {
+        baseFormatter.bind(key, data).flatMap {
           str =>
             ev.withName(str)
               .map(Right.apply)
@@ -118,28 +115,6 @@ trait Formatters {
       override def unbind(key: String, value: A): Map[String, String] =
         baseFormatter.unbind(key, value.toString)
     }
-
-  private[mappings] def customsOfficeFormatter(
-    customsOfficeList: CustomsOfficeList,
-    errorKey: String,
-    args: Seq[Any] = Seq.empty
-  ): Formatter[CustomsOffice] = new Formatter[CustomsOffice] {
-
-    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], CustomsOffice] = {
-      lazy val error = Left(Seq(FormError(key, errorKey, args)))
-      data.get(key) match {
-        case None => error
-        case Some(id) =>
-          customsOfficeList.customsOffices.find(_.id == id) match {
-            case Some(customsOffice) => Right(customsOffice)
-            case None                => error
-          }
-      }
-    }
-
-    override def unbind(key: String, customsOffice: CustomsOffice): Map[String, String] =
-      Map(key -> customsOffice.id)
-  }
 
   private[mappings] def countryFormatter(
     countryList: CountryList,

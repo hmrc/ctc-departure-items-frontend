@@ -17,8 +17,7 @@
 import cats.data.ReaderT
 import models.TaskStatus.{Completed, InProgress}
 import models.UserAnswers
-import models.journeyDomain.items.ItemsDomain
-import models.journeyDomain.{UserAnswersReader, WriterError}
+import models.journeyDomain.{ItemsDomain, UserAnswersReader, WriterError}
 import models.requests.MandatoryDataRequest
 import navigation.UserAnswersNavigator
 import pages.QuestionPage
