@@ -37,10 +37,10 @@ lazy val root = (project in file("."))
       "views.utils.ViewUtils._",
       "models.Mode",
       "controllers.routes._",
-      "viewmodels.govuk.all._",
+      "viewModels.govuk.all._",
       "views.html.helper.CSPNonce",
       "templates._",
-      "viewmodels.{InputWidth, LabelSize, LegendSize}"
+      "viewModels.{InputWidth, LabelSize, LegendSize}"
     ),
     PlayKeys.playDefaultPort := 10127,
     ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*handlers.*;.*components.*;" +

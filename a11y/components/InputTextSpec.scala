@@ -21,7 +21,7 @@ import forms.NameFormProvider
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.twirl.api.Html
-import viewmodels.components.InputTextViewModel.{MultiTextInput, OrdinaryTextInput, TextInputWithHiddenLabel, TextInputWithStatementHeading}
+import viewModels.components.InputTextViewModel.{MultiTextInput, OrdinaryTextInput, TextInputWithHiddenLabel, TextInputWithStatementHeading}
 import views.html.components.InputText
 import views.html.templates.MainTemplate
 

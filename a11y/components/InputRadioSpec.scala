@@ -22,7 +22,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import viewmodels.components.InputRadioViewModel.{Radio, RadioWithAdditionalHtml}
+import viewModels.components.InputRadioViewModel.{Radio, RadioWithAdditionalHtml}
 import views.html.components.InputRadio
 import views.html.templates.MainTemplate
 

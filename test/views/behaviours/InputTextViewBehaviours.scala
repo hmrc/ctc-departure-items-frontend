@@ -19,7 +19,7 @@ package views.behaviours
 import generators.Generators
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
-import viewmodels.InputSize
+import viewModels.InputSize
 
 trait InputTextViewBehaviours[T] extends QuestionViewBehaviours[T] with Generators {
 

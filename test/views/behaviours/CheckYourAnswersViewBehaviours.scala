@@ -20,7 +20,7 @@ import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
-import viewmodels.sections.Section
+import viewModels.sections.Section
 
 trait CheckYourAnswersViewBehaviours extends SummaryListViewBehaviours with Generators {
 

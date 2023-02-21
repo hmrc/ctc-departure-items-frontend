@@ -21,7 +21,7 @@ import forms.NameFormProvider
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.twirl.api.Html
-import viewmodels.components.InputCharacterCountViewModel.{InputCharacterCountWithAdditionalHtml, OrdinaryInputCharacterCount}
+import viewModels.components.InputCharacterCountViewModel.{InputCharacterCountWithAdditionalHtml, OrdinaryInputCharacterCount}
 import views.html.components.InputCharacterCount
 import views.html.templates.MainTemplate
 

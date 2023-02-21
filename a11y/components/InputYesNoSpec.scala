@@ -22,7 +22,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Content
-import viewmodels.components.InputYesNoViewModel.{OrdinaryYesNo, YesNoWithAdditionalHtml, YesNoWithLegend}
+import viewModels.components.InputYesNoViewModel.{OrdinaryYesNo, YesNoWithAdditionalHtml, YesNoWithLegend}
 import views.html.components.InputYesNo
 import views.html.templates.MainTemplate
 

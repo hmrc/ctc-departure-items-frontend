@@ -18,7 +18,7 @@ package components
 
 import a11ySpecBase.A11ySpecBase
 import org.scalacheck.Arbitrary.arbitrary
-import viewmodels.sections.Section
+import viewModels.sections.Section
 import views.html.components.AnswerSections
 import views.html.templates.MainTemplate
 
