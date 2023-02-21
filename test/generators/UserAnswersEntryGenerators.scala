@@ -16,6 +16,9 @@
 
 package generators
 
+import models.DeclarationType
+import models.reference.Country
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.libs.json._
 import queries.Gettable
@@ -28,9 +31,12 @@ trait UserAnswersEntryGenerators {
     generateItemsAnswer
 
   private def generateItemsAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
-    import pages._
+    import pages.item._
     {
-      case ItemDescriptionPage(_) => Gen.alphaNumStr.map(JsString)
+      case DescriptionPage(_)          => Gen.alphaNumStr.map(JsString)
+      case DeclarationTypePage(_)      => arbitrary[DeclarationType].map(Json.toJson(_))
+      case CountryOfDispatchPage(_)    => arbitrary[Country].map(Json.toJson(_))
+      case CountryOfDestinationPage(_) => arbitrary[Country].map(Json.toJson(_))
     }
 
   }

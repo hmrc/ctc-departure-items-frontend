@@ -18,7 +18,7 @@ package navigation
 
 import config.FrontendAppConfig
 import models.journeyDomain.UserAnswersReader
-import models.journeyDomain.items.ItemDomain
+import models.journeyDomain.item.ItemDomain
 import models.{Index, Mode}
 
 import javax.inject.{Inject, Singleton}
