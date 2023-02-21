@@ -4,7 +4,7 @@ import forms.$formProvider$
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import viewModels.InputSize
+import viewmodels.InputSize
 import views.behaviours.InputTextViewBehaviours
 import views.html.$package$.$className$View
 import org.scalacheck.{Arbitrary, Gen}
