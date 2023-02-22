@@ -81,3 +81,9 @@ item.addCUSCodeYesNo.heading = Do you want to add a Customs Union and Statistics
 item.addCUSCodeYesNo.paragraph = This is a reference number to identify any chemicals in your transit, such as haemoglobin or insulin.
 item.addCUSCodeYesNo.checkYourAnswersLabel = Do you want to add a Customs Union and Statistics (CUS) code
 item.addCUSCodeYesNo.error.required = Select yes if you want to declare a Customs Union and Statistics (CUS) code
+
+item.addCommodityCodeYesNo.title = Do you want to add a commodity code?
+item.addCommodityCodeYesNo.heading = Do you want to add a commodity code?
+item.addCommodityCodeYesNo.paragraph = This is an internationally recognised reference number used to identify the specific product in transit.
+item.addCommodityCodeYesNo.checkYourAnswersLabel = Do you want to add a commodity code
+item.addCommodityCodeYesNo.error.required = Select yes if you want to add a commodity code
