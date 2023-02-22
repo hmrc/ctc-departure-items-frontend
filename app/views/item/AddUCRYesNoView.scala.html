@@ -27,7 +27,7 @@
     button: Button
 )
 
-@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("item.addUCRYesNo.title"),
@@ -35,7 +35,7 @@
     lrn = Some(lrn)
 ) {
 
-    @formHelper(action = routes.AddUCRYesNoController.onSubmit(lrn, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.AddUCRYesNoController.onSubmit(lrn, mode, itemIndex: Index), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
