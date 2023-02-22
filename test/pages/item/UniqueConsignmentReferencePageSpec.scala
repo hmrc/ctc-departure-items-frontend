@@ -14,10 +14,18 @@
  * limitations under the License.
  */
 
-package forms
+package pages.item
 
-object Constants {
-  lazy val maxNameLength: Int       = 70
-  lazy val maxUCRLength: Int        = 35
-  lazy val maxItemDescriptionLength = 512
+import pages.behaviours.PageBehaviours
+
+class UniqueConsignmentReferencePageSpec extends PageBehaviours {
+
+  "UniqueConsignmentReferencePage" - {
+
+    beRetrievable[String](UniqueConsignmentReferencePage(itemIndex))
+
+    beSettable[String](UniqueConsignmentReferencePage(itemIndex))
+
+    beRemovable[String](UniqueConsignmentReferencePage(itemIndex))
+  }
 }
