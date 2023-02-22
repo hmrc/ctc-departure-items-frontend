@@ -33,6 +33,8 @@ class AddUCRYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithBackLink()
 
+  behave like pageWithSectionCaption(s"Item ${itemIndex.display}")
+
   behave like pageWithHeading()
 
   behave like pageWithRadioItems()

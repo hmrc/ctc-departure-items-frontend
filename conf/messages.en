@@ -62,7 +62,8 @@ item.countryOfDestination.change.hidden = What is the item’s country of destin
 item.countryOfDestination.checkYourAnswersLabel = What is the item’s country of destination
 item.countryOfDestination.error.required = Enter the item’s country of destination
 
-item.addUCRYesNo.title = Do you want to add a Unique Consignment Reference (UCR)
-item.addUCRYesNo.heading = Do you want to add a Unique Consignment Reference (UCR)
-item.addUCRYesNo.checkYourAnswersLabel = Do you want to add a Unique Consignment Reference (UCR)
-item.addUCRYesNo.error.required = Select yes if Do you want to add a Unique Consignment Reference (UCR)
+item.addUCRYesNo.title = Do you want to add a Unique Consignment Reference (UCR)?
+item.addUCRYesNo.heading = Do you want to add a Unique Consignment Reference (UCR)?
+item.addUCRYesNo.paragraph = This is a unique reference number that customs use to identify a consignment.
+item.addUCRYesNo.checkYourAnswersLabel = Do you want to add a Unique Consignment Reference (UCR)?
+item.addUCRYesNo.error.required = Select yes if you want to add a Unique Consignment Reference (UCR)
