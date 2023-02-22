@@ -24,6 +24,11 @@ POST       /:lrn/items/:itemIndex/add-ucr                                 contro
 GET        /:lrn/items/:itemIndex/change-add-ucr                          controllers.item.AddUCRYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
 POST       /:lrn/items/:itemIndex/change-add-ucr                          controllers.item.AddUCRYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
 
+GET        /:lrn/items/:itemIndex/ucr                                     controllers.item.UniqueConsignmentReferenceController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+POST       /:lrn/items/:itemIndex/ucr                                     controllers.item.UniqueConsignmentReferenceController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+GET        /:lrn/items/:itemIndex/change-ucr                              controllers.item.UniqueConsignmentReferenceController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+POST       /:lrn/items/:itemIndex/change-ucr                              controllers.item.UniqueConsignmentReferenceController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+
 GET        /:lrn/items/:itemIndex/cus-code/add                            controllers.item.AddCUSCodeYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
 POST       /:lrn/items/:itemIndex/cus-code/add                            controllers.item.AddCUSCodeYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
 GET        /:lrn/items/:itemIndex/cus-code/change-add                     controllers.item.AddCUSCodeYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)

@@ -34,10 +34,10 @@ class CacheConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with W
   private lazy val connector: CacheConnector = app.injector.instanceOf[CacheConnector]
 
   private val json: String =
-    """
+    s"""
       |{
       |    "_id" : "2e8ede47-dbfb-44ea-a1e3-6c57b1fe6fe2",
-      |    "lrn" : "1234567890",
+      |    "lrn" : "$lrn",
       |    "eoriNumber" : "GB1234567",
       |    "data" : {},
       |    "tasks" : {},
@@ -79,7 +79,7 @@ class CacheConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with W
 
     "post" - {
 
-      val url = s"/manage-transit-movements-departure-cache/user-answers"
+      val url = s"/manage-transit-movements-departure-cache/user-answers/$lrn"
 
       "must return true when status is Ok" in {
         server.stubFor(
