@@ -76,3 +76,8 @@ item.uniqueConsignmentReference.error.required = Enter the Unique Consignment Re
 item.uniqueConsignmentReference.error.length = The Unique Consignment Reference (UCR) must be 35 characters or less
 item.uniqueConsignmentReference.error.invalidCharacters = The Unique Consignment Reference (UCR) must only include letters a to z and numbers 0 to 9
 
+item.addCUSCodeYesNo.title = Do you want to add a Customs Union and Statistics (CUS) code?
+item.addCUSCodeYesNo.heading = Do you want to add a Customs Union and Statistics (CUS) code?
+item.addCUSCodeYesNo.paragraph = This is a reference number to identify any chemicals in your transit, such as haemoglobin or insulin.
+item.addCUSCodeYesNo.checkYourAnswersLabel = Do you want to add a Customs Union and Statistics (CUS) code
+item.addCUSCodeYesNo.error.required = Select yes if you want to declare a Customs Union and Statistics (CUS) code
