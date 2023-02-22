@@ -30,7 +30,7 @@
 @(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("item.CUSCode.title"),
+    title = messages("item.addCUSCode.title"),
     showBackLink = true,
     lrn = Some(lrn)
 ) {
@@ -41,8 +41,10 @@
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = OrdinaryYesNo(
-                heading = messages("item.CUSCode.heading")
+            yesNoType = YesNoWithAdditionalHtml(
+                heading = messages("item.addCUSCode.heading"),
+                caption = Some(messages("item.caption", itemIndex.display)),
+                additionalHtml = messages("item.addCUSCode.paragraph").toParagraph
             )
         )
 

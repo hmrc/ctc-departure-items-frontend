@@ -43,7 +43,7 @@ class CUSCodeYesNoController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("item.CUSCode")
+  private val form = formProvider("item.addCUSCode")
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
