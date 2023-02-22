@@ -1,10 +1,27 @@
+/*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package controllers.item
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.UCRFormProvider
 import models.NormalMode
+import navigation.ItemNavigatorProvider
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.when
 import pages.item.UniqueConsignmentReferencePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -19,12 +36,12 @@ class UniqueConsignmentReferenceControllerSpec extends SpecBase with AppWithDefa
   private val formProvider                         = new UCRFormProvider()
   private val form                                 = formProvider("item.uniqueConsignmentReference")
   private val mode                                 = NormalMode
-  private lazy val uniqueConsignmentReferenceRoute = routes.UniqueConsignmentReferenceController.onPageLoad(lrn, mode).url
+  private lazy val uniqueConsignmentReferenceRoute = routes.UniqueConsignmentReferenceController.onPageLoad(lrn, mode, itemIndex).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[PreTaskListDetailsNavigatorProvider]).toInstance(fakePreTaskListDetailsNavigatorProvider))
+      .overrides(bind(classOf[ItemNavigatorProvider]).toInstance(fakeItemNavigatorProvider))
 
   "UniqueConsignmentReference Controller" - {
 
@@ -41,12 +58,12 @@ class UniqueConsignmentReferenceControllerSpec extends SpecBase with AppWithDefa
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, mode)(request, messages).toString
+        view(form, lrn, mode, itemIndex)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(UniqueConsignmentReferencePage, "test string")
+      val userAnswers = emptyUserAnswers.setValue(UniqueConsignmentReferencePage(itemIndex), "test string")
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, uniqueConsignmentReferenceRoute)
@@ -60,7 +77,7 @@ class UniqueConsignmentReferenceControllerSpec extends SpecBase with AppWithDefa
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, mode)(request, messages).toString
+        view(filledForm, lrn, mode, itemIndex)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -95,7 +112,7 @@ class UniqueConsignmentReferenceControllerSpec extends SpecBase with AppWithDefa
       val view = injector.instanceOf[UniqueConsignmentReferenceView]
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, mode)(request, messages).toString
+        view(filledForm, lrn, mode, itemIndex)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
