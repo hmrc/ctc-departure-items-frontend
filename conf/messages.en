@@ -84,5 +84,6 @@ item.addCUSCodeYesNo.error.required = Select yes if you want to declare a Custom
 
 item.addCommodityCodeYesNo.title = Do you want to add a commodity code?
 item.addCommodityCodeYesNo.heading = Do you want to add a commodity code?
-item.addCommodityCodeYesNo.checkYourAnswersLabel = Do you want to add a commodity code?
-item.addCommodityCodeYesNo.error.required = Select yes if Do you want to add a commodity code?
+item.addCommodityCodeYesNo.paragraph = This is an internationally recognised reference number used to identify the specific product in transit.
+item.addCommodityCodeYesNo.checkYourAnswersLabel = Do you want to add a commodity code
+item.addCommodityCodeYesNo.error.required = Select yes if you want to add a commodity code
