@@ -20,25 +20,20 @@ import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.item.CUSCodeYesNoView
+import views.html.item.AddUCRYesNoView
 
-class CUSCodeYesNoViewSpec extends YesNoViewBehaviours {
+class AddUCRYesNoViewSpec extends YesNoViewBehaviours {
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[CUSCodeYesNoView].apply(form, lrn, NormalMode, itemIndex)(fakeRequest, messages)
+    injector.instanceOf[AddUCRYesNoView].apply(form, lrn, NormalMode, itemIndex)(fakeRequest, messages)
 
-  override val prefix: String = "item.addCUSCodeYesNo"
+  override val prefix: String = "item.addUCRYesNo"
 
   behave like pageWithTitle()
 
   behave like pageWithBackLink()
 
   behave like pageWithSectionCaption(s"Item ${itemIndex.display}")
-
-  behave like pageWithContent(
-    "p",
-    "This is a reference number to identify any chemicals in your transit, such as haemoglobin or insulin."
-  )
 
   behave like pageWithHeading()
 

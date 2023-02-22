@@ -30,22 +30,21 @@
 @(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("item.addCUSCodeYesNo.title"),
+    title = messages("item.addUCRYesNo.title"),
     showBackLink = true,
     lrn = Some(lrn)
 ) {
 
-    @formHelper(action = routes.CUSCodeYesNoController.onSubmit(lrn, mode, itemIndex), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.AddUCRYesNoController.onSubmit(lrn, mode, itemIndex: Index), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
         @inputYesNo(
             field = form("value"),
             yesNoType = YesNoWithAdditionalHtml(
-                heading = messages("item.addCUSCodeYesNo.heading"),
+                heading = messages("item.addUCRYesNo.heading"),
                 caption = Some(messages("item.caption", itemIndex.display)),
-                additionalHtml = messages("item.addCUSCodeYesNo.paragraph").toParagraph
-            )
+                additionalHtml = messages("item.addUCRYesNo.paragraph").toParagraph)
         )
 
         @button(attributes = Map("id" -> "submit"))

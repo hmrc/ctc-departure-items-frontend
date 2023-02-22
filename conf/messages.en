@@ -62,8 +62,14 @@ item.countryOfDestination.change.hidden = What is the item’s country of destin
 item.countryOfDestination.checkYourAnswersLabel = What is the item’s country of destination
 item.countryOfDestination.error.required = Enter the item’s country of destination
 
-item.addCUSCode.title = Do you want to add a Customs Union and Statistics (CUS) code?
-item.addCUSCode.heading = Do you want to add a Customs Union and Statistics (CUS) code?
-item.addCUSCode.paragraph = This is a reference number to identify any chemicals in your transit, such as haemoglobin or insulin.
-item.addCUSCode.checkYourAnswersLabel = Do you want to add a Customs Union and Statistics (CUS) code
-item.addCUSCode.error.required = Select yes if you want to declare a Customs Union and Statistics (CUS) code
+item.addUCRYesNo.title = Do you want to add a Unique Consignment Reference (UCR)?
+item.addUCRYesNo.heading = Do you want to add a Unique Consignment Reference (UCR)?
+item.addUCRYesNo.paragraph = This is a unique reference number that customs use to identify a consignment.
+item.addUCRYesNo.checkYourAnswersLabel = Do you want to add a Unique Consignment Reference (UCR)?
+item.addUCRYesNo.error.required = Select yes if you want to add a Unique Consignment Reference (UCR)
+
+item.addCUSCodeYesNo.title = Do you want to add a Customs Union and Statistics (CUS) code?
+item.addCUSCodeYesNo.heading = Do you want to add a Customs Union and Statistics (CUS) code?
+item.addCUSCodeYesNo.paragraph = This is a reference number to identify any chemicals in your transit, such as haemoglobin or insulin.
+item.addCUSCodeYesNo.checkYourAnswersLabel = Do you want to add a Customs Union and Statistics (CUS) code
+item.addCUSCodeYesNo.error.required = Select yes if you want to declare a Customs Union and Statistics (CUS) code
