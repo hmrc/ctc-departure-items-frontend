@@ -45,7 +45,7 @@ class CacheConnector @Inject() (
   }
 
   def post(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Boolean] = {
-    val url = s"$baseUrl/user-answers"
+    val url = s"$baseUrl/user-answers/${userAnswers.lrn}"
 
     http.POST[UserAnswers, HttpResponse](url, userAnswers).map {
       _.status == OK
