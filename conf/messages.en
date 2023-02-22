@@ -61,3 +61,8 @@ item.countryOfDestination.placeholder = Select a country
 item.countryOfDestination.change.hidden = What is the item’s country of destination
 item.countryOfDestination.checkYourAnswersLabel = What is the item’s country of destination
 item.countryOfDestination.error.required = Enter the item’s country of destination
+
+item.cUSCode.title = Do you want to add a Customs Union and Statistics (CUS) code?
+item.cUSCode.heading = Do you want to add a Customs Union and Statistics (CUS) code?
+item.cUSCode.checkYourAnswersLabel = Do you want to add a Customs Union and Statistics (CUS) code?
+item.cUSCode.error.required = Select yes if Do you want to add a Customs Union and Statistics (CUS) code?
