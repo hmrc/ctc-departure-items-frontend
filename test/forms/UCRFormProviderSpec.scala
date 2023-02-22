@@ -16,7 +16,9 @@
 
 package forms
 
+import forms.Constants.maxUCRLength
 import forms.behaviours.StringFieldBehaviours
+import models.domain.StringFieldRegex.alphaNumericRegex
 import org.scalacheck.Gen
 import play.api.data.FormError
 
@@ -25,6 +27,7 @@ class UCRFormProviderSpec extends StringFieldBehaviours {
   private val prefix = Gen.alphaNumStr.sample.value
   val requiredKey    = s"$prefix.error.required"
   val lengthKey      = s"$prefix.error.length"
+  val invalidKey     = s"$prefix.error.invalidCharacters"
   val maxLength      = 35
 
   val form = new UCRFormProvider()(prefix)
@@ -50,6 +53,13 @@ class UCRFormProviderSpec extends StringFieldBehaviours {
       form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
+    )
+
+    behave like fieldWithInvalidCharacters(
+      form,
+      fieldName,
+      error = FormError(fieldName, invalidKey, Seq(alphaNumericRegex.regex)),
+      maxUCRLength
     )
   }
 }
