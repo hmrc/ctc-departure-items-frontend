@@ -23,21 +23,21 @@ import navigation.ItemNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.item.CUSCodeYesNoPage
+import pages.item.AddCUSCodeYesNoPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.item.CUSCodeYesNoView
+import views.html.item.AddCUSCodeYesNoView
 
 import scala.concurrent.Future
 
-class CUSCodeYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
+class AddCUSCodeYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
 
   private val formProvider      = new YesNoFormProvider()
   private val form              = formProvider("item.addCUSCodeYesNo")
   private val mode              = NormalMode
-  private lazy val cUSCodeRoute = routes.CUSCodeYesNoController.onPageLoad(lrn, mode, itemIndex).url
+  private lazy val cUSCodeRoute = routes.AddCUSCodeYesNoController.onPageLoad(lrn, mode, itemIndex).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -53,7 +53,7 @@ class CUSCodeYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixture
       val request = FakeRequest(GET, cUSCodeRoute)
       val result  = route(app, request).value
 
-      val view = injector.instanceOf[CUSCodeYesNoView]
+      val view = injector.instanceOf[AddCUSCodeYesNoView]
 
       status(result) mustEqual OK
 
@@ -63,7 +63,7 @@ class CUSCodeYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixture
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(CUSCodeYesNoPage(itemIndex), true)
+      val userAnswers = emptyUserAnswers.setValue(AddCUSCodeYesNoPage(itemIndex), true)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, cUSCodeRoute)
@@ -72,7 +72,7 @@ class CUSCodeYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixture
 
       val filledForm = form.bind(Map("value" -> "true"))
 
-      val view = injector.instanceOf[CUSCodeYesNoView]
+      val view = injector.instanceOf[AddCUSCodeYesNoView]
 
       status(result) mustEqual OK
 
@@ -107,7 +107,7 @@ class CUSCodeYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixture
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[CUSCodeYesNoView]
+      val view = injector.instanceOf[AddCUSCodeYesNoView]
 
       contentAsString(result) mustEqual
         view(boundForm, lrn, mode, itemIndex)(request, messages).toString

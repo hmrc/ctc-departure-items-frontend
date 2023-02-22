@@ -35,7 +35,7 @@
     lrn = Some(lrn)
 ) {
 
-    @formHelper(action = routes.CUSCodeYesNoController.onSubmit(lrn, mode, itemIndex), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.AddCUSCodeYesNoController.onSubmit(lrn, mode, itemIndex), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

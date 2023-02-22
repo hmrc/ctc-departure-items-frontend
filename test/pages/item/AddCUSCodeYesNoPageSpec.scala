@@ -18,14 +18,14 @@ package pages.item
 
 import pages.behaviours.PageBehaviours
 
-class CUSCodeYesNoPageSpec extends PageBehaviours {
+class AddCUSCodeYesNoPageSpec extends PageBehaviours {
 
-  "CUSCodePage" - {
+  "AddCUSCodePage" - {
 
-    beRetrievable[Boolean](CUSCodeYesNoPage(itemIndex))
+    beRetrievable[Boolean](AddCUSCodeYesNoPage(itemIndex))
 
-    beSettable[Boolean](CUSCodeYesNoPage(itemIndex))
+    beSettable[Boolean](AddCUSCodeYesNoPage(itemIndex))
 
-    beRemovable[Boolean](CUSCodeYesNoPage(itemIndex))
+    beRemovable[Boolean](AddCUSCodeYesNoPage(itemIndex))
   }
 }

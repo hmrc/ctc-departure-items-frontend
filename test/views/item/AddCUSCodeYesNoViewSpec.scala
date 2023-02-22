@@ -20,12 +20,12 @@ import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.item.CUSCodeYesNoView
+import views.html.item.AddCUSCodeYesNoView
 
-class CUSCodeYesNoViewSpec extends YesNoViewBehaviours {
+class AddCUSCodeYesNoViewSpec extends YesNoViewBehaviours {
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[CUSCodeYesNoView].apply(form, lrn, NormalMode, itemIndex)(fakeRequest, messages)
+    injector.instanceOf[AddCUSCodeYesNoView].apply(form, lrn, NormalMode, itemIndex)(fakeRequest, messages)
 
   override val prefix: String = "item.addCUSCodeYesNo"
 

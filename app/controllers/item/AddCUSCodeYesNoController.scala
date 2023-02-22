@@ -21,24 +21,24 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
-import pages.item.CUSCodeYesNoPage
+import pages.item.AddCUSCodeYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.item.CUSCodeYesNoView
+import views.html.item.AddCUSCodeYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CUSCodeYesNoController @Inject() (
+class AddCUSCodeYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: ItemNavigatorProvider,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: CUSCodeYesNoView
+  view: AddCUSCodeYesNoView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -47,7 +47,7 @@ class CUSCodeYesNoController @Inject() (
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(CUSCodeYesNoPage(itemIndex)) match {
+      val preparedForm = request.userAnswers.get(AddCUSCodeYesNoPage(itemIndex)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -63,7 +63,7 @@ class CUSCodeYesNoController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex))),
           value => {
             implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
-            CUSCodeYesNoPage(itemIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+            AddCUSCodeYesNoPage(itemIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
           }
         )
   }

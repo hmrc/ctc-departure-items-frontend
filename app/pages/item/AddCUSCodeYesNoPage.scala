@@ -23,12 +23,12 @@ import pages.sections.ItemSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class CUSCodeYesNoPage(itemIndex: Index) extends QuestionPage[Boolean] {
+case class AddCUSCodeYesNoPage(itemIndex: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = ItemSection(itemIndex).path \ toString
 
   override def toString: String = "addCUSCodeYesNo"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.CUSCodeYesNoController.onPageLoad(userAnswers.lrn, mode, itemIndex))
+    Some(routes.AddCUSCodeYesNoController.onPageLoad(userAnswers.lrn, mode, itemIndex))
 }
