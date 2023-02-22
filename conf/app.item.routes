@@ -18,3 +18,8 @@ GET        /:lrn/items/:itemIndex/country-of-destination                  contro
 POST       /:lrn/items/:itemIndex/country-of-destination                  controllers.item.CountryOfDestinationController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
 GET        /:lrn/items/:itemIndex/change-country-of-destination           controllers.item.CountryOfDestinationController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
 POST       /:lrn/items/:itemIndex/change-country-of-destination           controllers.item.CountryOfDestinationController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+
+GET        /:lrn/items/:itemIndex/add-ucr                                 controllers.item.AddUCRYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+POST       /:lrn/items/:itemIndex/add-ucr                                 controllers.item.AddUCRYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+GET        /:lrn/items/:itemIndex/change-add-ucr                          controllers.item.AddUCRYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+POST       /:lrn/items/:itemIndex/change-add-ucr                          controllers.item.AddUCRYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
