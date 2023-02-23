@@ -14,12 +14,18 @@
  * limitations under the License.
  */
 
-package forms
+package pages.item.dangerousGoods.index
 
-object Constants {
-  lazy val maxNameLength: Int       = 70
-  lazy val maxUCRLength: Int        = 35
-  lazy val maxItemDescriptionLength = 512
-  lazy val maxCUSCodeLength: Int    = 9
-  lazy val maxUNNumberLength: Int   = 4
+import pages.behaviours.PageBehaviours
+
+class UNNumberPageSpec extends PageBehaviours {
+
+  "UNNumberPage" - {
+
+    beRetrievable[String](UNNumberPage(itemIndex, dangerousGoodsIndex))
+
+    beSettable[String](UNNumberPage(itemIndex, dangerousGoodsIndex))
+
+    beRemovable[String](UNNumberPage(itemIndex, dangerousGoodsIndex))
+  }
 }

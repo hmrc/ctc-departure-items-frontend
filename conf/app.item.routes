@@ -1,3 +1,4 @@
+->         /                                                              app.item.dangerousGoods.index.Routes
 
 GET        /:lrn/items/:itemIndex/description                             controllers.item.DescriptionController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
 POST       /:lrn/items/:itemIndex/description                             controllers.item.DescriptionController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)

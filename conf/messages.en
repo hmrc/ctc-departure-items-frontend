@@ -28,6 +28,7 @@ date.hour.capitalized = Hour
 date.minute.capitalized = Minute
 
 item.caption = Item {0}
+item.dangerousGoods.caption = Item {0} - Dangerous goods
 
 item.description.title = Enter a description of item {0}
 item.description.heading = Enter a description of item {0}
@@ -101,3 +102,11 @@ item.addCombinedNomenclatureCodeYesNo.heading = Do you want to add a combined no
 item.addCombinedNomenclatureCodeYesNo.paragraph = This is used to classify goods when they’re declared to customs in the EU.
 item.addCombinedNomenclatureCodeYesNo.checkYourAnswersLabel = Do you want to add a combined nomenclature code
 item.addCombinedNomenclatureCodeYesNo.error.required = Select yes if you want to add a combined nomenclature code
+
+item.dangerousGoods.index.unNumber.title = What is the UN number for the dangerous goods?
+item.dangerousGoods.index.unNumber.heading = What is the UN number for the dangerous goods?
+item.dangerousGoods.index.unNumber.hint = This will be 4 characters long and include both letters and numbers.
+item.dangerousGoods.index.unNumber.checkYourAnswersLabel = What is the UN number for the dangerous goods
+item.dangerousGoods.index.unNumber.error.required = Enter the UN number for the dangerous goods
+item.dangerousGoods.index.unNumber.error.length = The UN number must be 4 characters or less
+item.dangerousGoods.index.unNumber.error.invalidCharacters = The UN number must only include letters a to z and numbers 0 to 9

@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-package forms
+package pages.sections.dangerousGoods
 
-object Constants {
-  lazy val maxNameLength: Int       = 70
-  lazy val maxUCRLength: Int        = 35
-  lazy val maxItemDescriptionLength = 512
-  lazy val maxCUSCodeLength: Int    = 9
-  lazy val maxUNNumberLength: Int   = 4
+import models.Index
+import pages.sections.{ItemSection, Section}
+import play.api.libs.json.{JsArray, JsPath}
+
+case class DangerousGoodsListSection(itemIndex: Index) extends Section[JsArray] {
+
+  override def path: JsPath = ItemSection(itemIndex).path \ toString
+
+  override def toString: String = "dangerousGoodsList"
 }
