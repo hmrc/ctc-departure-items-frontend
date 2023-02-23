@@ -32,7 +32,7 @@
 @mainTemplate(
     title = messages("item.addCombinedNomenclatureCodeYesNo.title"),
     showBackLink = true,
-    lrn = Some(lrn)
+    lrn = lrn
 ) {
 
     @formHelper(action = routes.AddCombinedNomenclatureCodeYesNoController.onSubmit(lrn, mode, itemIndex), Symbol("autoComplete") -> "off") {
