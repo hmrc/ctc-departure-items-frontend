@@ -96,6 +96,14 @@ item.addCommodityCodeYesNo.paragraph = This is an internationally recognised ref
 item.addCommodityCodeYesNo.checkYourAnswersLabel = Do you want to add a commodity code
 item.addCommodityCodeYesNo.error.required = Select yes if you want to add a commodity code
 
+item.commodityCode.title = What is the commodity code?
+item.commodityCode.heading = What is the commodity code?
+item.commodityCode.hint = This will be 6 characters long and include both letters and numbers.
+item.commodityCode.checkYourAnswersLabel = What is the commodity code
+item.commodityCode.error.required = Enter the commodity code
+item.commodityCode.error.length = The commodity code must be 6 characters or less
+item.commodityCode.error.invalidCharacters = The commodity code must only include letters a to z and numbers 0 to 9
+
 item.addCombinedNomenclatureCodeYesNo.title = Do you want to add a combined nomenclature code?
 item.addCombinedNomenclatureCodeYesNo.heading = Do you want to add a combined nomenclature code?
 item.addCombinedNomenclatureCodeYesNo.paragraph = This is used to classify goods when they’re declared to customs in the EU.
