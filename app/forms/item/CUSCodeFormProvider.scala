@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package forms
+package forms.item
 
 import forms.Constants.maxCUSCodeLength
 import forms.mappings.Mappings
 import models.domain.StringFieldRegex.alphaNumericRegex
+import play.api.data.Form
 
 import javax.inject.Inject
-import play.api.data.Form
 
 class CUSCodeFormProvider @Inject() extends Mappings {
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms
+package forms.item
 
 import forms.Constants.maxCUSCodeLength
 import forms.behaviours.StringFieldBehaviours

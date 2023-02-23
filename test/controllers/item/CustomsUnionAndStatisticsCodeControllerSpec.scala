@@ -17,7 +17,7 @@
 package controllers.item
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.CUSCodeFormProvider
+import forms.item.CUSCodeFormProvider
 import models.NormalMode
 import navigation.ItemNavigatorProvider
 import org.mockito.ArgumentMatchers.any

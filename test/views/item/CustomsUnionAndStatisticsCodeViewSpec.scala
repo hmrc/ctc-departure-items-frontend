@@ -16,7 +16,7 @@
 
 package views.item
 
-import forms.CUSCodeFormProvider
+import forms.item.CUSCodeFormProvider
 import models.NormalMode
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form

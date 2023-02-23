@@ -18,7 +18,7 @@ package controllers.item
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.CUSCodeFormProvider
+import forms.item.CUSCodeFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
 import pages.item.CustomsUnionAndStatisticsCodePage

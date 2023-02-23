@@ -33,7 +33,7 @@
 @mainTemplate(
     title = messages("item.customsUnionAndStatisticsCode.title"),
     showBackLink = true,
-    lrn = Some(lrn)
+    lrn = lrn
 ) {
 
     @formHelper(action = routes.CustomsUnionAndStatisticsCodeController.onSubmit(lrn, mode, itemIndex), Symbol("autoComplete") -> "off") {
