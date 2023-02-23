@@ -42,6 +42,8 @@
     lrn: LocalReferenceNumber
 )(mainContent: Html)(implicit request: Request[_], messages: Messages)
 
+@hmrcfrontend.RoutesPrefix.setPrefix(s"/manage-transit-movements/departures/$lrn/items/hmrc-frontend")
+
 @headScripts = {
     @if(canSignOut) {
         @hmrcTimeoutDialog(TimeoutDialog(
@@ -54,7 +56,7 @@
 
     <meta name="format-detection" content="telephone=no" />
 
-    @stylesheets()
+    @stylesheets(lrn)
 }
 
 @mainContentWithGetHelp = {
@@ -75,5 +77,5 @@
     phaseBanner = Some(standardBetaBanner(url = renderConfig.feedbackUrl)),
     backLinkUrl = if (showBackLink) Some("#") else None, // This is overridden in ctc.js
     nonce = CSPNonce.get,
-    additionalScriptsBlock = Some(javascripts())
+    additionalScriptsBlock = Some(javascripts(lrn))
 )(mainContentWithGetHelp)
