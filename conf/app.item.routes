@@ -49,7 +49,7 @@ POST       /:lrn/items/:itemIndex/combined-nomenclature-code/add          contro
 GET        /:lrn/items/:itemIndex/combined-nomenclature-code/change-add   controllers.item.AddCombinedNomenclatureCodeYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
 POST       /:lrn/items/:itemIndex/combined-nomenclature-code/change-add   controllers.item.AddCombinedNomenclatureCodeYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
 
-GET        /:lrn/item/does-the-item-contain-any-dangerous-goods                        controllers.item.AddDangerousGoodsYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /:lrn/item/does-the-item-contain-any-dangerous-goods                        controllers.item.AddDangerousGoodsYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /:lrn/item/change-does-the-item-contain-any-dangerous-goods                 controllers.item.AddDangerousGoodsYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /:lrn/item/change-does-the-item-contain-any-dangerous-goods                 controllers.item.AddDangerousGoodsYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+GET        /:lrn/items/:itemIndex/dangerous-goods/add                     controllers.item.AddDangerousGoodsYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+POST       /:lrn/items/:itemIndex/dangerous-goods/add                     controllers.item.AddDangerousGoodsYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+GET        /:lrn/items/:itemIndex/dangerous-goods/change-add              controllers.item.AddDangerousGoodsYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+POST       /:lrn/items/:itemIndex/dangerous-goods/change-add              controllers.item.AddDangerousGoodsYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)

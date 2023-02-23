@@ -1,8 +1,25 @@
+/*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package controllers.item
 
-import base.{SpecBase, AppWithDefaultMockFixtures}
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import models.NormalMode
+import navigation.ItemNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -17,10 +34,10 @@ import scala.concurrent.Future
 
 class AddDangerousGoodsYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
 
-  private val formProvider = new YesNoFormProvider()
-  private val form         = formProvider("item.addDangerousGoodsYesNo")
-  private val mode         = NormalMode
-  private lazy val addDangerousGoodsYesNoRoute = routes.AddDangerousGoodsYesNoController.onPageLoad(lrn, mode).url
+  private val formProvider                     = new YesNoFormProvider()
+  private val form                             = formProvider("item.addDangerousGoodsYesNo")
+  private val mode                             = NormalMode
+  private lazy val addDangerousGoodsYesNoRoute = routes.AddDangerousGoodsYesNoController.onPageLoad(lrn, mode, itemIndex).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -34,19 +51,19 @@ class AddDangerousGoodsYesNoControllerSpec extends SpecBase with AppWithDefaultM
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, addDangerousGoodsYesNoRoute)
-      val result = route(app, request).value
+      val result  = route(app, request).value
 
       val view = injector.instanceOf[AddDangerousGoodsYesNoView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, mode)(request, messages).toString
+        view(form, lrn, mode, itemIndex)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(AddDangerousGoodsYesNoPage, true)
+      val userAnswers = emptyUserAnswers.setValue(AddDangerousGoodsYesNoPage(itemIndex), true)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, addDangerousGoodsYesNoRoute)
@@ -60,7 +77,7 @@ class AddDangerousGoodsYesNoControllerSpec extends SpecBase with AppWithDefaultM
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, mode)(request, messages).toString
+        view(filledForm, lrn, mode, itemIndex)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -70,7 +87,7 @@ class AddDangerousGoodsYesNoControllerSpec extends SpecBase with AppWithDefaultM
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, addDangerousGoodsYesNoRoute)
-      .withFormUrlEncodedBody(("value", "true"))
+        .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
 
@@ -83,7 +100,7 @@ class AddDangerousGoodsYesNoControllerSpec extends SpecBase with AppWithDefaultM
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(POST, addDangerousGoodsYesNoRoute).withFormUrlEncodedBody(("value", ""))
+      val request   = FakeRequest(POST, addDangerousGoodsYesNoRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
 
       val result = route(app, request).value
@@ -93,7 +110,7 @@ class AddDangerousGoodsYesNoControllerSpec extends SpecBase with AppWithDefaultM
       val view = injector.instanceOf[AddDangerousGoodsYesNoView]
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, mode)(request, messages).toString
+        view(boundForm, lrn, mode, itemIndex)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
