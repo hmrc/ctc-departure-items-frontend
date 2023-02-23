@@ -25,6 +25,6 @@ import javax.inject.Inject
 class AssetsController @Inject() (assets: Assets) {
 
   def versioned(path: String, file: Asset, lrn: LocalReferenceNumber): Action[AnyContent] =
-    assets.versioned(path, file: Asset)
+    assets.versioned(path, file)
 
 }
