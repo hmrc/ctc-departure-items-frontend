@@ -33,7 +33,14 @@ class AddDangerousGoodsYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithBackLink()
 
+  behave like pageWithSectionCaption(s"Item ${itemIndex.display} - Dangerous goods")
+
   behave like pageWithHeading()
+
+  behave like pageWithContent(
+    "p",
+    "This means anything that poses a risk to health, safety or property, such as explosives, flammable liquids, oxidizers or toxic substances."
+  )
 
   behave like pageWithRadioItems()
 
