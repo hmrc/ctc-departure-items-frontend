@@ -16,7 +16,6 @@
 
 package forms.item
 
-import forms.Constants.maxCommodityCodeLength
 import forms.behaviours.StringFieldBehaviours
 import models.domain.StringFieldRegex.alphaNumericRegex
 import org.scalacheck.Gen
@@ -59,7 +58,7 @@ class CommodityCodeFormProviderSpec extends StringFieldBehaviours {
       form,
       fieldName,
       error = FormError(fieldName, invalidKey, Seq(alphaNumericRegex.regex)),
-      maxCommodityCodeLength
+      maxLength
     )
   }
 }
