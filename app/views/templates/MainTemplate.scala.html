@@ -42,7 +42,7 @@
     lrn: LocalReferenceNumber
 )(mainContent: Html)(implicit request: Request[_], messages: Messages)
 
-@hmrcfrontend.RoutesPrefix.setPrefix(s"/manage-transit-movements/departures/$lrn/items/hmrc-frontend/")
+@hmrcfrontend.RoutesPrefix.setPrefix(s"/manage-transit-movements/departures/$lrn/items/hmrc-frontend")
 
 @headScripts = {
     @if(canSignOut) {
