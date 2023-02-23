@@ -88,7 +88,7 @@ trait ModelGenerators {
   implicit lazy val arbitraryCountryList: Arbitrary[CountryList] = Arbitrary {
     for {
       countries <- listWithMaxLength[Country]()
-    } yield CountryList(countries)
+    } yield CountryList(countries.distinctBy(_.code))
   }
 
   implicit lazy val arbitraryIndex: Arbitrary[Index] = Arbitrary {
