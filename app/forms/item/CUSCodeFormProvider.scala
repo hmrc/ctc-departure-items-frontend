@@ -14,11 +14,25 @@
  * limitations under the License.
  */
 
-package forms
+package forms.item
 
-object Constants {
-  lazy val maxNameLength: Int       = 70
-  lazy val maxUCRLength: Int        = 35
-  lazy val maxItemDescriptionLength = 512
-  lazy val maxCUSCodeLength: Int    = 9
+import forms.Constants.maxCUSCodeLength
+import forms.mappings.Mappings
+import models.domain.StringFieldRegex.alphaNumericRegex
+import play.api.data.Form
+
+import javax.inject.Inject
+
+class CUSCodeFormProvider @Inject() extends Mappings {
+
+  def apply(prefix: String): Form[String] =
+    Form(
+      "value" -> textWithSpacesRemoved(s"$prefix.error.required")
+        .verifying(
+          forms.StopOnFirstFail[String](
+            regexp(alphaNumericRegex, s"$prefix.error.invalidCharacters"),
+            maxLength(maxCUSCodeLength, s"$prefix.error.length")
+          )
+        )
+    )
 }

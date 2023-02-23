@@ -82,6 +82,14 @@ item.addCUSCodeYesNo.paragraph = This is a reference number to identify any chem
 item.addCUSCodeYesNo.checkYourAnswersLabel = Do you want to add a Customs Union and Statistics (CUS) code
 item.addCUSCodeYesNo.error.required = Select yes if you want to declare a Customs Union and Statistics (CUS) code
 
+item.customsUnionAndStatisticsCode.title = What is the Customs Union and Statistics (CUS) code?
+item.customsUnionAndStatisticsCode.heading = What is the Customs Union and Statistics (CUS) code?
+item.customsUnionAndStatisticsCode.hint = This will be 9 characters long and include both letters and numbers.
+item.customsUnionAndStatisticsCode.checkYourAnswersLabel = What is the Customs Union and Statistics (CUS) code?
+item.customsUnionAndStatisticsCode.error.required = Enter the Customs Union and Statistics (CUS) code
+item.customsUnionAndStatisticsCode.error.length = The Customs Union and Statistics (CUS) code must be 9 characters or less
+item.customsUnionAndStatisticsCode.error.invalidCharacters = The Customs Union and Statistics (CUS) code must only include letters a to z and numbers 0 to 9
+
 item.addCommodityCodeYesNo.title = Do you want to add a commodity code?
 item.addCommodityCodeYesNo.heading = Do you want to add a commodity code?
 item.addCommodityCodeYesNo.paragraph = This is an internationally recognised reference number used to identify the specific product in transit.

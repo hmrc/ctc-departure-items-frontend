@@ -14,11 +14,18 @@
  * limitations under the License.
  */
 
-package forms
+package pages.item
 
-object Constants {
-  lazy val maxNameLength: Int       = 70
-  lazy val maxUCRLength: Int        = 35
-  lazy val maxItemDescriptionLength = 512
-  lazy val maxCUSCodeLength: Int    = 9
+import pages.behaviours.PageBehaviours
+
+class CustomsUnionAndStatisticsCodePageSpec extends PageBehaviours {
+
+  "CustomsUnionAndStatisticsCodePage" - {
+
+    beRetrievable[String](CustomsUnionAndStatisticsCodePage(itemIndex))
+
+    beSettable[String](CustomsUnionAndStatisticsCodePage(itemIndex))
+
+    beRemovable[String](CustomsUnionAndStatisticsCodePage(itemIndex))
+  }
 }

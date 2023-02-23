@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package forms
+package forms.item
 
-import forms.Constants.maxUCRLength
+import forms.Constants.maxCUSCodeLength
 import forms.behaviours.StringFieldBehaviours
 import models.domain.StringFieldRegex.alphaNumericRegex
 import org.scalacheck.Gen
 import play.api.data.FormError
 
-class UCRFormProviderSpec extends StringFieldBehaviours {
+class CUSCodeFormProviderSpec extends StringFieldBehaviours {
 
   private val prefix = Gen.alphaNumStr.sample.value
   val requiredKey    = s"$prefix.error.required"
-  val lengthKey      = s"$prefix.error.length"
   val invalidKey     = s"$prefix.error.invalidCharacters"
+  val lengthKey      = s"$prefix.error.length"
 
-  val form = new UCRFormProvider()(prefix)
+  val form = new CUSCodeFormProvider()(prefix)
 
   ".value" - {
 
@@ -38,14 +38,14 @@ class UCRFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxUCRLength)
+      stringsWithMaxLength(maxCUSCodeLength)
     )
 
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength = maxUCRLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxUCRLength))
+      maxLength = maxCUSCodeLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(maxCUSCodeLength))
     )
 
     behave like mandatoryField(
@@ -58,7 +58,7 @@ class UCRFormProviderSpec extends StringFieldBehaviours {
       form,
       fieldName,
       error = FormError(fieldName, invalidKey, Seq(alphaNumericRegex.regex)),
-      maxUCRLength
+      maxCUSCodeLength
     )
   }
 }
