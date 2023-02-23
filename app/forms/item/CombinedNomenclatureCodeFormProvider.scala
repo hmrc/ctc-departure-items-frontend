@@ -16,16 +16,23 @@
 
 package forms.item
 
+import forms.Constants.maxCombinedNomenclatureCodeLength
+import models.domain.StringFieldRegex.alphaNumericRegex
 import forms.mappings.Mappings
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class CombinedNomenclatureCode @Inject() extends Mappings {
+class CombinedNomenclatureCodeFormProvider @Inject() extends Mappings {
 
   def apply(prefix: String): Form[String] =
     Form(
       "value" -> text(s"$prefix.error.required")
-        .verifying(maxLength(2, s"$prefix.error.length"))
+        .verifying(
+          forms.StopOnFirstFail[String](
+            regexp(alphaNumericRegex, s"$prefix.error.invalidCharacters"),
+            maxLength(maxCombinedNomenclatureCodeLength, s"$prefix.error.length")
+          )
+        )
     )
 }

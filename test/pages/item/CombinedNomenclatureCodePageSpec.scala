@@ -22,10 +22,10 @@ class CombinedNomenclatureCodePageSpec extends PageBehaviours {
 
   "CombinedNomenclatureCodePage" - {
 
-    beRetrievable[String](CombinedNomenclatureCodePage)
+    beRetrievable[String](CombinedNomenclatureCodePage(itemIndex))
 
-    beSettable[String](CombinedNomenclatureCodePage)
+    beSettable[String](CombinedNomenclatureCodePage(itemIndex))
 
-    beRemovable[String](CombinedNomenclatureCodePage)
+    beRemovable[String](CombinedNomenclatureCodePage(itemIndex))
   }
 }

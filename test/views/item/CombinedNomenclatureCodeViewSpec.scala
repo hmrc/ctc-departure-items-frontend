@@ -16,7 +16,7 @@
 
 package views.item
 
-import forms.item.CombinedNomenclatureCode
+import forms.item.CombinedNomenclatureCodeFormProvider
 import models.NormalMode
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
@@ -29,10 +29,10 @@ class CombinedNomenclatureCodeViewSpec extends InputTextViewBehaviours[String] {
 
   override val prefix: String = "item.combinedNomenclatureCode"
 
-  override def form: Form[String] = new CombinedNomenclatureCode()(prefix)
+  override def form: Form[String] = new CombinedNomenclatureCodeFormProvider()(prefix)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[CombinedNomenclatureCodeView].apply(form, lrn, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[CombinedNomenclatureCodeView].apply(form, lrn, NormalMode, itemIndex)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
@@ -40,9 +40,11 @@ class CombinedNomenclatureCodeViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithBackLink()
 
+  behave like pageWithSectionCaption(s"Item ${itemIndex.display}")
+
   behave like pageWithHeading()
 
-  behave like pageWithoutHint()
+  behave like pageWithHint("This will be 2 characters long and include both letters and numbers.")
 
   behave like pageWithInputText(Some(InputSize.Width20))
 

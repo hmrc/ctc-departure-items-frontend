@@ -18,7 +18,7 @@ package controllers.item
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.item.CombinedNomenclatureCode
+import forms.item.CombinedNomenclatureCodeFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
 import pages.item.CombinedNomenclatureCodePage
@@ -35,7 +35,7 @@ class CombinedNomenclatureCodeController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: ItemNavigatorProvider,
-  formProvider: CombinedNomenclatureCode,
+  formProvider: CombinedNomenclatureCodeFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: CombinedNomenclatureCodeView

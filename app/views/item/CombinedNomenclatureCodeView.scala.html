@@ -43,8 +43,10 @@
         @inputText(
             field = form("value"),
             inputTextType = OrdinaryTextInput(
-                heading = messages("item.combinedNomenclatureCode.heading")
+                heading = messages("item.combinedNomenclatureCode.heading"),
+                caption = Some(messages("item.caption", itemIndex.display))
             ),
+            hint = Some(messages("item.combinedNomenclatureCode.hint")),
             inputClass = InputSize.Width20
         )
 

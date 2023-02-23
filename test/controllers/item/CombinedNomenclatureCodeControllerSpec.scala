@@ -17,10 +17,11 @@
 package controllers.item
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.item.CombinedNomenclatureCode
+import forms.item.CombinedNomenclatureCodeFormProvider
 import models.NormalMode
+import navigation.ItemNavigatorProvider
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.when
 import pages.item.CombinedNomenclatureCodePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -32,10 +33,11 @@ import scala.concurrent.Future
 
 class CombinedNomenclatureCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val formProvider                       = new CombinedNomenclatureCode()
+  private val formProvider                       = new CombinedNomenclatureCodeFormProvider()
   private val form                               = formProvider("item.combinedNomenclatureCode")
   private val mode                               = NormalMode
-  private lazy val combinedNomenclatureCodeRoute = routes.CombinedNomenclatureCodeController.onPageLoad(lrn, mode).url
+  private val validString                        = "A2"
+  private lazy val combinedNomenclatureCodeRoute = routes.CombinedNomenclatureCodeController.onPageLoad(lrn, mode, itemIndex).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -57,26 +59,26 @@ class CombinedNomenclatureCodeControllerSpec extends SpecBase with AppWithDefaul
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, mode)(request, messages).toString
+        view(form, lrn, mode, itemIndex)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(CombinedNomenclatureCodePage, "test string")
+      val userAnswers = emptyUserAnswers.setValue(CombinedNomenclatureCodePage(itemIndex), validString)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, combinedNomenclatureCodeRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> "test string"))
+      val filledForm = form.bind(Map("value" -> validString))
 
       val view = injector.instanceOf[CombinedNomenclatureCodeView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, mode)(request, messages).toString
+        view(filledForm, lrn, mode, itemIndex)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -86,7 +88,7 @@ class CombinedNomenclatureCodeControllerSpec extends SpecBase with AppWithDefaul
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
       val request = FakeRequest(POST, combinedNomenclatureCodeRoute)
-        .withFormUrlEncodedBody(("value", "test string"))
+        .withFormUrlEncodedBody(("value", validString))
 
       val result = route(app, request).value
 
@@ -111,7 +113,7 @@ class CombinedNomenclatureCodeControllerSpec extends SpecBase with AppWithDefaul
       val view = injector.instanceOf[CombinedNomenclatureCodeView]
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, mode)(request, messages).toString
+        view(filledForm, lrn, mode, itemIndex)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -132,7 +134,7 @@ class CombinedNomenclatureCodeControllerSpec extends SpecBase with AppWithDefaul
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, combinedNomenclatureCodeRoute)
-        .withFormUrlEncodedBody(("value", "test string"))
+        .withFormUrlEncodedBody(("value", validString))
 
       val result = route(app, request).value
 

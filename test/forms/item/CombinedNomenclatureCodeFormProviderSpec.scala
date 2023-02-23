@@ -16,18 +16,20 @@
 
 package forms.item
 
+import forms.Constants.maxCombinedNomenclatureCodeLength
 import forms.behaviours.StringFieldBehaviours
+import models.domain.StringFieldRegex.alphaNumericRegex
 import org.scalacheck.Gen
 import play.api.data.FormError
 
-class CombinedNomenclatureCodeSpec extends StringFieldBehaviours {
+class CombinedNomenclatureCodeFormProviderSpec extends StringFieldBehaviours {
 
   private val prefix = Gen.alphaNumStr.sample.value
   val requiredKey    = s"$prefix.error.required"
   val lengthKey      = s"$prefix.error.length"
-  val maxLength      = 2
+  val invalidKey     = s"$prefix.error.invalidCharacters"
 
-  val form = new CombinedNomenclatureCode()(prefix)
+  val form = new CombinedNomenclatureCodeFormProvider()(prefix)
 
   ".value" - {
 
@@ -36,20 +38,27 @@ class CombinedNomenclatureCodeSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      stringsWithMaxLength(maxCombinedNomenclatureCodeLength)
     )
 
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      maxLength = maxCombinedNomenclatureCodeLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(maxCombinedNomenclatureCodeLength))
     )
 
     behave like mandatoryField(
       form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
+    )
+
+    behave like fieldWithInvalidCharacters(
+      form,
+      fieldName,
+      error = FormError(fieldName, invalidKey, Seq(alphaNumericRegex.regex)),
+      maxCombinedNomenclatureCodeLength
     )
   }
 }
