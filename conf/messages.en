@@ -110,3 +110,8 @@ item.dangerousGoods.index.unNumber.checkYourAnswersLabel = What is the UN number
 item.dangerousGoods.index.unNumber.error.required = Enter the UN number for the dangerous goods
 item.dangerousGoods.index.unNumber.error.length = The UN number must be 4 characters or less
 item.dangerousGoods.index.unNumber.error.invalidCharacters = The UN number must only include letters a to z and numbers 0 to 9
+
+item.dangerousGoods.addAnotherUNNumber.title = You have added 1 UN number for dangerous goods
+item.dangerousGoods.addAnotherUNNumber.heading = You have added 1 UN number for dangerous goods
+item.dangerousGoods.addAnotherUNNumber.checkYourAnswersLabel = You have added 1 UN number for dangerous goods
+item.dangerousGoods.addAnotherUNNumber.error.required = Select yes if You have added 1 UN number for dangerous goods
