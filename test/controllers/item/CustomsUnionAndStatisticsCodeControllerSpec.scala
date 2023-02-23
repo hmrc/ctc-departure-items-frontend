@@ -1,10 +1,27 @@
+/*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package controllers.item
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.CUSCodeFormProvider
 import models.NormalMode
+import navigation.ItemNavigatorProvider
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.when
 import pages.item.CustomsUnionAndStatisticsCodePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -16,10 +33,10 @@ import scala.concurrent.Future
 
 class CustomsUnionAndStatisticsCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val formProvider = new CUSCodeFormProvider()
-  private val form         = formProvider("item.customsUnionAndStatisticsCode")
-  private val mode         = NormalMode
-  private lazy val customsUnionAndStatisticsCodeRoute = routes.CustomsUnionAndStatisticsCodeController.onPageLoad(lrn, mode).url
+  private val formProvider                            = new CUSCodeFormProvider()
+  private val form                                    = formProvider("item.customsUnionAndStatisticsCode")
+  private val mode                                    = NormalMode
+  private lazy val customsUnionAndStatisticsCodeRoute = routes.CustomsUnionAndStatisticsCodeController.onPageLoad(lrn, mode, itemIndex).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -41,26 +58,26 @@ class CustomsUnionAndStatisticsCodeControllerSpec extends SpecBase with AppWithD
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, mode)(request, messages).toString
+        view(form, lrn, mode, itemIndex)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(CustomsUnionAndStatisticsCodePage, "test string")
+      val userAnswers = emptyUserAnswers.setValue(CustomsUnionAndStatisticsCodePage(itemIndex), "test")
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, customsUnionAndStatisticsCodeRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> "test string"))
+      val filledForm = form.bind(Map("value" -> "test"))
 
       val view = injector.instanceOf[CustomsUnionAndStatisticsCodeView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, mode)(request, messages).toString
+        view(filledForm, lrn, mode, itemIndex)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -70,7 +87,7 @@ class CustomsUnionAndStatisticsCodeControllerSpec extends SpecBase with AppWithD
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
       val request = FakeRequest(POST, customsUnionAndStatisticsCodeRoute)
-        .withFormUrlEncodedBody(("value", "test string"))
+        .withFormUrlEncodedBody(("value", "test"))
 
       val result = route(app, request).value
 
@@ -85,7 +102,7 @@ class CustomsUnionAndStatisticsCodeControllerSpec extends SpecBase with AppWithD
 
       val invalidAnswer = ""
 
-      val request = FakeRequest(POST, customsUnionAndStatisticsCodeRoute).withFormUrlEncodedBody(("value", ""))
+      val request    = FakeRequest(POST, customsUnionAndStatisticsCodeRoute).withFormUrlEncodedBody(("value", ""))
       val filledForm = form.bind(Map("value" -> invalidAnswer))
 
       val result = route(app, request).value
@@ -95,7 +112,7 @@ class CustomsUnionAndStatisticsCodeControllerSpec extends SpecBase with AppWithD
       val view = injector.instanceOf[CustomsUnionAndStatisticsCodeView]
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, mode)(request, messages).toString
+        view(filledForm, lrn, mode, itemIndex)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -116,7 +133,7 @@ class CustomsUnionAndStatisticsCodeControllerSpec extends SpecBase with AppWithD
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, customsUnionAndStatisticsCodeRoute)
-        .withFormUrlEncodedBody(("value", "test string"))
+        .withFormUrlEncodedBody(("value", "test"))
 
       val result = route(app, request).value
 

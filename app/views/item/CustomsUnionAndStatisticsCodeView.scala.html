@@ -17,6 +17,7 @@
 @import controllers.item.routes
 @import models.LocalReferenceNumber
 @import viewmodels.components.InputTextViewModel._
+@import viewmodels.InputSize
 @import views.html.components.{Button, ErrorSummary, InputText}
 
 @this(
@@ -27,7 +28,7 @@
     button: Button
 )
 
-@(form: Form[String], lrn: LocalReferenceNumber, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[String], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("item.customsUnionAndStatisticsCode.title"),
@@ -35,7 +36,7 @@
     lrn = Some(lrn)
 ) {
 
-    @formHelper(action = routes.CustomsUnionAndStatisticsCodeController.onSubmit(lrn, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.CustomsUnionAndStatisticsCodeController.onSubmit(lrn, mode, itemIndex), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
