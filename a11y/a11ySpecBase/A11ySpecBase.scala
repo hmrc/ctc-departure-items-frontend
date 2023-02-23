@@ -17,6 +17,8 @@
 package a11ySpecBase
 
 import generators.Generators
+import models.LocalReferenceNumber
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.OptionValues
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -32,6 +34,8 @@ import uk.gov.hmrc.scalatestaccessibilitylinter.AccessibilityMatchers
 import scala.collection.immutable
 
 trait A11ySpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with AccessibilityMatchers with OptionValues with Generators {
+
+  val lrn: LocalReferenceNumber = arbitrary[LocalReferenceNumber].sample.value
 
   override def fakeApplication(): Application =
     new GuiceApplicationBuilder()

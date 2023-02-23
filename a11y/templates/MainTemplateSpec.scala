@@ -17,7 +17,6 @@
 package templates
 
 import a11ySpecBase.A11ySpecBase
-import models.LocalReferenceNumber
 import org.scalacheck.Arbitrary.arbitrary
 import views.html.templates.MainTemplate
 
@@ -30,7 +29,6 @@ class MainTemplateSpec extends A11ySpecBase {
     val timeoutEnabled = arbitrary[Boolean].sample.value
     val canSignOut     = arbitrary[Boolean].sample.value
     val showBackLink   = arbitrary[Boolean].sample.value
-    val lrn            = arbitrary[LocalReferenceNumber].sample.value
 
     val content = template.apply(title, timeoutEnabled, canSignOut, showBackLink, lrn) {
       heading(title)

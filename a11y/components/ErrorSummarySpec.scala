@@ -30,7 +30,7 @@ class ErrorSummarySpec extends A11ySpecBase {
     val title      = nonEmptyString.sample.value
     val formErrors = listWithMaxLength[FormError]().sample.value
 
-    val content = template.apply(title) {
+    val content = template.apply(title, lrn = lrn) {
       component.apply(formErrors).withHeading(title)
     }
 
