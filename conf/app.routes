@@ -2,7 +2,7 @@
 
 ->          /                                            app.item.Routes
 
-->          /items/hmrc-frontend                         hmrcfrontend.Routes
-GET         /items/assets/*file                          controllers.Assets.versioned(path="/public", file: Asset)
+GET         /:lrn/items/hmrc-frontend/assets/*file       controllers.HmrcFrontendController.at(path: String = "/public/lib/hmrc-frontend/hmrc", file: String, lrn: LocalReferenceNumber)
+GET         /:lrn/items/assets/*file                     controllers.AssetsController.versioned(path: String = "/public", file: Asset, lrn: LocalReferenceNumber)
 
 GET         /:lrn/items                                  controllers.RedirectController.redirect(lrn: LocalReferenceNumber)

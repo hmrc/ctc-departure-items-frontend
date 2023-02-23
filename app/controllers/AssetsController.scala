@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,11 +12,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(autocompleteJavascript: HmrcAccessibleAutocompleteJavascript)
+package controllers
 
-@(lrn: LocalReferenceNumber)(implicit request: Request[_])
+import controllers.Assets.Asset
+import models.LocalReferenceNumber
+import play.api.mvc.{Action, AnyContent}
 
-<script src='@routes.AssetsController.versioned("javascripts/application.min.js", lrn)' @{CSPNonce.attr}></script>
-@autocompleteJavascript(CSPNonce.get)
+import javax.inject.Inject
+
+class AssetsController @Inject() (assets: Assets) {
+
+  def versioned(path: String, file: Asset, lrn: LocalReferenceNumber): Action[AnyContent] =
+    assets.versioned(path, file)
+}
