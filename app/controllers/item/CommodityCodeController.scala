@@ -18,7 +18,7 @@ package controllers.item
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.item.CommodityFormProvider
+import forms.item.CommodityCodeFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
 import pages.item.CommodityCodePage
@@ -35,7 +35,7 @@ class CommodityCodeController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: ItemNavigatorProvider,
-  formProvider: CommodityFormProvider,
+  formProvider: CommodityCodeFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: CommodityCodeView

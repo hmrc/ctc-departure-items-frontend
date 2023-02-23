@@ -17,7 +17,7 @@
 package controllers.item
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.item.CommodityFormProvider
+import forms.item.CommodityCodeFormProvider
 import models.NormalMode
 import navigation.ItemNavigatorProvider
 import org.mockito.ArgumentMatchers.any
@@ -33,7 +33,7 @@ import scala.concurrent.Future
 
 class CommodityCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val formProvider            = new CommodityFormProvider()
+  private val formProvider            = new CommodityCodeFormProvider()
   private val form                    = formProvider("item.commodityCode")
   private val mode                    = NormalMode
   private lazy val commodityCodeRoute = routes.CommodityCodeController.onPageLoad(lrn, mode, itemIndex).url
@@ -63,14 +63,14 @@ class CommodityCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(CommodityCodePage(itemIndex), "test string")
+      val userAnswers = emptyUserAnswers.setValue(CommodityCodePage(itemIndex), "test")
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, commodityCodeRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> "test string"))
+      val filledForm = form.bind(Map("value" -> "test"))
 
       val view = injector.instanceOf[CommodityCodeView]
 
@@ -87,7 +87,7 @@ class CommodityCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
       val request = FakeRequest(POST, commodityCodeRoute)
-        .withFormUrlEncodedBody(("value", "test string"))
+        .withFormUrlEncodedBody(("value", "test"))
 
       val result = route(app, request).value
 

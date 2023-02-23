@@ -30,7 +30,7 @@ class CommodityCodeFormProviderSpec extends StringFieldBehaviours {
   val invalidKey     = s"$prefix.error.invalidCharacters"
   val maxLength      = 6
 
-  val form = new CommodityFormProvider()(prefix)
+  val form = new CommodityCodeFormProvider()(prefix)
 
   ".value" - {
 

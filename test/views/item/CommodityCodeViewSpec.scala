@@ -16,7 +16,7 @@
 
 package views.item
 
-import forms.item.CommodityFormProvider
+import forms.item.CommodityCodeFormProvider
 import models.NormalMode
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
@@ -29,7 +29,7 @@ class CommodityCodeViewSpec extends InputTextViewBehaviours[String] {
 
   override val prefix: String = "item.commodityCode"
 
-  override def form: Form[String] = new CommodityFormProvider()(prefix)
+  override def form: Form[String] = new CommodityCodeFormProvider()(prefix)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
     injector.instanceOf[CommodityCodeView].apply(form, lrn, NormalMode, itemIndex)(fakeRequest, messages)

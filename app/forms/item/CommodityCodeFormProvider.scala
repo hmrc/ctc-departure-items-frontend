@@ -23,7 +23,7 @@ import play.api.data.Form
 
 import javax.inject.Inject
 
-class CommodityFormProvider @Inject() extends Mappings {
+class CommodityCodeFormProvider @Inject() extends Mappings {
 
   def apply(prefix: String): Form[String] =
     Form(
