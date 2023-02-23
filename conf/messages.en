@@ -101,3 +101,8 @@ item.addCombinedNomenclatureCodeYesNo.heading = Do you want to add a combined no
 item.addCombinedNomenclatureCodeYesNo.paragraph = This is used to classify goods when they’re declared to customs in the EU.
 item.addCombinedNomenclatureCodeYesNo.checkYourAnswersLabel = Do you want to add a combined nomenclature code
 item.addCombinedNomenclatureCodeYesNo.error.required = Select yes if you want to add a combined nomenclature code
+
+item.addDangerousGoodsYesNo.title = Does the item contain any dangerous goods
+item.addDangerousGoodsYesNo.heading = Does the item contain any dangerous goods
+item.addDangerousGoodsYesNo.checkYourAnswersLabel = Does the item contain any dangerous goods
+item.addDangerousGoodsYesNo.error.required = Select yes if Does the item contain any dangerous goods
