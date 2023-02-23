@@ -36,7 +36,7 @@
 @mainTemplate(
     title = messages("item.countryOfDestination.title"),
     showBackLink = true,
-    lrn = Some(lrn)
+    lrn = lrn
 ) {
 
     @formHelper(action = routes.CountryOfDestinationController.onSubmit(lrn, mode, itemIndex), Symbol("autoComplete") -> "off") {
