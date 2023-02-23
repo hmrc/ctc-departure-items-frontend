@@ -28,8 +28,6 @@ trait QuestionViewBehaviours[T] extends ViewBehaviours with ErrorSummaryViewBeha
 
   override def view: HtmlFormat.Appendable = applyView(form)
 
-  override val urlContainsLrn: Boolean = true
-
   val errorMessage: String = "error"
 
   private def formWithError(errorKey: String): Form[T]               = form.withError(FormError(errorKey, errorMessage))

@@ -50,11 +50,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   val unauthorisedUrl: String                = s"$departureHubUrl/error/cannot-use-service-no-eori"
   val unauthorisedWithGroupAccessUrl: String = s"$departureHubUrl/unauthorised-group-access"
 
-  def keepAliveUrl(lrn: Option[LocalReferenceNumber]): String = lrn.fold(
-    s"$departureHubUrl/keep-alive"
-  )(
-    value => s"$departureHubUrl/$value/keep-alive"
-  )
+  def keepAliveUrl(lrn: LocalReferenceNumber): String = s"$departureHubUrl/$lrn/keep-alive"
 
   lazy val maxItems: Int = configuration.get[Int]("limits.maxItems")
 

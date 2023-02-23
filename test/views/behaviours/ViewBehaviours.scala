@@ -37,8 +37,6 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
 
   val hasSignOutLink: Boolean = true
 
-  val urlContainsLrn: Boolean = false
-
   if (hasSignOutLink) {
     "must render sign out link in header" in {
       val link = getElementByClass(doc, "hmrc-sign-out-nav__link")
@@ -52,11 +50,7 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
     "must render timeout dialog" in {
       val metas = getElementsByTag(doc, "meta")
       assertElementExists(metas, _.attr("name") == "hmrc-timeout-dialog")
-      if (urlContainsLrn) {
-        assertElementExists(metas, _.attr("data-keep-alive-url") endsWith s"/manage-transit-movements/departures/$lrn/keep-alive")
-      } else {
-        assertElementExists(metas, _.attr("data-keep-alive-url") endsWith "/manage-transit-movements/departures/keep-alive")
-      }
+      assertElementExists(metas, _.attr("data-keep-alive-url") endsWith s"/manage-transit-movements/departures/$lrn/keep-alive")
     }
   } else {
     "must not render sign out link in header" in {
