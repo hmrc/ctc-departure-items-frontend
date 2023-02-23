@@ -87,3 +87,9 @@ item.addCommodityCodeYesNo.heading = Do you want to add a commodity code?
 item.addCommodityCodeYesNo.paragraph = This is an internationally recognised reference number used to identify the specific product in transit.
 item.addCommodityCodeYesNo.checkYourAnswersLabel = Do you want to add a commodity code
 item.addCommodityCodeYesNo.error.required = Select yes if you want to add a commodity code
+
+item.customsUnionAndStatisticsCode.title = What is the Customs Union and Statistics (CUS) code
+item.customsUnionAndStatisticsCode.heading = What is the Customs Union and Statistics (CUS) code
+item.customsUnionAndStatisticsCode.checkYourAnswersLabel = What is the Customs Union and Statistics (CUS) code
+item.customsUnionAndStatisticsCode.error.required = Enter What is the Customs Union and Statistics (CUS) code
+item.customsUnionAndStatisticsCode.error.length = What is the Customs Union and Statistics (CUS) code must be 9 characters or less
