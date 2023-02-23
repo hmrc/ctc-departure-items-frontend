@@ -32,7 +32,7 @@ class HeadingSpec extends A11ySpecBase {
     val caption = Gen.option(nonEmptyString).sample.value
     val classes = Gen.oneOf(None, Some("govuk-heading-xl govuk-!-margin-top-0 govuk-!-margin-bottom-2")).sample.value
 
-    val content = template.apply(title) {
+    val content = template.apply(title, lrn = lrn) {
       component.apply(heading, caption, classes)
     }
 

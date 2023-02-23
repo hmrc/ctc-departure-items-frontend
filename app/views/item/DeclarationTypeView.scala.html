@@ -33,7 +33,7 @@
 @mainTemplate(
     title = messages("item.declarationType.title"),
     showBackLink = true,
-    lrn = Some(lrn)
+    lrn = lrn
 ) {
 
     @formHelper(action = routes.DeclarationTypeController.onSubmit(lrn, mode, itemIndex), Symbol("autoComplete") -> "off") {

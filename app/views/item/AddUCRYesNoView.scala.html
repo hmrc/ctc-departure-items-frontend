@@ -32,7 +32,7 @@
 @mainTemplate(
     title = messages("item.addUCRYesNo.title"),
     showBackLink = true,
-    lrn = Some(lrn)
+    lrn = lrn
 ) {
 
     @formHelper(action = routes.AddUCRYesNoController.onSubmit(lrn, mode, itemIndex: Index), Symbol("autoComplete") -> "off") {

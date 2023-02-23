@@ -37,7 +37,7 @@ class InputTextAreaSpec extends A11ySpecBase {
     val rows       = positiveInts.sample.value
     val form       = new NameFormProvider()(prefix)
 
-    val content = template.apply(title) {
+    val content = template.apply(title, lrn = lrn) {
       component.apply(form("value"), label, caption, inputClass, hint, rows)
     }
 

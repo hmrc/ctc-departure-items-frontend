@@ -32,7 +32,7 @@
 @mainTemplate(
     title = messages("$package$.$className;format="decap"$.title"),
     showBackLink = true,
-    lrn = Some(lrn)
+    lrn = lrn
 ) {
 
     @formHelper(action = routes.$className$Controller.onSubmit(lrn, mode), Symbol("autoComplete") -> "off") {

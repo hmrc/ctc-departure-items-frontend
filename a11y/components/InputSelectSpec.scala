@@ -51,21 +51,21 @@ class InputSelectSpec extends A11ySpecBase {
     "pass accessibility checks" when {
 
       "ordinary select" in {
-        val content = template.apply(title) {
+        val content = template.apply(title, lrn = lrn) {
           component.apply(preparedForm("value"), OrdinarySelect(title, caption), placeholder, selectItems, hint)
         }
         content.toString() must passAccessibilityChecks
       }
 
       "select with additional html" in {
-        val content = template.apply(title) {
+        val content = template.apply(title, lrn = lrn) {
           component.apply(preparedForm("value"), SelectWithAdditionalHtml(title, caption, additionalHtml), placeholder, selectItems, hint)
         }
         content.toString() must passAccessibilityChecks
       }
 
       "address country select" in {
-        val content = template.apply(title) {
+        val content = template.apply(title, lrn = lrn) {
           component.apply(preparedForm("value"), AddressCountrySelect(label), placeholder, selectItems, hint).withHeading(title)
         }
         content.toString() must passAccessibilityChecks

@@ -32,7 +32,7 @@
 @mainTemplate(
     title = messages("item.addCommodityCodeYesNo.title"),
     showBackLink = true,
-    lrn = Some(lrn)
+    lrn = lrn
 ) {
 
     @formHelper(action = routes.AddCommodityCodeYesNoController.onSubmit(lrn, mode, itemIndex), Symbol("autoComplete") -> "off") {

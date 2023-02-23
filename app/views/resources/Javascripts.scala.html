@@ -16,7 +16,7 @@
 
 @this(autocompleteJavascript: HmrcAccessibleAutocompleteJavascript)
 
-@()(implicit request: Request[_])
+@(lrn: LocalReferenceNumber)(implicit request: Request[_])
 
-<script src='@routes.Assets.versioned("javascripts/application.min.js")' @{CSPNonce.attr}></script>
+<script src='@routes.AssetsController.versioned("javascripts/application.min.js", lrn)' @{CSPNonce.attr}></script>
 @autocompleteJavascript(CSPNonce.get)

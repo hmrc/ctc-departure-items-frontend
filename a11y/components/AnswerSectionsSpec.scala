@@ -31,7 +31,7 @@ class AnswerSectionsSpec extends A11ySpecBase {
     val title    = nonEmptyString.sample.value
     val sections = arbitrary[List[Section]].sample.value
 
-    val content = template.apply(title) {
+    val content = template.apply(title, lrn = lrn) {
       component.apply(sections).withHeading(title)
     }
 

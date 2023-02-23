@@ -26,8 +26,6 @@ import views.html.item.DescriptionView
 
 class DescriptionViewSpec extends CharacterCountViewBehaviours {
 
-  override val urlContainsLrn: Boolean = true
-
   override def form: Form[String] = new DescriptionFormProvider()(prefix, itemIndex.display)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =

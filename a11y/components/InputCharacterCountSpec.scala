@@ -44,14 +44,14 @@ class InputCharacterCountSpec extends A11ySpecBase {
     "pass accessibility checks" when {
 
       "ordinary input character count" in {
-        val content = template.apply(title) {
+        val content = template.apply(title, lrn = lrn) {
           component.apply(form("value"), label, maxLength, caption, hint, rows, OrdinaryInputCharacterCount(title, caption))
         }
         content.toString() must passAccessibilityChecks
       }
 
       "input character count with additional html" in {
-        val content = template.apply(title) {
+        val content = template.apply(title, lrn = lrn) {
           component.apply(form("value"), label, maxLength, caption, hint, rows, InputCharacterCountWithAdditionalHtml(title, caption, additionalHtml))
         }
         content.toString() must passAccessibilityChecks

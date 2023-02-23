@@ -53,7 +53,7 @@ class InputTextSpec extends A11ySpecBase {
     "pass accessibility checks" when {
 
       "ordinary text input" in {
-        val content = template.apply(title) {
+        val content = template.apply(title, lrn = lrn) {
           component.apply(
             form("value"),
             OrdinaryTextInput(title, caption),
@@ -70,7 +70,7 @@ class InputTextSpec extends A11ySpecBase {
       }
 
       "text input with hidden label" in {
-        val content = template.apply(title) {
+        val content = template.apply(title, lrn = lrn) {
           component
             .apply(
               form("value"),
@@ -88,7 +88,7 @@ class InputTextSpec extends A11ySpecBase {
       }
 
       "text input with statement heading" in {
-        val content = template.apply(title) {
+        val content = template.apply(title, lrn = lrn) {
           component
             .apply(
               form("value"),
@@ -106,7 +106,7 @@ class InputTextSpec extends A11ySpecBase {
       }
 
       "address text input" in {
-        val content = template.apply(title) {
+        val content = template.apply(title, lrn = lrn) {
           component
             .apply(
               form("value"),
