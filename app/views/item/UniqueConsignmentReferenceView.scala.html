@@ -33,7 +33,7 @@
 @mainTemplate(
     title = messages("item.uniqueConsignmentReference.title"),
     showBackLink = true,
-    lrn = Some(lrn)
+    lrn = lrn
 ) {
 
     @formHelper(action = routes.UniqueConsignmentReferenceController.onSubmit(lrn, mode, itemIndex: Index), Symbol("autoComplete") -> "off") {

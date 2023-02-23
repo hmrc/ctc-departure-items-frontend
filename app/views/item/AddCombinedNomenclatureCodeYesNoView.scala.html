@@ -15,40 +15,37 @@
  *@
 
 @import controllers.item.routes
-@import forms.Constants.maxItemDescriptionLength
 @import models.LocalReferenceNumber
-@import viewmodels.components.InputCharacterCountViewModel._
-@import views.html.components.{Button, ErrorSummary, InputCharacterCount}
+@import viewmodels.components.InputYesNoViewModel._
+@import views.html.components.{Button, ErrorSummary, InputYesNo}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
-    inputCharacterCount: InputCharacterCount,
+    inputYesNo: InputYesNo,
     errorSummary: ErrorSummary,
     button: Button
 )
 
-@(form: Form[String], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("item.description.title", itemIndex.display),
+    title = messages("item.addCombinedNomenclatureCodeYesNo.title"),
     showBackLink = true,
     lrn = lrn
 ) {
 
-    @formHelper(action = routes.DescriptionController.onSubmit(lrn, mode, itemIndex), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.AddCombinedNomenclatureCodeYesNoController.onSubmit(lrn, mode, itemIndex), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
-        @inputCharacterCount(
+        @inputYesNo(
             field = form("value"),
-            inputCharacterCountType = InputCharacterCountWithAdditionalHtml(
-                heading = messages("item.description.heading", itemIndex.display),
+            yesNoType = YesNoWithAdditionalHtml(
+                heading = messages("item.addCombinedNomenclatureCodeYesNo.heading"),
                 caption = Some(messages("item.caption", itemIndex.display)),
-                additionalHtml = messages("item.description.paragraph").toParagraph
-            ),
-            label = messages("item.description.heading", itemIndex.display),
-            maxLength = maxItemDescriptionLength
+                additionalHtml = messages("item.addCombinedNomenclatureCodeYesNo.paragraph").toParagraph
+            )
         )
 
         @button(attributes = Map("id" -> "submit"))

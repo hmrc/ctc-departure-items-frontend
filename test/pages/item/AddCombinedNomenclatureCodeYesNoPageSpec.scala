@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,25 +12,20 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import views.html.components.Heading
+package pages.item
 
-@this(
-    main_template: MainTemplate,
-    heading: Heading
-)
+import pages.behaviours.PageBehaviours
 
-@(title: String, header: String, message: String)(implicit request: Request[_], messages: Messages)
+class AddCombinedNomenclatureCodeYesNoPageSpec extends PageBehaviours {
 
-@main_template(
-    title = messages(title),
-    showBackLink = true
-) {
+  "AddCombinedNomenclatureCodeYesNoPage" - {
 
-    @heading(messages(header))
+    beRetrievable[Boolean](AddCombinedNomenclatureCodeYesNoPage(itemIndex))
 
-    <p class="govuk-body">
-        @messages(message)
-    </p>
+    beSettable[Boolean](AddCombinedNomenclatureCodeYesNoPage(itemIndex))
+
+    beRemovable[Boolean](AddCombinedNomenclatureCodeYesNoPage(itemIndex))
+  }
 }

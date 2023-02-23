@@ -14,24 +14,17 @@
  * limitations under the License.
  */
 
-package templates
+package controllers
 
-import a11ySpecBase.A11ySpecBase
-import views.html.templates.ErrorTemplate
+import controllers.Assets.Asset
+import models.LocalReferenceNumber
+import play.api.mvc.{Action, AnyContent}
 
-class ErrorTemplateSpec extends A11ySpecBase {
+import javax.inject.Inject
 
-  "the 'error' template" must {
-    val template = app.injector.instanceOf[ErrorTemplate]
+class AssetsController @Inject() (assets: Assets) {
 
-    val title   = nonEmptyString.sample.value
-    val header  = nonEmptyString.sample.value
-    val message = nonEmptyString.sample.value
+  def versioned(path: String, file: Asset, lrn: LocalReferenceNumber): Action[AnyContent] =
+    assets.versioned(path, file)
 
-    val content = template.apply(title, header, message)
-
-    "pass accessibility checks" in {
-      content.toString() must passAccessibilityChecks
-    }
-  }
 }

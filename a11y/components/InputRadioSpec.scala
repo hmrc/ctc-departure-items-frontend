@@ -44,14 +44,14 @@ class InputRadioSpec extends A11ySpecBase {
     "pass accessibility checks" when {
 
       "ordinary inputRadio" in {
-        val content = template.apply(title) {
+        val content = template.apply(title, lrn = lrn) {
           component.apply(form("value"), Radio(title, caption), hint, radioItems, inline)
         }
         content.toString() must passAccessibilityChecks
       }
 
       "radio with additionalHtml" in {
-        val content = template.apply(title) {
+        val content = template.apply(title, lrn = lrn) {
           component.apply(form("value"), RadioWithAdditionalHtml(title, caption, additionalHtml), hint, radioItems, inline)
         }
         content.toString() must passAccessibilityChecks

@@ -95,3 +95,9 @@ item.addCommodityCodeYesNo.heading = Do you want to add a commodity code?
 item.addCommodityCodeYesNo.paragraph = This is an internationally recognised reference number used to identify the specific product in transit.
 item.addCommodityCodeYesNo.checkYourAnswersLabel = Do you want to add a commodity code
 item.addCommodityCodeYesNo.error.required = Select yes if you want to add a commodity code
+
+item.addCombinedNomenclatureCodeYesNo.title = Do you want to add a combined nomenclature code?
+item.addCombinedNomenclatureCodeYesNo.heading = Do you want to add a combined nomenclature code?
+item.addCombinedNomenclatureCodeYesNo.paragraph = This is used to classify goods when they’re declared to customs in the EU.
+item.addCombinedNomenclatureCodeYesNo.checkYourAnswersLabel = Do you want to add a combined nomenclature code
+item.addCombinedNomenclatureCodeYesNo.error.required = Select yes if you want to add a combined nomenclature code
