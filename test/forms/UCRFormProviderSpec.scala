@@ -28,7 +28,6 @@ class UCRFormProviderSpec extends StringFieldBehaviours {
   val requiredKey    = s"$prefix.error.required"
   val lengthKey      = s"$prefix.error.length"
   val invalidKey     = s"$prefix.error.invalidCharacters"
-  val maxLength      = 35
 
   val form = new UCRFormProvider()(prefix)
 
@@ -39,14 +38,14 @@ class UCRFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      stringsWithMaxLength(maxUCRLength)
     )
 
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      maxLength = maxUCRLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(maxUCRLength))
     )
 
     behave like mandatoryField(

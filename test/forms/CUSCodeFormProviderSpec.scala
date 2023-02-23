@@ -16,7 +16,9 @@
 
 package forms
 
+import forms.Constants.maxCUSCodeLength
 import forms.behaviours.StringFieldBehaviours
+import models.domain.StringFieldRegex.alphaNumericRegex
 import org.scalacheck.Gen
 import play.api.data.FormError
 
@@ -24,8 +26,8 @@ class CUSCodeFormProviderSpec extends StringFieldBehaviours {
 
   private val prefix = Gen.alphaNumStr.sample.value
   val requiredKey    = s"$prefix.error.required"
+  val invalidKey     = s"$prefix.error.invalidCharacters"
   val lengthKey      = s"$prefix.error.length"
-  val maxLength      = 9
 
   val form = new CUSCodeFormProvider()(prefix)
 
@@ -36,20 +38,27 @@ class CUSCodeFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      stringsWithMaxLength(maxCUSCodeLength)
     )
 
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      maxLength = maxCUSCodeLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(maxCUSCodeLength))
     )
 
     behave like mandatoryField(
       form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
+    )
+
+    behave like fieldWithInvalidCharacters(
+      form,
+      fieldName,
+      error = FormError(fieldName, invalidKey, Seq(alphaNumericRegex.regex)),
+      maxCUSCodeLength
     )
   }
 }

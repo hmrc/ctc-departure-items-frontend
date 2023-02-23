@@ -20,4 +20,5 @@ object Constants {
   lazy val maxNameLength: Int       = 70
   lazy val maxUCRLength: Int        = 35
   lazy val maxItemDescriptionLength = 512
+  lazy val maxCUSCodeLength: Int    = 9
 }

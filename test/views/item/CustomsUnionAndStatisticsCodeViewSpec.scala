@@ -40,9 +40,11 @@ class CustomsUnionAndStatisticsCodeViewSpec extends InputTextViewBehaviours[Stri
 
   behave like pageWithBackLink()
 
+  behave like pageWithSectionCaption(s"Item ${itemIndex.display}")
+
   behave like pageWithHeading()
 
-  behave like pageWithoutHint()
+  behave like pageWithHint("This will be 9 characters long and include both letters and numbers.")
 
   behave like pageWithInputText(Some(InputSize.Width20))
 

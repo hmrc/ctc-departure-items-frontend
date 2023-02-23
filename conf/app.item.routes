@@ -34,12 +34,12 @@ POST       /:lrn/items/:itemIndex/cus-code/add                            contro
 GET        /:lrn/items/:itemIndex/cus-code/change-add                     controllers.item.AddCUSCodeYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
 POST       /:lrn/items/:itemIndex/cus-code/change-add                     controllers.item.AddCUSCodeYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
 
-GET        /:lrn/items/:itemIndex/commodity-code/add                      controllers.item.AddCommodityCodeYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
-POST       /:lrn/items/:itemIndex/commodity-code/add                      controllers.item.AddCommodityCodeYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
-GET        /:lrn/items/:itemIndex/commodity-code/change-add               controllers.item.AddCommodityCodeYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
-POST       /:lrn/items/:itemIndex/commodity-code/change-add               controllers.item.AddCommodityCodeYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
-
 GET        /:lrn/items/:itemIndex/cus-code                                controllers.item.CustomsUnionAndStatisticsCodeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
 POST       /:lrn/items/:itemIndex/cus-code                                controllers.item.CustomsUnionAndStatisticsCodeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
 GET        /:lrn/items/:itemIndex/change-cus-code                         controllers.item.CustomsUnionAndStatisticsCodeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
 POST       /:lrn/items/:itemIndex/change-cus-code                         controllers.item.CustomsUnionAndStatisticsCodeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+
+GET        /:lrn/items/:itemIndex/commodity-code/add                      controllers.item.AddCommodityCodeYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+POST       /:lrn/items/:itemIndex/commodity-code/add                      controllers.item.AddCommodityCodeYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+GET        /:lrn/items/:itemIndex/commodity-code/change-add               controllers.item.AddCommodityCodeYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+POST       /:lrn/items/:itemIndex/commodity-code/change-add               controllers.item.AddCommodityCodeYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)

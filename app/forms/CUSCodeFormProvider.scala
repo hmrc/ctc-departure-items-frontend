@@ -16,7 +16,10 @@
 
 package forms
 
+import forms.Constants.maxCUSCodeLength
 import forms.mappings.Mappings
+import models.domain.StringFieldRegex.alphaNumericRegex
+
 import javax.inject.Inject
 import play.api.data.Form
 
@@ -24,7 +27,12 @@ class CUSCodeFormProvider @Inject() extends Mappings {
 
   def apply(prefix: String): Form[String] =
     Form(
-      "value" -> text(s"$prefix.error.required")
-        .verifying(maxLength(9, s"$prefix.error.length"))
+      "value" -> textWithSpacesRemoved(s"$prefix.error.required")
+        .verifying(
+          forms.StopOnFirstFail[String](
+            regexp(alphaNumericRegex, s"$prefix.error.invalidCharacters"),
+            maxLength(maxCUSCodeLength, s"$prefix.error.length")
+          )
+        )
     )
 }
