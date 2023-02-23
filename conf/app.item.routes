@@ -48,3 +48,8 @@ GET        /:lrn/items/:itemIndex/combined-nomenclature-code/add          contro
 POST       /:lrn/items/:itemIndex/combined-nomenclature-code/add          controllers.item.AddCombinedNomenclatureCodeYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
 GET        /:lrn/items/:itemIndex/combined-nomenclature-code/change-add   controllers.item.AddCombinedNomenclatureCodeYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
 POST       /:lrn/items/:itemIndex/combined-nomenclature-code/change-add   controllers.item.AddCombinedNomenclatureCodeYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+
+GET        /:lrn/items/:itemIndex/combined-nomenclature-code              controllers.item.CombinedNomenclatureCodeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+POST       /:lrn/items/:itemIndex/combined-nomenclature-code              controllers.item.CombinedNomenclatureCodeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+GET        /:lrn/items/:itemIndex/change-combined-nomenclature-code       controllers.item.CombinedNomenclatureCodeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+POST       /:lrn/items/:itemIndex/change-combined-nomenclature-code       controllers.item.CombinedNomenclatureCodeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
