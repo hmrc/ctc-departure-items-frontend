@@ -54,7 +54,7 @@
 
     <meta name="format-detection" content="telephone=no" />
 
-    @stylesheets(lrn)
+    @stylesheets()
 }
 
 @mainContentWithGetHelp = {
@@ -75,5 +75,5 @@
     phaseBanner = Some(standardBetaBanner(url = renderConfig.feedbackUrl)),
     backLinkUrl = if (showBackLink) Some("#") else None, // This is overridden in ctc.js
     nonce = CSPNonce.get,
-    additionalScriptsBlock = Some(javascripts(lrn))
+    additionalScriptsBlock = Some(javascripts())
 )(mainContentWithGetHelp)
