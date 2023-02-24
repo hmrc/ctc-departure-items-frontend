@@ -16,12 +16,12 @@
 
 package utils.cyaHelpers.item.dangerousGoods
 
+import controllers.item.dangerousGoods.index.routes
 import models.journeyDomain.item.dangerousGoods.DangerousGoodsDomain
 import models.{Index, Mode, UserAnswers}
 import pages.item.dangerousGoods.index.UNNumberPage
 import pages.sections.dangerousGoods.DangerousGoodsListSection
 import play.api.i18n.Messages
-import play.api.mvc.Call
 import utils.cyaHelpers.AnswersHelper
 import viewmodels.ListItem
 
@@ -30,12 +30,12 @@ class DangerousGoodsAnswersHelper(userAnswers: UserAnswers, mode: Mode, itemInde
 
   def listItems: Seq[Either[ListItem, ListItem]] =
     buildListItems(DangerousGoodsListSection(itemIndex)) {
-      index =>
+      dangerousGoodsIndex =>
         buildListItem[DangerousGoodsDomain](
           nameWhenComplete = _.toString,
-          nameWhenInProgress = userAnswers.get(UNNumberPage(itemIndex, index)),
-          removeRoute = Some(Call("GET", "#")) //TODO: Replace with remove controller
-        )(DangerousGoodsDomain.userAnswersReader(itemIndex, index))
+          nameWhenInProgress = userAnswers.get(UNNumberPage(itemIndex, dangerousGoodsIndex)),
+          removeRoute = Option(routes.RemoveUNNumberController.onPageLoad(lrn, mode, itemIndex, dangerousGoodsIndex))
+        )(DangerousGoodsDomain.userAnswersReader(itemIndex, dangerousGoodsIndex))
     }
 
 }

@@ -57,14 +57,14 @@ class DangerousGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
                 ListItem(
                   name = uNNumber,
                   changeUrl = routes.UNNumberController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url,
-                  removeUrl = Some("#") //TODO: Add remove route
+                  removeUrl = Some(routes.RemoveUNNumberController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url)
                 )
               ),
               Right(
                 ListItem(
                   name = uNNumber,
                   changeUrl = routes.UNNumberController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url,
-                  removeUrl = Some("#") //TODO: Add remove route
+                  removeUrl = Some(routes.RemoveUNNumberController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url)
                 )
               )
             )
