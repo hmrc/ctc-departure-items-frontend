@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,11 +12,23 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(autocompleteCss: HmrcAccessibleAutocompleteCss)
+package pages.item
 
-@(lrn: LocalReferenceNumber)(implicit request: Request[_])
+import controllers.item.routes
+import models.{Index, Mode, UserAnswers}
+import pages.QuestionPage
+import pages.sections.ItemSection
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-<link href='@routes.AssetsController.versioned("stylesheets/application.css", lrn)' media='all' rel='stylesheet' type='text/css' @{CSPNonce.attr} />
-@autocompleteCss(CSPNonce.get)
+case class CommodityCodePage(itemIndex: Index) extends QuestionPage[String] {
+
+  override def path: JsPath = ItemSection(itemIndex).path \ toString
+
+  override def toString: String = "commodityCode"
+
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.CommodityCodeController.onPageLoad(userAnswers.lrn, mode, itemIndex))
+}
