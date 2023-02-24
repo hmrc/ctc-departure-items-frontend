@@ -16,6 +16,7 @@
 
 package controllers.item.dangerousGoods.index
 
+import controllers.item.dangerousGoods.{routes => dangerousGoodsRoutes}
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import generators.Generators
@@ -70,7 +71,8 @@ class RemoveUNNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual "#" //TODO: update to add another page
+        redirectLocation(result).value mustEqual
+          dangerousGoodsRoutes.AddAnotherDangerousGoodsController.onPageLoad(userAnswers.lrn, mode, itemIndex).url
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
@@ -89,7 +91,8 @@ class RemoveUNNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual "#" //TODO: update to add another page
+        redirectLocation(result).value mustEqual
+          dangerousGoodsRoutes.AddAnotherDangerousGoodsController.onPageLoad(userAnswers.lrn, mode, itemIndex).url
 
         verify(mockSessionRepository, never()).set(any())(any())
       }

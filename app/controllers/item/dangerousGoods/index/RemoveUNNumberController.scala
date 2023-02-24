@@ -17,6 +17,7 @@
 package controllers.item.dangerousGoods.index
 
 import controllers.actions._
+import controllers.item.dangerousGoods.routes
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.requests.SpecificDataRequestProvider1
@@ -25,7 +26,7 @@ import pages.item.dangerousGoods.index.UNNumberPage
 import pages.sections.dangerousGoods.DangerousGoodsSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.item.dangerousGoods.index.RemoveUNNumberView
@@ -62,7 +63,7 @@ class RemoveUNNumberController @Inject() (
     .andThen(getMandatoryPage(UNNumberPage(itemIndex, dangerousGoodsIndex)))
     .async {
       implicit request =>
-        lazy val redirect = Call("GET", "#") //TODO: update to add another page
+        lazy val redirect = routes.AddAnotherDangerousGoodsController.onPageLoad(lrn, mode, itemIndex)
 
         form
           .bindFromRequest()
