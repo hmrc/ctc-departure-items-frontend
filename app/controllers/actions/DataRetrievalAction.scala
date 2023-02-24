@@ -28,10 +28,10 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class DataRetrievalActionProviderImpl @Inject() (sessionRepository: SessionRepository, ec: ExecutionContext) extends DataRetrievalActionProvider {
+class DataRetrievalActionProviderImpl @Inject() (sessionRepository: SessionRepository)(implicit ec: ExecutionContext) extends DataRetrievalActionProvider {
 
   def apply(lrn: LocalReferenceNumber): ActionTransformer[IdentifierRequest, OptionalDataRequest] =
-    new DataRetrievalAction(lrn, ec, sessionRepository)
+    new DataRetrievalAction(lrn, sessionRepository)
 }
 
 trait DataRetrievalActionProvider {
@@ -41,9 +41,9 @@ trait DataRetrievalActionProvider {
 
 class DataRetrievalAction(
   lrn: LocalReferenceNumber,
-  implicit protected val executionContext: ExecutionContext,
   sessionRepository: SessionRepository
-) extends ActionTransformer[IdentifierRequest, OptionalDataRequest] {
+)(implicit val executionContext: ExecutionContext)
+    extends ActionTransformer[IdentifierRequest, OptionalDataRequest] {
 
   override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)

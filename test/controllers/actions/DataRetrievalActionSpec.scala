@@ -16,34 +16,18 @@
 
 package controllers.actions
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import models.requests.{IdentifierRequest, OptionalDataRequest}
 import models.{LocalReferenceNumber, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
-import play.api.Application
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{AnyContent, Results}
-import repositories.SessionRepository
 
 import scala.concurrent.Future
 
-class DataRetrievalActionSpec extends SpecBase {
+class DataRetrievalActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  val sessionRepository: SessionRepository = mock[SessionRepository]
-
-  override lazy val app: Application = {
-
-    import play.api.inject._
-
-    new GuiceApplicationBuilder()
-      .overrides(
-        bind[SessionRepository].toInstance(sessionRepository)
-      )
-      .build()
-  }
-
-  def harness(lrn: LocalReferenceNumber, f: OptionalDataRequest[AnyContent] => Unit): Unit = {
+  def harness(lrn: LocalReferenceNumber)(f: OptionalDataRequest[AnyContent] => Unit): Unit = {
 
     lazy val actionProvider = app.injector.instanceOf[DataRetrievalActionProviderImpl]
 
@@ -65,9 +49,11 @@ class DataRetrievalActionSpec extends SpecBase {
 
       "where there are no existing answers for this LRN" in {
 
-        when(sessionRepository.get(any())(any())) thenReturn Future.successful(None)
+        when(mockSessionRepository.get(any())(any())) thenReturn Future.successful(None)
 
-        harness(lrn, request => request.userAnswers must not be defined)
+        harness(lrn) {
+          _.userAnswers must not be defined
+        }
       }
     }
 
@@ -75,9 +61,11 @@ class DataRetrievalActionSpec extends SpecBase {
 
       "when there are existing answers for this LRN" in {
 
-        when(sessionRepository.get(any())(any())) thenReturn Future.successful(Some(UserAnswers(lrn, eoriNumber)))
+        when(mockSessionRepository.get(any())(any())) thenReturn Future.successful(Some(UserAnswers(lrn, eoriNumber)))
 
-        harness(lrn, request => request.userAnswers mustBe defined)
+        harness(lrn) {
+          _.userAnswers mustBe defined
+        }
       }
     }
   }
