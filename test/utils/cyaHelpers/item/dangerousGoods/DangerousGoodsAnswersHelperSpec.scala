@@ -23,7 +23,6 @@ import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.item.AddDangerousGoodsYesNoPage
 import pages.item.dangerousGoods.index.UNNumberPage
 import viewmodels.ListItem
 
@@ -45,64 +44,30 @@ class DangerousGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
         }
       }
 
-      "when user answers populated with complete dangerous goods" - {
-        "and add dangerous goods yes/no page is defined" - {
-          "must return list items with remove links" ignore {
-            forAll(arbitrary[Mode], Gen.alphaNumStr) {
-              (mode, uNNumber) =>
-                val userAnswers = emptyUserAnswers
-                  .setValue(AddDangerousGoodsYesNoPage(itemIndex), true)
-                  .setValue(UNNumberPage(itemIndex, Index(0)), uNNumber)
-                  .setValue(UNNumberPage(itemIndex, Index(1)), uNNumber)
+      "when user answers populated with complete dangerous goods" in {
+        forAll(arbitrary[Mode], Gen.alphaNumStr) {
+          (mode, uNNumber) =>
+            val userAnswers = emptyUserAnswers
+              .setValue(UNNumberPage(itemIndex, Index(0)), uNNumber)
+              .setValue(UNNumberPage(itemIndex, Index(1)), uNNumber)
 
-                val helper = new DangerousGoodsAnswersHelper(userAnswers, mode, itemIndex)
-                helper.listItems mustBe Seq(
-                  Right(
-                    ListItem(
-                      name = uNNumber,
-                      changeUrl = routes.UNNumberController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url,
-                      removeUrl = ??? //TODO: Add remove route and un-ignore test
-                    )
-                  ),
-                  Right(
-                    ListItem(
-                      name = uNNumber,
-                      changeUrl = routes.UNNumberController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url,
-                      removeUrl = ??? //TODO: Add remove route and un-ignore test
-                    )
-                  )
+            val helper = new DangerousGoodsAnswersHelper(userAnswers, mode, itemIndex)
+            helper.listItems mustBe Seq(
+              Right(
+                ListItem(
+                  name = uNNumber,
+                  changeUrl = routes.UNNumberController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url,
+                  removeUrl = Some("#") //TODO: Add remove route
                 )
-            }
-          }
-        }
-
-        "and add dangerous goods yes/no page is undefined" - {
-          "must return list items with no remove link a index 0" ignore {
-            forAll(arbitrary[Mode], Gen.alphaNumStr) {
-              (mode, uNNumber) =>
-                val userAnswers = emptyUserAnswers
-                  .setValue(UNNumberPage(itemIndex, Index(0)), uNNumber)
-                  .setValue(UNNumberPage(itemIndex, Index(1)), uNNumber)
-
-                val helper = new DangerousGoodsAnswersHelper(userAnswers, mode, itemIndex)
-                helper.listItems mustBe Seq(
-                  Right(
-                    ListItem(
-                      name = uNNumber,
-                      changeUrl = routes.UNNumberController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url,
-                      removeUrl = None
-                    )
-                  ),
-                  Right(
-                    ListItem(
-                      name = uNNumber,
-                      changeUrl = routes.UNNumberController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url,
-                      removeUrl = ??? //TODO: Add remove route and un-ignore test
-                    )
-                  )
+              ),
+              Right(
+                ListItem(
+                  name = uNNumber,
+                  changeUrl = routes.UNNumberController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url,
+                  removeUrl = Some("#") //TODO: Add remove route
                 )
-            }
-          }
+              )
+            )
         }
       }
     }

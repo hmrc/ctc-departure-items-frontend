@@ -31,16 +31,10 @@ class DangerousGoodsAnswersHelper(userAnswers: UserAnswers, mode: Mode, itemInde
   def listItems: Seq[Either[ListItem, ListItem]] =
     buildListItems(DangerousGoodsListSection(itemIndex)) {
       index =>
-        val removeRoute: Option[Call] = if (userAnswers.get(UNNumberPage(itemIndex, index)).isEmpty && index.isFirst) {
-          None
-        } else {
-          Some(Call("GET", "#")) //TODO: Replace with remove controller
-        }
-
         buildListItem[DangerousGoodsDomain](
-          nameWhenComplete = _.unNumber,
+          nameWhenComplete = _.toString,
           nameWhenInProgress = userAnswers.get(UNNumberPage(itemIndex, index)),
-          removeRoute = removeRoute
+          removeRoute = Some(Call("GET", "#")) //TODO: Replace with remove controller
         )(DangerousGoodsDomain.userAnswersReader(itemIndex, index))
     }
 

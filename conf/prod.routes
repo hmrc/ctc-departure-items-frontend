@@ -3,6 +3,4 @@
 
 ->         /                                                             health.Routes
 
-->         /manage-transit-movements/departures/items                   app.item.dangerousGoods.Routes
-
 GET        /admin/metrics             @com.kenshoo.play.metrics.MetricsController.metrics
