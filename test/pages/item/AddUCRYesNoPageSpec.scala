@@ -17,6 +17,7 @@
 package pages.item
 
 import pages.behaviours.PageBehaviours
+import org.scalacheck.Arbitrary.arbitrary
 
 class AddUCRYesNoPageSpec extends PageBehaviours {
 
@@ -27,5 +28,23 @@ class AddUCRYesNoPageSpec extends PageBehaviours {
     beSettable[Boolean](AddUCRYesNoPage(itemIndex))
 
     beRemovable[Boolean](AddUCRYesNoPage(itemIndex))
+
+    "cleanup" - {
+      "when no selected" - {
+        "must remove UCR" in {
+          forAll(arbitrary[String]) {
+            UCR =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AddUCRYesNoPage(itemIndex), true)
+                .setValue(UniqueConsignmentReferencePage(itemIndex), UCR)
+
+              val result = userAnswers.setValue(AddUCRYesNoPage(itemIndex), false)
+
+              result.get(UniqueConsignmentReferencePage(itemIndex)) must not be defined
+          }
+        }
+      }
+    }
   }
+
 }

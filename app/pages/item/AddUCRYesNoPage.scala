@@ -23,6 +23,8 @@ import pages.sections.ItemSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
+import scala.util.Try
+
 case class AddUCRYesNoPage(itemIndex: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = ItemSection(itemIndex).path \ toString
@@ -31,4 +33,10 @@ case class AddUCRYesNoPage(itemIndex: Index) extends QuestionPage[Boolean] {
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.AddUCRYesNoController.onPageLoad(userAnswers.lrn, mode, itemIndex: Index))
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(false) => userAnswers.remove(UniqueConsignmentReferencePage(itemIndex))
+      case _           => super.cleanup(value, userAnswers)
+    }
 }

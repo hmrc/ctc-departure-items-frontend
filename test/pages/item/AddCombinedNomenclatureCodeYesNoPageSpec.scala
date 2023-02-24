@@ -16,6 +16,7 @@
 
 package pages.item
 
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class AddCombinedNomenclatureCodeYesNoPageSpec extends PageBehaviours {
@@ -27,5 +28,22 @@ class AddCombinedNomenclatureCodeYesNoPageSpec extends PageBehaviours {
     beSettable[Boolean](AddCombinedNomenclatureCodeYesNoPage(itemIndex))
 
     beRemovable[Boolean](AddCombinedNomenclatureCodeYesNoPage(itemIndex))
+
+    "cleanup" - {
+      "when no selected" - {
+        "must remove combined nomenclature code" in {
+          forAll(arbitrary[String]) {
+            code =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AddCombinedNomenclatureCodeYesNoPage(itemIndex), true)
+                .setValue(CombinedNomenclatureCodePage(itemIndex), code)
+
+              val result = userAnswers.setValue(AddCombinedNomenclatureCodeYesNoPage(itemIndex), false)
+
+              result.get(CombinedNomenclatureCodePage(itemIndex)) must not be defined
+          }
+        }
+      }
+    }
   }
 }

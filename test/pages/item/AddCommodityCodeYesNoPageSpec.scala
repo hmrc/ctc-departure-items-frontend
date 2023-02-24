@@ -16,6 +16,7 @@
 
 package pages.item
 
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class AddCommodityCodeYesNoPageSpec extends PageBehaviours {
@@ -27,5 +28,22 @@ class AddCommodityCodeYesNoPageSpec extends PageBehaviours {
     beSettable[Boolean](AddCommodityCodeYesNoPage(itemIndex))
 
     beRemovable[Boolean](AddCommodityCodeYesNoPage(itemIndex))
+
+    "cleanup" - {
+      "when no selected" - {
+        "must remove commodity code" in {
+          forAll(arbitrary[String]) {
+            commodityCode =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AddCommodityCodeYesNoPage(itemIndex), true)
+                .setValue(CommodityCodePage(itemIndex), commodityCode)
+
+              val result = userAnswers.setValue(AddCommodityCodeYesNoPage(itemIndex), false)
+
+              result.get(CommodityCodePage(itemIndex)) must not be defined
+          }
+        }
+      }
+    }
   }
 }
