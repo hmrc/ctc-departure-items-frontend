@@ -26,7 +26,7 @@ import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.mvc.AnyContentAsEmpty
+import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.twirl.api.{Html, HtmlFormat}
 import uk.gov.hmrc.scalatestaccessibilitylinter.AccessibilityMatchers
@@ -42,7 +42,7 @@ trait A11ySpecBase extends AnyWordSpec with Matchers with GuiceOneAppPerSuite wi
       .configure()
       .build()
 
-  implicit lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/foo")
+  implicit lazy val fakeRequest: FakeRequest[AnyContent] = FakeRequest("GET", "/foo")
 
   implicit lazy val messages: Messages = {
     val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]

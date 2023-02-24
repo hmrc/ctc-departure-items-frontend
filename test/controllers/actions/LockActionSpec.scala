@@ -17,7 +17,6 @@
 package controllers.actions
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import models.EoriNumber
 import models.requests.DataRequest
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -28,7 +27,7 @@ import scala.concurrent.Future
 
 class LockActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  val dataRequest: DataRequest[AnyContent] = DataRequest(fakeRequest, EoriNumber(""), emptyUserAnswers)
+  val dataRequest: DataRequest[AnyContent] = DataRequest(fakeRequest, eoriNumber, emptyUserAnswers)
 
   def harness(actionProvider: LockActionProvider): Result =
     actionProvider()

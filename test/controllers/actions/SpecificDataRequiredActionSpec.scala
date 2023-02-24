@@ -24,7 +24,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.QuestionPage
 import play.api.http.Status.SEE_OTHER
 import play.api.libs.json.{JsPath, Reads}
-import play.api.mvc.{AnyContentAsEmpty, Result}
+import play.api.mvc.{AnyContent, Result}
 import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
 import queries.Gettable
 
@@ -69,7 +69,7 @@ class SpecificDataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChe
 
     "getFirst" - {
 
-      def request(userAnswers: UserAnswers): DataRequest[AnyContentAsEmpty.type] =
+      def request(userAnswers: UserAnswers): DataRequest[AnyContent] =
         DataRequest(fakeRequest, eoriNumber, userAnswers)
 
       "when checking one page" - {
@@ -169,7 +169,7 @@ class SpecificDataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChe
 
     "getSecond" - {
 
-      def request(userAnswers: UserAnswers, arg1: String): SpecificDataRequestProvider1[String]#SpecificDataRequest[AnyContentAsEmpty.type] =
+      def request(userAnswers: UserAnswers, arg1: String): SpecificDataRequestProvider1[String]#SpecificDataRequest[AnyContent] =
         new SpecificDataRequestProvider1[String].SpecificDataRequest(fakeRequest, eoriNumber, userAnswers, arg1)
 
       "when required data not present in user answers" - {
@@ -218,7 +218,7 @@ class SpecificDataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChe
         userAnswers: UserAnswers,
         arg1: String,
         arg2: String
-      ): SpecificDataRequestProvider2[String, String]#SpecificDataRequest[AnyContentAsEmpty.type] =
+      ): SpecificDataRequestProvider2[String, String]#SpecificDataRequest[AnyContent] =
         new SpecificDataRequestProvider2[String, String].SpecificDataRequest(fakeRequest, eoriNumber, userAnswers, (arg1, arg2))
 
       "when required data not present in user answers" - {
