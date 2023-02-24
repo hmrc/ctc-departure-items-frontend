@@ -48,7 +48,7 @@ class RemoveUNNumberController @Inject() (
   private type Request = SpecificDataRequestProvider1[String]#SpecificDataRequest[_]
 
   private def form(implicit request: Request): Form[Boolean] =
-    formProvider("item.removeUNNumber", request.arg)
+    formProvider("item.dangerousGoods.index.removeUNNumber", request.arg)
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, dangerousGoodsIndex: Index): Action[AnyContent] = actions
     .requireData(lrn)

@@ -133,7 +133,6 @@ item.dangerousGoods.index.unNumber.error.required = Enter the UN number for the 
 item.dangerousGoods.index.unNumber.error.length = The UN number must be 4 characters or less
 item.dangerousGoods.index.unNumber.error.invalidCharacters = The UN number must only include letters a to z and numbers 0 to 9
 
-item.m.removeUNNumber.title = Are you sure you want to remove UN number [un-number]?
-item.m.removeUNNumber.heading = Are you sure you want to remove UN number [un-number]?
-item.m.removeUNNumber.checkYourAnswersLabel = Are you sure you want to remove UN number [un-number]?
-item.m.removeUNNumber.error.required = Select yes if Are you sure you want to remove UN number [un-number]?
+item.dangerousGoods.index.removeUNNumber.title = Are you sure you want to remove UN number {0}?
+item.dangerousGoods.index.removeUNNumber.heading = Are you sure you want to remove UN number {0}?
+item.dangerousGoods.index.removeUNNumber.error.required = Select yes if you want to remove UN number {0}
