@@ -17,27 +17,25 @@
 package components
 
 import a11ySpecBase.A11ySpecBase
-import models.LocalReferenceNumber
-import org.scalacheck.Arbitrary.arbitrary
+import viewmodels.ListItem
+import views.html.components.ListWithActions
 import views.html.templates.MainTemplate
 
 class ListWithActionsSpec extends A11ySpecBase {
 
   "the 'list with actions' component" must {
-//    val template  = app.injector.instanceOf[MainTemplate]
-//    val component = app.injector.instanceOf[TaskList]
-//
-//    val title      = nonEmptyString.sample.value
-//    val sectionKey = nonEmptyString.sample.value
-//    val tasks      = arbitrary[List[TaskListTask]](arbitraryTasks(arbitraryTask)).sample.value
-//    val lrn        = arbitrary[LocalReferenceNumber].sample.value
-//
-//    val content = template.apply(title) {
-//      component.apply(sectionKey, tasks, lrn).withHeading(title)
-//    }
-//
-//    "pass accessibility checks" in {
-//      content.toString() must passAccessibilityChecks
-//    }
+    val template  = app.injector.instanceOf[MainTemplate]
+    val component = app.injector.instanceOf[ListWithActions]
+
+    val title     = nonEmptyString.sample.value
+    val listItems = listWithMaxLength[ListItem]().sample.value
+
+    val content = template.apply(title = title, lrn = lrn) {
+      component.apply(listItems).withHeading(title)
+    }
+
+    "pass accessibility checks" in {
+      content.toString() must passAccessibilityChecks
+    }
   }
 }
