@@ -1,0 +1,5 @@
+
+GET        /:lrn/items/:itemIndex/dangerous-goods/:dangerousGoodsIndex/un-number                     controllers.item.dangerousGoods.index.UNNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index, dangerousGoodsIndex: Index)
+POST       /:lrn/items/:itemIndex/dangerous-goods/:dangerousGoodsIndex/un-number                     controllers.item.dangerousGoods.index.UNNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index, dangerousGoodsIndex: Index)
+GET        /:lrn/items/:itemIndex/dangerous-goods/:dangerousGoodsIndex/change-un-number              controllers.item.dangerousGoods.index.UNNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index, dangerousGoodsIndex: Index)
+POST       /:lrn/items/:itemIndex/dangerous-goods/:dangerousGoodsIndex/change-un-number              controllers.item.dangerousGoods.index.UNNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index, dangerousGoodsIndex: Index)
