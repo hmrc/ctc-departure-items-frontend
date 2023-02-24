@@ -52,4 +52,20 @@ class CacheConnector @Inject() (
     }
   }
 
+  def checkLock(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Boolean] = {
+    val url = s"$baseUrl/user-answers/${userAnswers.lrn}/lock"
+
+    http.GET[HttpResponse](url).map {
+        _.status == OK
+      }
+  }
+
+  def deleteLock(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Boolean] = {
+    val url = s"$baseUrl/user-answers/${userAnswers.lrn}/lock"
+
+    http.DELETE[HttpResponse](url).map {
+        _.status == OK
+      }
+  }
+
 }
