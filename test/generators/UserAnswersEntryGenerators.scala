@@ -33,10 +33,19 @@ trait UserAnswersEntryGenerators {
   private def generateItemAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.item._
     val pf: PartialFunction[Gettable[_], Gen[JsValue]] = {
-      case DescriptionPage(_)          => Gen.alphaNumStr.map(JsString)
-      case DeclarationTypePage(_)      => arbitrary[DeclarationType].map(Json.toJson(_))
-      case CountryOfDispatchPage(_)    => arbitrary[Country].map(Json.toJson(_))
-      case CountryOfDestinationPage(_) => arbitrary[Country].map(Json.toJson(_))
+      case DescriptionPage(_)                      => Gen.alphaNumStr.map(JsString)
+      case DeclarationTypePage(_)                  => arbitrary[DeclarationType].map(Json.toJson(_))
+      case CountryOfDispatchPage(_)                => arbitrary[Country].map(Json.toJson(_))
+      case CountryOfDestinationPage(_)             => arbitrary[Country].map(Json.toJson(_))
+      case AddCombinedNomenclatureCodeYesNoPage(_) => arbitrary[Boolean].map(Json.toJson(_))
+      case CombinedNomenclatureCodePage(_)         => Gen.alphaNumStr.map(JsString)
+      case AddCommodityCodeYesNoPage(_)            => arbitrary[Boolean].map(Json.toJson(_))
+      case CommodityCodePage(_)                    => Gen.alphaNumStr.map(JsString)
+      case AddCUSCodeYesNoPage(_)                  => arbitrary[Boolean].map(Json.toJson(_))
+      case CustomsUnionAndStatisticsCodePage(_)    => Gen.alphaNumStr.map(JsString)
+      case AddUCRYesNoPage(_)                      => arbitrary[Boolean].map(Json.toJson(_))
+      case UniqueConsignmentReferencePage(_)       => Gen.alphaNumStr.map(JsString)
+      case AddDangerousGoodsYesNoPage(_)           => arbitrary[Boolean].map(Json.toJson(_))
     }
     pf orElse
       generateDangerousGoodsAnswer

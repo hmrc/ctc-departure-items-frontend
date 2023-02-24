@@ -52,7 +52,7 @@ object AddAnotherDangerousGoodsViewModel {
 
       new AddAnotherDangerousGoodsViewModel(
         listItems,
-        onSubmitCall = routes.AddAnotherDangerousGoodsController.onPageLoad(userAnswers.lrn, mode, itemIndex)
+        onSubmitCall = routes.AddAnotherDangerousGoodsController.onSubmit(userAnswers.lrn, mode, itemIndex)
       )
     }
   }
