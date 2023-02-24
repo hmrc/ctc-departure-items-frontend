@@ -14,14 +14,21 @@
  * limitations under the License.
  */
 
-package forms
+package pages.item
 
-object Constants {
-  lazy val maxNameLength: Int                     = 70
-  lazy val maxUCRLength: Int                      = 35
-  lazy val maxItemDescriptionLength               = 512
-  lazy val maxCommodityCodeLength: Int            = 6
-  lazy val maxCUSCodeLength: Int                  = 9
-  lazy val maxCombinedNomenclatureCodeLength: Int = 2
-  lazy val maxUNNumberLength: Int                 = 4
+import controllers.item.routes
+import models.{Index, Mode, UserAnswers}
+import pages.QuestionPage
+import pages.sections.ItemSection
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
+
+case class AddDangerousGoodsYesNoPage(itemIndex: Index) extends QuestionPage[Boolean] {
+
+  override def path: JsPath = ItemSection(itemIndex).path \ toString
+
+  override def toString: String = "addDangerousGoodsYesNo"
+
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.AddDangerousGoodsYesNoController.onPageLoad(userAnswers.lrn, mode, itemIndex))
 }

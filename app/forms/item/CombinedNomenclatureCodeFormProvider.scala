@@ -14,16 +14,25 @@
  * limitations under the License.
  */
 
-package controllers
+package forms.item
 
-import controllers.Assets.Asset
-import models.LocalReferenceNumber
-import play.api.mvc.{Action, AnyContent}
+import forms.Constants.maxCombinedNomenclatureCodeLength
+import models.domain.StringFieldRegex.alphaNumericRegex
+import forms.mappings.Mappings
+import play.api.data.Form
 
 import javax.inject.Inject
 
-class AssetsController @Inject() (assets: Assets) {
+class CombinedNomenclatureCodeFormProvider @Inject() extends Mappings {
 
-  def versioned(path: String, file: Asset, lrn: LocalReferenceNumber): Action[AnyContent] =
-    assets.versioned(path, file)
+  def apply(prefix: String): Form[String] =
+    Form(
+      "value" -> text(s"$prefix.error.required")
+        .verifying(
+          forms.StopOnFirstFail[String](
+            regexp(alphaNumericRegex, s"$prefix.error.invalidCharacters"),
+            maxLength(maxCombinedNomenclatureCodeLength, s"$prefix.error.length")
+          )
+        )
+    )
 }

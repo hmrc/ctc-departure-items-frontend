@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,11 +12,20 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(autocompleteCss: HmrcAccessibleAutocompleteCss)
+package pages.item
 
-@(lrn: LocalReferenceNumber)(implicit request: Request[_])
+import pages.behaviours.PageBehaviours
 
-<link href='@routes.AssetsController.versioned("stylesheets/application.css", lrn)' media='all' rel='stylesheet' type='text/css' @{CSPNonce.attr} />
-@autocompleteCss(CSPNonce.get)
+class CommodityCodePageSpec extends PageBehaviours {
+
+  "CommodityCodePage" - {
+
+    beRetrievable[String](CommodityCodePage(itemIndex))
+
+    beSettable[String](CommodityCodePage(itemIndex))
+
+    beRemovable[String](CommodityCodePage(itemIndex))
+  }
+}
