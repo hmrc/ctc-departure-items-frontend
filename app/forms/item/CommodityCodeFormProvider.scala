@@ -14,16 +14,25 @@
  * limitations under the License.
  */
 
-package controllers
+package forms.item
 
-import controllers.Assets.Asset
-import models.LocalReferenceNumber
-import play.api.mvc.{Action, AnyContent}
+import forms.Constants.maxCommodityCodeLength
+import forms.mappings.Mappings
+import models.domain.StringFieldRegex.alphaNumericRegex
+import play.api.data.Form
 
 import javax.inject.Inject
 
-class AssetsController @Inject() (assets: Assets) {
+class CommodityCodeFormProvider @Inject() extends Mappings {
 
-  def versioned(path: String, file: Asset, lrn: LocalReferenceNumber): Action[AnyContent] =
-    assets.versioned(path, file)
+  def apply(prefix: String): Form[String] =
+    Form(
+      "value" -> textWithSpacesRemoved(s"$prefix.error.required")
+        .verifying(
+          forms.StopOnFirstFail[String](
+            regexp(alphaNumericRegex, s"$prefix.error.invalidCharacters"),
+            maxLength(maxCommodityCodeLength, s"$prefix.error.length")
+          )
+        )
+    )
 }
