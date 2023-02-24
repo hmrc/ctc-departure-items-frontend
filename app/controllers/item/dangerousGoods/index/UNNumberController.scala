@@ -20,7 +20,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.item.dangerousGoods.UNNumberFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
-import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
+import navigation.{DangerousGoodsNavigatorProvider, UserAnswersNavigator}
 import pages.item.dangerousGoods.index.UNNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class UNNumberController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigatorProvider: ItemNavigatorProvider,
+  navigatorProvider: DangerousGoodsNavigatorProvider,
   formProvider: UNNumberFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
@@ -61,7 +61,7 @@ class UNNumberController @Inject() (
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex, dangerousGoodsIndex))),
           value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
+            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex, dangerousGoodsIndex)
             UNNumberPage(itemIndex, dangerousGoodsIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
           }
         )

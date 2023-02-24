@@ -20,6 +20,7 @@ import models.reference.Country
 import models.{CountryList, Enumerable}
 import play.api.data.FieldMapping
 import play.api.data.Forms.of
+import play.api.data.format.Formats.ignoredFormat
 
 import java.time.LocalDate
 
@@ -41,6 +42,9 @@ trait Mappings extends Formatters with Constraints {
     args: Seq[String] = Seq.empty
   ): FieldMapping[Int] =
     of(intFormatter(requiredKey, wholeNumberKey, nonNumericKey, args))
+
+  protected def mandatoryIfBoolean(errorKey: String = "error.required", condition: Boolean, defaultValue: Boolean): FieldMapping[Boolean] =
+    if (condition) boolean(errorKey) else of(ignoredFormat(defaultValue))
 
   protected def boolean(requiredKey: String = "error.required", invalidKey: String = "error.boolean", args: Seq[Any] = Seq.empty): FieldMapping[Boolean] =
     of(booleanFormatter(requiredKey, invalidKey, args))
