@@ -29,6 +29,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Call
 import repositories.SessionRepository
+import services.LockService
 
 import scala.concurrent.Future
 
@@ -36,13 +37,16 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   self: TestSuite with SpecBase =>
 
   override def beforeEach(): Unit = {
-    reset(mockSessionRepository); reset(mockDataRetrievalActionProvider)
+    reset(mockSessionRepository); reset(mockDataRetrievalActionProvider); reset(mockLockService)
 
     when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+    when(mockLockService.checkLock(any())(any())).thenReturn(Future.successful(true))
   }
 
   final val mockSessionRepository: SessionRepository                     = mock[SessionRepository]
   final val mockDataRetrievalActionProvider: DataRetrievalActionProvider = mock[DataRetrievalActionProvider]
+  final val mockLockActionProvider: LockActionProvider                   = mock[LockActionProvider]
+  final val mockLockService: LockService                                 = mock[LockService]
 
   final override def fakeApplication(): Application =
     guiceApplicationBuilder()
@@ -52,8 +56,10 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
 
   protected def setNoExistingUserAnswers(): Unit = setUserAnswers(None)
 
-  private def setUserAnswers(userAnswers: Option[UserAnswers]): Unit =
+  private def setUserAnswers(userAnswers: Option[UserAnswers]): Unit = {
+    when(mockLockActionProvider.apply()) thenReturn new FakeLockAction(mockLockService)
     when(mockDataRetrievalActionProvider.apply(any())) thenReturn new FakeDataRetrievalAction(userAnswers)
+  }
 
   protected val onwardRoute: Call = Call("GET", "/foo")
 
@@ -73,8 +79,10 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
       .overrides(
         bind[DataRequiredAction].to[DataRequiredActionImpl],
         bind[IdentifierAction].to[FakeIdentifierAction],
+        bind[LockActionProvider].toInstance(mockLockActionProvider),
         bind[SessionRepository].toInstance(mockSessionRepository),
         bind[DataRetrievalActionProvider].toInstance(mockDataRetrievalActionProvider),
-        bind[DependentTasksAction].to[FakeDependentTasksAction]
+        bind[DependentTasksAction].to[FakeDependentTasksAction],
+        bind[LockService].toInstance(mockLockService)
       )
 }
