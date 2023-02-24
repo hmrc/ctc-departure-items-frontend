@@ -17,6 +17,8 @@
 package pages.item
 
 import pages.behaviours.PageBehaviours
+import pages.sections.dangerousGoods.DangerousGoodsListSection
+import play.api.libs.json.{JsArray, Json}
 
 class AddDangerousGoodsYesNoPageSpec extends PageBehaviours {
 
@@ -27,5 +29,18 @@ class AddDangerousGoodsYesNoPageSpec extends PageBehaviours {
     beSettable[Boolean](AddDangerousGoodsYesNoPage(itemIndex))
 
     beRemovable[Boolean](AddDangerousGoodsYesNoPage(itemIndex))
+
+    "cleanup" - {
+      "when no selected" - {
+        "must remove dangerous goods list" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(DangerousGoodsListSection(itemIndex), JsArray(Seq(Json.obj("foo" -> "bar"))))
+
+          val result = userAnswers.setValue(AddDangerousGoodsYesNoPage(itemIndex), false)
+
+          result.get(DangerousGoodsListSection(itemIndex)) must not be defined
+        }
+      }
+    }
   }
 }
