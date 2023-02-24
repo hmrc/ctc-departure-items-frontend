@@ -16,6 +16,7 @@
 
 package utils.cyaHelpers.item.dangerousGoods
 
+import config.FrontendAppConfig
 import controllers.item.dangerousGoods.index.routes
 import models.journeyDomain.item.dangerousGoods.DangerousGoodsDomain
 import models.{Index, Mode, UserAnswers}
@@ -25,7 +26,7 @@ import play.api.i18n.Messages
 import utils.cyaHelpers.AnswersHelper
 import viewmodels.ListItem
 
-class DangerousGoodsAnswersHelper(userAnswers: UserAnswers, mode: Mode, itemIndex: Index)(implicit messages: Messages)
+class DangerousGoodsAnswersHelper(userAnswers: UserAnswers, mode: Mode, itemIndex: Index)(implicit messages: Messages, config: FrontendAppConfig)
     extends AnswersHelper(userAnswers, mode) {
 
   def listItems: Seq[Either[ListItem, ListItem]] =

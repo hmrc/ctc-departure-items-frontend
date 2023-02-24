@@ -21,6 +21,7 @@ import models.journeyDomain.item.dangerousGoods.DangerousGoodsDomain
 import models.reference.Country
 import models.{DeclarationType, Index, Mode, UserAnswers}
 import pages.item._
+import pages.sections.dangerousGoods.DangerousGoodsListSection
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.cyaHelpers.AnswersHelper
@@ -123,12 +124,14 @@ class ItemAnswersHelper(
     id = Some("change-add-dangerous-goods")
   )
 
+  def dangerousGoodsList: Seq[SummaryListRow] =
+    getAnswersAndBuildSectionRows(DangerousGoodsListSection(itemIndex))(dangerousGoods)
+
   def dangerousGoods(dangerousGoodsIndex: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[DangerousGoodsDomain](
     formatAnswer = formatAsText,
     prefix = "item.index.checkYourAnswers.dangerousGoods",
     id = Some(s"change-dangerous-goods-${dangerousGoodsIndex.display}"),
     args = dangerousGoodsIndex.display
   )(DangerousGoodsDomain.userAnswersReader(itemIndex, dangerousGoodsIndex))
-
 
 }

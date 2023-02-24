@@ -28,7 +28,6 @@ import java.time.LocalDate
 
 private[utils] class SummaryListRowHelper(implicit messages: Messages) {
 
-
   protected def formatAsYesOrNo(answer: Boolean): Content =
     if (answer) {
       messages("site.yes").toText
@@ -44,11 +43,9 @@ private[utils] class SummaryListRowHelper(implicit messages: Messages) {
   protected def formatAsDynamicAddress(address: DynamicAddress): Content =
     HtmlContent(address.toString)
 
-
   protected def formatAsText[T](answer: T): Content = s"$answer".toText
 
   protected def formatAsPassword(answer: String): Content = ("•" * answer.length).toText
-
 
   protected def formatEnumAsText[T](messageKeyPrefix: String)(answer: T): Content =
     formatEnumAsString(messageKeyPrefix)(answer).toText

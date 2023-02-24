@@ -61,5 +61,3 @@ object UserAnswersNavigator extends Logging {
     }
   }
 }
-
-
