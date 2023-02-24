@@ -51,8 +51,10 @@ class AddAnotherDangerousGoodsController @Inject() (
     implicit request =>
       val viewModel = viewModelProvider(request.userAnswers, mode, itemIndex)
       viewModel.count match {
-        case 0 => Redirect(Call("GET", "#")) //TODO: Redirect to Add Dangerous Goods yes no page
-        case _ => Ok(view(form(viewModel), lrn, viewModel, itemIndex))
+        case 0 =>
+          Redirect(controllers.item.routes.AddDangerousGoodsYesNoController.onPageLoad(lrn, mode, itemIndex))
+        case _ =>
+          Ok(view(form(viewModel), lrn, viewModel, itemIndex))
       }
   }
 

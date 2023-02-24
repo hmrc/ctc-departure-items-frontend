@@ -23,6 +23,7 @@ import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.item.AddDangerousGoodsYesNoPage
 import pages.item.dangerousGoods.index.UNNumberPage
 import viewmodels.ListItem
 
@@ -50,7 +51,7 @@ class DangerousGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
             forAll(arbitrary[Mode], Gen.alphaNumStr) {
               (mode, uNNumber) =>
                 val userAnswers = emptyUserAnswers
-                  //TODO: set add yes no page
+                  .setValue(AddDangerousGoodsYesNoPage(itemIndex), true)
                   .setValue(UNNumberPage(itemIndex, Index(0)), uNNumber)
                   .setValue(UNNumberPage(itemIndex, Index(1)), uNNumber)
 

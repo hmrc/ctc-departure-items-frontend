@@ -85,7 +85,7 @@ class AddAnotherDangerousGoodsControllerSpec extends SpecBase with AppWithDefaul
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual
-        "#" //TODO change to add dangerous goods yes/no when merged
+        controllers.item.routes.AddDangerousGoodsYesNoController.onPageLoad(lrn, mode, itemIndex).url
     }
 
     "must return OK and the correct view for a GET" - {
