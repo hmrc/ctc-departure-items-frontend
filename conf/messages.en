@@ -28,6 +28,7 @@ date.hour.capitalized = Hour
 date.minute.capitalized = Minute
 
 item.caption = Item {0}
+item.dangerousGoods.caption = Item {0} - Dangerous goods
 
 item.description.title = Enter a description of item {0}
 item.description.heading = Enter a description of item {0}
@@ -117,3 +118,9 @@ item.combinedNomenclatureCode.checkYourAnswersLabel = What is the combined nomen
 item.combinedNomenclatureCode.error.required = Enter the combined nomenclature code
 item.combinedNomenclatureCode.error.length = The combined nomenclature code must be 2 characters or less
 item.combinedNomenclatureCode.error.invalidCharacters = The combined nomenclature code must only include letters a to z and numbers 0 to 9
+
+item.addDangerousGoodsYesNo.title = Does the item contain any dangerous goods?
+item.addDangerousGoodsYesNo.heading = Does the item contain any dangerous goods?
+item.addDangerousGoodsYesNo.paragraph = This means anything that poses a risk to health, safety or property, such as explosives, flammable liquids, oxidizers or toxic substances.
+item.addDangerousGoodsYesNo.checkYourAnswersLabel = Does the item contain any dangerous goods?
+item.addDangerousGoodsYesNo.error.required = Select yes if the item contains any dangerous goods

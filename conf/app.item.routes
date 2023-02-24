@@ -58,3 +58,8 @@ GET        /:lrn/items/:itemIndex/combined-nomenclature-code              contro
 POST       /:lrn/items/:itemIndex/combined-nomenclature-code              controllers.item.CombinedNomenclatureCodeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
 GET        /:lrn/items/:itemIndex/change-combined-nomenclature-code       controllers.item.CombinedNomenclatureCodeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
 POST       /:lrn/items/:itemIndex/change-combined-nomenclature-code       controllers.item.CombinedNomenclatureCodeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+
+GET        /:lrn/items/:itemIndex/dangerous-goods/add                     controllers.item.AddDangerousGoodsYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+POST       /:lrn/items/:itemIndex/dangerous-goods/add                     controllers.item.AddDangerousGoodsYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+GET        /:lrn/items/:itemIndex/dangerous-goods/change-add              controllers.item.AddDangerousGoodsYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+POST       /:lrn/items/:itemIndex/dangerous-goods/change-add              controllers.item.AddDangerousGoodsYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
