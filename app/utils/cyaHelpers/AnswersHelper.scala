@@ -29,7 +29,7 @@ import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.html.components.{Content, SummaryListRow}
 import viewmodels.ListItem
 
-class AnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages) extends SummaryListRowHelper {
+class AnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages, config: FrontendAppConfig) extends SummaryListRowHelper {
 
   protected def lrn: LocalReferenceNumber = userAnswers.lrn
 
@@ -90,7 +90,7 @@ class AnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Mes
     prefix: String,
     id: Option[String],
     args: Any*
-  )(implicit userAnswersReader: UserAnswersReader[A], config: FrontendAppConfig): Option[SummaryListRow] =
+  )(implicit userAnswersReader: UserAnswersReader[A]): Option[SummaryListRow] =
     userAnswersReader
       .run(userAnswers)
       .map(

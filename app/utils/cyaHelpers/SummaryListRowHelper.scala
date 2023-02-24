@@ -16,12 +16,47 @@
 
 package utils.cyaHelpers
 
+import models.reference.Country
+import models.{DateTime, DynamicAddress}
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.html.components._
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+import utils.Format.{RichDateTime, RichLocalDate}
+
+import java.time.LocalDate
 
 private[utils] class SummaryListRowHelper(implicit messages: Messages) {
+
+
+  protected def formatAsYesOrNo(answer: Boolean): Content =
+    if (answer) {
+      messages("site.yes").toText
+    } else {
+      messages("site.no").toText
+    }
+
+  def formatAsDateTime(answer: DateTime): Content =
+    answer.formatAsString.toText
+
+  def formatAsDate(answer: LocalDate): Content = answer.formatAsString.toText
+
+  protected def formatAsDynamicAddress(address: DynamicAddress): Content =
+    HtmlContent(address.toString)
+
+
+  protected def formatAsText[T](answer: T): Content = s"$answer".toText
+
+  protected def formatAsPassword(answer: String): Content = ("•" * answer.length).toText
+
+
+  protected def formatEnumAsText[T](messageKeyPrefix: String)(answer: T): Content =
+    formatEnumAsString(messageKeyPrefix)(answer).toText
+
+  protected def formatEnumAsString[T](messageKeyPrefix: String)(answer: T): String =
+    messages(s"$messageKeyPrefix.$answer")
+
+  protected def formatAsCountry(country: Country): Content = country.description.toText
 
   protected def buildRow(
     prefix: String,
