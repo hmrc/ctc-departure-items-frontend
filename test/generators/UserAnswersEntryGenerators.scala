@@ -24,6 +24,7 @@ import play.api.libs.json._
 import queries.Gettable
 
 // scalastyle:off number.of.methods
+// scalastyle:off cyclomatic.complexity
 trait UserAnswersEntryGenerators {
   self: Generators =>
 
@@ -60,3 +61,4 @@ trait UserAnswersEntryGenerators {
 
 }
 // scalastyle:on number.of.methods
+// scalastyle:on cyclomatic.complexity
