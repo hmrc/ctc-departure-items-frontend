@@ -131,32 +131,5 @@ class CacheConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with W
         result mustBe false
       }
     }
-
-    "deleteLock" - {
-
-      val url = s"/manage-transit-movements-departure-cache/user-answers/${userAnswers.lrn}/lock"
-
-      "must return true when status is Ok" in {
-        server.stubFor(delete(urlEqualTo(url)) willReturn aResponse().withStatus(OK))
-
-        val result: Boolean = await(connector.deleteLock(userAnswers))
-
-        result mustBe true
-      }
-
-      "return false for other responses" in {
-        forAll(errorResponseGen) {
-          error =>
-            server.stubFor(
-              delete(urlEqualTo(url))
-                .willReturn(aResponse().withStatus(error))
-            )
-
-            val result: Boolean = await(connector.deleteLock(userAnswers))
-
-            result mustBe false
-        }
-      }
-    }
   }
 }
