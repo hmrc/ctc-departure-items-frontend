@@ -52,7 +52,8 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
 
   def keepAliveUrl(lrn: LocalReferenceNumber): String = s"$departureHubUrl/$lrn/keep-alive"
 
-  lazy val maxItems: Int = configuration.get[Int]("limits.maxItems")
+  lazy val maxItems: Int          = configuration.get[Int]("limits.maxItems")
+  lazy val maxDangerousGoods: Int = configuration.get[Int]("limits.maxDangerousGoods")
 
   def taskListUrl(lrn: LocalReferenceNumber): String = s"$departureHubUrl/$lrn/task-list"
 

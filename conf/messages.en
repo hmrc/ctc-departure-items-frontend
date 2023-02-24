@@ -132,3 +132,12 @@ item.dangerousGoods.index.unNumber.checkYourAnswersLabel = What is the UN number
 item.dangerousGoods.index.unNumber.error.required = Enter the UN number for the dangerous goods
 item.dangerousGoods.index.unNumber.error.length = The UN number must be 4 characters or less
 item.dangerousGoods.index.unNumber.error.invalidCharacters = The UN number must only include letters a to z and numbers 0 to 9
+
+item.dangerousGoods.addAnotherDangerousGoods.singular.title = You have added 1 UN number for dangerous goods
+item.dangerousGoods.addAnotherDangerousGoods.plural.title = You have added {0} UN numbers for dangerous goods
+item.dangerousGoods.addAnotherDangerousGoods.singular.heading = You have added 1 UN number for dangerous goods
+item.dangerousGoods.addAnotherDangerousGoods.plural.heading = You have added {0} UN numbers for dangerous goods
+item.dangerousGoods.addAnotherDangerousGoods.error.required = Select yes if you want to add another UN number for dangerous goods
+item.dangerousGoods.addAnotherDangerousGoods.label = Do you want to add another UN number?
+item.dangerousGoods.addAnotherDangerousGoods.maxLimit.label = You cannot add any more UN numbers for dangerous goods. To add another, you need to remove one first.
+
