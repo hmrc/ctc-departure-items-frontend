@@ -46,7 +46,7 @@ class LockActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
       when(mockLockService.checkLock(any())(any())).thenReturn(Future(true))
 
-      val lockActionProvider = new LockActionProvider(mockLockService)
+      val lockActionProvider = new LockActionProviderImpl(mockLockService)
 
       harness(lockActionProvider) mustBe Results.Ok
     }
@@ -55,7 +55,7 @@ class LockActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
       when(mockLockService.checkLock(any())(any())).thenReturn(Future(false))
 
-      val lockActionProvider = new LockActionProvider(mockLockService)
+      val lockActionProvider = new LockActionProviderImpl(mockLockService)
 
       harness(lockActionProvider) mustBe Results.SeeOther(frontendAppConfig.lockedUrl)
     }

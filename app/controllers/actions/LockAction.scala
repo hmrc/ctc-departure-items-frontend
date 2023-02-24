@@ -16,7 +16,7 @@
 
 package controllers.actions
 
-import com.google.inject.Inject
+import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
 import models.requests.DataRequest
 import play.api.Logging
@@ -28,10 +28,16 @@ import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class LockActionProvider @Inject() (lockService: LockService)(implicit ec: ExecutionContext, config: FrontendAppConfig) {
+@Singleton
+class LockActionProviderImpl @Inject() (lockService: LockService)(implicit ec: ExecutionContext, config: FrontendAppConfig) extends LockActionProvider {
 
   def apply(): ActionFilter[DataRequest] =
     new LockAction(lockService)
+}
+
+trait LockActionProvider {
+
+  def apply(): ActionFilter[DataRequest]
 }
 
 class LockAction(lockService: LockService)(implicit val executionContext: ExecutionContext, config: FrontendAppConfig)
@@ -41,8 +47,11 @@ class LockAction(lockService: LockService)(implicit val executionContext: Execut
   override protected def filter[A](request: DataRequest[A]): Future[Option[Result]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
     lockService.checkLock(request.userAnswers).map {
-      case true  => None
-      case false => Some(Redirect(config.lockedUrl))
+      case true =>
+        None
+      case false =>
+        logger.info(s"Someone else is amending draft ${request.userAnswers.lrn}. Redirecting to cannot-open")
+        Some(Redirect(config.lockedUrl))
     }
   }
 }
