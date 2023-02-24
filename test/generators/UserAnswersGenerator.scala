@@ -23,7 +23,7 @@ import models.{CountryList, EoriNumber, Index, LocalReferenceNumber, RichJsObjec
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
-trait UserAnswersGenerator extends UserAnswersEntryGenerators {
+trait UserAnswersGenerator extends UserAnswersEntryGenerators with DangerousGoodsUserAnswersGenerator {
   self: Generators =>
 
   val ctcCountries: Seq[Country]                             = listWithMaxLength[Country]().sample.get

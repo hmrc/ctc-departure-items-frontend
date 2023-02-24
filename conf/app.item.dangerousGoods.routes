@@ -1,5 +1,5 @@
 
-GET        /:lrn/item/dangerousGoods/you-have-added-1-un-number-for-dangerous-goods                        controllers.item.dangerousGoods.AddAnotherUNNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /:lrn/item/dangerousGoods/you-have-added-1-un-number-for-dangerous-goods                        controllers.item.dangerousGoods.AddAnotherUNNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /:lrn/item/dangerousGoods/change-you-have-added-1-un-number-for-dangerous-goods                 controllers.item.dangerousGoods.AddAnotherUNNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /:lrn/item/dangerousGoods/change-you-have-added-1-un-number-for-dangerous-goods                 controllers.item.dangerousGoods.AddAnotherUNNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+GET        /:lrn/items/:itemIndex/dangerous-goods/add-another                        controllers.item.dangerousGoods.AddAnotherDangerousGoodsController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+POST       /:lrn/items/:itemIndex/dangerous-goods/add-another                        controllers.item.dangerousGoods.AddAnotherDangerousGoodsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+GET        /:lrn/items/:itemIndex/dangerous-goods/change-add-another                 controllers.item.dangerousGoods.AddAnotherDangerousGoodsController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+POST       /:lrn/items/:itemIndex/dangerous-goods/change-add-another                 controllers.item.dangerousGoods.AddAnotherDangerousGoodsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
