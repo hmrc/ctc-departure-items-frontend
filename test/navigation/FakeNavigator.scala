@@ -31,3 +31,8 @@ class FakeItemsNavigator(desiredRoute: Call, mode: Mode)(implicit config: Fronte
 class FakeItemNavigator(desiredRoute: Call, mode: Mode, index: Index)(implicit config: FrontendAppConfig) extends ItemNavigator(mode, index) {
   override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }
+
+class FakeDangerousGoodsNavigator(desiredRoute: Call, mode: Mode, itemIndex: Index, dangerousGoodsIndex: Index)(implicit config: FrontendAppConfig)
+    extends DangerousGoodsNavigator(mode, itemIndex, dangerousGoodsIndex) {
+  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
+}

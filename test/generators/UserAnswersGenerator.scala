@@ -17,21 +17,14 @@
 package generators
 
 import models.journeyDomain.item.ItemDomain
+import models.journeyDomain.item.dangerousGoods.DangerousGoodsDomain
 import models.journeyDomain.{ItemsDomain, ReaderError, UserAnswersReader}
-import models.reference.Country
-import models.{CountryList, EoriNumber, Index, LocalReferenceNumber, RichJsObject, UserAnswers}
+import models.{EoriNumber, Index, LocalReferenceNumber, RichJsObject, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
-trait UserAnswersGenerator extends UserAnswersEntryGenerators with DangerousGoodsUserAnswersGenerator {
+trait UserAnswersGenerator extends UserAnswersEntryGenerators {
   self: Generators =>
-
-  val ctcCountries: Seq[Country]                             = listWithMaxLength[Country]().sample.get
-  val ctcCountriesList: CountryList                          = CountryList(ctcCountries)
-  val ctcCountryCodes: Seq[String]                           = ctcCountries.map(_.code.code)
-  val customsSecurityAgreementAreaCountries: Seq[Country]    = listWithMaxLength[Country]().sample.get
-  val customsSecurityAgreementAreaCountriesList: CountryList = CountryList(customsSecurityAgreementAreaCountries)
-  val customsSecurityAgreementAreaCountryCodes: Seq[String]  = customsSecurityAgreementAreaCountries.map(_.code.code)
 
   implicit lazy val arbitraryUserAnswers: Arbitrary[UserAnswers] =
     Arbitrary {
@@ -69,4 +62,7 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators with DangerousGood
 
   def arbitraryItemAnswers(userAnswers: UserAnswers, index: Index): Gen[UserAnswers] =
     buildUserAnswers[ItemDomain](userAnswers)(ItemDomain.userAnswersReader(index))
+
+  def arbitraryDangerousGoodsAnswers(userAnswers: UserAnswers, itemIndex: Index, dangerousGoods: Index): Gen[UserAnswers] =
+    buildUserAnswers[DangerousGoodsDomain](userAnswers)(DangerousGoodsDomain.userAnswersReader(itemIndex, dangerousGoods))
 }

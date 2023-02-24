@@ -19,7 +19,7 @@ package controllers.item.dangerousGoods.index
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.item.dangerousGoods.UNNumberFormProvider
 import models.NormalMode
-import navigation.ItemNavigatorProvider
+import navigation.DangerousGoodsNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.item.dangerousGoods.index.UNNumberPage
@@ -41,7 +41,7 @@ class UNNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[ItemNavigatorProvider]).toInstance(fakeItemNavigatorProvider))
+      .overrides(bind(classOf[DangerousGoodsNavigatorProvider]).toInstance(fakeDangerousGoodsNavigatorProvider))
 
   "UNNumber Controller" - {
 
