@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,11 +12,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(autocompleteCss: HmrcAccessibleAutocompleteCss)
+package controllers
 
-@(lrn: LocalReferenceNumber)(implicit request: Request[_])
+import models.LocalReferenceNumber
+import play.api.mvc.{Action, AnyContent}
+import uk.gov.hmrc.hmrcfrontend.controllers.Assets
 
-<link href='@routes.AssetsController.versioned("stylesheets/application.css", lrn)' media='all' rel='stylesheet' type='text/css' @{CSPNonce.attr} />
-@autocompleteCss(CSPNonce.get)
+import javax.inject.Inject
+
+class HmrcFrontendController @Inject() (assets: Assets) {
+
+  def at(path: String, file: String, lrn: LocalReferenceNumber): Action[AnyContent] =
+    assets.at(path, file)
+}
