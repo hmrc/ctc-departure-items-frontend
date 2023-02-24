@@ -31,8 +31,6 @@ class RenderConfig @Inject() (configuration: Configuration) {
   def feedbackUrl(implicit request: RequestHeader): String =
     s"$contactHost/contact/beta-feedback?service=$contactFormServiceIdentifier&backUrl=${SafeRedirectUrl(host + request.uri).encodedUrl}"
 
-  val signOutUrl: String = configuration.get[String]("urls.logoutContinue") + configuration.get[String]("urls.feedback")
-
   val timeoutSeconds: Int   = configuration.get[Int]("session.timeoutSeconds")
   val countdownSeconds: Int = configuration.get[Int]("session.countdownSeconds")
 

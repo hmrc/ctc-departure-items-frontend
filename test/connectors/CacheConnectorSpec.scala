@@ -20,6 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import com.github.tomakehurst.wiremock.client.WireMock._
 import models.UserAnswers
 import org.scalacheck.Gen
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks.forAll
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.test.Helpers._
@@ -30,6 +31,8 @@ class CacheConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with W
     super
       .guiceApplicationBuilder()
       .configure(conf = "microservice.services.manage-transit-movements-departure-cache.port" -> server.port())
+
+  private val errorResponseGen = Gen.choose(400: Int, 599: Int)
 
   private lazy val connector: CacheConnector = app.injector.instanceOf[CacheConnector]
 
@@ -93,18 +96,40 @@ class CacheConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with W
       }
 
       "return false for 4xx or 5xx response" in {
-        val status = Gen.choose(400: Int, 599: Int).sample.value
+        forAll(errorResponseGen) {
+          error =>
+            server.stubFor(
+              post(urlEqualTo(url))
+                .willReturn(aResponse().withStatus(error))
+            )
 
-        server.stubFor(
-          post(urlEqualTo(url))
-            .willReturn(aResponse().withStatus(status))
-        )
+            val result: Boolean = await(connector.post(userAnswers))
 
-        val result: Boolean = await(connector.post(userAnswers))
+            result mustBe false
+        }
+      }
+    }
+
+    "checkLock" - {
+
+      val url = s"/manage-transit-movements-departure-cache/user-answers/${userAnswers.lrn.toString}/lock"
+
+      "must return true when status is Ok" in {
+        server.stubFor(get(urlEqualTo(url)) willReturn aResponse().withStatus(OK))
+
+        val result: Boolean = await(connector.checkLock(userAnswers))
+
+        result mustBe true
+      }
+
+      "return false for other responses" in {
+
+        server.stubFor(get(urlEqualTo(url)) willReturn aResponse().withStatus(BAD_REQUEST))
+
+        val result: Boolean = await(connector.checkLock(userAnswers))
 
         result mustBe false
       }
     }
   }
-
 }
