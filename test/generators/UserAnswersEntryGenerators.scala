@@ -28,17 +28,25 @@ trait UserAnswersEntryGenerators {
   self: Generators =>
 
   def generateAnswer: PartialFunction[Gettable[_], Gen[JsValue]] =
-    generateItemsAnswer
+    generateItemAnswer
 
-  private def generateItemsAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+  private def generateItemAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.item._
-    {
+    val pf: PartialFunction[Gettable[_], Gen[JsValue]] = {
       case DescriptionPage(_)          => Gen.alphaNumStr.map(JsString)
       case DeclarationTypePage(_)      => arbitrary[DeclarationType].map(Json.toJson(_))
       case CountryOfDispatchPage(_)    => arbitrary[Country].map(Json.toJson(_))
       case CountryOfDestinationPage(_) => arbitrary[Country].map(Json.toJson(_))
     }
+    pf orElse
+      generateDangerousGoodsAnswer
+  }
 
+  private def generateDangerousGoodsAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+    import pages.item.dangerousGoods.index._
+    {
+      case UNNumberPage(_, _) => Gen.alphaNumStr.map(JsString)
+    }
   }
 
 }

@@ -28,7 +28,7 @@ class AddAnotherDangerousGoodsViewModelSpec extends SpecBase with Generators wit
 
   "must get list items" - {
 
-    "when there is one dangerous goods added" ignore {
+    "when there is one dangerous goods added" in {
       forAll(arbitrary[Mode]) {
         mode =>
           val userAnswers = arbitraryDangerousGoodsAnswers(emptyUserAnswers, itemIndex, dangerousGoodsIndex).sample.value
@@ -43,7 +43,7 @@ class AddAnotherDangerousGoodsViewModelSpec extends SpecBase with Generators wit
       }
     }
 
-    "when there are multiple dangerous goods added" ignore {
+    "when there are multiple dangerous goods added" in {
       val formatter = java.text.NumberFormat.getIntegerInstance
 
       forAll(arbitrary[Mode], Gen.choose(2, frontendAppConfig.maxDangerousGoods)) {
