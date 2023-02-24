@@ -16,6 +16,7 @@
 
 package pages.item
 
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class AddCUSCodeYesNoPageSpec extends PageBehaviours {
@@ -27,5 +28,23 @@ class AddCUSCodeYesNoPageSpec extends PageBehaviours {
     beSettable[Boolean](AddCUSCodeYesNoPage(itemIndex))
 
     beRemovable[Boolean](AddCUSCodeYesNoPage(itemIndex))
+
+    "cleanup" - {
+      "when no selected" - {
+        "must remove CUS code" in {
+          forAll(arbitrary[String]) {
+            code =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AddCUSCodeYesNoPage(itemIndex), true)
+                .setValue(CustomsUnionAndStatisticsCodePage(itemIndex), code)
+
+              val result = userAnswers.setValue(AddCUSCodeYesNoPage(itemIndex), false)
+
+              result.get(CustomsUnionAndStatisticsCodePage(itemIndex)) must not be defined
+          }
+        }
+      }
+    }
   }
+
 }
