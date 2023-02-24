@@ -14,23 +14,18 @@
  * limitations under the License.
  */
 
-package services
+package controllers.actions
 
-import connectors.CacheConnector
-import models.UserAnswers
-import uk.gov.hmrc.http.HeaderCarrier
+import config.FrontendAppConfig
+import models.requests.DataRequest
+import play.api.mvc.Result
+import services.LockService
 
-import javax.inject.Inject
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class LockService @Inject() (
-  cacheConnector: CacheConnector
-) {
+class FakeLockAction(lockService: LockService)(implicit config: FrontendAppConfig) extends LockAction(lockService) {
 
-  def checkLock(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Boolean] =
-    cacheConnector.checkLock(userAnswers)
-
-  def deleteLock(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Boolean] =
-    cacheConnector.deleteLock(userAnswers)
-
+  override protected def filter[A](request: DataRequest[A]): Future[Option[Result]] =
+    Future.successful(None)
 }
