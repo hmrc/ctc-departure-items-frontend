@@ -59,20 +59,5 @@ class LockServiceSpec extends SpecBase with AppWithDefaultMockFixtures with Scal
         }
       }
     }
-
-    "when deleteLock" - {
-      "must call deleteLock in connector" in {
-        forAll(arbitrary[Boolean]) {
-          response =>
-            beforeEach()
-
-            val userAnswers = emptyUserAnswers
-            when(mockConnector.deleteLock(any())(any())).thenReturn(Future.successful(response))
-            val result = service.deleteLock(userAnswers)
-            result.futureValue mustBe response
-            verify(mockConnector).deleteLock(eqTo(userAnswers))(any())
-        }
-      }
-    }
   }
 }

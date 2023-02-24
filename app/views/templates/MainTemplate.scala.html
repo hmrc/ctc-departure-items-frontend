@@ -50,7 +50,7 @@
             timeout = Some(renderConfig.timeoutSeconds),
             countdown = Some(renderConfig.countdownSeconds),
             keepAliveUrl = Some(appConfig.keepAliveUrl(lrn)),
-            signOutUrl = Some(renderConfig.signOutUrl)
+            signOutUrl = Some(appConfig.signOutUrl(lrn))
         ))
     }
 
@@ -73,7 +73,7 @@
     userResearchBannerUrl = if (renderConfig.showUserResearchBanner) Some(renderConfig.userResearchUrl) else None,
     serviceName = Some(messages("site.service_name")),
     serviceUrl = Some(appConfig.serviceUrl),
-    signOutUrl = if (canSignOut) Some(renderConfig.signOutUrl) else None,
+    signOutUrl = if (canSignOut) Some(appConfig.signOutUrl(lrn)) else None,
     phaseBanner = Some(standardBetaBanner(url = renderConfig.feedbackUrl)),
     backLinkUrl = if (showBackLink) Some("#") else None, // This is overridden in ctc.js
     nonce = CSPNonce.get,

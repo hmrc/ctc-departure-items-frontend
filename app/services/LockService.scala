@@ -23,14 +23,8 @@ import uk.gov.hmrc.http.HeaderCarrier
 import javax.inject.Inject
 import scala.concurrent.Future
 
-class LockService @Inject() (
-  cacheConnector: CacheConnector
-) {
+class LockService @Inject() (cacheConnector: CacheConnector) {
 
   def checkLock(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Boolean] =
     cacheConnector.checkLock(userAnswers)
-
-  def deleteLock(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Boolean] =
-    cacheConnector.deleteLock(userAnswers)
-
 }
