@@ -16,18 +16,34 @@
 
 package models.journeyDomain.item
 
-import models.Index
+import cats.implicits.catsSyntaxTuple2Semigroupal
+import models.DeclarationType.T
+import models.{DeclarationType, Index}
 import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
-import pages.item.DescriptionPage
+import pages.external.TransitOperationDeclarationTypePage
+import pages.item.{DeclarationTypePage, DescriptionPage}
 
 import scala.language.implicitConversions
 
 case class ItemDomain(
-  itemDescription: String
-) extends JourneyDomainModel
+  itemDescription: String,
+  declarationType: Option[DeclarationType]
+)(index: Index)
+    extends JourneyDomainModel
 
 object ItemDomain {
 
-  implicit def userAnswersReader(itemIndex: Index): UserAnswersReader[ItemDomain] =
-    DescriptionPage(itemIndex).reader.map(ItemDomain.apply)
+  implicit def userAnswersReader(itemIndex: Index): UserAnswersReader[ItemDomain] = {
+
+    lazy val declarationTypeReads: UserAnswersReader[Option[DeclarationType]] =
+      TransitOperationDeclarationTypePage.reader.flatMap {
+        case T => DeclarationTypePage(itemIndex).reader.map(Some(_))
+      }
+
+    (
+      DescriptionPage(itemIndex).reader,
+      declarationTypeReads
+    ).tupled.map((ItemDomain.apply _).tupled).map(_(itemIndex))
+
+  }
 }

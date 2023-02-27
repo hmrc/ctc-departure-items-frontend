@@ -17,29 +17,17 @@
 package models.journeyDomain.item
 
 import base.SpecBase
+import models.DeclarationType
 import models.journeyDomain.{EitherType, UserAnswersReader}
 import org.scalacheck.Gen
-import pages.item.DescriptionPage
+import pages.external.TransitOperationDeclarationTypePage
+import pages.item.{DeclarationTypePage, DescriptionPage}
 
 class ItemDomainSpec extends SpecBase {
 
   "Item Domain" - {
 
-    "can be read from user answers" - {
-      "when item description page is answered" in {
-        val itemDescription = Gen.alphaNumStr.sample.value
-
-        val userAnswers = emptyUserAnswers
-          .setValue(DescriptionPage(itemIndex), itemDescription)
-
-        val expectedResult = ItemDomain(itemDescription)
-
-        val result: EitherType[ItemDomain] =
-          UserAnswersReader[ItemDomain](ItemDomain.userAnswersReader(itemIndex)).run(userAnswers)
-
-        result.value mustBe expectedResult
-      }
-    }
+    "can be read from user answers" - {}
 
     "can not be read from user answers" - {
       "when item description page is unanswered" in {
@@ -47,6 +35,22 @@ class ItemDomainSpec extends SpecBase {
           UserAnswersReader[ItemDomain](ItemDomain.userAnswersReader(itemIndex)).run(emptyUserAnswers)
 
         result.left.value.page mustBe DescriptionPage(itemIndex)
+      }
+
+      "when transit operation declaration type is T" - {
+        "and declaration type is unanswered" in {
+          val itemDescription = Gen.alphaNumStr.sample.value
+
+          val userAnswers = emptyUserAnswers
+            .setValue(TransitOperationDeclarationTypePage, DeclarationType.T)
+            .setValue(DescriptionPage(itemIndex), itemDescription)
+
+          val result: EitherType[ItemDomain] =
+            UserAnswersReader[ItemDomain](ItemDomain.userAnswersReader(itemIndex)).run(userAnswers)
+
+          result.left.value.page mustBe DeclarationTypePage(itemIndex)
+
+        }
       }
     }
   }

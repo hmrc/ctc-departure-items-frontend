@@ -14,23 +14,14 @@
  * limitations under the License.
  */
 
-package models
+package pages.sections.external
 
-sealed trait DeclarationType
+import pages.sections.Section
+import play.api.libs.json.{JsObject, JsPath}
 
-object DeclarationType extends RadioModel[DeclarationType] {
+case object PreTaskListSection extends Section[JsObject] {
 
-  case object T1 extends WithName("T1") with DeclarationType
-  case object T2 extends WithName("T2") with DeclarationType
-  case object T2F extends WithName("T2F") with DeclarationType
-  case object TIR extends WithName("TIR") with DeclarationType
-  case object T extends WithName("T") with DeclarationType
+  override def path: JsPath = JsPath \ toString
 
-  override val messageKeyPrefix: String = "item.declarationType"
-
-  val values: Seq[DeclarationType] = Seq(
-    T1,
-    T2,
-    T2F
-  )
+  override def toString: String = "preTaskList"
 }
