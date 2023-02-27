@@ -91,8 +91,9 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               val result = helper.declarationType.get
 
               result.key.value mustBe "Item declaration type"
-              result.value.value mustBe messages(s"${DeclarationType.messageKeyPrefix}.$declarationType")
-
+              val key = s"${DeclarationType.messageKeyPrefix}.$declarationType"
+              messages.isDefinedAt(key) mustBe true
+              result.value.value mustBe messages(key)
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
