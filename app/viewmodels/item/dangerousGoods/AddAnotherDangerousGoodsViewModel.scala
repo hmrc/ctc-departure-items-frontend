@@ -41,7 +41,8 @@ object AddAnotherDangerousGoodsViewModel {
   class AddAnotherDangerousGoodsViewModelProvider @Inject() () {
 
     def apply(userAnswers: UserAnswers, mode: Mode, itemIndex: Index)(implicit
-      messages: Messages
+      messages: Messages,
+      config: FrontendAppConfig
     ): AddAnotherDangerousGoodsViewModel = {
       val helper = new DangerousGoodsAnswersHelper(userAnswers, mode, itemIndex)
 
