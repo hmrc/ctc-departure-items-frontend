@@ -16,10 +16,11 @@
 
 package models.journeyDomain.item
 
-import cats.implicits.catsSyntaxTuple2Semigroupal
-import models.DeclarationType.T
+import cats.implicits._
+import models.DeclarationType._
+import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
+import models.reference.Country
 import models.{DeclarationType, Index}
-import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
 import pages.external.TransitOperationDeclarationTypePage
 import pages.item.{DeclarationTypePage, DescriptionPage}
 
@@ -33,17 +34,20 @@ case class ItemDomain(
 
 object ItemDomain {
 
-  implicit def userAnswersReader(itemIndex: Index): UserAnswersReader[ItemDomain] = {
-
-    lazy val declarationTypeReads: UserAnswersReader[Option[DeclarationType]] =
-      TransitOperationDeclarationTypePage.reader.flatMap {
-        case T => DeclarationTypePage(itemIndex).reader.map(Some(_))
-      }
-
+  implicit def userAnswersReader(itemIndex: Index): UserAnswersReader[ItemDomain] =
     (
       DescriptionPage(itemIndex).reader,
-      declarationTypeReads
+      declarationTypeReader(itemIndex)
     ).tupled.map((ItemDomain.apply _).tupled).map(_(itemIndex))
 
-  }
+  def declarationTypeReader(itemIndex: Index): UserAnswersReader[Option[DeclarationType]] =
+    TransitOperationDeclarationTypePage.filterOptionalDependent(_ == T) {
+      DeclarationTypePage(itemIndex).reader
+    }
+
+  def countryOfDispatchReader(itemIndex: Index): UserAnswersReader[Option[Country]] =
+    TransitOperationDeclarationTypePage.reader.flatMap {
+      case TIR => ???
+      case _   => none[Country].pure[UserAnswersReader]
+    }
 }

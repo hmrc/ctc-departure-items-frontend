@@ -32,6 +32,16 @@ trait ModelGenerators {
       Gen.oneOf(DeclarationType.values)
     }
 
+  lazy val arbitraryNonTDeclarationType: Arbitrary[DeclarationType] =
+    Arbitrary {
+      Gen.oneOf(DeclarationType.values.filterNot(_ == DeclarationType.T))
+    }
+
+  lazy val arbitraryNonTIRDeclarationType: Arbitrary[DeclarationType] =
+    Arbitrary {
+      Gen.oneOf(DeclarationType.values.filterNot(_ == DeclarationType.TIR))
+    }
+
   implicit lazy val arbitraryCountryCode: Arbitrary[CountryCode] =
     Arbitrary {
       Gen
