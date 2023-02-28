@@ -16,18 +16,62 @@
 
 package models.journeyDomain.item
 
-import models.Index
-import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
-import pages.item.DescriptionPage
+import cats.implicits._
+import models.DeclarationType._
+import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
+import models.reference.Country
+import models.{DeclarationType, Index}
+import pages.external._
+import pages.item._
 
 import scala.language.implicitConversions
 
 case class ItemDomain(
-  itemDescription: String
-) extends JourneyDomainModel
+  itemDescription: String,
+  declarationType: Option[DeclarationType],
+  countryOfDispatch: Option[Country],
+  countryOfDestination: Option[Country],
+  ucr: Option[String]
+)(index: Index)
+    extends JourneyDomainModel
 
 object ItemDomain {
 
   implicit def userAnswersReader(itemIndex: Index): UserAnswersReader[ItemDomain] =
-    DescriptionPage(itemIndex).reader.map(ItemDomain.apply)
+    (
+      DescriptionPage(itemIndex).reader,
+      declarationTypeReader(itemIndex),
+      countryOfDispatchReader(itemIndex),
+      countryOfDestinationReader(itemIndex),
+      ucrReader(itemIndex)
+    ).tupled.map((ItemDomain.apply _).tupled).map(_(itemIndex))
+
+  def declarationTypeReader(itemIndex: Index): UserAnswersReader[Option[DeclarationType]] =
+    TransitOperationDeclarationTypePage.filterOptionalDependent(_ == T) {
+      DeclarationTypePage(itemIndex).reader
+    }
+
+  def countryOfDispatchReader(itemIndex: Index): UserAnswersReader[Option[Country]] =
+    TransitOperationDeclarationTypePage
+      .filterOptionalDependent(_ == TIR) {
+        ConsignmentCountryOfDispatchPage.filterDependent(_.isEmpty) {
+          CountryOfDispatchPage(itemIndex).reader
+        }
+      }
+      .map(_.flatten)
+
+  def countryOfDestinationReader(itemIndex: Index): UserAnswersReader[Option[Country]] =
+    ConsignmentCountryOfDestinationPage.filterDependent(_.isEmpty) {
+      CountryOfDestinationPage(itemIndex).reader
+    }
+
+  // TODO - will need updating once documents has been built
+  def ucrReader(itemIndex: Index): UserAnswersReader[Option[String]] =
+    ConsignmentUCRPage
+      .filterDependent(_.isEmpty) {
+        AddUCRYesNoPage(itemIndex).filterOptionalDependent(identity) {
+          UniqueConsignmentReferencePage(itemIndex).reader
+        }
+      }
+      .map(_.flatten)
 }

@@ -14,10 +14,15 @@
  * limitations under the License.
  */
 
-package pages
+package pages.external
 
-import queries.{Gettable, Settable}
+import models.reference.Country
+import pages.ReadOnlyPage
+import play.api.libs.json.JsPath
 
-trait QuestionPage[A] extends ReadOnlyPage[A] with Settable[A]
+case object ConsignmentCountryOfDestinationPage extends ReadOnlyPage[Country] {
 
-trait ReadOnlyPage[A] extends Page with Gettable[A]
+  override def path: JsPath = preRequisitesPath \ toString
+
+  override def toString: String = "itemsDestinationCountry"
+}

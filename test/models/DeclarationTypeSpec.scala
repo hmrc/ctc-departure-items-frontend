@@ -16,6 +16,8 @@
 
 package models
 
+import generators.Generators
+import models.DeclarationType._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatest.OptionValues
@@ -24,7 +26,7 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{JsError, JsString, Json}
 
-class DeclarationTypeSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
+class DeclarationTypeSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues with Generators {
 
   "DeclarationType" - {
 
@@ -55,6 +57,21 @@ class DeclarationTypeSpec extends AnyFreeSpec with Matchers with ScalaCheckPrope
       forAll(gen) {
         declarationType =>
           Json.toJson(declarationType) mustEqual JsString(declarationType.toString)
+      }
+    }
+
+    "values" - {
+      "must return all declaration types" in {
+        DeclarationType.values mustBe Seq(T1, T2, T2F, TIR, T)
+      }
+    }
+
+    "valuesU" - {
+      "must return T1, T2 and T2F" in {
+        forAll(arbitrary[UserAnswers]) {
+          userAnswers =>
+            DeclarationType.valuesU(userAnswers) mustBe Seq(T1, T2, T2F)
+        }
       }
     }
   }

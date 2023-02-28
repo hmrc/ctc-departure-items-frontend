@@ -79,6 +79,17 @@ package object journeyDomain {
               none[B].pure[UserAnswersReader]
             }
         }
+
+    def filterDependent[B](predicate: Option[A] => Boolean)(next: => UserAnswersReader[B]): UserAnswersReader[Option[B]] =
+      a.optionalReader
+        .flatMap {
+          x =>
+            if (predicate(x)) {
+              next.map(Option(_))
+            } else {
+              none[B].pure[UserAnswersReader]
+            }
+        }
   }
 
   implicit class GettableAsReaderOps[A](a: Gettable[A]) {

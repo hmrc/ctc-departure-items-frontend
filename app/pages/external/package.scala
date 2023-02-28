@@ -16,8 +16,13 @@
 
 package pages
 
-import queries.{Gettable, Settable}
+import play.api.libs.json.{__, JsPath}
 
-trait QuestionPage[A] extends ReadOnlyPage[A] with Settable[A]
+package object external {
 
-trait ReadOnlyPage[A] extends Page with Gettable[A]
+  lazy val preTaskListPath: JsPath = __ \ "preTaskList"
+
+  lazy val transportPath: JsPath     = __ \ "transportDetails"
+  lazy val preRequisitesPath: JsPath = transportPath \ "preRequisites"
+
+}

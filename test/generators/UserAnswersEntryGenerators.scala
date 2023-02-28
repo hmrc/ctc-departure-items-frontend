@@ -29,7 +29,18 @@ trait UserAnswersEntryGenerators {
   self: Generators =>
 
   def generateAnswer: PartialFunction[Gettable[_], Gen[JsValue]] =
-    generateItemAnswer
+    generateExternalAnswer orElse
+      generateItemAnswer
+
+  private def generateExternalAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+    import pages.external._
+    {
+      case TransitOperationDeclarationTypePage => arbitrary[DeclarationType].map(Json.toJson(_))
+      case ConsignmentUCRPage                  => Gen.alphaNumStr.map(JsString)
+      case ConsignmentCountryOfDispatchPage    => arbitrary[Country].map(Json.toJson(_))
+      case ConsignmentCountryOfDestinationPage => arbitrary[Country].map(Json.toJson(_))
+    }
+  }
 
   private def generateItemAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.item._
