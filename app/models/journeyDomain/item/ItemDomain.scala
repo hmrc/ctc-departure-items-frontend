@@ -30,7 +30,8 @@ case class ItemDomain(
   itemDescription: String,
   declarationType: Option[DeclarationType],
   countryOfDispatch: Option[Country],
-  countryOfDestination: Option[Country]
+  countryOfDestination: Option[Country],
+  ucr: Option[String]
 )(index: Index)
     extends JourneyDomainModel
 
@@ -41,7 +42,8 @@ object ItemDomain {
       DescriptionPage(itemIndex).reader,
       declarationTypeReader(itemIndex),
       countryOfDispatchReader(itemIndex),
-      countryOfDestinationReader(itemIndex)
+      countryOfDestinationReader(itemIndex),
+      ucrReader(itemIndex)
     ).tupled.map((ItemDomain.apply _).tupled).map(_(itemIndex))
 
   def declarationTypeReader(itemIndex: Index): UserAnswersReader[Option[DeclarationType]] =
@@ -62,4 +64,14 @@ object ItemDomain {
     ConsignmentCountryOfDestinationPage.filterDependent(_.isEmpty) {
       CountryOfDestinationPage(itemIndex).reader
     }
+
+  // TODO - will need updating once documents has been built
+  def ucrReader(itemIndex: Index): UserAnswersReader[Option[String]] =
+    ConsignmentUCRPage
+      .filterDependent(_.isEmpty) {
+        AddUCRYesNoPage(itemIndex).filterOptionalDependent(identity) {
+          UniqueConsignmentReferencePage(itemIndex).reader
+        }
+      }
+      .map(_.flatten)
 }
