@@ -21,8 +21,8 @@ import models.DeclarationType._
 import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
 import models.reference.Country
 import models.{DeclarationType, Index}
-import pages.external.TransitOperationDeclarationTypePage
-import pages.item.{DeclarationTypePage, DescriptionPage}
+import pages.external._
+import pages.item._
 
 import scala.language.implicitConversions
 
@@ -46,8 +46,11 @@ object ItemDomain {
     }
 
   def countryOfDispatchReader(itemIndex: Index): UserAnswersReader[Option[Country]] =
-    TransitOperationDeclarationTypePage.reader.flatMap {
-      case TIR => ???
-      case _   => none[Country].pure[UserAnswersReader]
-    }
+    TransitOperationDeclarationTypePage
+      .filterOptionalDependent(_ == TIR) {
+        ConsignmentCountryOfDispatchPage.filterDependent(_.isEmpty) {
+          CountryOfDispatchPage(itemIndex).reader
+        }
+      }
+      .map(_.flatten)
 }

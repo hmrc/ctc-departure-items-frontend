@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package pages.external
+package pages
 
-import models.DeclarationType
-import pages.ReadOnlyPage
-import play.api.libs.json.JsPath
+import play.api.libs.json.{__, JsPath}
 
-case object TransitOperationDeclarationTypePage extends ReadOnlyPage[DeclarationType] {
+package object external {
 
-  override def path: JsPath = preTaskListPath \ toString
+  lazy val preTaskListPath: JsPath = __ \ "preTaskList"
 
-  override def toString: String = "declarationType"
+  lazy val transportPath: JsPath     = __ \ "transportDetails"
+  lazy val preRequisitesPath: JsPath = transportPath \ "preRequisites"
+
 }

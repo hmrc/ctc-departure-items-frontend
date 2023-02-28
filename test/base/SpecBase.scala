@@ -17,17 +17,17 @@
 package base
 
 import config.FrontendAppConfig
-import models.{EoriNumber, Index, LocalReferenceNumber, UserAnswers}
+import models.{EoriNumber, Index, LocalReferenceNumber, RichJsObject, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{EitherValues, OptionValues, TryValues}
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import pages.QuestionPage
+import pages.{QuestionPage, ReadOnlyPage}
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.Injector
-import play.api.libs.json.{Format, Json, Reads}
+import play.api.libs.json.{Format, JsResultException, Json, Reads}
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import uk.gov.hmrc.govukfrontend.views.Aliases.{ActionItem, Content, Key, Value}
@@ -73,6 +73,14 @@ trait SpecBase
 
     def setValue[T](page: QuestionPage[T], value: T)(implicit format: Format[T]): UserAnswers =
       userAnswers.set(page, value).success.value
+
+    def setValue[T](page: ReadOnlyPage[T], value: T)(implicit format: Format[T]): UserAnswers =
+      userAnswers.data
+        .setObject(page.path, Json.toJson(value))
+        .fold(
+          errors => throw JsResultException(errors),
+          jsValue => userAnswers.copy(data = jsValue)
+        )
 
     def setValue[T](page: QuestionPage[T], value: Option[T])(implicit format: Format[T]): UserAnswers =
       value.map(setValue(page, _)).getOrElse(userAnswers)

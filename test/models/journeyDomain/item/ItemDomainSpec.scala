@@ -24,8 +24,8 @@ import models.reference.Country
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.external.TransitOperationDeclarationTypePage
-import pages.item.{DeclarationTypePage, DescriptionPage}
+import pages.external._
+import pages.item._
 
 class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -115,6 +115,57 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
               ).run(userAnswers)
 
               result.value mustBe expectedResult
+          }
+        }
+
+        "when transit operation declaration type is TIR" - {
+          "and consignment country of dispatch is defined" in {
+            forAll(arbitrary[Country]) {
+              country =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(TransitOperationDeclarationTypePage, DeclarationType.TIR)
+                  .setValue(ConsignmentCountryOfDispatchPage, country)
+
+                val expectedResult = None
+
+                val result: EitherType[Option[Country]] = UserAnswersReader[Option[Country]](
+                  ItemDomain.countryOfDispatchReader(itemIndex)
+                ).run(userAnswers)
+
+                result.value mustBe expectedResult
+            }
+          }
+
+          "and consignment country of dispatch is undefined" in {
+            forAll(arbitrary[Country]) {
+              country =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(TransitOperationDeclarationTypePage, DeclarationType.TIR)
+                  .setValue(CountryOfDispatchPage(itemIndex), country)
+
+                val expectedResult = Some(country)
+
+                val result: EitherType[Option[Country]] = UserAnswersReader[Option[Country]](
+                  ItemDomain.countryOfDispatchReader(itemIndex)
+                ).run(userAnswers)
+
+                result.value mustBe expectedResult
+            }
+          }
+        }
+      }
+
+      "can not be read from user answers" - {
+        "when transit operation declaration type is TIR" - {
+          "and consignment country of dispatch is undefined" in {
+            val userAnswers = emptyUserAnswers
+              .setValue(TransitOperationDeclarationTypePage, DeclarationType.TIR)
+
+            val result: EitherType[Option[Country]] = UserAnswersReader[Option[Country]](
+              ItemDomain.countryOfDispatchReader(itemIndex)
+            ).run(userAnswers)
+
+            result.left.value.page mustBe CountryOfDispatchPage(itemIndex)
           }
         }
       }

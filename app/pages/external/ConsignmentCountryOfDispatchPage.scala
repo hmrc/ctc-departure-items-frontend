@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package pages.sections.external
+package pages.external
 
-import pages.sections.Section
-import play.api.libs.json.{JsObject, JsPath}
+import models.reference.Country
+import pages.ReadOnlyPage
+import play.api.libs.json.JsPath
 
-case object PreTaskListSection extends Section[JsObject] {
+case object ConsignmentCountryOfDispatchPage extends ReadOnlyPage[Country] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = preRequisitesPath \ toString
 
-  override def toString: String = "preTaskList"
+  override def toString: String = "countryOfDispatch"
 }

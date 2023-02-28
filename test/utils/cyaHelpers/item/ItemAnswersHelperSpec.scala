@@ -23,6 +23,7 @@ import generators.Generators
 import models.reference.Country
 import models.{DeclarationType, Mode}
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.item._
 import pages.item.dangerousGoods.index.UNNumberPage
@@ -82,9 +83,10 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
       "must return Some(Row)" - {
         "when DeclarationTypePage is defined" in {
-          forAll(arbitrary[Mode], arbitrary[DeclarationType]) {
+          val userAnswers = emptyUserAnswers
+          forAll(arbitrary[Mode], Gen.oneOf(DeclarationType.valuesU(userAnswers))) {
             (mode, declarationType) =>
-              val answers = emptyUserAnswers
+              val answers = userAnswers
                 .setValue(DeclarationTypePage(itemIndex), declarationType)
 
               val helper = new ItemAnswersHelper(answers, mode, itemIndex)
