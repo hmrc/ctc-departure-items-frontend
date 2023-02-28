@@ -240,56 +240,29 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
           }
         }
 
-        "when consignment UCR is undefined" - {
-          "and add UCR yes/no is false" in {
-            val userAnswers = emptyUserAnswers
-              .setValue(AddUCRYesNoPage(itemIndex), false)
+        "when consignment UCR is undefined" in {
+          forAll(nonEmptyString) {
+            ucr =>
+              val userAnswers = emptyUserAnswers
+                .setValue(UniqueConsignmentReferencePage(itemIndex), ucr)
 
-            val expectedResult = None
+              val expectedResult = Some(ucr)
 
-            val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-              ItemDomain.ucrReader(itemIndex)
-            ).run(userAnswers)
+              val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                ItemDomain.ucrReader(itemIndex)
+              ).run(userAnswers)
 
-            result.value mustBe expectedResult
-          }
-
-          "and add UCR yes/no is true" in {
-            forAll(nonEmptyString) {
-              ucr =>
-                val userAnswers = emptyUserAnswers
-                  .setValue(AddUCRYesNoPage(itemIndex), true)
-                  .setValue(UniqueConsignmentReferencePage(itemIndex), ucr)
-
-                val expectedResult = Some(ucr)
-
-                val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                  ItemDomain.ucrReader(itemIndex)
-                ).run(userAnswers)
-
-                result.value mustBe expectedResult
-            }
+              result.value mustBe expectedResult
           }
         }
       }
 
       "cannot be read from user answers" - {
         "when consignment UCR is undefined" - {
-          "and add UCR yes/no page is unanswered" in {
+          "and UCR page is unanswered" in {
             val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
               ItemDomain.ucrReader(itemIndex)
             ).run(emptyUserAnswers)
-
-            result.left.value.page mustBe AddUCRYesNoPage(itemIndex)
-          }
-
-          "and add UCR yes/no is true" in {
-            val userAnswers = emptyUserAnswers
-              .setValue(AddUCRYesNoPage(itemIndex), true)
-
-            val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-              ItemDomain.ucrReader(itemIndex)
-            ).run(userAnswers)
 
             result.left.value.page mustBe UniqueConsignmentReferencePage(itemIndex)
           }

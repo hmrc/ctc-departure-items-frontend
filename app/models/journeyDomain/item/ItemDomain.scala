@@ -67,11 +67,7 @@ object ItemDomain {
 
   // TODO - will need updating once documents has been built
   def ucrReader(itemIndex: Index): UserAnswersReader[Option[String]] =
-    ConsignmentUCRPage
-      .filterDependent(_.isEmpty) {
-        AddUCRYesNoPage(itemIndex).filterOptionalDependent(identity) {
-          UniqueConsignmentReferencePage(itemIndex).reader
-        }
-      }
-      .map(_.flatten)
+    ConsignmentUCRPage.filterDependent(_.isEmpty) {
+      UniqueConsignmentReferencePage(itemIndex).reader
+    }
 }
