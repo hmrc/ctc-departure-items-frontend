@@ -36,6 +36,9 @@ trait UserAnswersEntryGenerators {
     import pages.external._
     {
       case TransitOperationDeclarationTypePage => arbitrary[DeclarationType].map(Json.toJson(_))
+      case ConsignmentUCRPage                  => Gen.alphaNumStr.map(JsString)
+      case ConsignmentCountryOfDispatchPage    => arbitrary[Country].map(Json.toJson(_))
+      case ConsignmentCountryOfDestinationPage => arbitrary[Country].map(Json.toJson(_))
     }
   }
 
