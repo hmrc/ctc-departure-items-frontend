@@ -28,7 +28,9 @@ import scala.language.implicitConversions
 
 case class ItemDomain(
   itemDescription: String,
-  declarationType: Option[DeclarationType]
+  declarationType: Option[DeclarationType],
+  countryOfDispatch: Option[Country],
+  countryOfDestination: Option[Country]
 )(index: Index)
     extends JourneyDomainModel
 
@@ -37,7 +39,9 @@ object ItemDomain {
   implicit def userAnswersReader(itemIndex: Index): UserAnswersReader[ItemDomain] =
     (
       DescriptionPage(itemIndex).reader,
-      declarationTypeReader(itemIndex)
+      declarationTypeReader(itemIndex),
+      countryOfDispatchReader(itemIndex),
+      countryOfDestinationReader(itemIndex)
     ).tupled.map((ItemDomain.apply _).tupled).map(_(itemIndex))
 
   def declarationTypeReader(itemIndex: Index): UserAnswersReader[Option[DeclarationType]] =
@@ -53,4 +57,9 @@ object ItemDomain {
         }
       }
       .map(_.flatten)
+
+  def countryOfDestinationReader(itemIndex: Index): UserAnswersReader[Option[Country]] =
+    ConsignmentCountryOfDestinationPage.filterDependent(_.isEmpty) {
+      CountryOfDestinationPage(itemIndex).reader
+    }
 }

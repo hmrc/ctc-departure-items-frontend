@@ -170,6 +170,57 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         }
       }
     }
+
+    "countryOfDestinationReader" - {
+      "can be read from user answers" - {
+        "when consignment country of destination is defined" in {
+          forAll(arbitrary[Country]) {
+            country =>
+              val userAnswers = emptyUserAnswers
+                .setValue(TransitOperationDeclarationTypePage, DeclarationType.TIR)
+                .setValue(ConsignmentCountryOfDestinationPage, country)
+
+              val expectedResult = None
+
+              val result: EitherType[Option[Country]] = UserAnswersReader[Option[Country]](
+                ItemDomain.countryOfDestinationReader(itemIndex)
+              ).run(userAnswers)
+
+              result.value mustBe expectedResult
+          }
+        }
+
+        "when consignment country of destination is undefined" in {
+          forAll(arbitrary[Country]) {
+            country =>
+              val userAnswers = emptyUserAnswers
+                .setValue(TransitOperationDeclarationTypePage, DeclarationType.TIR)
+                .setValue(CountryOfDestinationPage(itemIndex), country)
+
+              val expectedResult = Some(country)
+
+              val result: EitherType[Option[Country]] = UserAnswersReader[Option[Country]](
+                ItemDomain.countryOfDestinationReader(itemIndex)
+              ).run(userAnswers)
+
+              result.value mustBe expectedResult
+          }
+        }
+      }
+
+      "can not be read from user answers" - {
+        "when consignment country of destination is undefined" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(TransitOperationDeclarationTypePage, DeclarationType.TIR)
+
+          val result: EitherType[Option[Country]] = UserAnswersReader[Option[Country]](
+            ItemDomain.countryOfDestinationReader(itemIndex)
+          ).run(userAnswers)
+
+          result.left.value.page mustBe CountryOfDestinationPage(itemIndex)
+        }
+      }
+    }
   }
 
 }
