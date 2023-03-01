@@ -84,6 +84,59 @@ class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mapp
     }
   }
 
+  "textWithSpacesRemoved" - {
+
+    val testForm: Form[String] =
+      Form(
+        "value" -> textWithSpacesRemoved()
+      )
+
+    "must bind a valid string" - {
+      "with no whitespace" in {
+        val result = testForm.bind(Map("value" -> "foobar"))
+        result.get mustEqual "foobar"
+      }
+
+      "with whitespace" in {
+        val result = testForm.bind(Map("value" -> " foo \t bar "))
+        result.get mustEqual "foobar"
+      }
+    }
+
+    "must not bind an empty string" in {
+      val result = testForm.bind(Map("value" -> ""))
+      result.errors must contain(FormError("value", "error.required"))
+    }
+
+    "must not bind a string of whitespace only" in {
+      val result = testForm.bind(Map("value" -> " \t"))
+      result.errors must contain(FormError("value", "error.required"))
+    }
+
+    "must not bind an empty map" in {
+      val result = testForm.bind(Map.empty[String, String])
+      result.errors must contain(FormError("value", "error.required"))
+    }
+
+    "must return a custom error message" in {
+      val form   = Form("value" -> text("custom.error"))
+      val result = form.bind(Map("value" -> ""))
+      result.errors must contain(FormError("value", "custom.error"))
+    }
+
+    "must unbind a valid value" - {
+      "with no whitespace" in {
+        val result = testForm.fill("foobar")
+        result.apply("value").value.value mustEqual "foobar"
+      }
+
+      "with whitespace" in {
+        val result = testForm.fill(" foo \t bar ")
+        result.apply("value").value.value mustEqual " foo \t bar "
+      }
+    }
+  }
+
   "boolean" - {
 
     val testForm: Form[Boolean] =
