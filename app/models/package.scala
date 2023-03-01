@@ -196,6 +196,11 @@ package object models {
   }
 
   implicit class RichString(string: String) {
-    def removeSpaces(): String = string.replaceAll(" ", "")
+
+    def removeSpaces(): String =
+      string.foldLeft("") {
+        (acc, c) =>
+          acc + c.toString.trim
+      }
   }
 }
