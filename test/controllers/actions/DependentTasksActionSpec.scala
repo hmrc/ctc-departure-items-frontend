@@ -33,9 +33,9 @@ class DependentTasksActionSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
   def harness(userAnswers: UserAnswers): Future[Result] = {
 
-    lazy val actionProvider = app.injector.instanceOf[DependentTasksAction]
+    lazy val action = app.injector.instanceOf[DependentTasksAction]
 
-    actionProvider
+    action
       .invokeBlock(
         DataRequest(fakeRequest, eoriNumber, userAnswers),
         {
