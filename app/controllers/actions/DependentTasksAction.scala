@@ -26,14 +26,16 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class DependentTasksActionImpl @Inject() (implicit val executionContext: ExecutionContext, config: FrontendAppConfig) extends DependentTasksAction {
 
-  override protected def filter[A](request: DataRequest[A]): Future[Option[Result]] = {
-    val dependentTasks = Seq(".preTaskList", ".traderDetails", ".routeDetails", ".transportDetails")
-    if (dependentTasks.forall(request.userAnswers.tasks.get(_).exists(_.isCompleted))) {
+  override protected def filter[A](request: DataRequest[A]): Future[Option[Result]] =
+    if (DependentTasksAction.dependentTasks.forall(request.userAnswers.tasks.get(_).exists(_.isCompleted))) {
       Future.successful(None)
     } else {
       Future.successful(Some(Redirect(config.taskListUrl(request.userAnswers.lrn))))
     }
-  }
 }
 
 trait DependentTasksAction extends ActionFilter[DataRequest]
+
+object DependentTasksAction {
+  val dependentTasks = Seq(".preTaskList", ".traderDetails", ".routeDetails", ".transportDetails")
+}
