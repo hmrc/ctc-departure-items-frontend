@@ -30,6 +30,8 @@ import scala.concurrent.Future
 
 class DependentTasksActionSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
+  private val dependentTasks = Seq(".preTaskList", ".traderDetails", ".routeDetails", ".transportDetails")
+
   def harness(userAnswers: UserAnswers): Future[Result] = {
 
     lazy val actionProvider = app.injector.instanceOf[DependentTasksAction]
@@ -47,12 +49,7 @@ class DependentTasksActionSpec extends SpecBase with ScalaCheckPropertyChecks wi
   "DependentTasksAction" - {
 
     "return None if dependent sections are completed" in {
-      val tasks = Map(
-        ".preTaskList"      -> TaskStatus.Completed,
-        ".traderDetails"    -> TaskStatus.Completed,
-        ".routeDetails"     -> TaskStatus.Completed,
-        ".transportDetails" -> TaskStatus.Completed
-      )
+      val tasks       = Map(dependentTasks.map(_ -> TaskStatus.Completed): _*)
       val userAnswers = emptyUserAnswers.copy(tasks = tasks)
       val result      = harness(userAnswers)
       status(result) mustBe OK
@@ -63,12 +60,7 @@ class DependentTasksActionSpec extends SpecBase with ScalaCheckPropertyChecks wi
       "when all dependent sections are incomplete" in {
         forAll(arbitrary[TaskStatus](arbitraryIncompleteTaskStatus)) {
           taskStatus =>
-            val tasks = Map(
-              ".preTaskList"      -> taskStatus,
-              ".traderDetails"    -> taskStatus,
-              ".routeDetails"     -> taskStatus,
-              ".transportDetails" -> taskStatus
-            )
+            val tasks       = Map(dependentTasks.map(_ -> taskStatus): _*)
             val userAnswers = emptyUserAnswers.copy(tasks = tasks)
             val result      = harness(userAnswers)
             status(result) mustBe SEE_OTHER
@@ -77,15 +69,10 @@ class DependentTasksActionSpec extends SpecBase with ScalaCheckPropertyChecks wi
       }
 
       "when one dependent section is incomplete" in {
-        val dependentTasks = Seq(".preTaskList", ".traderDetails", ".routeDetails", ".transportDetails")
         forAll(Gen.oneOf(dependentTasks), arbitrary[TaskStatus](arbitraryIncompleteTaskStatus)) {
           (dependentTask, taskStatus) =>
-            val tasks = Map(
-              ".preTaskList"      -> TaskStatus.Completed,
-              ".traderDetails"    -> TaskStatus.Completed,
-              ".routeDetails"     -> TaskStatus.Completed,
-              ".transportDetails" -> TaskStatus.Completed
-            ).updated(dependentTask, taskStatus)
+            val tasks = Map(dependentTasks.map(_ -> TaskStatus.Completed): _*)
+              .updated(dependentTask, taskStatus)
             val userAnswers = emptyUserAnswers.copy(tasks = tasks)
             val result      = harness(userAnswers)
             status(result) mustBe SEE_OTHER
