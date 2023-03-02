@@ -18,24 +18,27 @@ package controllers.actions
 
 import config.FrontendAppConfig
 import models.requests.DataRequest
+import play.api.Logging
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionFilter, Result}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DependentTasksActionImpl @Inject() (implicit val executionContext: ExecutionContext, config: FrontendAppConfig) extends DependentTasksAction {
+class DependentTasksActionImpl @Inject() (implicit val executionContext: ExecutionContext, config: FrontendAppConfig)
+    extends DependentTasksAction
+    with Logging {
 
-  override protected def filter[A](request: DataRequest[A]): Future[Option[Result]] =
-    if (DependentTasksAction.dependentTasks.forall(request.userAnswers.tasks.get(_).exists(_.isCompleted))) {
-      Future.successful(None)
-    } else {
-      Future.successful(Some(Redirect(config.taskListUrl(request.userAnswers.lrn))))
+  override protected def filter[A](request: DataRequest[A]): Future[Option[Result]] = {
+    val incompleteTasks = config.dependentTasks.filterNot(request.userAnswers.tasks.get(_).exists(_.isCompleted))
+    incompleteTasks match {
+      case Nil =>
+        Future.successful(None)
+      case x =>
+        logger.info(s"Incomplete tasks: ${x.mkString(", ")}. Redirecting to task list.")
+        Future.successful(Some(Redirect(config.taskListUrl(request.userAnswers.lrn))))
     }
+  }
 }
 
 trait DependentTasksAction extends ActionFilter[DataRequest]
-
-object DependentTasksAction {
-  val dependentTasks = Seq(".preTaskList", ".traderDetails", ".routeDetails", ".transportDetails")
-}

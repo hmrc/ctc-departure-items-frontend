@@ -17,7 +17,6 @@
 package controllers.actions
 
 import base.SpecBase
-import controllers.actions.DependentTasksAction.dependentTasks
 import generators.Generators
 import models.requests.DataRequest
 import models.{TaskStatus, UserAnswers}
@@ -30,6 +29,8 @@ import play.api.test.Helpers._
 import scala.concurrent.Future
 
 class DependentTasksActionSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+
+  private val dependentTasks = frontendAppConfig.dependentTasks
 
   def harness(userAnswers: UserAnswers): Future[Result] = {
 
