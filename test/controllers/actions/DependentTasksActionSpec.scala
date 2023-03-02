@@ -60,7 +60,7 @@ class DependentTasksActionSpec extends SpecBase with ScalaCheckPropertyChecks wi
     }
 
     "return to task list" - {
-      "when any dependent sections are incomplete" in {
+      "when all dependent sections are incomplete" in {
         forAll(arbitrary[TaskStatus](arbitraryIncompleteTaskStatus)) {
           taskStatus =>
             val tasks = Map(
