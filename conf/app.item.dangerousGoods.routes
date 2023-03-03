@@ -1,6 +1,6 @@
-->         /                                                                         app.item.dangerousGoods.index.Routes
+->         /                                                                    app.item.dangerousGoods.index.Routes
 
-GET        /:lrn/items/:itemIndex/dangerous-goods/add-another                        controllers.item.dangerousGoods.AddAnotherDangerousGoodsController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
-POST       /:lrn/items/:itemIndex/dangerous-goods/add-another                        controllers.item.dangerousGoods.AddAnotherDangerousGoodsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
-GET        /:lrn/items/:itemIndex/dangerous-goods/change-add-another                 controllers.item.dangerousGoods.AddAnotherDangerousGoodsController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
-POST       /:lrn/items/:itemIndex/dangerous-goods/change-add-another                 controllers.item.dangerousGoods.AddAnotherDangerousGoodsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+GET        /:itemIndex/dangerous-goods/add-another/:lrn                         controllers.item.dangerousGoods.AddAnotherDangerousGoodsController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+POST       /:itemIndex/dangerous-goods/add-another/:lrn                         controllers.item.dangerousGoods.AddAnotherDangerousGoodsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+GET        /:itemIndex/dangerous-goods/change-add-another/:lrn                  controllers.item.dangerousGoods.AddAnotherDangerousGoodsController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+POST       /:itemIndex/dangerous-goods/change-add-another/:lrn                  controllers.item.dangerousGoods.AddAnotherDangerousGoodsController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
