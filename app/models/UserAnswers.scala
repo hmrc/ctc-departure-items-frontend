@@ -20,17 +20,13 @@ import pages.QuestionPage
 import play.api.libs.json._
 import queries.Gettable
 
-import java.time.LocalDateTime
 import scala.util.{Failure, Success, Try}
 
 final case class UserAnswers(
   lrn: LocalReferenceNumber,
   eoriNumber: EoriNumber,
   data: JsObject = Json.obj(),
-  tasks: Map[String, TaskStatus] = Map(),
-  createdAt: LocalDateTime = LocalDateTime.now,
-  lastUpdated: LocalDateTime = LocalDateTime.now,
-  id: Id = Id()
+  tasks: Map[String, TaskStatus] = Map()
 ) {
 
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
@@ -76,10 +72,7 @@ object UserAnswers {
       (__ \ "lrn").read[LocalReferenceNumber] and
         (__ \ "eoriNumber").read[EoriNumber] and
         (__ \ "data").read[JsObject] and
-        (__ \ "tasks").read[Map[String, TaskStatus]] and
-        (__ \ "createdAt").read[LocalDateTime] and
-        (__ \ "lastUpdated").read[LocalDateTime] and
-        (__ \ "_id").read[Id]
+        (__ \ "tasks").read[Map[String, TaskStatus]]
     )(UserAnswers.apply _)
 
   implicit lazy val writes: Writes[UserAnswers] =
@@ -87,9 +80,6 @@ object UserAnswers {
       (__ \ "lrn").write[LocalReferenceNumber] and
         (__ \ "eoriNumber").write[EoriNumber] and
         (__ \ "data").write[JsObject] and
-        (__ \ "tasks").write[Map[String, TaskStatus]] and
-        (__ \ "createdAt").write[LocalDateTime] and
-        (__ \ "lastUpdated").write[LocalDateTime] and
-        (__ \ "_id").write[Id]
+        (__ \ "tasks").write[Map[String, TaskStatus]]
     )(unlift(UserAnswers.unapply))
 }
