@@ -84,7 +84,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
       "must return Some(Row)" - {
         "when DeclarationTypePage is defined" in {
           val userAnswers = emptyUserAnswers
-          forAll(arbitrary[Mode], Gen.oneOf(DeclarationType.valuesU(userAnswers))) {
+          forAll(arbitrary[Mode], Gen.oneOf(DeclarationType.itemValues)) {
             (mode, declarationType) =>
               val answers = userAnswers
                 .setValue(DeclarationTypePage(itemIndex), declarationType)

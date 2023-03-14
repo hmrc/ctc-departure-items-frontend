@@ -16,9 +16,11 @@
 
 package models
 
-sealed trait DeclarationType
+sealed trait DeclarationType extends Radioable[DeclarationType] {
+  override val messageKeyPrefix: String = DeclarationType.messageKeyPrefix
+}
 
-object DeclarationType extends RadioModelU[DeclarationType] {
+object DeclarationType extends EnumerableType[DeclarationType] {
 
   case object T1 extends WithName("T1") with DeclarationType
   case object T2 extends WithName("T2") with DeclarationType
@@ -26,7 +28,7 @@ object DeclarationType extends RadioModelU[DeclarationType] {
   case object TIR extends WithName("TIR") with DeclarationType
   case object T extends WithName("T") with DeclarationType
 
-  override val messageKeyPrefix: String = "item.declarationType"
+  val messageKeyPrefix: String = "item.declarationType"
 
   val values: Seq[DeclarationType] = Seq(
     T1,
@@ -36,7 +38,7 @@ object DeclarationType extends RadioModelU[DeclarationType] {
     T
   )
 
-  override def valuesU(userAnswers: UserAnswers): Seq[DeclarationType] = Seq(
+  val itemValues: Seq[DeclarationType] = Seq(
     T1,
     T2,
     T2F

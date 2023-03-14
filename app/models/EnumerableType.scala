@@ -16,16 +16,14 @@
 
 package models
 
-import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
+trait EnumerableType[T] extends Enumerable.Implicits {
 
-trait RadioModelU[T] extends RadioModel[T] {
+  val values: Seq[T]
 
-  def valuesU(userAnswers: UserAnswers): Seq[T]
-
-  def radioItemsU(userAnswers: UserAnswers)(
-    formKey: String = "value",
-    checkedValue: Option[T] = None
-  )(implicit messages: Messages): Seq[RadioItem] =
-    radioItems(valuesU(userAnswers), formKey, checkedValue)
+  implicit def enumerable: Enumerable[T] =
+    Enumerable(
+      values.map(
+        v => v.toString -> v
+      ): _*
+    )
 }

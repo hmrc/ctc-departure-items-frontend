@@ -17,7 +17,7 @@
 package forms
 
 import forms.behaviours.OptionFieldBehaviours
-import models.RadioModel
+import models.{EnumerableType, Radioable}
 import org.scalacheck.Gen
 import play.api.data.FormError
 
@@ -25,10 +25,12 @@ class EnumerableFormProviderSpec extends OptionFieldBehaviours {
 
   private val prefix: String = Gen.alphaNumStr.sample.value
 
-  sealed private trait FakeEnum
+  sealed private trait FakeEnum extends Radioable[FakeEnum] {
+    override lazy val messageKeyPrefix: String = FakeEnum.messageKeyPrefix
+  }
 
-  private object FakeEnum extends RadioModel[FakeEnum] {
-    override val messageKeyPrefix: String = prefix
+  private object FakeEnum extends EnumerableType[FakeEnum] {
+    lazy val messageKeyPrefix: String = prefix
 
     case object Foo extends FakeEnum
     case object Bar extends FakeEnum

@@ -70,7 +70,7 @@ class DeclarationTypeSpec extends AnyFreeSpec with Matchers with ScalaCheckPrope
       "must return T1, T2 and T2F" in {
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
-            DeclarationType.valuesU(userAnswers) mustBe Seq(T1, T2, T2F)
+            DeclarationType.itemValues mustBe Seq(T1, T2, T2F)
         }
       }
     }

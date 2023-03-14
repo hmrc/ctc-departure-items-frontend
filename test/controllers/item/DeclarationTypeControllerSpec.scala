@@ -59,7 +59,7 @@ class DeclarationTypeControllerSpec extends SpecBase with AppWithDefaultMockFixt
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, DeclarationType.radioItemsU(userAnswers), mode, itemIndex)(request, messages).toString
+        view(form, lrn, DeclarationType.itemValues, mode, itemIndex)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -78,7 +78,7 @@ class DeclarationTypeControllerSpec extends SpecBase with AppWithDefaultMockFixt
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, DeclarationType.radioItemsU(userAnswers), mode, itemIndex)(request, messages).toString
+        view(filledForm, lrn, DeclarationType.itemValues, mode, itemIndex)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -112,7 +112,7 @@ class DeclarationTypeControllerSpec extends SpecBase with AppWithDefaultMockFixt
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, DeclarationType.radioItemsU(userAnswers), mode, itemIndex)(request, messages).toString
+        view(boundForm, lrn, DeclarationType.itemValues, mode, itemIndex)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
