@@ -14,12 +14,12 @@ class $className$ViewSpec extends RadioViewBehaviours[$className$] {
   override def form: Form[$className$] = new EnumerableFormProvider()(prefix)
 
   override def applyView(form: Form[$className$]): HtmlFormat.Appendable =
-    injector.instanceOf[$className$View].apply(form, lrn, $className$.radioItems, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[$className$View].apply(form, lrn, values, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "$package$.$className;format="decap"$"
 
   override def radioItems(fieldId: String, checkedValue: Option[$className$] = None): Seq[RadioItem] =
-    $className$.radioItems(fieldId, checkedValue)
+    values.toRadioItems(fieldId, checkedValue)
 
   override def values: Seq[$className$] = $className$.values
 

@@ -22,14 +22,11 @@ import models.DeclarationType
 import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.reference.Country
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.external._
 import pages.item._
 
 class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
-
-  private val description = Gen.alphaNumStr.sample.value
 
   "Item Domain" - {
 

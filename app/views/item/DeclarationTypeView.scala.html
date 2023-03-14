@@ -28,7 +28,7 @@
     button: Button
 )
 
-@(form: Form[DeclarationType], lrn: LocalReferenceNumber, radios: (String, Option[DeclarationType]) => Seq[RadioItem], mode: Mode, itemIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[DeclarationType], lrn: LocalReferenceNumber, itemValues: Seq[DeclarationType], mode: Mode, itemIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("item.declarationType.title"),
@@ -46,7 +46,7 @@
                 caption = Some(messages("item.caption", itemIndex.display)),
                 heading = messages("item.declarationType.heading")
             ),
-            radioItems = fieldId => radios(fieldId, form.value)
+            radioItems = fieldId => itemValues.toRadioItems(fieldId, form.value)
         )
 
         @button(attributes = Map("id" -> "submit"))

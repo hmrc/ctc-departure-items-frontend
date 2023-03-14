@@ -29,14 +29,14 @@ class DeclarationTypeViewSpec extends RadioViewBehaviours[DeclarationType] {
   override def form: Form[DeclarationType] = new EnumerableFormProvider()(prefix)
 
   override def applyView(form: Form[DeclarationType]): HtmlFormat.Appendable =
-    injector.instanceOf[DeclarationTypeView].apply(form, lrn, DeclarationType.radioItems, NormalMode, itemIndex)(fakeRequest, messages)
+    injector.instanceOf[DeclarationTypeView].apply(form, lrn, values, NormalMode, itemIndex)(fakeRequest, messages)
 
   override val prefix: String = "item.declarationType"
 
   override def radioItems(fieldId: String, checkedValue: Option[DeclarationType] = None): Seq[RadioItem] =
-    DeclarationType.radioItems(fieldId, checkedValue)
+    values.toRadioItems(fieldId, checkedValue)
 
-  override def values: Seq[DeclarationType] = DeclarationType.values
+  override def values: Seq[DeclarationType] = DeclarationType.itemValues
 
   behave like pageWithTitle()
 

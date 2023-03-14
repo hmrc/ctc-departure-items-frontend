@@ -36,14 +36,14 @@ class $className$Controller @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, lrn, $className$.radioItems, mode))
+      Ok(view(preparedForm, lrn, $className$.values, mode))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
 
       form.bindFromRequest().fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, $className$.radioItems, mode))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, $className$.values, mode))),
         value => {
           implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
           $className$Page.writeToUserAnswers(value).updateTask().writeToSession().navigate()
