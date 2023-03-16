@@ -45,7 +45,7 @@ object UserAnswersNavigator extends Logging {
     mode: Mode,
     stage: Stage = CompletingJourney
   )(implicit userAnswersReader: UserAnswersReader[T], config: FrontendAppConfig): Call = {
-    lazy val errorCall = Call(GET, config.sessionExpiredUrl)
+    lazy val errorCall = Call(GET, config.notFoundUrl)
 
     userAnswersReader.run(userAnswers) match {
       case Left(ReaderError(page, _)) =>

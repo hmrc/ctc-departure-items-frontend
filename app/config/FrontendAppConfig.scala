@@ -42,6 +42,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
 
   val departureHubUrl: String = configuration.get[String]("urls.manageTransitMovementsDepartureFrontend")
 
+  val notFoundUrl: String       = s"$departureHubUrl/not-found"
   val sessionExpiredUrl: String = s"$departureHubUrl/this-service-has-been-reset"
 
   val unauthorisedUrl: String                = s"$departureHubUrl/error/cannot-use-service-no-eori"

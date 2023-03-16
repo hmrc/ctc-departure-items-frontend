@@ -40,7 +40,7 @@ class ErrorHandler @Inject() (
   override def onClientError(request: RequestHeader, statusCode: Int, message: String = ""): Future[Result] =
     statusCode match {
       case NOT_FOUND =>
-        Future.successful(Redirect(s"${config.departureHubUrl}/not-found"))
+        Future.successful(Redirect(config.notFoundUrl))
       case result if isClientError(result) =>
         Future.successful(Redirect(s"${config.departureHubUrl}/bad-request"))
       case _ =>
