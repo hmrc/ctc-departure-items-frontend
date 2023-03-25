@@ -131,5 +131,37 @@ class DocumentSpec extends SpecBase {
 
       result mustBe expectedResult
     }
+
+    "when mandatory previous document" in {
+
+      val code        = "T1"
+      val description = "Document T1"
+
+      val json = Json.parse(s"""
+          |{
+          |  "previousDocumentType" : {
+          |  	 "type" : "Previous",
+          |  	 "code" : "$code",
+          |  	 "description" : "$description"
+          |  },
+          |  "details" : {
+          |  	 "documentReferenceNumber" : "$referenceNumber",
+          |  	 "addGoodsItemNumberYesNo" : false,
+          |  	 "addTypeOfPackageYesNo" : false,
+          |  	 "declareQuantityOfGoodsYesNo" : false
+          |  }
+          |}
+          |""".stripMargin)
+
+      val expectedResult = PreviousDocument(
+        code = code,
+        description = Some(description),
+        referenceNumber = referenceNumber
+      )
+
+      val result = json.as[Document]
+
+      result mustBe expectedResult
+    }
   }
 }

@@ -46,26 +46,32 @@ object Document {
     referenceNumber: String
   ) extends Document
 
-  implicit val reads: Reads[Document] =
-    (__ \ "type" \ "type").read[String].flatMap {
-      case "Transport" =>
-        (
-          (__ \ "type" \ "code").read[String] and
-            (__ \ "type" \ "description").readNullable[String] and
-            (__ \ "details" \ "documentReferenceNumber").read[String]
-        )(TransportDocument.apply _)
-      case "Support" =>
-        (
-          (__ \ "type" \ "code").read[String] and
-            (__ \ "type" \ "description").readNullable[String] and
-            (__ \ "details" \ "documentReferenceNumber").read[String] and
-            (__ \ "details" \ "lineItemNumber").readNullable[Int]
-        )(SupportDocument.apply _)
-      case "Previous" =>
-        (
-          (__ \ "type" \ "code").read[String] and
-            (__ \ "type" \ "description").readNullable[String] and
-            (__ \ "details" \ "documentReferenceNumber").read[String]
-        )(PreviousDocument.apply _)
-    }
+  implicit val reads: Reads[Document] = {
+    def previousDocumentReads(key: String): Reads[Document] = (
+      (__ \ key \ "code").read[String] and
+        (__ \ key \ "description").readNullable[String] and
+        (__ \ "details" \ "documentReferenceNumber").read[String]
+    )(PreviousDocument.apply _)
+
+    lazy val genericReads: Reads[Document] =
+      (__ \ "type" \ "type").read[String].flatMap {
+        case "Transport" =>
+          (
+            (__ \ "type" \ "code").read[String] and
+              (__ \ "type" \ "description").readNullable[String] and
+              (__ \ "details" \ "documentReferenceNumber").read[String]
+          )(TransportDocument.apply _)
+        case "Support" =>
+          (
+            (__ \ "type" \ "code").read[String] and
+              (__ \ "type" \ "description").readNullable[String] and
+              (__ \ "details" \ "documentReferenceNumber").read[String] and
+              (__ \ "details" \ "lineItemNumber").readNullable[Int]
+          )(SupportDocument.apply _)
+        case "Previous" =>
+          previousDocumentReads("type")
+      }
+
+    genericReads orElse previousDocumentReads("previousDocumentType")
+  }
 }
