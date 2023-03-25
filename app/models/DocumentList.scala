@@ -14,11 +14,23 @@
  * limitations under the License.
  */
 
-package pages.sections
+package models
 
-import pages.{QuestionPage, ReadOnlyPage}
-import play.api.libs.json.JsValue
+import play.api.libs.json.{JsArray, JsError, JsSuccess, Reads}
 
-trait Section[T <: JsValue] extends QuestionPage[T]
+case class DocumentList(documents: Seq[Document])
 
-trait ReadOnlySection[T <: JsValue] extends ReadOnlyPage[T]
+object DocumentList {
+
+  implicit val reads: Reads[DocumentList] = Reads[DocumentList] {
+    case JsArray(values) =>
+      JsSuccess(
+        DocumentList(
+          values.zipWithIndex.flatMap {
+            case (value, index) => value.validate[Document](Document.reads(index)).asOpt
+          }.toSeq
+        )
+      )
+    case _ => JsError("DocumentList::reads: Failed to read document list from cache")
+  }
+}

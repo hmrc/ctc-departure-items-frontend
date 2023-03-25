@@ -17,61 +17,39 @@
 package models
 
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{__, Reads}
+import play.api.libs.json._
 
-sealed trait Document {
-  val code: String
-  val description: Option[String]
-  val referenceNumber: String
+case class Document(
+  index: Int,
+  `type`: String,
+  code: String,
+  description: Option[String],
+  referenceNumber: String
+) extends Selectable {
+
+  override def toString: String = description match {
+    case Some(value) => s"($code) $value - $referenceNumber"
+    case None        => s"$code - $referenceNumber"
+  }
+
+  override val value: String = index.toString
 }
 
 object Document {
 
-  case class TransportDocument(
-    code: String,
-    description: Option[String],
-    referenceNumber: String
-  ) extends Document
-
-  case class SupportDocument(
-    code: String,
-    description: Option[String],
-    referenceNumber: String,
-    lineItemNumber: Option[Int]
-  ) extends Document
-
-  case class PreviousDocument(
-    code: String,
-    description: Option[String],
-    referenceNumber: String
-  ) extends Document
-
-  implicit val reads: Reads[Document] = {
-    def previousDocumentReads(key: String): Reads[Document] = (
-      (__ \ key \ "code").read[String] and
+  def reads(index: Int): Reads[Document] = {
+    def readsForKey(key: String): Reads[Document] = (
+      Reads(
+        _ => JsSuccess(index)
+      ) and
+        (__ \ key \ "type").read[String] and
+        (__ \ key \ "code").read[String] and
         (__ \ key \ "description").readNullable[String] and
         (__ \ "details" \ "documentReferenceNumber").read[String]
-    )(PreviousDocument.apply _)
+    )(Document.apply _)
 
-    lazy val genericReads: Reads[Document] =
-      (__ \ "type" \ "type").read[String].flatMap {
-        case "Transport" =>
-          (
-            (__ \ "type" \ "code").read[String] and
-              (__ \ "type" \ "description").readNullable[String] and
-              (__ \ "details" \ "documentReferenceNumber").read[String]
-          )(TransportDocument.apply _)
-        case "Support" =>
-          (
-            (__ \ "type" \ "code").read[String] and
-              (__ \ "type" \ "description").readNullable[String] and
-              (__ \ "details" \ "documentReferenceNumber").read[String] and
-              (__ \ "details" \ "lineItemNumber").readNullable[Int]
-          )(SupportDocument.apply _)
-        case "Previous" =>
-          previousDocumentReads("type")
-      }
-
-    genericReads orElse previousDocumentReads("previousDocumentType")
+    readsForKey("type") orElse readsForKey("previousDocumentType")
   }
+
+  implicit val writes: Writes[Document] = Json.writes[Document]
 }

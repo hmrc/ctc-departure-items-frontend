@@ -17,10 +17,18 @@
 package models
 
 import base.SpecBase
-import models.Document.{PreviousDocument, SupportDocument, TransportDocument}
+import generators.Generators
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
+import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
-class DocumentSpec extends SpecBase {
+class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+
+  private val typeGen = Gen.oneOf("Transport", "Support", "Previous")
+
+  private val i = arbitrary[Int].sample.value
 
   "must deserialise from mongo" - {
 
@@ -44,22 +52,23 @@ class DocumentSpec extends SpecBase {
           |}
           |""".stripMargin)
 
-      val expectedResult = TransportDocument(
+      val expectedResult = Document(
+        index = i,
+        `type` = "Transport",
         code = code,
         description = Some(description),
         referenceNumber = referenceNumber
       )
 
-      val result = json.as[Document]
+      val result = json.as[Document](Document.reads(i))
 
       result mustBe expectedResult
     }
 
     "when support document" in {
 
-      val code           = "Y028"
-      val description    = "Carrier (AEO certificate number)"
-      val lineItemNumber = 1
+      val code        = "Y028"
+      val description = "Carrier (AEO certificate number)"
 
       val json = Json.parse(s"""
           |{
@@ -71,19 +80,20 @@ class DocumentSpec extends SpecBase {
           |  "details" : {
           |  	 "documentReferenceNumber" : "$referenceNumber",
           |  	 "addLineItemNumberYesNo" : true,
-          |  	 "lineItemNumber" : $lineItemNumber
+          |  	 "lineItemNumber" : 1
           |  }
           |}
           |""".stripMargin)
 
-      val expectedResult = SupportDocument(
+      val expectedResult = Document(
+        index = i,
+        `type` = "Support",
         code = code,
         description = Some(description),
-        referenceNumber = referenceNumber,
-        lineItemNumber = Some(lineItemNumber)
+        referenceNumber = referenceNumber
       )
 
-      val result = json.as[Document]
+      val result = json.as[Document](Document.reads(i))
 
       result mustBe expectedResult
     }
@@ -121,13 +131,15 @@ class DocumentSpec extends SpecBase {
           |}
           |""".stripMargin)
 
-      val expectedResult = PreviousDocument(
+      val expectedResult = Document(
+        index = i,
+        `type` = "Previous",
         code = code,
         description = Some(description),
         referenceNumber = referenceNumber
       )
 
-      val result = json.as[Document]
+      val result = json.as[Document](Document.reads(i))
 
       result mustBe expectedResult
     }
@@ -153,15 +165,57 @@ class DocumentSpec extends SpecBase {
           |}
           |""".stripMargin)
 
-      val expectedResult = PreviousDocument(
+      val expectedResult = Document(
+        index = i,
+        `type` = "Previous",
         code = code,
         description = Some(description),
         referenceNumber = referenceNumber
       )
 
-      val result = json.as[Document]
+      val result = json.as[Document](Document.reads(i))
 
       result mustBe expectedResult
+    }
+  }
+
+  "must format as string" - {
+    "when description defined" in {
+      forAll(typeGen, nonEmptyString, nonEmptyString, nonEmptyString) {
+        (`type`, code, description, referenceNumber) =>
+          val document = Document(
+            index = i,
+            `type` = `type`,
+            code = code,
+            description = Some(description),
+            referenceNumber = referenceNumber
+          )
+
+          document.toString mustBe s"($code) $description - $referenceNumber"
+      }
+    }
+
+    "when description undefined" in {
+      forAll(typeGen, nonEmptyString, nonEmptyString) {
+        (`type`, code, referenceNumber) =>
+          val document = Document(
+            index = i,
+            `type` = `type`,
+            code = code,
+            description = None,
+            referenceNumber = referenceNumber
+          )
+
+          document.toString mustBe s"$code - $referenceNumber"
+      }
+    }
+  }
+
+  "must convert to select item" in {
+    forAll(arbitrary[Int], typeGen, nonEmptyString, Gen.option(nonEmptyString), nonEmptyString, arbitrary[Boolean]) {
+      (index, `type`, code, description, referenceNumber, selected) =>
+        val document = Document(index, `type`, code, description, referenceNumber)
+        document.toSelectItem(selected) mustBe SelectItem(Some(index.toString), document.toString, selected)
     }
   }
 }
