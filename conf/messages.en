@@ -159,3 +159,8 @@ item.dangerousGoods.index.removeUNNumber.error.required = Select yes if you want
 
 item.index.checkYourAnswers.dangerousGoods.label = Dangerous goods {0}
 item.index.checkYourAnswers.dangerousGoods.change.hidden = dangerous goods {0}
+
+item.addItemNetWeightYesNo.title = Do you want to add the item’s net weight?
+item.addItemNetWeightYesNo.heading = Do you want to add the item’s net weight?
+item.addItemNetWeightYesNo.checkYourAnswersLabel = Do you want to add the item’s net weight?
+item.addItemNetWeightYesNo.error.required = Select yes if Do you want to add the item’s net weight?
