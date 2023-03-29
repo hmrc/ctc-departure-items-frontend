@@ -40,9 +40,13 @@ class GrossWeightViewSpec extends InputTextViewBehaviours[BigDecimal] {
 
   behave like pageWithBackLink()
 
+  behave like pageWithSectionCaption(s"Item ${itemIndex.display} - Measurement")
+
   behave like pageWithHeading()
 
-  behave like pageWithoutHint()
+  behave like pageWithContent("p", "This is the combined weight of the item’s goods and packaging.")
+
+  behave like pageWithHint("Enter the weight in kilograms (kg), up to 6 decimal places.")
 
   behave like pageWithInputText(Some(InputSize.Width20))
 

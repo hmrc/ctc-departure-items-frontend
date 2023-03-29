@@ -42,9 +42,12 @@
 
         @inputText(
             field = form("value"),
-            inputTextType = OrdinaryTextInput(
-                heading = messages("item.grossWeight.heading")
+            inputTextType = TextInputWithHiddenLabel(
+                heading = messages("item.grossWeight.heading"),
+                caption = Some(messages("item.measurement.caption", itemIndex.display)),
+                additionalHtml = messages("item.grossWeight.paragraph").toParagraph
             ),
+            hint = Some(messages("item.grossWeight.hint")),
             inputClass = InputSize.Width20
         )
 

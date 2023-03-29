@@ -29,6 +29,7 @@ date.minute.capitalized = Minute
 
 item.caption = Item {0}
 item.dangerousGoods.caption = Item {0} - Dangerous goods
+item.measurement.caption = Item {0} - Measurement
 
 item.description.title = Enter a description of item {0}
 item.description.heading = Enter a description of item {0}
@@ -163,14 +164,20 @@ item.index.checkYourAnswers.dangerousGoods.change.hidden = dangerous goods {0}
 item.netWeight.title = What is the item’s net weight?
 item.netWeight.heading = What is the item’s net weight?
 item.netWeight.hint = Enter the weight in kilograms (kg), up to 6 decimal places.
-item.netWeight.checkYourAnswersLabel = What is the item’s net weight
+item.netWeight.checkYourAnswersLabel = Net weight
+item.netWeight.change.hidden = net weight of item {0}
 item.netWeight.error.invalidCharacters = The net weight must only include numbers 0 to 9 and a decimal point
 item.netWeight.error.required = Enter the item’s net weight
 item.netWeight.error.invalidFormat = The net weight must only include 6 decimal places or less
 item.netWeight.error.invalidValue = The net weight must be 16 characters or less
 
-item.grossWeight.title = What is the item’s gross weight
-item.grossWeight.heading = What is the item’s gross weight
-item.grossWeight.checkYourAnswersLabel = What is the item’s gross weight
-item.grossWeight.error.required = Enter What is the item’s gross weight
-item.grossWeight.error.length = What is the item’s gross weight must be 16 characters or less
+item.grossWeight.title = What is the item’s gross weight?
+item.grossWeight.heading = What is the item’s gross weight?
+item.grossWeight.paragraph = This is the combined weight of the item’s goods and packaging.
+item.grossWeight.hint = Enter the weight in kilograms (kg), up to 6 decimal places.
+item.grossWeight.checkYourAnswersLabel = Gross weight
+item.grossWeight.change.hidden = gross weight of item {0}
+item.grossWeight.error.required = Enter the item’s gross weight
+item.grossWeight.error.invalidCharacters = The gross weight must only include numbers 0 to 9 and a decimal point
+item.grossWeight.error.invalidFormat = The gross weight must only include 6 decimal places or less
+item.grossWeight.error.invalidValue = The gross weight must be 16 characters or less

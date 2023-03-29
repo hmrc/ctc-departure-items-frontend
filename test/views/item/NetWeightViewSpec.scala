@@ -40,6 +40,8 @@ class NetWeightViewSpec extends InputTextViewBehaviours[BigDecimal] {
 
   behave like pageWithBackLink()
 
+  behave like pageWithSectionCaption(s"Item ${itemIndex.display} - Measurement")
+
   behave like pageWithHeading()
 
   behave like pageWithHint("Enter the weight in kilograms (kg), up to 6 decimal places.")
