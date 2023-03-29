@@ -23,18 +23,18 @@ import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewmodels.InputSize
 import views.behaviours.InputTextViewBehaviours
-import views.html.item.NetWeightView
+import views.html.item.GrossWeightView
 
-class NetWeightViewSpec extends InputTextViewBehaviours[BigDecimal] {
+class GrossWeightViewSpec extends InputTextViewBehaviours[BigDecimal] {
+
+  override val prefix: String = "item.grossWeight"
 
   override def form: Form[BigDecimal] = new BigDecimalFormProvider()(prefix)
 
   override def applyView(form: Form[BigDecimal]): HtmlFormat.Appendable =
-    injector.instanceOf[NetWeightView].apply(form, lrn, NormalMode, itemIndex)(fakeRequest, messages)
+    injector.instanceOf[GrossWeightView].apply(form, lrn, NormalMode, itemIndex)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[BigDecimal] = Arbitrary(positiveBigDecimals)
-
-  override val prefix: String = "item.netWeight"
 
   behave like pageWithTitle()
 
@@ -43,6 +43,8 @@ class NetWeightViewSpec extends InputTextViewBehaviours[BigDecimal] {
   behave like pageWithSectionCaption(s"Item ${itemIndex.display} - Measurement")
 
   behave like pageWithHeading()
+
+  behave like pageWithContent("p", "This is the combined weight of the item’s goods and packaging.")
 
   behave like pageWithHint("Enter the weight in kilograms (kg), up to 6 decimal places.")
 

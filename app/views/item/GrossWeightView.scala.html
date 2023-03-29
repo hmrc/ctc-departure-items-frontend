@@ -31,22 +31,23 @@
 @(form: Form[BigDecimal], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("item.netWeight.title"),
+    title = messages("item.grossWeight.title"),
     showBackLink = true,
     lrn = lrn
 ) {
 
-    @formHelper(action = routes.NetWeightController.onSubmit(lrn, mode, itemIndex), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.GrossWeightController.onSubmit(lrn, mode, itemIndex), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
         @inputText(
             field = form("value"),
-            inputTextType = OrdinaryTextInput(
-                heading = messages("item.netWeight.heading"),
-                caption = Some(messages("item.measurement.caption", itemIndex.display))
+            inputTextType = TextInputWithHiddenLabel(
+                heading = messages("item.grossWeight.heading"),
+                caption = Some(messages("item.measurement.caption", itemIndex.display)),
+                additionalHtml = messages("item.grossWeight.paragraph").toParagraph
             ),
-            hint = Some(messages("item.netWeight.hint")),
+            hint = Some(messages("item.grossWeight.hint")),
             inputClass = InputSize.Width20
         )
 
