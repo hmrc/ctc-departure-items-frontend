@@ -59,6 +59,8 @@ trait Generators extends UserAnswersGenerator with ModelGenerators with DomainMo
     genIntersperseString(numberGen.toString, ",")
   }
 
+  def positiveBigDecimals: Gen[BigDecimal] = positiveInts.map(BigDecimal(_))
+
   def intsLargerThanMaxValue: Gen[BigInt] =
     arbitrary[BigInt] retryUntil (
       x => x > Int.MaxValue

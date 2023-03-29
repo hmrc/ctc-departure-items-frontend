@@ -53,6 +53,37 @@ trait Formatters {
       Map(key -> value)
   }
 
+  private[mappings] def bigDecimalFormatter(
+    requiredKey: String = "error.required",
+    invalidCharactersKey: String = "error.invalidCharacters",
+    invalidFormatKey: String = "error.invalidFormat",
+    invalidValueKey: String = "error.invalidValue",
+    args: Seq[String] = Seq.empty
+  ): Formatter[BigDecimal] =
+    new Formatter[BigDecimal] {
+
+      private val invalidCharactersRegex = """^[0-9.]*$"""
+      private val invalidFormatRegex     = """^[0-9]*(\.[0-9]{1,6})?$"""
+      private val invalidValueRegex      = """^[0-9.]{1,16}$"""
+
+      private val baseFormatter = stringFormatter(requiredKey)
+
+      override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], BigDecimal] =
+        baseFormatter
+          .bind(key, data)
+          .map(_.replace(",", ""))
+          .map(_.replace(" ", ""))
+          .flatMap {
+            case s if !s.matches(invalidCharactersRegex) => Left(Seq(FormError(key, invalidCharactersKey, args)))
+            case s if !s.matches(invalidFormatRegex)     => Left(Seq(FormError(key, invalidFormatKey, args)))
+            case s if !s.matches(invalidValueRegex)      => Left(Seq(FormError(key, invalidValueKey, args)))
+            case s                                       => Right(BigDecimal(s))
+          }
+
+      override def unbind(key: String, value: BigDecimal): Map[String, String] =
+        baseFormatter.unbind(key, value.toString())
+    }
+
   private[mappings] def booleanFormatter(requiredKey: String, invalidKey: String, args: Seq[Any] = Seq.empty): Formatter[Boolean] =
     new Formatter[Boolean] {
 
