@@ -16,6 +16,7 @@
 
 package pages.item
 
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class AddItemNetWeightYesNoPageSpec extends PageBehaviours {
@@ -28,6 +29,21 @@ class AddItemNetWeightYesNoPageSpec extends PageBehaviours {
 
     beRemovable[Boolean](AddItemNetWeightYesNoPage(itemIndex))
 
-    // TODO: Add clean up logic test
+    "cleanup" - {
+      "when no selected" - {
+        "must remove ItemNetWeight" in {
+          forAll(arbitrary[BigDecimal]) {
+            NetWeight =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AddItemNetWeightYesNoPage(itemIndex), true)
+                .setValue(NetWeightPage(itemIndex), NetWeight)
+
+              val result = userAnswers.setValue(AddItemNetWeightYesNoPage(itemIndex), false)
+
+              result.get(NetWeightPage(itemIndex)) must not be defined
+          }
+        }
+      }
+    }
   }
 }
