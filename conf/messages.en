@@ -159,3 +159,9 @@ item.dangerousGoods.index.removeUNNumber.error.required = Select yes if you want
 
 item.index.checkYourAnswers.dangerousGoods.label = Dangerous goods {0}
 item.index.checkYourAnswers.dangerousGoods.change.hidden = dangerous goods {0}
+
+item.grossWeight.title = What is the item’s gross weight
+item.grossWeight.heading = What is the item’s gross weight
+item.grossWeight.checkYourAnswersLabel = What is the item’s gross weight
+item.grossWeight.error.required = Enter What is the item’s gross weight
+item.grossWeight.error.length = What is the item’s gross weight must be 16 characters or less

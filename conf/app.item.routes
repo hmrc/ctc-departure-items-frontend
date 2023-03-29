@@ -64,3 +64,8 @@ GET        /:itemIndex/dangerous-goods/add/:lrn                     controllers.
 POST       /:itemIndex/dangerous-goods/add/:lrn                     controllers.item.AddDangerousGoodsYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
 GET        /:itemIndex/dangerous-goods/change-add/:lrn              controllers.item.AddDangerousGoodsYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
 POST       /:itemIndex/dangerous-goods/change-add/:lrn              controllers.item.AddDangerousGoodsYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+
+GET        /:itemIndex/measurement/gross-weight/:lrn                controllers.item.GrossWeightController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+POST       /:itemIndex/measurement/gross-weight/:lrn                controllers.item.GrossWeightController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+GET        /:itemIndex/measurement/change-gross-weight/:lrn         controllers.item.GrossWeightController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+POST       /:itemIndex/measurement/change-gross-weight/:lrn         controllers.item.GrossWeightController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
