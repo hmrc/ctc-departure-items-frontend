@@ -546,5 +546,42 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         }
       }
     }
+
+    "itemNetWeightYesNo" - {
+      "must return None" - {
+        "when AddItemNetWeightYesNoPage is undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+              val result = helper.itemNetWeightYesNo
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when AddItemNetWeightYesNoPage is defined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val answers = emptyUserAnswers
+                .setValue(AddItemNetWeightYesNoPage(itemIndex), true)
+
+              val helper = new ItemAnswersHelper(answers, mode, index)
+              val result = helper.itemNetWeightYesNo.get
+
+              result.key.value mustBe "Do you want to add the item’s net weight?"
+              result.value.value mustBe "Yes"
+
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe AddItemNetWeightYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
+              action.visuallyHiddenText.get mustBe "if you want to add the item’s net weight"
+              action.id mustBe "change-add-item-net-weight"
+          }
+        }
+      }
+    }
   }
 }

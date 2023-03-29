@@ -65,6 +65,11 @@ POST       /:itemIndex/dangerous-goods/add/:lrn                     controllers.
 GET        /:itemIndex/dangerous-goods/change-add/:lrn              controllers.item.AddDangerousGoodsYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
 POST       /:itemIndex/dangerous-goods/change-add/:lrn              controllers.item.AddDangerousGoodsYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
 
+GET        /:itemIndex/measurement/add-net-weight/:lrn              controllers.item.AddItemNetWeightYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+POST       /:itemIndex/measurement/add-net-weight/:lrn              controllers.item.AddItemNetWeightYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+GET        /:itemIndex/measurement/change-add-net-weight/:lrn       controllers.item.AddItemNetWeightYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+POST       /:itemIndex/measurement/change-add-net-weight/:lrn       controllers.item.AddItemNetWeightYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+
 GET        /:itemIndex/measurement/net-weight/:lrn                  controllers.item.NetWeightController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
 POST       /:itemIndex/measurement/net-weight/:lrn                  controllers.item.NetWeightController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
 GET        /:itemIndex/measurement/change-net-weight/:lrn           controllers.item.NetWeightController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
