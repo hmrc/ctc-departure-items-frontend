@@ -161,6 +161,13 @@ item.dangerousGoods.index.removeUNNumber.error.required = Select yes if you want
 item.index.checkYourAnswers.dangerousGoods.label = Dangerous goods {0}
 item.index.checkYourAnswers.dangerousGoods.change.hidden = dangerous goods {0}
 
+item.addItemNetWeightYesNo.title = Do you want to add the item’s net weight?
+item.addItemNetWeightYesNo.heading = Do you want to add the item’s net weight?
+item.addItemNetWeightYesNo.paragraph = This is the weight of the item’s goods, excluding all packaging.
+item.addItemNetWeightYesNo.checkYourAnswersLabel = Do you want to add the item’s net weight?
+item.addItemNetWeightYesNo.change.hidden = if you want to add the item’s net weight
+item.addItemNetWeightYesNo.error.required = Select yes if you want to add the net weight of item {0}
+
 item.netWeight.title = What is the item’s net weight?
 item.netWeight.heading = What is the item’s net weight?
 item.netWeight.hint = Enter the weight in kilograms (kg), up to 6 decimal places.
