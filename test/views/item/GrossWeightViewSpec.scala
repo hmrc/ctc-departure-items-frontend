@@ -16,25 +16,25 @@
 
 package views.item
 
-import forms.GrossWeightFormProvider
+import forms.BigDecimalFormProvider
 import models.NormalMode
-import org.scalacheck.{Arbitrary, Gen}
+import org.scalacheck.Arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewmodels.InputSize
 import views.behaviours.InputTextViewBehaviours
 import views.html.item.GrossWeightView
 
-class GrossWeightViewSpec extends InputTextViewBehaviours[String] {
+class GrossWeightViewSpec extends InputTextViewBehaviours[BigDecimal] {
 
   override val prefix: String = "item.grossWeight"
 
-  override def form: Form[String] = new GrossWeightFormProvider()(prefix)
+  override def form: Form[BigDecimal] = new BigDecimalFormProvider()(prefix)
 
-  override def applyView(form: Form[String]): HtmlFormat.Appendable =
+  override def applyView(form: Form[BigDecimal]): HtmlFormat.Appendable =
     injector.instanceOf[GrossWeightView].apply(form, lrn, NormalMode, itemIndex)(fakeRequest, messages)
 
-  implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
+  implicit override val arbitraryT: Arbitrary[BigDecimal] = Arbitrary(positiveBigDecimals)
 
   behave like pageWithTitle()
 

@@ -23,7 +23,7 @@ import pages.sections.ItemSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class GrossWeightPage(itemIndex: Index) extends QuestionPage[String] {
+case class GrossWeightPage(itemIndex: Index) extends QuestionPage[BigDecimal] {
 
   override def path: JsPath = ItemSection(itemIndex).path \ toString
 

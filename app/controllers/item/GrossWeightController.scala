@@ -18,7 +18,7 @@ package controllers.item
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.GrossWeightFormProvider
+import forms.BigDecimalFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
 import pages.item.GrossWeightPage
@@ -35,7 +35,7 @@ class GrossWeightController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: ItemNavigatorProvider,
-  formProvider: GrossWeightFormProvider,
+  formProvider: BigDecimalFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: GrossWeightView
