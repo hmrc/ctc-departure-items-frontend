@@ -35,7 +35,7 @@ import scala.concurrent.Future
 class AddItemNetWeightYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
 
   private val formProvider                    = new YesNoFormProvider()
-  private val form                            = formProvider("item.addItemNetWeightYesNo")
+  private val form                            = formProvider("item.addItemNetWeightYesNo", itemIndex.display)
   private val mode                            = NormalMode
   private lazy val addItemNetWeightYesNoRoute = routes.AddItemNetWeightYesNoController.onPageLoad(lrn, mode, itemIndex).url
 

@@ -33,7 +33,11 @@ class AddItemNetWeightYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithBackLink()
 
+  behave like pageWithSectionCaption(s"Item ${itemIndex.display} - Measurement")
+
   behave like pageWithHeading()
+
+  behave like pageWithContent("p", "This is the weight of the item’s goods, excluding all packaging.")
 
   behave like pageWithRadioItems()
 

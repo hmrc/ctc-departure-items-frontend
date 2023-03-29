@@ -19,6 +19,7 @@ package controllers.item
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
+import models.requests.SpecificDataRequestProvider1
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
 import pages.item.AddItemNetWeightYesNoPage
@@ -43,10 +44,9 @@ class AddItemNetWeightYesNoController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("item.addItemNetWeightYesNo")
-
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
+      val form = formProvider("item.addItemNetWeightYesNo", itemIndex.display)
       val preparedForm = request.userAnswers.get(AddItemNetWeightYesNoPage(itemIndex)) match {
         case None        => form
         case Some(value) => form.fill(value)
@@ -57,6 +57,7 @@ class AddItemNetWeightYesNoController @Inject() (
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
+      val form = formProvider("item.addItemNetWeightYesNo", itemIndex.display)
       form
         .bindFromRequest()
         .fold(

@@ -27,5 +27,7 @@ class AddItemNetWeightYesNoPageSpec extends PageBehaviours {
     beSettable[Boolean](AddItemNetWeightYesNoPage(itemIndex))
 
     beRemovable[Boolean](AddItemNetWeightYesNoPage(itemIndex))
+
+    // TODO: Add clean up logic test
   }
 }

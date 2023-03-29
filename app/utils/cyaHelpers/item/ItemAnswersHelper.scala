@@ -134,4 +134,11 @@ class ItemAnswersHelper(
     args = dangerousGoodsIndex.display
   )(DangerousGoodsDomain.userAnswersReader(itemIndex, dangerousGoodsIndex))
 
+  def itemNetWeightYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddItemNetWeightYesNoPage(itemIndex),
+    formatAnswer = formatAsYesOrNo,
+    prefix = "item.addItemNetWeightYesNo",
+    id = Some("change-add-item-net-weight")
+  )
+
 }

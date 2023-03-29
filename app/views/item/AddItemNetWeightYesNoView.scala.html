@@ -41,8 +41,10 @@
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = OrdinaryYesNo(
-                heading = messages("item.addItemNetWeightYesNo.heading")
+            yesNoType = YesNoWithAdditionalHtml(
+                heading = messages("item.addItemNetWeightYesNo.heading"),
+                caption = Some(messages("item.measurement.caption", itemIndex.display)),
+                additionalHtml = messages("item.addItemNetWeightYesNo.paragraph").toParagraph
             )
         )
 
