@@ -4,9 +4,9 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.$formProvider$
 import models.reference.Country
-import models.requests.SpecificDataRequestProvider1
+import models.requests.SpecificDataRequestProvider2
 import models.{DynamicAddress, LocalReferenceNumber, Mode}
-import navigation.UserAnswersNavigator
+import navigation.{$navRoute$NavigatorProvider, UserAnswersNavigator}
 import pages.$package$._
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
