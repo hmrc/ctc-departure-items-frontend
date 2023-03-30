@@ -4,7 +4,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.$formProvider$
 import models.{Mode, LocalReferenceNumber}
-import navigation.UserAnswersNavigator
+import navigation.{$navRoute$NavigatorProvider, UserAnswersNavigator}
 import pages.$package$.$className$Page
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

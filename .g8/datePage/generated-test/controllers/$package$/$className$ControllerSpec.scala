@@ -3,6 +3,7 @@ package controllers.$package$
 import base.{SpecBase, AppWithDefaultMockFixtures}
 import forms.DateFormProvider
 import models.NormalMode
+import navigation.$navRoute$NavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary

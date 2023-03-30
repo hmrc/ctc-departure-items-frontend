@@ -5,6 +5,7 @@ import forms.$formProvider$
 import generators.Generators
 import models.reference.Country
 import models.{DynamicAddress, NormalMode}
+import navigation.$navRoute$NavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
