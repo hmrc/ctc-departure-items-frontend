@@ -3,6 +3,7 @@ package controllers.$package$
 import base.{SpecBase, AppWithDefaultMockFixtures}
 import forms.$formProvider$
 import models.{$referenceListClass$, NormalMode}
+import navigation.$navRoute$NavigatorProvider
 import generators.Generators
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
