@@ -134,11 +134,27 @@ class ItemAnswersHelper(
     args = dangerousGoodsIndex.display
   )(DangerousGoodsDomain.userAnswersReader(itemIndex, dangerousGoodsIndex))
 
+  def grossWeight: Option[SummaryListRow] = getAnswerAndBuildRow[BigDecimal](
+    page = GrossWeightPage(itemIndex),
+    formatAnswer = formatAsText,
+    prefix = "item.grossWeight",
+    id = Some(s"change-gross-weight-${itemIndex.display}"),
+    args = itemIndex.display
+  )
+
   def itemNetWeightYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = AddItemNetWeightYesNoPage(itemIndex),
     formatAnswer = formatAsYesOrNo,
     prefix = "item.addItemNetWeightYesNo",
     id = Some("change-add-item-net-weight")
+  )
+
+  def netWeight: Option[SummaryListRow] = getAnswerAndBuildRow[BigDecimal](
+    page = NetWeightPage(itemIndex),
+    formatAnswer = formatAsText,
+    prefix = "item.netWeight",
+    id = Some(s"change-net-weight-${itemIndex.display}"),
+    args = itemIndex.display
   )
 
 }
