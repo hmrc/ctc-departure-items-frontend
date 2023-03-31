@@ -547,6 +547,43 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
       }
     }
 
+    "grossWeight" - {
+      "must return None" - {
+        "when GrossWeightPage is undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+              val result = helper.grossWeight
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when GrossWeightPage is defined" in {
+          forAll(arbitrary[Mode], arbitrary[BigDecimal]) {
+            (mode, grossWeight) =>
+              val answers = emptyUserAnswers
+                .setValue(GrossWeightPage(itemIndex), grossWeight)
+
+              val helper = new ItemAnswersHelper(answers, mode, itemIndex)
+              val result = helper.grossWeight.get
+
+              result.key.value mustBe "Gross weight"
+              result.value.value mustBe grossWeight.toString()
+
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe GrossWeightController.onPageLoad(answers.lrn, mode, itemIndex).url
+              action.visuallyHiddenText.get mustBe s"gross weight of item 1"
+              action.id mustBe "change-gross-weight-1"
+          }
+        }
+      }
+    }
+
     "itemNetWeightYesNo" - {
       "must return None" - {
         "when AddItemNetWeightYesNoPage is undefined" in {
@@ -579,6 +616,43 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               action.href mustBe AddItemNetWeightYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
               action.visuallyHiddenText.get mustBe "if you want to add the item’s net weight"
               action.id mustBe "change-add-item-net-weight"
+          }
+        }
+      }
+    }
+
+    "netWeight" - {
+      "must return None" - {
+        "when NetWeightPage is undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+              val result = helper.netWeight
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when NetWeightPage is defined" in {
+          forAll(arbitrary[Mode], arbitrary[BigDecimal]) {
+            (mode, netWeight) =>
+              val answers = emptyUserAnswers
+                .setValue(NetWeightPage(itemIndex), netWeight)
+
+              val helper = new ItemAnswersHelper(answers, mode, itemIndex)
+              val result = helper.netWeight.get
+
+              result.key.value mustBe "Net weight"
+              result.value.value mustBe netWeight.toString()
+
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe NetWeightController.onPageLoad(answers.lrn, mode, itemIndex).url
+              action.visuallyHiddenText.get mustBe s"net weight of item 1"
+              action.id mustBe "change-net-weight-1"
           }
         }
       }
