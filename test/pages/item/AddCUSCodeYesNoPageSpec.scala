@@ -44,6 +44,21 @@ class AddCUSCodeYesNoPageSpec extends PageBehaviours {
           }
         }
       }
+
+      "when yes selected" - {
+        "must do nothing" in {
+          forAll(arbitrary[String]) {
+            code =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AddCUSCodeYesNoPage(itemIndex), true)
+                .setValue(CustomsUnionAndStatisticsCodePage(itemIndex), code)
+
+              val result = userAnswers.setValue(AddCUSCodeYesNoPage(itemIndex), true)
+
+              result.get(CustomsUnionAndStatisticsCodePage(itemIndex)) must be(defined)
+          }
+        }
+      }
     }
   }
 

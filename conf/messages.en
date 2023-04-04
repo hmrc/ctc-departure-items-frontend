@@ -192,6 +192,22 @@ item.grossWeight.error.invalidCharacters = The gross weight must only include nu
 item.grossWeight.error.invalidFormat = The gross weight must only include 6 decimal places or less
 item.grossWeight.error.invalidValue = The gross weight must be 16 characters or less
 
+item.addSupplementaryUnitsYesNo.title = Do you want to add supplementary units?
+item.addSupplementaryUnitsYesNo.heading = Do you want to add supplementary units?
+item.addSupplementaryUnitsYesNo.paragraph = This can be any unit of measurement, such as litres, square metres or number of parts.
+item.addSupplementaryUnitsYesNo.checkYourAnswersLabel = Do you want to add supplementary units?
+item.addSupplementaryUnitsYesNo.error.required = Select yes if you want to add supplementary units
+
+item.supplementaryUnits.title = How many supplementary units does the item include?
+item.supplementaryUnits.heading = How many supplementary units does the item include?
+item.supplementaryUnits.hint = This number can include up to 6 decimal places.
+item.supplementaryUnits.checkYourAnswersLabel = Number of supplementary units
+item.supplementaryUnits.change.hidden = number of supplementary units for item {0}
+item.supplementaryUnits.error.required = Enter how many supplementary units the item includes
+item.supplementaryUnits.error.invalidCharacters = The number of supplementary units must only include numbers 0 to 9 and a decimal point
+item.supplementaryUnits.error.invalidFormat = The number of supplementary units must only include 6 decimal places or less
+item.supplementaryUnits.error.invalidValue = The number of supplementary units must be 16 characters or less
+
 item.packageType.title = What type of package are you using for the item?
 item.packageType.heading = What type of package are you using for the item?
 item.packageType.paragraph = This means the packaging used to store and protect the item during transit.

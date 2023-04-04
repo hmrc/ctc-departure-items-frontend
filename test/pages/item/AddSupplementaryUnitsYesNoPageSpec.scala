@@ -19,28 +19,28 @@ package pages.item
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
-class AddItemNetWeightYesNoPageSpec extends PageBehaviours {
+class AddSupplementaryUnitsYesNoPageSpec extends PageBehaviours {
 
-  "AddItemNetWeightYesNoPage" - {
+  "AddSupplementaryUnitsYesNoPage" - {
 
-    beRetrievable[Boolean](AddItemNetWeightYesNoPage(itemIndex))
+    beRetrievable[Boolean](AddSupplementaryUnitsYesNoPage(itemIndex))
 
-    beSettable[Boolean](AddItemNetWeightYesNoPage(itemIndex))
+    beSettable[Boolean](AddSupplementaryUnitsYesNoPage(itemIndex))
 
-    beRemovable[Boolean](AddItemNetWeightYesNoPage(itemIndex))
+    beRemovable[Boolean](AddSupplementaryUnitsYesNoPage(itemIndex))
 
     "cleanup" - {
       "when no selected" - {
-        "must remove ItemNetWeight" in {
+        "must remove supplementary units" in {
           forAll(arbitrary[BigDecimal]) {
-            NetWeight =>
+            units =>
               val userAnswers = emptyUserAnswers
-                .setValue(AddItemNetWeightYesNoPage(itemIndex), true)
-                .setValue(NetWeightPage(itemIndex), NetWeight)
+                .setValue(AddSupplementaryUnitsYesNoPage(itemIndex), true)
+                .setValue(SupplementaryUnitsPage(itemIndex), units)
 
-              val result = userAnswers.setValue(AddItemNetWeightYesNoPage(itemIndex), false)
+              val result = userAnswers.setValue(AddSupplementaryUnitsYesNoPage(itemIndex), false)
 
-              result.get(NetWeightPage(itemIndex)) must not be defined
+              result.get(SupplementaryUnitsPage(itemIndex)) must not be defined
           }
         }
       }
@@ -48,14 +48,14 @@ class AddItemNetWeightYesNoPageSpec extends PageBehaviours {
       "when yes selected" - {
         "must do nothing" in {
           forAll(arbitrary[BigDecimal]) {
-            NetWeight =>
+            units =>
               val userAnswers = emptyUserAnswers
-                .setValue(AddItemNetWeightYesNoPage(itemIndex), true)
-                .setValue(NetWeightPage(itemIndex), NetWeight)
+                .setValue(AddSupplementaryUnitsYesNoPage(itemIndex), true)
+                .setValue(SupplementaryUnitsPage(itemIndex), units)
 
-              val result = userAnswers.setValue(AddItemNetWeightYesNoPage(itemIndex), true)
+              val result = userAnswers.setValue(AddSupplementaryUnitsYesNoPage(itemIndex), true)
 
-              result.get(NetWeightPage(itemIndex)) must be(defined)
+              result.get(SupplementaryUnitsPage(itemIndex)) must be(defined)
           }
         }
       }
