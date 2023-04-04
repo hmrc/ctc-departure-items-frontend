@@ -43,8 +43,10 @@
         @inputText(
             field = form("value"),
             inputTextType = OrdinaryTextInput(
-                heading = messages("item.supplementaryUnits.heading")
+                heading = messages("item.supplementaryUnits.heading"),
+                caption = Some(messages("item.measurement.caption", itemIndex.display))
             ),
+            hint = Some(messages("item.supplementaryUnits.hint")),
             inputClass = InputSize.Width20
         )
 

@@ -40,9 +40,11 @@ class SupplementaryUnitsViewSpec extends InputTextViewBehaviours[BigDecimal] {
 
   behave like pageWithBackLink()
 
+  behave like pageWithSectionCaption(s"Item ${itemIndex.display} - Measurement")
+
   behave like pageWithHeading()
 
-  behave like pageWithoutHint()
+  behave like pageWithHint("This number can include up to 6 decimal places.")
 
   behave like pageWithInputText(Some(InputSize.Width20))
 
