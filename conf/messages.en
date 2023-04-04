@@ -188,3 +188,9 @@ item.grossWeight.error.required = Enter the item’s gross weight
 item.grossWeight.error.invalidCharacters = The gross weight must only include numbers 0 to 9 and a decimal point
 item.grossWeight.error.invalidFormat = The gross weight must only include 6 decimal places or less
 item.grossWeight.error.invalidValue = The gross weight must be 16 characters or less
+
+item.addSupplementaryUnitsYesNo.title = Do you want to add supplementary units?
+item.addSupplementaryUnitsYesNo.heading = Do you want to add supplementary units?
+item.addSupplementaryUnitsYesNo.paragraph = This can be any unit of measurement, such as litres, square metres or number of parts.
+item.addSupplementaryUnitsYesNo.checkYourAnswersLabel = Do you want to add supplementary units?
+item.addSupplementaryUnitsYesNo.error.required = Select yes if you want to add supplementary units
