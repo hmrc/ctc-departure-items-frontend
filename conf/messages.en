@@ -188,3 +188,9 @@ item.grossWeight.error.required = Enter the item’s gross weight
 item.grossWeight.error.invalidCharacters = The gross weight must only include numbers 0 to 9 and a decimal point
 item.grossWeight.error.invalidFormat = The gross weight must only include 6 decimal places or less
 item.grossWeight.error.invalidValue = The gross weight must be 16 characters or less
+
+item.supplementaryUnits.title = How many supplementary units does the item include
+item.supplementaryUnits.heading = How many supplementary units does the item include
+item.supplementaryUnits.checkYourAnswersLabel = How many supplementary units does the item include
+item.supplementaryUnits.error.required = Enter How many supplementary units does the item include
+item.supplementaryUnits.error.length = How many supplementary units does the item include must be 16 characters or less
