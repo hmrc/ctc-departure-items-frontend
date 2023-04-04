@@ -18,7 +18,7 @@ package utils.cyaHelpers.item
 
 import config.FrontendAppConfig
 import models.journeyDomain.item.dangerousGoods.DangerousGoodsDomain
-import models.reference.Country
+import models.reference.{Country, PackageType}
 import models.{DeclarationType, Index, Mode, UserAnswers}
 import pages.item._
 import pages.sections.dangerousGoods.DangerousGoodsListSection
@@ -157,4 +157,10 @@ class ItemAnswersHelper(
     args = itemIndex.display
   )
 
+  def packageType: Option[SummaryListRow] = getAnswerAndBuildRow[PackageType](
+    page = PackageTypePage(itemIndex),
+    formatAnswer = formatAsText,
+    prefix = "item.packageType",
+    id = Some("change-package-type")
+  )
 }

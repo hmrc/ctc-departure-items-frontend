@@ -30,6 +30,7 @@ date.minute.capitalized = Minute
 item.caption = Item {0}
 item.dangerousGoods.caption = Item {0} - Dangerous goods
 item.measurement.caption = Item {0} - Measurement
+item.packages.caption = Items - Packages
 
 item.description.title = Enter a description of item {0}
 item.description.heading = Enter a description of item {0}
@@ -191,9 +192,8 @@ item.grossWeight.error.invalidValue = The gross weight must be 16 characters or 
 
 item.packageType.title = What type of package are you using for item {0}?
 item.packageType.heading = What type of package are you using for item {0}?
-item.packageType.hint = What type of package are you using for item {0}? hint
-item.packageType.label = What type of package are you using for item {0}? label
+item.packageType.hint = Enter the package or code, like cylinder or CY.
 item.packageType.placeholder = Select a packageType
-item.packageType.change.hidden = What type of package are you using for item {0}?
-item.packageType.checkYourAnswersLabel = What type of package are you using for item {0}?
-item.packageType.error.required = Select the packageType
+item.packageType.change.hidden = package type
+item.packageType.checkYourAnswersLabel = Package type
+item.packageType.error.required = Enter the type of package you are using for item {0}

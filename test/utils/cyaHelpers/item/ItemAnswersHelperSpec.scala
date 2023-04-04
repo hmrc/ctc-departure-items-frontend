@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.item.routes._
 import controllers.item.dangerousGoods.index.routes.UNNumberController
 import generators.Generators
-import models.reference.Country
+import models.reference.{Country, PackageType}
 import models.{DeclarationType, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -653,6 +653,42 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               action.href mustBe NetWeightController.onPageLoad(answers.lrn, mode, itemIndex).url
               action.visuallyHiddenText.get mustBe s"net weight of item 1"
               action.id mustBe "change-net-weight-1"
+          }
+        }
+      }
+    }
+
+    "packageType" - {
+      "must return None" - {
+        "when PackageType page is undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, index)
+              val result = helper.packageType
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when PackageType page is defined" in {
+          forAll(arbitrary[Mode], arbitrary[PackageType]) {
+            (mode, packageType) =>
+              val answers = emptyUserAnswers.setValue(PackageTypePage(index), packageType)
+
+              val helper = new ItemAnswersHelper(answers, mode, index)
+              val result = helper.packageType.get
+
+              result.key.value mustBe "Package type"
+              result.value.value mustBe packageType.toString
+
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe PackageTypeController.onPageLoad(answers.lrn, mode, index).url
+              action.visuallyHiddenText.get mustBe "package type"
+              action.id mustBe "change-package-type"
           }
         }
       }

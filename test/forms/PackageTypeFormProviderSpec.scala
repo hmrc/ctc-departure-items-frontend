@@ -16,13 +16,14 @@
 
 package forms
 
+import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
 import models.PackageTypeList
 import play.api.data.FormError
 import generators.Generators
 import org.scalacheck.Gen
 
-class PackageTypeFormProviderSpec extends StringFieldBehaviours with Generators {
+class PackageTypeFormProviderSpec extends SpecBase with StringFieldBehaviours with Generators {
 
   private val prefix      = Gen.alphaNumStr.sample.value
   private val requiredKey = s"$prefix.error.required"
@@ -30,8 +31,9 @@ class PackageTypeFormProviderSpec extends StringFieldBehaviours with Generators 
   private val packageType1    = arbitraryPackageType.arbitrary.sample.get
   private val packageType2    = arbitraryPackageType.arbitrary.sample.get
   private val packageTypeList = PackageTypeList(Seq(packageType1, packageType2))
+  private val arg             = itemIndex.display.toString
 
-  private val form = new PackageTypeFormProvider()(prefix, packageTypeList)
+  private val form = new PackageTypeFormProvider()(prefix, packageTypeList, Seq(arg))
 
   ".value" - {
 
@@ -46,7 +48,7 @@ class PackageTypeFormProviderSpec extends StringFieldBehaviours with Generators 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredError = FormError(fieldName, requiredKey, Seq(arg))
     )
 
     "not bind if packageType code does not exist in the packageTypeList" in {

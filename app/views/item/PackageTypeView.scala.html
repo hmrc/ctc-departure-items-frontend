@@ -34,7 +34,7 @@
 @(form: Form[PackageType], lrn: LocalReferenceNumber, packageTypes: Seq[PackageType], mode: Mode, itemIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("item.packageType.title"),
+    title = messages("item.packageType.title", itemIndex.display),
     showBackLink = true,
     lrn = lrn
 ) {
@@ -46,7 +46,8 @@
         @inputSelect(
             field = form("value"),
             selectType = OrdinarySelect(
-                heading = messages("item.packageType.heading")
+                heading = messages("item.packageType.heading", itemIndex.display),
+                caption = Some(messages("item.packages.caption"))
             ),
             hint = Some(messages("item.packageType.hint")),
             selectItems = packageTypes.toSelectItems(form.value),

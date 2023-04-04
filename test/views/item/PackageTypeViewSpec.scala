@@ -28,7 +28,9 @@ import views.html.item.PackageTypeView
 
 class PackageTypeViewSpec extends InputSelectViewBehaviours[PackageType] {
 
-  override def form: Form[PackageType] = new PackageTypeFormProvider()(prefix, PackageTypeList(values))
+  private val arg = itemIndex.display.toString
+
+  override def form: Form[PackageType] = new PackageTypeFormProvider()(prefix, PackageTypeList(values), Seq(arg))
 
   override def applyView(form: Form[PackageType]): HtmlFormat.Appendable =
     injector.instanceOf[PackageTypeView].apply(form, lrn, values, NormalMode, itemIndex)(fakeRequest, messages)
@@ -37,17 +39,17 @@ class PackageTypeViewSpec extends InputSelectViewBehaviours[PackageType] {
 
   override val prefix: String = "item.packageType"
 
-  behave like pageWithTitle()
+  behave like pageWithTitle(arg)
 
   behave like pageWithBackLink()
 
-  behave like pageWithHeading()
+  behave like pageWithSectionCaption("Items - Packages")
+
+  behave like pageWithHeading(arg)
 
   behave like pageWithSelect()
 
-  behave like pageWithHint("What type of package are you using for item {0}? hint")
-
-  behave like pageWithContent("label", "What type of package are you using for item {0}? label")
+  behave like pageWithHint("Enter the package or code, like cylinder or CY.")
 
   behave like pageWithSubmitButton("Save and continue")
 }

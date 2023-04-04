@@ -40,7 +40,7 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
   private val packageTypeList = PackageTypeList(Seq(packageType1, packageType2))
 
   private val formProvider = new PackageTypeFormProvider()
-  private val form         = formProvider("item.packageType", packageTypeList)
+  private val form         = formProvider("item.packageType", packageTypeList, Seq(itemIndex.display.toString))
   private val mode         = NormalMode
 
   private val mockPackagesService: PackagesService = mock[PackagesService]

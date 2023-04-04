@@ -51,7 +51,7 @@ class PackageTypeController @Inject() (
     implicit request =>
       service.getPackageTypes.map {
         packageTypeList =>
-          val form = formProvider(prefix, packageTypeList)
+          val form = formProvider(prefix, packageTypeList, Seq(itemIndex.display.toString))
           val preparedForm = request.userAnswers.get(PackageTypePage(itemIndex)) match {
             case None        => form
             case Some(value) => form.fill(value)
@@ -65,7 +65,7 @@ class PackageTypeController @Inject() (
     implicit request =>
       service.getPackageTypes.flatMap {
         packageTypeList =>
-          val form = formProvider(prefix, packageTypeList)
+          val form = formProvider(prefix, packageTypeList, Seq(itemIndex.display.toString))
           form
             .bindFromRequest()
             .fold(
