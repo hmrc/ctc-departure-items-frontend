@@ -44,6 +44,21 @@ class AddItemNetWeightYesNoPageSpec extends PageBehaviours {
           }
         }
       }
+
+      "when yes selected" - {
+        "must do nothing" in {
+          forAll(arbitrary[BigDecimal]) {
+            NetWeight =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AddItemNetWeightYesNoPage(itemIndex), true)
+                .setValue(NetWeightPage(itemIndex), NetWeight)
+
+              val result = userAnswers.setValue(AddItemNetWeightYesNoPage(itemIndex), true)
+
+              result.get(NetWeightPage(itemIndex)) must be(defined)
+          }
+        }
+      }
     }
   }
 }
