@@ -189,6 +189,12 @@ item.grossWeight.error.invalidCharacters = The gross weight must only include nu
 item.grossWeight.error.invalidFormat = The gross weight must only include 6 decimal places or less
 item.grossWeight.error.invalidValue = The gross weight must be 16 characters or less
 
+item.addSupplementaryUnitsYesNo.title = Do you want to add supplementary units?
+item.addSupplementaryUnitsYesNo.heading = Do you want to add supplementary units?
+item.addSupplementaryUnitsYesNo.paragraph = This can be any unit of measurement, such as litres, square metres or number of parts.
+item.addSupplementaryUnitsYesNo.checkYourAnswersLabel = Do you want to add supplementary units?
+item.addSupplementaryUnitsYesNo.error.required = Select yes if you want to add supplementary units
+
 item.supplementaryUnits.title = How many supplementary units does the item include?
 item.supplementaryUnits.heading = How many supplementary units does the item include?
 item.supplementaryUnits.hint = This number can include up to 6 decimal places.
