@@ -1,0 +1,5 @@
+
+GET        /:itemIndex/packages/:packageIndex/type/:lrn                           controllers.item.packages.index.PackageTypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index, packageIndex: Index)
+POST       /:itemIndex/packages/:packageIndex/type/:lrn                           controllers.item.packages.index.PackageTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index, packageIndex: Index)
+GET        /:itemIndex/packages/:packageIndex/change-type/:lrn                    controllers.item.packages.index.PackageTypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index, packageIndex: Index)
+POST       /:itemIndex/packages/:packageIndex/change-type/:lrn                    controllers.item.packages.index.PackageTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index, packageIndex: Index)

@@ -17,16 +17,18 @@
 package utils.cyaHelpers.item
 
 import base.SpecBase
-import controllers.item.routes._
 import controllers.item.dangerousGoods.index.routes.UNNumberController
+import controllers.item.packages.index.routes.PackageTypeController
+import controllers.item.routes._
 import generators.Generators
-import models.reference.Country
+import models.reference.{Country, PackageType}
 import models.{DeclarationType, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.item._
 import pages.item.dangerousGoods.index.UNNumberPage
+import pages.item.packages.index.PackageTypePage
 
 class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -653,6 +655,40 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               action.href mustBe NetWeightController.onPageLoad(answers.lrn, mode, itemIndex).url
               action.visuallyHiddenText.get mustBe s"net weight of item 1"
               action.id mustBe "change-net-weight-1"
+          }
+        }
+      }
+    }
+
+    "packages" - {
+      "must return None" - {
+        "when packages is undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+              val result = helper.packages(packageIndex)
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when packages is defined" in {
+          forAll(arbitrary[Mode], arbitrary[PackageType]) {
+            (mode, packageType) =>
+              val userAnswers = emptyUserAnswers.setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+              val helper      = new ItemAnswersHelper(userAnswers, mode, itemIndex)
+              val result      = helper.packages(packageIndex).get
+
+              result.key.value mustBe "Packages 1"
+              result.value.value mustBe packageType.toString
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe PackageTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, packageIndex).url
+              action.visuallyHiddenText.get mustBe "packages 1"
+              action.id mustBe "change-packages-1"
           }
         }
       }

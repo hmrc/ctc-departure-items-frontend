@@ -114,6 +114,14 @@ trait ModelGenerators {
     } yield Call(method, url)
   }
 
+  implicit lazy val arbitraryPackageType: Arbitrary[PackageType] =
+    Arbitrary {
+      for {
+        code <- nonEmptyString
+        desc <- Gen.option(nonEmptyString)
+      } yield PackageType(code, desc)
+    }
+
   lazy val arbitraryIncompleteTaskStatus: Arbitrary[TaskStatus] = Arbitrary {
     Gen.oneOf(TaskStatus.InProgress, TaskStatus.NotStarted, TaskStatus.CannotStartYet)
   }
