@@ -14,26 +14,25 @@
  * limitations under the License.
  */
 
-package views.item
+package views.item.packages.index
 
 import forms.PackageTypeFormProvider
-import views.behaviours.InputSelectViewBehaviours
-import models.NormalMode
+import models.{NormalMode, PackageTypeList}
 import models.reference.PackageType
-import models.PackageTypeList
 import org.scalacheck.Arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.html.item.PackageTypeView
+import views.behaviours.InputSelectViewBehaviours
+import views.html.item.packages.index.PackageTypeView
 
 class PackageTypeViewSpec extends InputSelectViewBehaviours[PackageType] {
 
   private val arg = itemIndex.display.toString
 
-  override def form: Form[PackageType] = new PackageTypeFormProvider()(prefix, PackageTypeList(values), Seq(arg))
+  override def form: Form[PackageType] = new PackageTypeFormProvider()(prefix, PackageTypeList(values))
 
   override def applyView(form: Form[PackageType]): HtmlFormat.Appendable =
-    injector.instanceOf[PackageTypeView].apply(form, lrn, values, NormalMode, itemIndex)(fakeRequest, messages)
+    injector.instanceOf[PackageTypeView].apply(form, lrn, values, NormalMode, itemIndex, packageIndex)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[PackageType] = arbitraryPackageType
 
@@ -43,9 +42,11 @@ class PackageTypeViewSpec extends InputSelectViewBehaviours[PackageType] {
 
   behave like pageWithBackLink()
 
-  behave like pageWithSectionCaption("Items - Packages")
+  behave like pageWithSectionCaption(s"Item ${itemIndex.display} - Packages")
 
   behave like pageWithHeading(arg)
+
+  behave like pageWithContent("p", "This means the packaging used to store and protect the item during transit.")
 
   behave like pageWithSelect()
 

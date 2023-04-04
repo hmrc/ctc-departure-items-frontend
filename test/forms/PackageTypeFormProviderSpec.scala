@@ -31,9 +31,8 @@ class PackageTypeFormProviderSpec extends SpecBase with StringFieldBehaviours wi
   private val packageType1    = arbitraryPackageType.arbitrary.sample.get
   private val packageType2    = arbitraryPackageType.arbitrary.sample.get
   private val packageTypeList = PackageTypeList(Seq(packageType1, packageType2))
-  private val arg             = itemIndex.display.toString
 
-  private val form = new PackageTypeFormProvider()(prefix, packageTypeList, Seq(arg))
+  private val form = new PackageTypeFormProvider()(prefix, packageTypeList)
 
   ".value" - {
 
@@ -48,7 +47,7 @@ class PackageTypeFormProviderSpec extends SpecBase with StringFieldBehaviours wi
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey, Seq(arg))
+      requiredError = FormError(fieldName, requiredKey)
     )
 
     "not bind if packageType code does not exist in the packageTypeList" in {

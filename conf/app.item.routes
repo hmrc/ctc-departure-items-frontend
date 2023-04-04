@@ -1,4 +1,5 @@
 ->         /                                                        app.item.dangerousGoods.Routes
+->         /                                                        app.item.packages.Routes
 
 GET        /:itemIndex/description/:lrn                             controllers.item.DescriptionController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
 POST       /:itemIndex/description/:lrn                             controllers.item.DescriptionController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
@@ -79,8 +80,3 @@ GET        /:itemIndex/measurement/gross-weight/:lrn                controllers.
 POST       /:itemIndex/measurement/gross-weight/:lrn                controllers.item.GrossWeightController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
 GET        /:itemIndex/measurement/change-gross-weight/:lrn         controllers.item.GrossWeightController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
 POST       /:itemIndex/measurement/change-gross-weight/:lrn         controllers.item.GrossWeightController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
-
-GET        /:itemIndex/packages/type/:lrn                           controllers.item.PackageTypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
-POST       /:itemIndex/packages/type/:lrn                           controllers.item.PackageTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
-GET        /:itemIndex/packages/change-type/:lrn                    controllers.item.PackageTypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
-POST       /:itemIndex/packages/change-type/:lrn                    controllers.item.PackageTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)

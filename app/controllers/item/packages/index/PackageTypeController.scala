@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package controllers.item
+package controllers.item.packages.index
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.PackageTypeFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
-import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
-import pages.item.PackageTypePage
+import navigation.{PackagesNavigatorProvider, UserAnswersNavigator}
+import pages.item.packages.index
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.PackagesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.item.PackageTypeView
+import views.html.item.packages.index.PackageTypeView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class PackageTypeController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigatorProvider: ItemNavigatorProvider,
+  navigatorProvider: PackagesNavigatorProvider,
   actions: Actions,
   formProvider: PackageTypeFormProvider,
   service: PackagesService,
@@ -47,32 +47,32 @@ class PackageTypeController @Inject() (
 
   private val prefix: String = "item.packageType"
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, packageIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
       service.getPackageTypes.map {
         packageTypeList =>
-          val form = formProvider(prefix, packageTypeList, Seq(itemIndex.display.toString))
-          val preparedForm = request.userAnswers.get(PackageTypePage(itemIndex)) match {
+          val form = formProvider(prefix, packageTypeList)
+          val preparedForm = request.userAnswers.get(index.PackageTypePage(itemIndex, packageIndex)) match {
             case None        => form
             case Some(value) => form.fill(value)
           }
 
-          Ok(view(preparedForm, lrn, packageTypeList.packageTypes, mode, itemIndex))
+          Ok(view(preparedForm, lrn, packageTypeList.packageTypes, mode, itemIndex, packageIndex))
       }
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, packageIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
       service.getPackageTypes.flatMap {
         packageTypeList =>
-          val form = formProvider(prefix, packageTypeList, Seq(itemIndex.display.toString))
+          val form = formProvider(prefix, packageTypeList)
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, packageTypeList.packageTypes, mode, itemIndex))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, packageTypeList.packageTypes, mode, itemIndex, packageIndex))),
               value => {
-                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
-                PackageTypePage(itemIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex, packageIndex)
+                index.PackageTypePage(itemIndex, packageIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
               }
             )
       }

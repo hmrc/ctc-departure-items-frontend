@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.item.routes
+@import controllers.item.packages.index.routes
 @import models.LocalReferenceNumber
 @import models.reference.PackageType
 @import models.Selectable
@@ -31,23 +31,24 @@
     button: Button
 )
 
-@(form: Form[PackageType], lrn: LocalReferenceNumber, packageTypes: Seq[PackageType], mode: Mode, itemIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[PackageType], lrn: LocalReferenceNumber, packageTypes: Seq[PackageType], mode: Mode, itemIndex: Index, packageIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("item.packageType.title", itemIndex.display),
+    title = messages("item.packageType.title"),
     showBackLink = true,
     lrn = lrn
 ) {
 
-    @formHelper(action = routes.PackageTypeController.onSubmit(lrn, mode, itemIndex), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.PackageTypeController.onSubmit(lrn, mode, itemIndex, packageIndex), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
         @inputSelect(
             field = form("value"),
-            selectType = OrdinarySelect(
-                heading = messages("item.packageType.heading", itemIndex.display),
-                caption = Some(messages("item.packages.caption"))
+            selectType = SelectWithAdditionalHtml(
+                heading = messages("item.packageType.heading"),
+                caption = Some(messages("item.packages.caption", itemIndex.display)),
+                additionalHtml = messages("item.packageType.paragraph").toParagraph
             ),
             hint = Some(messages("item.packageType.hint")),
             selectItems = packageTypes.toSelectItems(form.value),

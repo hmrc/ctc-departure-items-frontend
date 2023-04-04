@@ -54,6 +54,20 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       |]
       |""".stripMargin
 
+  private val packageTypeJson: String =
+    """
+      |[
+      | {
+      |    "code": "VA",
+      |    "description": "Vat"
+      |  },
+      |  {
+      |    "code": "UC",
+      |    "description": "Uncaged"
+      |  }
+      |]
+      |""".stripMargin
+
   "Reference Data" - {
 
     "getCountries" - {
@@ -81,6 +95,29 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       "must return an exception when an error response is returned" in {
         checkErrorResponse(s"/$baseUrl/countries?customsOfficeRole=ANY", connector.getCountries(Nil))
       }
+    }
+
+    "getPackageTypes" - {
+
+      "must return list of package types when successful" in {
+        server.stubFor(
+          get(urlEqualTo(s"/$baseUrl/kinds-of-package"))
+            .willReturn(okJson(packageTypeJson))
+        )
+
+        val expectResult = Seq(
+          PackageType("VA", Some("Vat")),
+          PackageType("UC", Some("Uncaged"))
+        )
+
+        connector.getPackageTypes().futureValue mustEqual expectResult
+      }
+
+      "must return an exception when an error response is returned" in {
+
+        checkErrorResponse(s"/$baseUrl/kinds-of-package", connector.getPackageTypes())
+      }
+
     }
 
   }

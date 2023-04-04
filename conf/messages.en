@@ -30,7 +30,7 @@ date.minute.capitalized = Minute
 item.caption = Item {0}
 item.dangerousGoods.caption = Item {0} - Dangerous goods
 item.measurement.caption = Item {0} - Measurement
-item.packages.caption = Items - Packages
+item.packages.caption = Item {0} - Packages
 
 item.description.title = Enter a description of item {0}
 item.description.heading = Enter a description of item {0}
@@ -161,6 +161,8 @@ item.dangerousGoods.index.removeUNNumber.error.required = Select yes if you want
 
 item.index.checkYourAnswers.dangerousGoods.label = Dangerous goods {0}
 item.index.checkYourAnswers.dangerousGoods.change.hidden = dangerous goods {0}
+item.index.checkYourAnswers.packages.label = Packages {0}
+item.index.checkYourAnswers.packages.change.hidden = packages {0}
 
 item.addItemNetWeightYesNo.title = Do you want to add the item’s net weight?
 item.addItemNetWeightYesNo.heading = Do you want to add the item’s net weight?
@@ -190,10 +192,11 @@ item.grossWeight.error.invalidCharacters = The gross weight must only include nu
 item.grossWeight.error.invalidFormat = The gross weight must only include 6 decimal places or less
 item.grossWeight.error.invalidValue = The gross weight must be 16 characters or less
 
-item.packageType.title = What type of package are you using for item {0}?
-item.packageType.heading = What type of package are you using for item {0}?
+item.packageType.title = What type of package are you using for the item?
+item.packageType.heading = What type of package are you using for the item?
+item.packageType.paragraph = This means the packaging used to store and protect the item during transit.
 item.packageType.hint = Enter the package or code, like cylinder or CY.
 item.packageType.placeholder = Select a packageType
 item.packageType.change.hidden = package type
 item.packageType.checkYourAnswersLabel = Package type
-item.packageType.error.required = Enter the type of package you are using for item {0}
+item.packageType.error.required = Enter the type of package you are using for the item

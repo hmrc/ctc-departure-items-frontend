@@ -14,22 +14,15 @@
  * limitations under the License.
  */
 
-package pages.item
+package pages.sections.packages
 
-import controllers.item.routes
-import models.reference.PackageType
-import models.{Index, Mode, UserAnswers}
-import pages.QuestionPage
-import pages.sections.ItemSection
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import models.Index
+import pages.sections.{ItemSection, Section}
+import play.api.libs.json.{JsArray, JsPath}
 
-case class PackageTypePage(itemIndex: Index) extends QuestionPage[PackageType] {
+case class PackagesListSection(itemIndex: Index) extends Section[JsArray] {
 
   override def path: JsPath = ItemSection(itemIndex).path \ toString
 
-  override def toString: String = "packageType"
-
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.PackageTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex))
+  override def toString: String = "packagesList"
 }

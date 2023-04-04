@@ -14,21 +14,14 @@
  * limitations under the License.
  */
 
-package forms
+package pages.sections.packages
 
-import forms.mappings.Mappings
-import models.PackageTypeList
-import models.reference.PackageType
-import play.api.data.Form
+import models.Index
+import pages.sections.Section
+import play.api.libs.json.{JsObject, JsPath}
 
-import javax.inject.Inject
+case class PackagesSection(itemIndex: Index, packagesIndex: Index) extends Section[JsObject] {
 
-class PackageTypeFormProvider @Inject() extends Mappings {
+  override def path: JsPath = PackagesListSection(itemIndex).path \ packagesIndex.position
 
-  def apply(prefix: String, packageTypesList: PackageTypeList): Form[PackageType] =
-    Form(
-      "value" -> text(s"$prefix.error.required")
-        .verifying(s"$prefix.error.required", value => packageTypesList.packageTypes.exists(_.code == value))
-        .transform[PackageType](value => packageTypesList.getPackageType(value).get, _.code)
-    )
 }

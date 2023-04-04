@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package controllers.item
+package controllers.item.packages.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.PackageTypeFormProvider
-import models.{NormalMode, PackageTypeList}
-import navigation.ItemNavigatorProvider
 import generators.Generators
+import models.{NormalMode, PackageTypeList}
+import navigation.PackagesNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.item.PackageTypePage
+import pages.item.packages.index.PackageTypePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.PackagesService
-import views.html.item.PackageTypeView
+import views.html.item.packages.index.PackageTypeView
 
 import scala.concurrent.Future
 
@@ -40,16 +40,16 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
   private val packageTypeList = PackageTypeList(Seq(packageType1, packageType2))
 
   private val formProvider = new PackageTypeFormProvider()
-  private val form         = formProvider("item.packageType", packageTypeList, Seq(itemIndex.display.toString))
+  private val form         = formProvider("item.packageType", packageTypeList)
   private val mode         = NormalMode
 
   private val mockPackagesService: PackagesService = mock[PackagesService]
-  private lazy val packageTypeRoute                = routes.PackageTypeController.onPageLoad(lrn, mode, itemIndex).url
+  private lazy val packageTypeRoute                = routes.PackageTypeController.onPageLoad(lrn, mode, itemIndex, packageIndex).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[ItemNavigatorProvider]).toInstance(fakeItemNavigatorProvider))
+      .overrides(bind(classOf[PackagesNavigatorProvider]).toInstance(fakePackagesNavigatorProvider))
       .overrides(bind(classOf[PackagesService]).toInstance(mockPackagesService))
 
   "PackageType Controller" - {
@@ -68,13 +68,13 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, packageTypeList.packageTypes, mode, itemIndex)(request, messages).toString
+        view(form, lrn, packageTypeList.packageTypes, mode, itemIndex, packageIndex)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       when(mockPackagesService.getPackageTypes()(any())).thenReturn(Future.successful(packageTypeList))
-      val userAnswers = emptyUserAnswers.setValue(PackageTypePage(itemIndex), packageType1)
+      val userAnswers = emptyUserAnswers.setValue(PackageTypePage(itemIndex, packageIndex), packageType1)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, packageTypeRoute)
@@ -88,7 +88,7 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, packageTypeList.packageTypes, mode, itemIndex)(request, messages).toString
+        view(filledForm, lrn, packageTypeList.packageTypes, mode, itemIndex, packageIndex)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -123,7 +123,7 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, packageTypeList.packageTypes, mode, itemIndex)(request, messages).toString
+        view(boundForm, lrn, packageTypeList.packageTypes, mode, itemIndex, packageIndex)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
