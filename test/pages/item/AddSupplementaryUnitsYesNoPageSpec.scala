@@ -16,6 +16,7 @@
 
 package pages.item
 
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class AddSupplementaryUnitsYesNoPageSpec extends PageBehaviours {
@@ -27,5 +28,37 @@ class AddSupplementaryUnitsYesNoPageSpec extends PageBehaviours {
     beSettable[Boolean](AddSupplementaryUnitsYesNoPage(itemIndex))
 
     beRemovable[Boolean](AddSupplementaryUnitsYesNoPage(itemIndex))
+
+    "cleanup" - {
+      "when no selected" - {
+        "must remove supplementary units" in {
+          forAll(arbitrary[BigDecimal]) {
+            units =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AddSupplementaryUnitsYesNoPage(itemIndex), true)
+                .setValue(SupplementaryUnitsPage(itemIndex), units)
+
+              val result = userAnswers.setValue(AddSupplementaryUnitsYesNoPage(itemIndex), false)
+
+              result.get(SupplementaryUnitsPage(itemIndex)) must not be defined
+          }
+        }
+      }
+
+      "when yes selected" - {
+        "must do nothing" in {
+          forAll(arbitrary[BigDecimal]) {
+            units =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AddSupplementaryUnitsYesNoPage(itemIndex), true)
+                .setValue(SupplementaryUnitsPage(itemIndex), units)
+
+              val result = userAnswers.setValue(AddSupplementaryUnitsYesNoPage(itemIndex), true)
+
+              result.get(SupplementaryUnitsPage(itemIndex)) must be(defined)
+          }
+        }
+      }
+    }
   }
 }

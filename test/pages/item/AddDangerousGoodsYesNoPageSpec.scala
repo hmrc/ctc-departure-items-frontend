@@ -41,6 +41,17 @@ class AddDangerousGoodsYesNoPageSpec extends PageBehaviours {
           result.get(DangerousGoodsListSection(itemIndex)) must not be defined
         }
       }
+
+      "when yes selected" - {
+        "must do nothing" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(DangerousGoodsListSection(itemIndex), JsArray(Seq(Json.obj("foo" -> "bar"))))
+
+          val result = userAnswers.setValue(AddDangerousGoodsYesNoPage(itemIndex), true)
+
+          result.get(DangerousGoodsListSection(itemIndex)) must be(defined)
+        }
+      }
     }
   }
 }

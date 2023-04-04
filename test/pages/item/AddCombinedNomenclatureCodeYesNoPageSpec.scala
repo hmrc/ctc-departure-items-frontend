@@ -44,6 +44,21 @@ class AddCombinedNomenclatureCodeYesNoPageSpec extends PageBehaviours {
           }
         }
       }
+
+      "when yes selected" - {
+        "must do nothing" in {
+          forAll(arbitrary[String]) {
+            code =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AddCombinedNomenclatureCodeYesNoPage(itemIndex), true)
+                .setValue(CombinedNomenclatureCodePage(itemIndex), code)
+
+              val result = userAnswers.setValue(AddCombinedNomenclatureCodeYesNoPage(itemIndex), true)
+
+              result.get(CombinedNomenclatureCodePage(itemIndex)) must be(defined)
+          }
+        }
+      }
     }
   }
 }

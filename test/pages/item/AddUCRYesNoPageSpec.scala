@@ -44,6 +44,21 @@ class AddUCRYesNoPageSpec extends PageBehaviours {
           }
         }
       }
+
+      "when yes selected" - {
+        "must do nothing" in {
+          forAll(arbitrary[String]) {
+            UCR =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AddUCRYesNoPage(itemIndex), true)
+                .setValue(UniqueConsignmentReferencePage(itemIndex), UCR)
+
+              val result = userAnswers.setValue(AddUCRYesNoPage(itemIndex), true)
+
+              result.get(UniqueConsignmentReferencePage(itemIndex)) must be(defined)
+          }
+        }
+      }
     }
   }
 

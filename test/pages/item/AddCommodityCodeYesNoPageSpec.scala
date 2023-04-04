@@ -44,6 +44,21 @@ class AddCommodityCodeYesNoPageSpec extends PageBehaviours {
           }
         }
       }
+
+      "when yes selected" - {
+        "must do nothing" in {
+          forAll(arbitrary[String]) {
+            commodityCode =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AddCommodityCodeYesNoPage(itemIndex), true)
+                .setValue(CommodityCodePage(itemIndex), commodityCode)
+
+              val result = userAnswers.setValue(AddCommodityCodeYesNoPage(itemIndex), true)
+
+              result.get(CommodityCodePage(itemIndex)) must be(defined)
+          }
+        }
+      }
     }
   }
 }
