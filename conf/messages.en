@@ -188,3 +188,12 @@ item.grossWeight.error.required = Enter the item’s gross weight
 item.grossWeight.error.invalidCharacters = The gross weight must only include numbers 0 to 9 and a decimal point
 item.grossWeight.error.invalidFormat = The gross weight must only include 6 decimal places or less
 item.grossWeight.error.invalidValue = The gross weight must be 16 characters or less
+
+item.packageType.title = What type of package are you using for item {0}?
+item.packageType.heading = What type of package are you using for item {0}?
+item.packageType.hint = What type of package are you using for item {0}? hint
+item.packageType.label = What type of package are you using for item {0}? label
+item.packageType.placeholder = Select a packageType
+item.packageType.change.hidden = What type of package are you using for item {0}?
+item.packageType.checkYourAnswersLabel = What type of package are you using for item {0}?
+item.packageType.error.required = Select the packageType
