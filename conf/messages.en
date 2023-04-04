@@ -192,5 +192,5 @@ item.grossWeight.error.invalidValue = The gross weight must be 16 characters or 
 item.addSupplementaryUnitsYesNo.title = Do you want to add supplementary units?
 item.addSupplementaryUnitsYesNo.heading = Do you want to add supplementary units?
 item.addSupplementaryUnitsYesNo.paragraph = This can be any unit of measurement, such as litres, square metres or number of parts.
-item.addSupplementaryUnitsYesNo.checkYourAnswersLabel = Do you want to add supplementary units
+item.addSupplementaryUnitsYesNo.checkYourAnswersLabel = Do you want to add supplementary units?
 item.addSupplementaryUnitsYesNo.error.required = Select yes if you want to add supplementary units
