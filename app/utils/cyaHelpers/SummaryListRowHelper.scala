@@ -16,7 +16,7 @@
 
 package utils.cyaHelpers
 
-import models.reference.{Country, PackageType}
+import models.reference.Country
 import models.{DateTime, DynamicAddress}
 import play.api.i18n.Messages
 import play.api.mvc.Call
