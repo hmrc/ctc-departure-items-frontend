@@ -58,14 +58,14 @@ class PackageAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks wi
                 ListItem(
                   name = packageType.toString,
                   changeUrl = routes.PackageTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url,
-                  removeUrl = Some(Call("GET", "#").url) // TODO: Update when addAnother route is done
+                  removeUrl = Some(routes.RemovePackageController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url)
                 )
               ),
               Right(
                 ListItem(
                   name = packageType.toString,
                   changeUrl = routes.PackageTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url,
-                  removeUrl = Some(Call("GET", "#").url) // TODO: Update when addAnother route is done
+                  removeUrl = Some(routes.RemovePackageController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url)
                 )
               )
             )

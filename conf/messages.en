@@ -242,3 +242,7 @@ item.packages.index.shippingMark.change.hidden = shipping mark for package {0}
 item.packages.index.shippingMark.error.required = Enter the shipping mark
 item.packages.index.shippingMark.error.length = The shipping mark must be 512 characters or less
 item.packages.index.shippingMark.error.invalidCharacters = The shipping mark must only include letters a to z and numbers 0 to 9
+
+item.packages.index.removePackage.title = Are you sure you want to remove the {0}?
+item.packages.index.removePackage.heading = Are you sure you want to remove the {0}?
+item.packages.index.removePackage.error.required = Select yes if you want to remove {0} from this item
