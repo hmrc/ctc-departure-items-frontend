@@ -196,6 +196,7 @@ item.addSupplementaryUnitsYesNo.title = Do you want to add supplementary units?
 item.addSupplementaryUnitsYesNo.heading = Do you want to add supplementary units?
 item.addSupplementaryUnitsYesNo.paragraph = This can be any unit of measurement, such as litres, square metres or number of parts.
 item.addSupplementaryUnitsYesNo.checkYourAnswersLabel = Do you want to add supplementary units?
+item.addSupplementaryUnitsYesNo.change.hidden = if you want to add supplementary units for item {0}
 item.addSupplementaryUnitsYesNo.error.required = Select yes if you want to add supplementary units
 
 item.supplementaryUnits.title = How many supplementary units does the item include?
@@ -213,7 +214,7 @@ item.packageType.heading = What type of package are you using for the item?
 item.packageType.paragraph = This means the packaging used to store and protect the item during transit.
 item.packageType.hint = Enter the package or code, like cylinder or CY.
 item.packageType.placeholder = Select a packageType
-item.packageType.change.hidden = package type
+item.packageType.change.hidden = package type for package {0}
 item.packageType.checkYourAnswersLabel = Package type
 item.packageType.error.required = Enter the type of package you are using for the item
 
@@ -221,4 +222,5 @@ item.packages.index.addShippingMarkYesNo.title = Do you want to add a shipping m
 item.packages.index.addShippingMarkYesNo.heading = Do you want to add a shipping mark?
 item.packages.index.addShippingMarkYesNo.paragraph = This tells carriers what type of product is inside the package and helps consignees identify the order once it’s been delivered.
 item.packages.index.addShippingMarkYesNo.checkYourAnswersLabel = Do you want to add a shipping mark?
+item.packages.index.addShippingMarkYesNo.change.hidden = if you want to add a shipping mark for package {0}
 item.packages.index.addShippingMarkYesNo.error.required = Select yes if you want to add a shipping mark

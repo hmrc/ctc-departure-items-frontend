@@ -19,9 +19,10 @@ package utils.cyaHelpers.item
 import config.FrontendAppConfig
 import models.journeyDomain.item.dangerousGoods.DangerousGoodsDomain
 import models.journeyDomain.item.packages.PackageDomain
-import models.reference.Country
+import models.reference.{Country, PackageType}
 import models.{DeclarationType, Index, Mode, UserAnswers}
 import pages.item._
+import pages.item.packages.index.{AddShippingMarkYesNoPage, PackageTypePage}
 import pages.sections.dangerousGoods.DangerousGoodsListSection
 import pages.sections.packages.PackagesSection
 import play.api.i18n.Messages
@@ -157,6 +158,38 @@ class ItemAnswersHelper(
     prefix = "item.netWeight",
     id = Some(s"change-net-weight-${itemIndex.display}"),
     args = itemIndex.display
+  )
+
+  def supplementaryUnitsYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddSupplementaryUnitsYesNoPage(itemIndex),
+    formatAnswer = formatAsYesOrNo,
+    prefix = "item.addSupplementaryUnitsYesNo",
+    id = Some("change-add-supplementary-units"),
+    args = itemIndex.display
+  )
+
+  def supplementaryUnits: Option[SummaryListRow] = getAnswerAndBuildRow[BigDecimal](
+    page = SupplementaryUnitsPage(itemIndex),
+    formatAnswer = formatAsText,
+    prefix = "item.supplementaryUnits",
+    id = Some(s"change-supplementary-units-${itemIndex.display}"),
+    args = itemIndex.display
+  )
+
+  def packageType(packageIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[PackageType](
+    page = PackageTypePage(itemIndex, packageIndex),
+    formatAnswer = formatAsPackage,
+    prefix = "item.packageType",
+    id = Some(s"change-type-${packageIndex.display}"),
+    args = packageIndex.display
+  )
+
+  def shippingMarksYesNo(packageIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddShippingMarkYesNoPage(itemIndex, packageIndex),
+    formatAnswer = formatAsYesOrNo,
+    prefix = "item.packages.index.addShippingMarkYesNo",
+    id = Some("change-add-shipping-mark"),
+    args = packageIndex.display
   )
 
   def packages: Seq[SummaryListRow] =

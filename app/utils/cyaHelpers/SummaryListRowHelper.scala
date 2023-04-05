@@ -16,7 +16,7 @@
 
 package utils.cyaHelpers
 
-import models.reference.Country
+import models.reference.{Country, PackageType}
 import models.{DateTime, DynamicAddress}
 import play.api.i18n.Messages
 import play.api.mvc.Call
@@ -54,6 +54,8 @@ private[utils] class SummaryListRowHelper(implicit messages: Messages) {
     messages(s"$messageKeyPrefix.$answer")
 
   protected def formatAsCountry(country: Country): Content = country.description.toText
+
+  protected def formatAsPackage(packageType: PackageType): Content = packageType.toString.toText
 
   protected def buildRow(
     prefix: String,
