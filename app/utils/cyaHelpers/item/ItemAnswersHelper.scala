@@ -22,7 +22,7 @@ import models.journeyDomain.item.packages.PackageDomain
 import models.reference.{Country, PackageType}
 import models.{DeclarationType, Index, Mode, UserAnswers}
 import pages.item._
-import pages.item.packages.index.{AddShippingMarkYesNoPage, PackageTypePage}
+import pages.item.packages.index.{AddShippingMarkYesNoPage, NumberOfPackagesPage, PackageTypePage, ShippingMarkPage}
 import pages.sections.dangerousGoods.DangerousGoodsListSection
 import pages.sections.packages.PackagesSection
 import play.api.i18n.Messages
@@ -184,11 +184,27 @@ class ItemAnswersHelper(
     args = packageIndex.display
   )
 
+  def numberOfPackages(packageIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[Int](
+    page = NumberOfPackagesPage(itemIndex, packageIndex),
+    formatAnswer = formatAsText,
+    prefix = "item.packages.index.numberOfPackages",
+    id = Some(s"change-type-quantity-${packageIndex.display}"),
+    args = packageIndex.display
+  )
+
   def shippingMarksYesNo(packageIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = AddShippingMarkYesNoPage(itemIndex, packageIndex),
     formatAnswer = formatAsYesOrNo,
     prefix = "item.packages.index.addShippingMarkYesNo",
-    id = Some("change-add-shipping-mark"),
+    id = Some(s"change-add-shipping-mark-${packageIndex.display}"),
+    args = packageIndex.display
+  )
+
+  def shippingMark(packageIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = ShippingMarkPage(itemIndex, packageIndex),
+    formatAnswer = formatAsText,
+    prefix = "item.packages.index.shippingMark",
+    id = Some(s"change-shipping-mark-${packageIndex.display}"),
     args = packageIndex.display
   )
 
