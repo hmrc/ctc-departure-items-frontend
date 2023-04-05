@@ -14,16 +14,25 @@
  * limitations under the License.
  */
 
-package forms
+package forms.item
 
-object Constants {
-  lazy val maxNameLength: Int                     = 70
-  lazy val maxUCRLength: Int                      = 35
-  lazy val maxItemDescriptionLength: Int          = 512
-  lazy val maxCommodityCodeLength: Int            = 6
-  lazy val maxCUSCodeLength: Int                  = 9
-  lazy val maxCombinedNomenclatureCodeLength: Int = 2
-  lazy val maxUNNumberLength: Int                 = 4
-  lazy val maxNumberOfPackages: Int               = 99999999
-  lazy val maxShippingMarkLength: Int             = 512
+import forms.Constants.maxShippingMarkLength
+import forms.mappings.Mappings
+import models.domain.StringFieldRegex.stringFieldRegex
+import play.api.data.Form
+
+import javax.inject.Inject
+
+class ShippingMarkFormProvider @Inject() extends Mappings {
+
+  def apply(prefix: String): Form[String] =
+    Form(
+      "value" -> text(s"$prefix.error.required")
+        .verifying(
+          forms.StopOnFirstFail[String](
+            regexp(stringFieldRegex, s"$prefix.error.invalidCharacters"),
+            maxLength(maxShippingMarkLength, s"$prefix.error.maxLength")
+          )
+        )
+    )
 }

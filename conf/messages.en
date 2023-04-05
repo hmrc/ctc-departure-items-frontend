@@ -226,3 +226,11 @@ item.packages.index.numberOfPackages.error.required = Enter the number of {0} yo
 item.packages.index.numberOfPackages.error.wholeNumber = The quantity must only include numbers 0 to 9
 item.packages.index.numberOfPackages.error.maximum = The quantity must be 99,999,999 or less
 item.packages.index.numberOfPackages.error.negative = The quantity must be 0 or more
+
+item.packages.index.shippingMark.title = What is the shipping mark?
+item.packages.index.shippingMark.heading = What is the shipping mark?
+item.packages.index.shippingMark.checkYourAnswersLabel = What is the shipping mark?
+item.packages.index.shippingMark.change.hidden = shipping mark
+item.packages.index.shippingMark.error.required = Enter the shipping mark
+item.packages.index.shippingMark.error.length = The shipping mark must be 512 characters or less
+item.packages.index.shippingMark.error.invalidCharacters = The shipping mark must only include letters a to z and numbers 0 to 9
