@@ -33,7 +33,14 @@ class AddShippingMarkYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithBackLink()
 
+  behave like pageWithSectionCaption(s"Item ${itemIndex.display} - Packages")
+
   behave like pageWithHeading()
+
+  behave like pageWithContent(
+    "p",
+    "This tells carriers what type of product is inside the package and helps consignees identify the order once it’s been delivered."
+  )
 
   behave like pageWithRadioItems()
 

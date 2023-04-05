@@ -217,7 +217,8 @@ item.packageType.change.hidden = package type
 item.packageType.checkYourAnswersLabel = Package type
 item.packageType.error.required = Enter the type of package you are using for the item
 
-item.packages.index.addShippingMarkYesNo.title = Do you want to add a shipping mark
-item.packages.index.addShippingMarkYesNo.heading = Do you want to add a shipping mark
-item.packages.index.addShippingMarkYesNo.checkYourAnswersLabel = Do you want to add a shipping mark
-item.packages.index.addShippingMarkYesNo.error.required = Select yes if Do you want to add a shipping mark
+item.packages.index.addShippingMarkYesNo.title = Do you want to add a shipping mark?
+item.packages.index.addShippingMarkYesNo.heading = Do you want to add a shipping mark?
+item.packages.index.addShippingMarkYesNo.paragraph = This tells carriers what type of product is inside the package and helps consignees identify the order once it’s been delivered.
+item.packages.index.addShippingMarkYesNo.checkYourAnswersLabel = Do you want to add a shipping mark?
+item.packages.index.addShippingMarkYesNo.error.required = Select yes if you want to add a shipping mark
