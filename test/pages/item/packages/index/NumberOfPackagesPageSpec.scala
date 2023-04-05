@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 
-package forms
+package pages.item.packages.index
 
-object Constants {
-  lazy val maxNameLength: Int                     = 70
-  lazy val maxUCRLength: Int                      = 35
-  lazy val maxItemDescriptionLength               = 512
-  lazy val maxCommodityCodeLength: Int            = 6
-  lazy val maxCUSCodeLength: Int                  = 9
-  lazy val maxCombinedNomenclatureCodeLength: Int = 2
-  lazy val maxUNNumberLength: Int                 = 4
-  lazy val maxNumberOfPackages: Int               = 99999999
+import pages.behaviours.PageBehaviours
+
+class NumberOfPackagesPageSpec extends PageBehaviours {
+
+  "NumberOfPackagesPage" - {
+
+    beRetrievable[Int](NumberOfPackagesPage(itemIndex, packageIndex))
+
+    beSettable[Int](NumberOfPackagesPage(itemIndex, packageIndex))
+
+    beRemovable[Int](NumberOfPackagesPage(itemIndex, packageIndex))
+  }
 }

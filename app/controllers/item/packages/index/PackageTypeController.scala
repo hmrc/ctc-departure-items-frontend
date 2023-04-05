@@ -45,7 +45,7 @@ class PackageTypeController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val prefix: String = "item.packageType"
+  private val prefix: String = "item.packages.index.packageType"
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, packageIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>

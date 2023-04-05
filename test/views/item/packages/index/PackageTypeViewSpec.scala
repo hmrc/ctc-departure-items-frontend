@@ -36,7 +36,7 @@ class PackageTypeViewSpec extends InputSelectViewBehaviours[PackageType] {
 
   implicit override val arbitraryT: Arbitrary[PackageType] = arbitraryPackageType
 
-  override val prefix: String = "item.packageType"
+  override val prefix: String = "item.packages.index.packageType"
 
   behave like pageWithTitle(arg)
 
