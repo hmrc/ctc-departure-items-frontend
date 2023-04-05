@@ -17,26 +17,26 @@
 package utils.cyaHelpers.item.packages
 
 import config.FrontendAppConfig
-import models.journeyDomain.item.packages.PackagesDomain
+import models.journeyDomain.item.packages.PackageDomain
 import models.{Index, Mode, UserAnswers}
 import pages.item.packages.index.PackageTypePage
-import pages.sections.packages.PackagesListSection
+import pages.sections.packages.PackagesSection
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import utils.cyaHelpers.AnswersHelper
 import viewmodels.ListItem
 
-class PackagesAnswersHelper(userAnswers: UserAnswers, mode: Mode, itemIndex: Index)(implicit messages: Messages, config: FrontendAppConfig)
+class PackageAnswersHelper(userAnswers: UserAnswers, mode: Mode, itemIndex: Index)(implicit messages: Messages, config: FrontendAppConfig)
     extends AnswersHelper(userAnswers, mode) {
 
   def listItems: Seq[Either[ListItem, ListItem]] =
-    buildListItems(PackagesListSection(itemIndex)) {
+    buildListItems(PackagesSection(itemIndex)) {
       packageIndex =>
-        buildListItem[PackagesDomain](
+        buildListItem[PackageDomain](
           nameWhenComplete = _.toString,
           nameWhenInProgress = userAnswers.get(PackageTypePage(itemIndex, packageIndex)).map(_.toString),
           removeRoute = Option(Call("GET", "#")) // TODO: Update when remove route is ready
-        )(PackagesDomain.userAnswersReader(itemIndex, packageIndex))
+        )(PackageDomain.userAnswersReader(itemIndex, packageIndex))
     }
 
 }

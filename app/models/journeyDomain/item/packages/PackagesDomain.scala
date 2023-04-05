@@ -16,32 +16,21 @@
 
 package models.journeyDomain.item.packages
 
-import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
-import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
-import models.reference.PackageType
-import models.{Index, Mode, UserAnswers}
-import pages.item.packages.index.PackageTypePage
-import play.api.mvc.Call
-import uk.gov.hmrc.http.HttpVerbs.GET
+import models.journeyDomain.{JsArrayGettableAsReaderOps, UserAnswersReader}
+import models.{Index, RichJsArray}
+import pages.sections.packages.PackagesSection
 
-case class PackagesDomain(
-  `type`: PackageType
-)(itemIndex: Index, packageIndex: Index)
-    extends JourneyDomainModel {
-
-  override def toString: String = `type`.toString
-
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some {
-    stage match {
-      case AccessingJourney =>
-        controllers.item.packages.index.routes.PackageTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, packageIndex)
-      case CompletingJourney => Call(GET, "#")
-    }
-  }
-}
+case class PackagesDomain(value: Seq[PackageDomain])
 
 object PackagesDomain {
 
-  implicit def userAnswersReader(itemIndex: Index, packagesIndex: Index): UserAnswersReader[PackagesDomain] =
-    PackageTypePage(itemIndex, packagesIndex).reader.map(PackagesDomain(_)(itemIndex, packagesIndex))
+  implicit def userAnswersReader(itemIndex: Index): UserAnswersReader[PackagesDomain] =
+    PackagesSection(itemIndex).arrayReader
+      .flatMap {
+        case x if x.isEmpty =>
+          UserAnswersReader(PackageDomain.userAnswersReader(itemIndex, Index(0))).map(Seq(_))
+        case x =>
+          x.traverse[PackageDomain](PackageDomain.userAnswersReader(itemIndex, _))
+      }
+      .map(PackagesDomain(_))
 }

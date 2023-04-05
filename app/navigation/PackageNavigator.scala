@@ -18,30 +18,30 @@ package navigation
 
 import config.FrontendAppConfig
 import models.journeyDomain.UserAnswersReader
-import models.journeyDomain.item.packages.PackagesDomain
+import models.journeyDomain.item.packages.PackageDomain
 import models.{CheckMode, Index, Mode, NormalMode}
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class PackagesNavigatorProviderImpl @Inject() (implicit config: FrontendAppConfig) extends PackagesNavigatorProvider {
+class PackageNavigatorProviderImpl @Inject() (implicit config: FrontendAppConfig) extends PackageNavigatorProvider {
 
-  override def apply(mode: Mode, itemIndex: Index, packagesIndex: Index): UserAnswersNavigator =
+  override def apply(mode: Mode, itemIndex: Index, packageIndex: Index): UserAnswersNavigator =
     mode match {
-      case NormalMode => new PackagesNavigator(mode, itemIndex, packagesIndex)
+      case NormalMode => new PackageNavigator(mode, itemIndex, packageIndex)
       case CheckMode  => new ItemNavigator(mode, itemIndex)
     }
 }
 
-trait PackagesNavigatorProvider {
-  def apply(mode: Mode, itemIndex: Index, packagesIndex: Index): UserAnswersNavigator
+trait PackageNavigatorProvider {
+  def apply(mode: Mode, itemIndex: Index, packageIndex: Index): UserAnswersNavigator
 }
 
-class PackagesNavigator(override val mode: Mode, itemIndex: Index, packagesIndex: Index)(implicit override val config: FrontendAppConfig)
+class PackageNavigator(override val mode: Mode, itemIndex: Index, packageIndex: Index)(implicit override val config: FrontendAppConfig)
     extends UserAnswersNavigator {
 
-  override type T = PackagesDomain
+  override type T = PackageDomain
 
-  implicit override val reader: UserAnswersReader[PackagesDomain] =
-    PackagesDomain.userAnswersReader(itemIndex, packagesIndex)
+  implicit override val reader: UserAnswersReader[PackageDomain] =
+    PackageDomain.userAnswersReader(itemIndex, packageIndex)
 }

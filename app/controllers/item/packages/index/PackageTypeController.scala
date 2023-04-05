@@ -20,7 +20,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.PackageTypeFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
-import navigation.{PackagesNavigatorProvider, UserAnswersNavigator}
+import navigation.{PackageNavigatorProvider, UserAnswersNavigator}
 import pages.item.packages.index
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class PackageTypeController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigatorProvider: PackagesNavigatorProvider,
+  navigatorProvider: PackageNavigatorProvider,
   actions: Actions,
   formProvider: PackageTypeFormProvider,
   service: PackagesService,

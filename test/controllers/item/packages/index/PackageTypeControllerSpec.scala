@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.PackageTypeFormProvider
 import generators.Generators
 import models.{NormalMode, PackageTypeList}
-import navigation.PackagesNavigatorProvider
+import navigation.PackageNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.item.packages.index.PackageTypePage
@@ -49,7 +49,7 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[PackagesNavigatorProvider]).toInstance(fakePackagesNavigatorProvider))
+      .overrides(bind(classOf[PackageNavigatorProvider]).toInstance(fakePackageNavigatorProvider))
       .overrides(bind(classOf[PackagesService]).toInstance(mockPackagesService))
 
   "PackageType Controller" - {

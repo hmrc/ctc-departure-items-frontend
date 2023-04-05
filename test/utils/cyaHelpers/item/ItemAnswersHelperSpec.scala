@@ -662,33 +662,33 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
     "packages" - {
       "must return None" - {
-        "when packages is undefined" in {
+        "when package is undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
               val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
-              val result = helper.packages(packageIndex)
+              val result = helper.`package`(packageIndex)
               result mustBe None
           }
         }
       }
 
       "must return Some(Row)" - {
-        "when packages is defined" in {
+        "when package is defined" in {
           forAll(arbitrary[Mode], arbitrary[PackageType]) {
             (mode, packageType) =>
               val userAnswers = emptyUserAnswers.setValue(PackageTypePage(itemIndex, packageIndex), packageType)
               val helper      = new ItemAnswersHelper(userAnswers, mode, itemIndex)
-              val result      = helper.packages(packageIndex).get
+              val result      = helper.`package`(packageIndex).get
 
-              result.key.value mustBe "Packages 1"
+              result.key.value mustBe "Package 1"
               result.value.value mustBe packageType.toString
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
               action.content.value mustBe "Change"
               action.href mustBe PackageTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, packageIndex).url
-              action.visuallyHiddenText.get mustBe "packages 1"
-              action.id mustBe "change-packages-1"
+              action.visuallyHiddenText.get mustBe "package 1"
+              action.id mustBe "change-package-1"
           }
         }
       }

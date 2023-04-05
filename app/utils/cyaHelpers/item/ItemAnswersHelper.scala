@@ -18,12 +18,12 @@ package utils.cyaHelpers.item
 
 import config.FrontendAppConfig
 import models.journeyDomain.item.dangerousGoods.DangerousGoodsDomain
-import models.journeyDomain.item.packages.PackagesDomain
+import models.journeyDomain.item.packages.PackageDomain
 import models.reference.Country
 import models.{DeclarationType, Index, Mode, UserAnswers}
 import pages.item._
 import pages.sections.dangerousGoods.DangerousGoodsListSection
-import pages.sections.packages.PackagesListSection
+import pages.sections.packages.PackagesSection
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.cyaHelpers.AnswersHelper
@@ -159,13 +159,13 @@ class ItemAnswersHelper(
     args = itemIndex.display
   )
 
-  def packagesList: Seq[SummaryListRow] =
-    getAnswersAndBuildSectionRows(PackagesListSection(itemIndex))(packages)
+  def packages: Seq[SummaryListRow] =
+    getAnswersAndBuildSectionRows(PackagesSection(itemIndex))(`package`)
 
-  def packages(packageIndex: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[PackagesDomain](
+  def `package`(packageIndex: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[PackageDomain](
     formatAnswer = formatAsText,
-    prefix = "item.index.checkYourAnswers.packages",
-    id = Some(s"change-packages-${packageIndex.display}"),
+    prefix = "item.index.checkYourAnswers.package",
+    id = Some(s"change-package-${packageIndex.display}"),
     args = packageIndex.display
-  )(PackagesDomain.userAnswersReader(itemIndex, packageIndex))
+  )(PackageDomain.userAnswersReader(itemIndex, packageIndex))
 }

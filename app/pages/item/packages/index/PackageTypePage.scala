@@ -20,13 +20,13 @@ import controllers.item.packages.index.routes
 import models.reference.PackageType
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.packages.PackagesSection
+import pages.sections.packages.PackageSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case class PackageTypePage(itemIndex: Index, packageIndex: Index) extends QuestionPage[PackageType] {
 
-  override def path: JsPath = PackagesSection(itemIndex, packageIndex).path \ toString
+  override def path: JsPath = PackageSection(itemIndex, packageIndex).path \ toString
 
   override def toString: String = "packageType"
 
