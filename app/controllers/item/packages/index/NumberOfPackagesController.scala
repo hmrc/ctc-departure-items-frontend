@@ -22,7 +22,7 @@ import forms.Constants.maxNumberOfPackages
 import forms.IntFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{PackageNavigatorProvider, UserAnswersNavigator}
-import pages.item.packages.index.NumberOfPackagesPage
+import pages.item.packages.index.{NumberOfPackagesPage, PackageTypePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -36,6 +36,7 @@ class NumberOfPackagesController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: PackageNavigatorProvider,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: IntFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
@@ -44,27 +45,34 @@ class NumberOfPackagesController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("item.packages.index.numberOfPackages", maxNumberOfPackages)
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, packageIndex: Index): Action[AnyContent] = actions
+    .requireData(lrn)
+    .andThen(getMandatoryPage(PackageTypePage(itemIndex, packageIndex))) {
+      implicit request =>
+        val packageType = request.arg.toString
+        val form        = formProvider("item.packages.index.numberOfPackages", maxNumberOfPackages, Seq(packageType))
+        val preparedForm = request.userAnswers.get(NumberOfPackagesPage(itemIndex, packageIndex)) match {
+          case None        => form
+          case Some(value) => form.fill(value)
+        }
+        Ok(view(preparedForm, lrn, mode, itemIndex, packageIndex, packageType))
+    }
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, packageIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(NumberOfPackagesPage(itemIndex, packageIndex)) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
-      Ok(view(preparedForm, lrn, mode, itemIndex, packageIndex))
-  }
-
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, packageIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
-    implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex, packageIndex))),
-          value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex, packageIndex)
-            NumberOfPackagesPage(itemIndex, packageIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
-          }
-        )
-  }
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, packageIndex: Index): Action[AnyContent] = actions
+    .requireData(lrn)
+    .andThen(getMandatoryPage(PackageTypePage(itemIndex, packageIndex)))
+    .async {
+      implicit request =>
+        val packageType = request.arg.toString
+        val form        = formProvider("item.packages.index.numberOfPackages", maxNumberOfPackages, Seq(packageType))
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex, packageIndex, packageType))),
+            value => {
+              implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex, packageIndex)
+              NumberOfPackagesPage(itemIndex, packageIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+            }
+          )
+    }
 }

@@ -28,10 +28,10 @@
     button: Button
 )
 
-@(form: Form[Int], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, packageIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[Int], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, packageIndex: Index, packageType: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("item.packages.index.numberOfPackages.title"),
+    title = messages("item.packages.index.numberOfPackages.title", packageType),
     showBackLink = true,
     lrn = lrn
 ) {
@@ -43,7 +43,8 @@
         @inputText(
             field = form("value"),
             inputTextType = OrdinaryTextInput(
-                heading = messages("item.packages.index.numberOfPackages.heading")
+                heading = messages("item.packages.index.numberOfPackages.heading", packageType),
+                caption = Some(messages("item.packages.caption", itemIndex.display))
             ),
             inputClass = InputSize.Width20
         )

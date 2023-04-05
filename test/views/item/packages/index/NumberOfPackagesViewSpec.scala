@@ -19,6 +19,7 @@ package views.item.packages.index
 import forms.Constants.maxNumberOfPackages
 import forms.IntFormProvider
 import models.NormalMode
+import models.reference.PackageType
 import org.scalacheck.Arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -28,10 +29,12 @@ import views.html.item.packages.index.NumberOfPackagesView
 
 class NumberOfPackagesViewSpec extends InputTextViewBehaviours[Int] {
 
-  override def form: Form[Int] = new IntFormProvider()(prefix, 10)
+  private val packageType = Arbitrary.arbitrary[PackageType].sample.get
+
+  override def form: Form[Int] = new IntFormProvider()(prefix, 10, Seq(packageType.toString))
 
   override def applyView(form: Form[Int]): HtmlFormat.Appendable =
-    injector.instanceOf[NumberOfPackagesView].apply(form, lrn, NormalMode, itemIndex, packageIndex)(fakeRequest, messages)
+    injector.instanceOf[NumberOfPackagesView].apply(form, lrn, NormalMode, itemIndex, packageIndex, packageType.toString)(fakeRequest, messages)
 
   private val maxInt = maxNumberOfPackages
 
@@ -39,11 +42,13 @@ class NumberOfPackagesViewSpec extends InputTextViewBehaviours[Int] {
 
   override val prefix: String = "item.packages.index.numberOfPackages"
 
-  behave like pageWithTitle()
+  behave like pageWithTitle(packageType.toString)
 
   behave like pageWithBackLink()
 
-  behave like pageWithHeading()
+  behave like pageWithSectionCaption(s"Item ${itemIndex.display} - Packages")
+
+  behave like pageWithHeading(packageType.toString)
 
   behave like pageWithoutHint()
 
