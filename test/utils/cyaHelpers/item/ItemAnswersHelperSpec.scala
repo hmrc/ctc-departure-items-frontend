@@ -18,8 +18,9 @@ package utils.cyaHelpers.item
 
 import base.SpecBase
 import controllers.item.dangerousGoods.index.routes.UNNumberController
-import controllers.item.packages.index.routes.PackageTypeController
+import controllers.item.packages.index.routes.{AddShippingMarkYesNoController, NumberOfPackagesController, PackageTypeController, ShippingMarkController}
 import controllers.item.routes._
+import forms.Constants.maxNumberOfPackages
 import generators.Generators
 import models.reference.{Country, PackageType}
 import models.{DeclarationType, Mode}
@@ -28,7 +29,7 @@ import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.item._
 import pages.item.dangerousGoods.index.UNNumberPage
-import pages.item.packages.index.PackageTypePage
+import pages.item.packages.index.{AddShippingMarkYesNoPage, NumberOfPackagesPage, PackageTypePage, ShippingMarkPage}
 
 class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -660,6 +661,80 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
       }
     }
 
+    "supplementaryUnitsYesNo" - {
+      "must return None" - {
+        "when AddSupplementaryUnitsYesNoPage is undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+              val result = helper.supplementaryUnitsYesNo
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when AddSupplementaryUnitsYesNoPage is defined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val answers = emptyUserAnswers
+                .setValue(AddSupplementaryUnitsYesNoPage(itemIndex), true)
+
+              val helper = new ItemAnswersHelper(answers, mode, index)
+              val result = helper.supplementaryUnitsYesNo.get
+
+              result.key.value mustBe "Do you want to add supplementary units?"
+              result.value.value mustBe "Yes"
+
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe AddSupplementaryUnitsYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
+              action.visuallyHiddenText.get mustBe "if you want to add supplementary units for item 1"
+              action.id mustBe "change-add-supplementary-units"
+          }
+        }
+      }
+    }
+
+    "supplementaryUnits" - {
+      "must return None" - {
+        "when SupplementaryUnitsPage is undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+              val result = helper.supplementaryUnits
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when SupplementaryUnitsPage is defined" in {
+          forAll(arbitrary[Mode], arbitrary[BigDecimal]) {
+            (mode, units) =>
+              val answers = emptyUserAnswers
+                .setValue(SupplementaryUnitsPage(itemIndex), units)
+
+              val helper = new ItemAnswersHelper(answers, mode, itemIndex)
+              val result = helper.supplementaryUnits.get
+
+              result.key.value mustBe "Number of supplementary units"
+              result.value.value mustBe units.toString()
+
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe SupplementaryUnitsController.onPageLoad(answers.lrn, mode, itemIndex).url
+              action.visuallyHiddenText.get mustBe s"number of supplementary units for item 1"
+              action.id mustBe "change-supplementary-units-1"
+          }
+        }
+      }
+    }
+
     "packages" - {
       "must return None" - {
         "when package is undefined" in {
@@ -689,6 +764,154 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               action.href mustBe PackageTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, packageIndex).url
               action.visuallyHiddenText.get mustBe "package 1"
               action.id mustBe "change-package-1"
+          }
+        }
+      }
+    }
+
+    "packageType" - {
+      "must return None" - {
+        "when PackageTypePage is undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+              val result = helper.packageType(packageIndex)
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when PackageTypePage is defined" in {
+          forAll(arbitrary[Mode], arbitrary[PackageType]) {
+            (mode, packageType) =>
+              val answers = emptyUserAnswers
+                .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+              val helper = new ItemAnswersHelper(answers, mode, itemIndex)
+              val result = helper.packageType(packageIndex).get
+
+              result.key.value mustBe "Package type"
+              result.value.value mustBe packageType.toString
+
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe PackageTypeController.onPageLoad(answers.lrn, mode, itemIndex, packageIndex).url
+              action.visuallyHiddenText.get mustBe "package type for package 1"
+              action.id mustBe "change-type-1"
+          }
+        }
+      }
+    }
+
+    "numberOfPackages" - {
+      "must return None" - {
+        "when NumberOfPackagesPage is undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+              val result = helper.numberOfPackages(packageIndex)
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when NumberOfPackagesPage is defined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val numberOfPackages = positiveIntsMinMax(0, maxNumberOfPackages).sample.value
+              val answers = emptyUserAnswers
+                .setValue(NumberOfPackagesPage(itemIndex, packageIndex), numberOfPackages)
+
+              val helper = new ItemAnswersHelper(answers, mode, itemIndex)
+              val result = helper.numberOfPackages(packageIndex).get
+
+              result.key.value mustBe "Package quantity"
+              result.value.value mustBe numberOfPackages.toString
+
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe NumberOfPackagesController.onPageLoad(answers.lrn, mode, itemIndex, packageIndex).url
+              action.visuallyHiddenText.get mustBe "package quantity for package 1"
+              action.id mustBe "change-type-quantity-1"
+          }
+        }
+      }
+    }
+
+    "addShippingMark" - {
+      "must return None" - {
+        "when AddShippingMarkPage is undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+              val result = helper.shippingMarkYesNo(packageIndex)
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when AddShippingMarkPage is defined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val answers = emptyUserAnswers
+                .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
+
+              val helper = new ItemAnswersHelper(answers, mode, index)
+              val result = helper.shippingMarkYesNo(packageIndex).get
+
+              result.key.value mustBe "Do you want to add a shipping mark?"
+              result.value.value mustBe "Yes"
+
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe AddShippingMarkYesNoController.onPageLoad(answers.lrn, mode, itemIndex, packageIndex).url
+              action.visuallyHiddenText.get mustBe "if you want to add a shipping mark for package 1"
+              action.id mustBe "change-add-shipping-mark-1"
+          }
+        }
+      }
+    }
+
+    "shippingMark" - {
+      "must return None" - {
+        "when ShippingMarkPage is undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+              val result = helper.shippingMark(packageIndex)
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when ShippingMarkPage is defined" in {
+          forAll(arbitrary[Mode], nonEmptyString) {
+            (mode, shippingMark) =>
+              val answers = emptyUserAnswers
+                .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
+
+              val helper = new ItemAnswersHelper(answers, mode, itemIndex)
+              val result = helper.shippingMark(packageIndex).get
+
+              result.key.value mustBe "Shipping mark"
+              result.value.value mustBe shippingMark
+
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe ShippingMarkController.onPageLoad(answers.lrn, mode, itemIndex, packageIndex).url
+              action.visuallyHiddenText.get mustBe "shipping mark for package 1"
+              action.id mustBe "change-shipping-mark-1"
           }
         }
       }
