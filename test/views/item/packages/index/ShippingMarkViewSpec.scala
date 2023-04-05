@@ -17,7 +17,7 @@
 package views.item.packages.index
 
 import forms.Constants.maxShippingMarkLength
-import forms.item.ShippingMarkFormProvider
+import forms.item.packages.ShippingMarkFormProvider
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat

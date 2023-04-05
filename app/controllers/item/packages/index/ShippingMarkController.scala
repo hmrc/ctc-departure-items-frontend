@@ -18,7 +18,7 @@ package controllers.item.packages.index
 
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import controllers.actions._
-import forms.item.ShippingMarkFormProvider
+import forms.item.packages.ShippingMarkFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{PackageNavigatorProvider, UserAnswersNavigator}
 import pages.item.packages.index.ShippingMarkPage

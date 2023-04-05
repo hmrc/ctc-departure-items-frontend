@@ -18,7 +18,6 @@ package forms.item.packages
 
 import forms.Constants.maxShippingMarkLength
 import forms.behaviours.StringFieldBehaviours
-import forms.item.ShippingMarkFormProvider
 import models.domain.StringFieldRegex.stringFieldRegex
 import org.scalacheck.Gen
 import play.api.data.FormError
@@ -28,7 +27,7 @@ class ShippingMarkFormProviderSpec extends StringFieldBehaviours {
   private val prefix = Gen.alphaNumStr.sample.value
   val requiredKey    = s"$prefix.error.required"
   val invalidKey     = s"$prefix.error.invalidCharacters"
-  val lengthKey      = s"$prefix.error.maxLength"
+  val lengthKey      = s"$prefix.error.length"
 
   val form = new ShippingMarkFormProvider()(prefix)
 

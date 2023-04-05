@@ -17,7 +17,7 @@
 package controllers.item.packages.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.item.ShippingMarkFormProvider
+import forms.item.packages.ShippingMarkFormProvider
 import models.NormalMode
 import navigation.PackageNavigatorProvider
 import org.mockito.ArgumentMatchers.any

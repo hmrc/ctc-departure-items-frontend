@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms.item
+package forms.item.packages
 
 import forms.Constants.maxShippingMarkLength
 import forms.mappings.Mappings
@@ -31,7 +31,7 @@ class ShippingMarkFormProvider @Inject() extends Mappings {
         .verifying(
           forms.StopOnFirstFail[String](
             regexp(stringFieldRegex, s"$prefix.error.invalidCharacters"),
-            maxLength(maxShippingMarkLength, s"$prefix.error.maxLength")
+            maxLength(maxShippingMarkLength, s"$prefix.error.length")
           )
         )
     )
