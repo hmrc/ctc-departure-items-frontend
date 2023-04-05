@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package pages.item
+package pages.item.packages.index
 
 import models.reference.PackageType
 import pages.behaviours.PageBehaviours
