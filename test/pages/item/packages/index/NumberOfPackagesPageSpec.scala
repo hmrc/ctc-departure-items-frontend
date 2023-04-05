@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 
-package forms
+package pages.item.packages.index
 
-import javax.inject.Inject
+import pages.behaviours.PageBehaviours
 
-import forms.mappings.Mappings
-import play.api.data.Form
+class NumberOfPackagesPageSpec extends PageBehaviours {
 
-class IntFormProvider @Inject() extends Mappings {
+  "NumberOfPackagesPage" - {
 
-  def apply(prefix: String, maximum: Int, args: Seq[String] = Seq.empty): Form[Int] =
-    Form(
-      "value" -> int(s"$prefix.error.required", s"$prefix.error.wholeNumber", s"$prefix.error.nonNumeric", args = args)
-        .verifying(
-          minimumValue(0, s"$prefix.error.negative"),
-          maximumValue(maximum, s"$prefix.error.maximum")
-        )
-    )
+    beRetrievable[Int](NumberOfPackagesPage(itemIndex, packageIndex))
+
+    beSettable[Int](NumberOfPackagesPage(itemIndex, packageIndex))
+
+    beRemovable[Int](NumberOfPackagesPage(itemIndex, packageIndex))
+  }
 }

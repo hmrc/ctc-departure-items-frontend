@@ -34,7 +34,7 @@
 @(form: Form[PackageType], lrn: LocalReferenceNumber, packageTypes: Seq[PackageType], mode: Mode, itemIndex: Index, packageIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("item.packageType.title"),
+    title = messages("item.packages.index.packageType.title"),
     showBackLink = true,
     lrn = lrn
 ) {
@@ -46,13 +46,13 @@
         @inputSelect(
             field = form("value"),
             selectType = SelectWithAdditionalHtml(
-                heading = messages("item.packageType.heading"),
+                heading = messages("item.packages.index.packageType.heading"),
                 caption = Some(messages("item.packages.caption", itemIndex.display)),
-                additionalHtml = messages("item.packageType.paragraph").toParagraph
+                additionalHtml = messages("item.packages.index.packageType.paragraph").toParagraph
             ),
-            hint = Some(messages("item.packageType.hint")),
+            hint = Some(messages("item.packages.index.packageType.hint")),
             selectItems = packageTypes.toSelectItems(form.value),
-            placeholder = messages("item.packageType.placeholder")
+            placeholder = messages("item.packages.index.packageType.placeholder")
         )
 
         @button(attributes = Map("id" -> "submit"))

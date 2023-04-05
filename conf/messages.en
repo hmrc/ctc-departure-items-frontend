@@ -209,14 +209,24 @@ item.supplementaryUnits.error.invalidCharacters = The number of supplementary un
 item.supplementaryUnits.error.invalidFormat = The number of supplementary units must only include 6 decimal places or less
 item.supplementaryUnits.error.invalidValue = The number of supplementary units must be 16 characters or less
 
-item.packageType.title = What type of package are you using for the item?
-item.packageType.heading = What type of package are you using for the item?
-item.packageType.paragraph = This means the packaging used to store and protect the item during transit.
-item.packageType.hint = Enter the package or code, like cylinder or CY.
-item.packageType.placeholder = Select a packageType
-item.packageType.change.hidden = package type for package {0}
-item.packageType.checkYourAnswersLabel = Package type
-item.packageType.error.required = Enter the type of package you are using for the item
+item.packages.index.packageType.title = What type of package are you using for the item?
+item.packages.index.packageType.heading = What type of package are you using for the item?
+item.packages.index.packageType.paragraph = This means the packaging used to store and protect the item during transit.
+item.packages.index.packageType.hint = Enter the package or code, like cylinder or CY.
+item.packages.index.packageType.placeholder = Select a packageType
+item.packages.index.packageType.change.hidden = package type for package {0}
+item.packages.index.packageType.checkYourAnswersLabel = Package type
+item.packages.index.packageType.error.required = Enter the type of package you are using for the item
+
+item.packages.index.numberOfPackages.title = How many {0} are you using?
+item.packages.index.numberOfPackages.heading = How many {0} are you using?
+item.packages.index.numberOfPackages.checkYourAnswersLabel = Package quantity
+item.packages.index.numberOfPackages.change.hidden = package quantity
+item.packages.index.numberOfPackages.error.nonNumeric = The quantity must only include numbers 0 to 9
+item.packages.index.numberOfPackages.error.required = Enter the number of {0} you are using
+item.packages.index.numberOfPackages.error.wholeNumber = The quantity must only include numbers 0 to 9
+item.packages.index.numberOfPackages.error.maximum = The quantity must be 99,999,999 or less
+item.packages.index.numberOfPackages.error.negative = The quantity must be 0 or more
 
 item.packages.index.addShippingMarkYesNo.title = Do you want to add a shipping mark?
 item.packages.index.addShippingMarkYesNo.heading = Do you want to add a shipping mark?
@@ -224,3 +234,11 @@ item.packages.index.addShippingMarkYesNo.paragraph = This tells carriers what ty
 item.packages.index.addShippingMarkYesNo.checkYourAnswersLabel = Do you want to add a shipping mark?
 item.packages.index.addShippingMarkYesNo.change.hidden = if you want to add a shipping mark for package {0}
 item.packages.index.addShippingMarkYesNo.error.required = Select yes if you want to add a shipping mark
+
+item.packages.index.shippingMark.title = What is the shipping mark?
+item.packages.index.shippingMark.heading = What is the shipping mark?
+item.packages.index.shippingMark.checkYourAnswersLabel = What is the shipping mark?
+item.packages.index.shippingMark.change.hidden = shipping mark
+item.packages.index.shippingMark.error.required = Enter the shipping mark
+item.packages.index.shippingMark.error.length = The shipping mark must be 512 characters or less
+item.packages.index.shippingMark.error.invalidCharacters = The shipping mark must only include letters a to z and numbers 0 to 9

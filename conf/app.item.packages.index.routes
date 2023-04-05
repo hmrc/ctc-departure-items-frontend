@@ -4,7 +4,17 @@ POST       /:itemIndex/packages/:packageIndex/type/:lrn                         
 GET        /:itemIndex/packages/:packageIndex/change-type/:lrn                    controllers.item.packages.index.PackageTypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index, packageIndex: Index)
 POST       /:itemIndex/packages/:packageIndex/change-type/:lrn                    controllers.item.packages.index.PackageTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index, packageIndex: Index)
 
+GET        /:itemIndex/packages/:packageIndex/type-quantity/:lrn                  controllers.item.packages.index.NumberOfPackagesController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index, packageIndex: Index)
+POST       /:itemIndex/packages/:packageIndex/type-quantity/:lrn                  controllers.item.packages.index.NumberOfPackagesController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index, packageIndex: Index)
+GET        /:itemIndex/packages/:packageIndex/change-type-quantity/:lrn           controllers.item.packages.index.NumberOfPackagesController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index, packageIndex: Index)
+POST       /:itemIndex/packages/:packageIndex/change-type-quantity/:lrn           controllers.item.packages.index.NumberOfPackagesController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index, packageIndex: Index)
+
 GET        /:itemIndex/packages/:packageIndex/add-shipping-mark/:lrn              controllers.item.packages.index.AddShippingMarkYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index, packageIndex: Index)
 POST       /:itemIndex/packages/:packageIndex/add-shipping-mark/:lrn              controllers.item.packages.index.AddShippingMarkYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index, packageIndex: Index)
 GET        /:itemIndex/packages/:packageIndex/change-add-shipping-mark/:lrn       controllers.item.packages.index.AddShippingMarkYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index, packageIndex: Index)
 POST       /:itemIndex/packages/:packageIndex/change-add-shipping-mark/:lrn       controllers.item.packages.index.AddShippingMarkYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index, packageIndex: Index)
+
+GET        /:itemIndex/packages/:packageIndex/shipping-mark/:lrn                  controllers.item.packages.index.ShippingMarkController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index, packageIndex: Index)
+POST       /:itemIndex/packages/:packageIndex/shipping-mark/:lrn                  controllers.item.packages.index.ShippingMarkController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index, packageIndex: Index)
+GET        /:itemIndex/packages/:packageIndex/change-shipping-mark/:lrn           controllers.item.packages.index.ShippingMarkController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index, packageIndex: Index)
+POST       /:itemIndex/packages/:packageIndex/change-shipping-mark/:lrn           controllers.item.packages.index.ShippingMarkController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index, packageIndex: Index)

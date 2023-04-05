@@ -14,21 +14,25 @@
  * limitations under the License.
  */
 
-package forms
+package forms.item.packages
+
+import forms.Constants.maxShippingMarkLength
+import forms.mappings.Mappings
+import models.domain.StringFieldRegex.stringFieldRegex
+import play.api.data.Form
 
 import javax.inject.Inject
 
-import forms.mappings.Mappings
-import play.api.data.Form
+class ShippingMarkFormProvider @Inject() extends Mappings {
 
-class IntFormProvider @Inject() extends Mappings {
-
-  def apply(prefix: String, maximum: Int, args: Seq[String] = Seq.empty): Form[Int] =
+  def apply(prefix: String): Form[String] =
     Form(
-      "value" -> int(s"$prefix.error.required", s"$prefix.error.wholeNumber", s"$prefix.error.nonNumeric", args = args)
+      "value" -> text(s"$prefix.error.required")
         .verifying(
-          minimumValue(0, s"$prefix.error.negative"),
-          maximumValue(maximum, s"$prefix.error.maximum")
+          forms.StopOnFirstFail[String](
+            regexp(stringFieldRegex, s"$prefix.error.invalidCharacters"),
+            maxLength(maxShippingMarkLength, s"$prefix.error.length")
+          )
         )
     )
 }

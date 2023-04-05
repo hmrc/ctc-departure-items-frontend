@@ -179,7 +179,7 @@ class ItemAnswersHelper(
   def packageType(packageIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[PackageType](
     page = PackageTypePage(itemIndex, packageIndex),
     formatAnswer = formatAsPackage,
-    prefix = "item.packageType",
+    prefix = "item.packages.index.packageType",
     id = Some(s"change-type-${packageIndex.display}"),
     args = packageIndex.display
   )
