@@ -27,9 +27,9 @@ import pages.item.packages.index.PackageTypePage
 import play.api.mvc.Call
 import viewmodels.ListItem
 
-class PackagesAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class PackageAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  "PackagesAnswersHelper" - {
+  "PackageAnswersHelper" - {
 
     "listItems" - {
 
@@ -39,7 +39,7 @@ class PackagesAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
             mode =>
               val userAnswers = emptyUserAnswers
 
-              val helper = new PackagesAnswersHelper(userAnswers, mode, itemIndex)
+              val helper = new PackageAnswersHelper(userAnswers, mode, itemIndex)
               helper.listItems mustBe Nil
           }
         }
@@ -52,7 +52,7 @@ class PackagesAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               .setValue(PackageTypePage(itemIndex, Index(0)), packageType)
               .setValue(PackageTypePage(itemIndex, Index(1)), packageType)
 
-            val helper = new PackagesAnswersHelper(userAnswers, mode, itemIndex)
+            val helper = new PackageAnswersHelper(userAnswers, mode, itemIndex)
             helper.listItems mustBe Seq(
               Right(
                 ListItem(

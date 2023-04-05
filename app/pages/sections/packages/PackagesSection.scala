@@ -17,11 +17,12 @@
 package pages.sections.packages
 
 import models.Index
-import pages.sections.Section
-import play.api.libs.json.{JsObject, JsPath}
+import pages.sections.{ItemSection, Section}
+import play.api.libs.json.{JsArray, JsPath}
 
-case class PackagesSection(itemIndex: Index, packagesIndex: Index) extends Section[JsObject] {
+case class PackagesSection(itemIndex: Index) extends Section[JsArray] {
 
-  override def path: JsPath = PackagesListSection(itemIndex).path \ packagesIndex.position
+  override def path: JsPath = ItemSection(itemIndex).path \ toString
 
+  override def toString: String = "packages"
 }
