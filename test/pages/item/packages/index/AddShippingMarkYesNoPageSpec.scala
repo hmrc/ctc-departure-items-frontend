@@ -16,6 +16,7 @@
 
 package pages.item.packages.index
 
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class AddShippingMarkYesNoPageSpec extends PageBehaviours {
@@ -27,5 +28,37 @@ class AddShippingMarkYesNoPageSpec extends PageBehaviours {
     beSettable[Boolean](AddShippingMarkYesNoPage(itemIndex, packageIndex))
 
     beRemovable[Boolean](AddShippingMarkYesNoPage(itemIndex, packageIndex))
+
+    "cleanup" - {
+      "when no selected" - {
+        "must remove shipping mark" in {
+          forAll(arbitrary[String]) {
+            shippingMark =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
+                .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
+
+              val result = userAnswers.setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), false)
+
+              result.get(ShippingMarkPage(itemIndex, packageIndex)) must not be defined
+          }
+        }
+      }
+
+      "when yes selected" - {
+        "must do nothing" in {
+          forAll(arbitrary[String]) {
+            shippingMark =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
+                .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
+
+              val result = userAnswers.setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
+
+              result.get(ShippingMarkPage(itemIndex, packageIndex)) must be(defined)
+          }
+        }
+      }
+    }
   }
 }

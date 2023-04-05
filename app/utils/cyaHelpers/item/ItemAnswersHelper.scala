@@ -192,7 +192,7 @@ class ItemAnswersHelper(
     args = packageIndex.display
   )
 
-  def shippingMarksYesNo(packageIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+  def shippingMarkYesNo(packageIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = AddShippingMarkYesNoPage(itemIndex, packageIndex),
     formatAnswer = formatAsYesOrNo,
     prefix = "item.packages.index.addShippingMarkYesNo",

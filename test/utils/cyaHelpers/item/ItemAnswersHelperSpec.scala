@@ -843,27 +843,27 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
       }
     }
 
-    "addShippingMarks" - {
+    "addShippingMark" - {
       "must return None" - {
-        "when AddShippingMarksPage is undefined" in {
+        "when AddShippingMarkPage is undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
               val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
-              val result = helper.shippingMarksYesNo(packageIndex)
+              val result = helper.shippingMarkYesNo(packageIndex)
               result mustBe None
           }
         }
       }
 
       "must return Some(Row)" - {
-        "when AddShippingMarksPage is defined" in {
+        "when AddShippingMarkPage is defined" in {
           forAll(arbitrary[Mode]) {
             mode =>
               val answers = emptyUserAnswers
                 .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
 
               val helper = new ItemAnswersHelper(answers, mode, index)
-              val result = helper.shippingMarksYesNo(packageIndex).get
+              val result = helper.shippingMarkYesNo(packageIndex).get
 
               result.key.value mustBe "Do you want to add a shipping mark?"
               result.value.value mustBe "Yes"
