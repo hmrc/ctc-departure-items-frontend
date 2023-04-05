@@ -55,8 +55,6 @@ private[utils] class SummaryListRowHelper(implicit messages: Messages) {
 
   protected def formatAsCountry(country: Country): Content = country.description.toText
 
-  protected def formatAsPackage(packageType: PackageType): Content = packageType.toString.toText
-
   protected def buildRow(
     prefix: String,
     answer: Content,
