@@ -125,12 +125,12 @@ trait ModelGenerators {
     } yield value
   }
 
-  private def arbitraryPackageType(packageType: PackingType): Arbitrary[PackageType] =
+  private def arbitraryPackageType(packingType: PackingType): Arbitrary[PackageType] =
     Arbitrary {
       for {
         code <- nonEmptyString
         desc <- Gen.option(nonEmptyString)
-      } yield PackageType(code, desc, packageType)
+      } yield PackageType(code, desc, packingType)
     }
 
   lazy val arbitraryUnpackedPackageType: Arbitrary[PackageType] = arbitraryPackageType(PackingType.Unpacked)
