@@ -19,6 +19,7 @@ package connectors
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
 import helper.WireMockServerHandler
+import models.PackingType
 import models.reference._
 import org.scalacheck.Gen
 import org.scalatest.Assertion
@@ -59,11 +60,13 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       |[
       | {
       |    "code": "VA",
-      |    "description": "Vat"
+      |    "description": "Vat",
+      |    "type": "Other"
       |  },
       |  {
       |    "code": "UC",
-      |    "description": "Uncaged"
+      |    "description": "Uncaged",
+      |    "type": "Other"
       |  }
       |]
       |""".stripMargin
@@ -106,8 +109,8 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         )
 
         val expectResult = Seq(
-          PackageType("VA", Some("Vat")),
-          PackageType("UC", Some("Uncaged"))
+          PackageType("VA", Some("Vat"), PackingType.Other),
+          PackageType("UC", Some("Uncaged"), PackingType.Other)
         )
 
         connector.getPackageTypes().futureValue mustEqual expectResult
