@@ -23,7 +23,6 @@ import models.reference.PackageType
 import models.{Index, Mode, PackingType, UserAnswers}
 import pages.item.packages.index._
 import play.api.mvc.Call
-import uk.gov.hmrc.http.HttpVerbs.GET
 
 case class PackageDomain(
   `type`: PackageType,
@@ -32,7 +31,7 @@ case class PackageDomain(
 )(itemIndex: Index, packageIndex: Index)
     extends JourneyDomainModel {
 
-  override def toString: String = `type`.toString
+  def asString: String = PackageDomain.asString(`type`, numberOfPackages)
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some {
     stage match {
@@ -44,6 +43,11 @@ case class PackageDomain(
 }
 
 object PackageDomain {
+
+  def asString(packageType: PackageType, numberOfPackages: Option[Int]): String =
+    numberOfPackages.fold(s"1 ${packageType.toString}")(
+      x => s"$x ${packageType.toString}"
+    )
 
   implicit def userAnswersReader(itemIndex: Index, packageIndex: Index): UserAnswersReader[PackageDomain] = {
     lazy val shippingMarkReads = AddShippingMarkYesNoPage(itemIndex, packageIndex)

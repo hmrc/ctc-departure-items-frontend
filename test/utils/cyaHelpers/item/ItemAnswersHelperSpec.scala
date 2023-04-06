@@ -758,6 +758,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               val result = helper.`package`(packageIndex).get
 
               result.key.value mustBe "Package 1"
+              println("hererere", result.value.value)
               result.value.value mustBe packageType.toString
               val actions = result.actions.get.items
               actions.size mustBe 1
