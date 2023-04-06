@@ -28,8 +28,8 @@ class PackageTypeFormProviderSpec extends SpecBase with StringFieldBehaviours wi
   private val prefix      = Gen.alphaNumStr.sample.value
   private val requiredKey = s"$prefix.error.required"
 
-  private val packageType1    = arbitraryPackageType.arbitrary.sample.get
-  private val packageType2    = arbitraryPackageType.arbitrary.sample.get
+  private val packageType1    = arbitraryPackage.arbitrary.sample.get
+  private val packageType2    = arbitraryPackage.arbitrary.sample.get
   private val packageTypeList = PackageTypeList(Seq(packageType1, packageType2))
 
   private val form = new PackageTypeFormProvider()(prefix, packageTypeList)

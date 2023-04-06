@@ -19,7 +19,7 @@ package utils.cyaHelpers.item
 import config.FrontendAppConfig
 import models.journeyDomain.item.dangerousGoods.DangerousGoodsDomain
 import models.journeyDomain.item.packages.PackageDomain
-import models.reference.{Country, PackageType}
+import models.reference.{Country, Package}
 import models.{DeclarationType, Index, Mode, UserAnswers}
 import pages.item._
 import pages.item.packages.index.{AddShippingMarkYesNoPage, NumberOfPackagesPage, PackageTypePage, ShippingMarkPage}
@@ -176,7 +176,7 @@ class ItemAnswersHelper(
     args = itemIndex.display
   )
 
-  def packageType(packageIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[PackageType](
+  def packageType(packageIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[Package](
     page = PackageTypePage(itemIndex, packageIndex),
     formatAnswer = formatAsText,
     prefix = "item.packages.index.packageType",

@@ -16,11 +16,11 @@
 
 package models
 
-import models.reference.PackageType
+import models.reference.Package
 
-case class PackageTypeList(packageTypes: Seq[PackageType]) {
+case class PackageTypeList(packageTypes: Seq[Package]) {
 
-  def getPackageType(code: String): Option[PackageType] =
+  def getPackageType(code: String): Option[Package] =
     packageTypes.find(_.code == code)
 
 }

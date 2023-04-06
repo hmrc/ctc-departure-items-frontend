@@ -19,7 +19,7 @@ package views.item.packages.index
 import forms.Constants.maxNumberOfPackages
 import forms.IntFormProvider
 import models.NormalMode
-import models.reference.PackageType
+import models.reference.Package
 import org.scalacheck.Arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -29,7 +29,7 @@ import views.html.item.packages.index.NumberOfPackagesView
 
 class NumberOfPackagesViewSpec extends InputTextViewBehaviours[Int] {
 
-  private val packageType = Arbitrary.arbitrary[PackageType].sample.get
+  private val packageType = Arbitrary.arbitrary[Package].sample.get
 
   override def form: Form[Int] = new IntFormProvider()(prefix, 10, Seq(packageType.toString))
 

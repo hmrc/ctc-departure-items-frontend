@@ -18,7 +18,7 @@ package services
 
 import connectors.ReferenceDataConnector
 import models.PackageTypeList
-import models.reference.PackageType
+import models.reference.Package
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -31,6 +31,6 @@ class PackagesService @Inject() (referenceDataConnector: ReferenceDataConnector)
       .getPackageTypes()
       .map(sort)
 
-  private def sort(packageTypes: Seq[PackageType]): PackageTypeList =
+  private def sort(packageTypes: Seq[Package]): PackageTypeList =
     PackageTypeList(packageTypes.sortBy(_.description.map(_.toLowerCase)))
 }

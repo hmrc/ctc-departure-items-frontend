@@ -18,14 +18,14 @@ package models.journeyDomain.item.packages
 
 import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
 import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
-import models.reference.PackageType
+import models.reference.Package
 import models.{Index, Mode, UserAnswers}
 import pages.item.packages.index.PackageTypePage
 import play.api.mvc.Call
 import uk.gov.hmrc.http.HttpVerbs.GET
 
 case class PackageDomain(
-  `type`: PackageType
+  `type`: Package
 )(itemIndex: Index, packageIndex: Index)
     extends JourneyDomainModel {
 

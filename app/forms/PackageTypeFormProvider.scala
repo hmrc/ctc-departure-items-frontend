@@ -18,17 +18,17 @@ package forms
 
 import forms.mappings.Mappings
 import models.PackageTypeList
-import models.reference.PackageType
+import models.reference.Package
 import play.api.data.Form
 
 import javax.inject.Inject
 
 class PackageTypeFormProvider @Inject() extends Mappings {
 
-  def apply(prefix: String, packageTypesList: PackageTypeList): Form[PackageType] =
+  def apply(prefix: String, packageTypesList: PackageTypeList): Form[Package] =
     Form(
       "value" -> text(s"$prefix.error.required")
         .verifying(s"$prefix.error.required", value => packageTypesList.packageTypes.exists(_.code == value))
-        .transform[PackageType](value => packageTypesList.getPackageType(value).get, _.code)
+        .transform[Package](value => packageTypesList.getPackageType(value).get, _.code)
     )
 }

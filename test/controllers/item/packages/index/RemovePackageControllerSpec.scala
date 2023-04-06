@@ -19,7 +19,7 @@ package controllers.item.packages.index
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import generators.Generators
-import models.reference.PackageType
+import models.reference.Package
 import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -40,12 +40,12 @@ class RemovePackageControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
   private val formProvider = new YesNoFormProvider()
 
-  private def form(packageType: PackageType): Form[Boolean] =
+  private def form(packageType: Package): Form[Boolean] =
     formProvider("item.packages.index.removePackage", packageType)
 
   private val mode                     = NormalMode
   private lazy val removeDocumentRoute = routes.RemovePackageController.onPageLoad(lrn, mode, itemIndex, packageIndex).url
-  private val packageType              = arbitrary[PackageType].sample.value
+  private val packageType              = arbitrary[Package].sample.value
 
   "RemoveDocument Controller" - {
 

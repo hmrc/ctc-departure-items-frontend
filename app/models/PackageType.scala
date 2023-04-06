@@ -14,21 +14,14 @@
  * limitations under the License.
  */
 
-package models.reference
+package models
 
-import models.Selectable
-import play.api.libs.json.{Json, OFormat}
+sealed trait PackageType
 
-case class PackageType(code: String, description: Option[String]) extends Selectable {
+object PackageType extends EnumerableType[PackageType] {
+  case object Bulk extends PackageType
+  case object Unpacked extends PackageType
+  case object Other extends PackageType
 
-  override def toString: String = description match {
-    case Some(value) if value.trim.nonEmpty => s"($code) $value"
-    case _                                  => code
-  }
-
-  override val value: String = code
-}
-
-object PackageType {
-  implicit val format: OFormat[PackageType] = Json.format[PackageType]
+  override val values: Seq[PackageType] = Seq(Bulk, Unpacked, Other)
 }

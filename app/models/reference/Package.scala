@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-package pages.item.packages.index
+package models.reference
 
-import models.reference.Package
-import pages.behaviours.PageBehaviours
-import pages.item.packages.index.PackageTypePage
+import models.{PackageType, Selectable}
+import play.api.libs.json.{Json, OFormat}
 
-class PackageTypePageSpec extends PageBehaviours {
+case class Package(code: String, description: Option[String], `type`: PackageType) extends Selectable {
 
-  "PackageTypePage" - {
-
-    beRetrievable[Package](PackageTypePage(itemIndex, packageIndex))
-
-    beSettable[Package](PackageTypePage(itemIndex, packageIndex))
-
-    beRemovable[Package](PackageTypePage(itemIndex, packageIndex))
+  override def toString: String = description match {
+    case Some(value) if value.trim.nonEmpty => s"($code) $value"
+    case _                                  => code
   }
+
+  override val value: String = code
+}
+
+object Package {
+  implicit val format: OFormat[Package] = Json.format[Package]
 }

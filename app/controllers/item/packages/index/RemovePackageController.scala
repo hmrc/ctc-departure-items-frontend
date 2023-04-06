@@ -19,7 +19,7 @@ package controllers.item.packages.index
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
-import models.reference.PackageType
+import models.reference.Package
 import models.requests.SpecificDataRequestProvider1
 import models.{Index, LocalReferenceNumber, Mode}
 import pages.item.packages.index.PackageTypePage
@@ -46,11 +46,11 @@ class RemovePackageController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(packageType: PackageType): Form[Boolean] = formProvider("item.packages.index.removePackage", packageType)
+  private def form(packageType: Package): Form[Boolean] = formProvider("item.packages.index.removePackage", packageType)
 
-  private type Request = SpecificDataRequestProvider1[PackageType]#SpecificDataRequest[_]
+  private type Request = SpecificDataRequestProvider1[Package]#SpecificDataRequest[_]
 
-  private def packageType(implicit request: Request): PackageType = request.arg
+  private def packageType(implicit request: Request): Package = request.arg
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, packageIndex: Index): Action[AnyContent] = actions
     .requireData(lrn)
