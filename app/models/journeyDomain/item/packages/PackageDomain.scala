@@ -20,12 +20,13 @@ import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
 import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
 import models.reference.PackageType
 import models.{Index, Mode, UserAnswers}
-import pages.item.packages.index.PackageTypePage
+import pages.item.packages.index.{NumberOfPackagesPage, PackageTypePage}
 import play.api.mvc.Call
 import uk.gov.hmrc.http.HttpVerbs.GET
 
 case class PackageDomain(
-  `type`: PackageType
+  `type`: PackageType,
+  numberOfPackages: Int = 1
 )(itemIndex: Index, packageIndex: Index)
     extends JourneyDomainModel {
 
@@ -35,7 +36,7 @@ case class PackageDomain(
     stage match {
       case AccessingJourney =>
         controllers.item.packages.index.routes.PackageTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, packageIndex)
-      case CompletingJourney => Call(GET, "#")
+      case CompletingJourney => controllers.item.packages.routes.AddAnotherPackageController.onPageLoad(userAnswers.lrn, mode, itemIndex)
     }
   }
 }

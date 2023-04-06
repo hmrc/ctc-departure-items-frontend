@@ -24,7 +24,6 @@ import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.item.packages.index.PackageTypePage
-import play.api.mvc.Call
 import viewmodels.ListItem
 
 class PackageAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
