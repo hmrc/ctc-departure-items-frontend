@@ -16,7 +16,7 @@
 
 package pages.item.packages.index
 
-import models.reference.Package
+import models.reference.PackageType
 import pages.behaviours.PageBehaviours
 import pages.item.packages.index.PackageTypePage
 
@@ -24,10 +24,10 @@ class PackageTypePageSpec extends PageBehaviours {
 
   "PackageTypePage" - {
 
-    beRetrievable[Package](PackageTypePage(itemIndex, packageIndex))
+    beRetrievable[PackageType](PackageTypePage(itemIndex, packageIndex))
 
-    beSettable[Package](PackageTypePage(itemIndex, packageIndex))
+    beSettable[PackageType](PackageTypePage(itemIndex, packageIndex))
 
-    beRemovable[Package](PackageTypePage(itemIndex, packageIndex))
+    beRemovable[PackageType](PackageTypePage(itemIndex, packageIndex))
   }
 }

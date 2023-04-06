@@ -19,7 +19,7 @@ package controllers.item.packages.index
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.PackageTypeFormProvider
 import generators.Generators
-import models.{NormalMode, PackageList}
+import models.{NormalMode, PackageTypeList}
 import navigation.PackageNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -37,7 +37,7 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
   private val packageType1    = arbitraryPackage.arbitrary.sample.get
   private val packageType2    = arbitraryPackage.arbitrary.sample.get
-  private val packageTypeList = PackageList(Seq(packageType1, packageType2))
+  private val packageTypeList = PackageTypeList(Seq(packageType1, packageType2))
 
   private val formProvider = new PackageTypeFormProvider()
   private val form         = formProvider("item.packages.index.packageType", packageTypeList)
@@ -56,7 +56,7 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
     "must return OK and the correct view for a GET" in {
 
-      when(mockPackagesService.getPackages()(any())).thenReturn(Future.successful(packageTypeList))
+      when(mockPackagesService.getPackageTypes()(any())).thenReturn(Future.successful(packageTypeList))
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, packageTypeRoute)
@@ -68,12 +68,12 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, packageTypeList.packages, mode, itemIndex, packageIndex)(request, messages).toString
+        view(form, lrn, packageTypeList.packageTypes, mode, itemIndex, packageIndex)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      when(mockPackagesService.getPackages()(any())).thenReturn(Future.successful(packageTypeList))
+      when(mockPackagesService.getPackageTypes()(any())).thenReturn(Future.successful(packageTypeList))
       val userAnswers = emptyUserAnswers.setValue(PackageTypePage(itemIndex, packageIndex), packageType1)
       setExistingUserAnswers(userAnswers)
 
@@ -88,12 +88,12 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, packageTypeList.packages, mode, itemIndex, packageIndex)(request, messages).toString
+        view(filledForm, lrn, packageTypeList.packageTypes, mode, itemIndex, packageIndex)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
-      when(mockPackagesService.getPackages()(any())).thenReturn(Future.successful(packageTypeList))
+      when(mockPackagesService.getPackageTypes()(any())).thenReturn(Future.successful(packageTypeList))
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
@@ -110,7 +110,7 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      when(mockPackagesService.getPackages()(any())).thenReturn(Future.successful(packageTypeList))
+      when(mockPackagesService.getPackageTypes()(any())).thenReturn(Future.successful(packageTypeList))
       setExistingUserAnswers(emptyUserAnswers)
 
       val request   = FakeRequest(POST, packageTypeRoute).withFormUrlEncodedBody(("value", "invalid value"))
@@ -123,7 +123,7 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, packageTypeList.packages, mode, itemIndex, packageIndex)(request, messages).toString
+        view(boundForm, lrn, packageTypeList.packageTypes, mode, itemIndex, packageIndex)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

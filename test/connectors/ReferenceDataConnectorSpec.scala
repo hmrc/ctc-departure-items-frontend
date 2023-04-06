@@ -19,7 +19,7 @@ package connectors
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
 import helper.WireMockServerHandler
-import models.PackageType
+import models.PackingType
 import models.reference._
 import org.scalacheck.Gen
 import org.scalatest.Assertion
@@ -100,7 +100,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       }
     }
 
-    "getPackages" - {
+    "getPackageTypes" - {
 
       "must return list of package types when successful" in {
         server.stubFor(
@@ -109,16 +109,16 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         )
 
         val expectResult = Seq(
-          Package("VA", Some("Vat"), PackageType.Other),
-          Package("UC", Some("Uncaged"), PackageType.Other)
+          PackageType("VA", Some("Vat"), PackingType.Other),
+          PackageType("UC", Some("Uncaged"), PackingType.Other)
         )
 
-        connector.getPackages().futureValue mustEqual expectResult
+        connector.getPackageTypes().futureValue mustEqual expectResult
       }
 
       "must return an exception when an error response is returned" in {
 
-        checkErrorResponse(s"/$baseUrl/kinds-of-package", connector.getPackages())
+        checkErrorResponse(s"/$baseUrl/kinds-of-package", connector.getPackageTypes())
       }
 
     }

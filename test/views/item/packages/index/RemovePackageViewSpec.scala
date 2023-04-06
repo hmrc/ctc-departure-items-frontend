@@ -18,7 +18,7 @@ package views.item.packages.index
 
 import generators.Generators
 import models.NormalMode
-import models.reference.Package
+import models.reference.PackageType
 import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -27,7 +27,7 @@ import views.html.item.packages.index.RemovePackageView
 
 class RemovePackageViewSpec extends YesNoViewBehaviours with Generators {
 
-  private val packageType = arbitrary[Package].sample.value
+  private val packageType = arbitrary[PackageType].sample.value
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector

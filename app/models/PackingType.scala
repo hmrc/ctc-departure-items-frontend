@@ -16,11 +16,12 @@
 
 package models
 
-import models.reference.Package
+sealed trait PackingType
 
-case class PackageList(packages: Seq[Package]) {
+object PackingType extends EnumerableType[PackingType] {
+  case object Bulk extends PackingType
+  case object Unpacked extends PackingType
+  case object Other extends PackingType
 
-  def getPackageType(code: String): Option[Package] =
-    packages.find(_.code == code)
-
+  override val values: Seq[PackingType] = Seq(Bulk, Unpacked, Other)
 }

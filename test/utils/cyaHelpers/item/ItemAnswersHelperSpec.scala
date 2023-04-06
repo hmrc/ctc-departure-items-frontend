@@ -22,7 +22,7 @@ import controllers.item.packages.index.routes.{AddShippingMarkYesNoController, N
 import controllers.item.routes._
 import forms.Constants.maxNumberOfPackages
 import generators.Generators
-import models.reference.{Country, Package}
+import models.reference.{Country, PackageType}
 import models.{DeclarationType, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -749,7 +749,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
       "must return Some(Row)" - {
         "when package is defined" in {
-          forAll(arbitrary[Mode], arbitrary[Package](arbitraryOtherPackage)) {
+          forAll(arbitrary[Mode], arbitrary[PackageType](arbitraryOtherPackage)) {
             (mode, `package`) =>
               val userAnswers = emptyUserAnswers
                 .setValue(PackageTypePage(itemIndex, packageIndex), `package`)
@@ -785,7 +785,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
       "must return Some(Row)" - {
         "when PackageTypePage is defined" in {
-          forAll(arbitrary[Mode], arbitrary[Package]) {
+          forAll(arbitrary[Mode], arbitrary[PackageType]) {
             (mode, packageType) =>
               val answers = emptyUserAnswers
                 .setValue(PackageTypePage(itemIndex, packageIndex), packageType)

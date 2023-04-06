@@ -17,24 +17,24 @@
 package views.item.packages.index
 
 import forms.PackageTypeFormProvider
-import models.{NormalMode, PackageList}
-import models.reference.Package
+import models.{NormalMode, PackageTypeList}
+import models.reference.PackageType
 import org.scalacheck.Arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.InputSelectViewBehaviours
 import views.html.item.packages.index.PackageTypeView
 
-class PackageTypeViewSpec extends InputSelectViewBehaviours[Package] {
+class PackageTypeViewSpec extends InputSelectViewBehaviours[PackageType] {
 
   private val arg = itemIndex.display.toString
 
-  override def form: Form[Package] = new PackageTypeFormProvider()(prefix, PackageList(values))
+  override def form: Form[PackageType] = new PackageTypeFormProvider()(prefix, PackageTypeList(values))
 
-  override def applyView(form: Form[Package]): HtmlFormat.Appendable =
+  override def applyView(form: Form[PackageType]): HtmlFormat.Appendable =
     injector.instanceOf[PackageTypeView].apply(form, lrn, values, NormalMode, itemIndex, packageIndex)(fakeRequest, messages)
 
-  implicit override val arbitraryT: Arbitrary[Package] = arbitraryPackage
+  implicit override val arbitraryT: Arbitrary[PackageType] = arbitraryPackage
 
   override val prefix: String = "item.packages.index.packageType"
 

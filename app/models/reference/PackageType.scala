@@ -16,10 +16,10 @@
 
 package models.reference
 
-import models.{PackageType, Selectable}
+import models.{PackingType, Selectable}
 import play.api.libs.json.{Json, OFormat}
 
-case class Package(code: String, description: Option[String], `type`: PackageType) extends Selectable {
+case class PackageType(code: String, description: Option[String], `type`: PackingType) extends Selectable {
 
   override def toString: String = description match {
     case Some(value) if value.trim.nonEmpty => s"($code) $value"
@@ -29,6 +29,6 @@ case class Package(code: String, description: Option[String], `type`: PackageTyp
   override val value: String = code
 }
 
-object Package {
-  implicit val format: OFormat[Package] = Json.format[Package]
+object PackageType {
+  implicit val format: OFormat[PackageType] = Json.format[PackageType]
 }

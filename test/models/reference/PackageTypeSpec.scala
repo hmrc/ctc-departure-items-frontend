@@ -18,15 +18,15 @@ package models.reference
 
 import base.SpecBase
 import generators.Generators
-import models.PackageType
-import models.PackageType._
+import models.PackingType
+import models.PackingType._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
 import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
-class PackageSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class PackageTypeSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   "PackageType" - {
 
@@ -34,7 +34,7 @@ class PackageSpec extends SpecBase with ScalaCheckPropertyChecks with Generators
       "when description defined" in {
         forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
           (code, description) =>
-            val packageType = Package(code, Some(description), Bulk)
+            val packageType = PackageType(code, Some(description), Bulk)
             Json.toJson(packageType) mustBe Json.parse(s"""
               |{
               |  "code": "$code",
@@ -48,7 +48,7 @@ class PackageSpec extends SpecBase with ScalaCheckPropertyChecks with Generators
       "when description undefined" in {
         forAll(Gen.alphaNumStr) {
           code =>
-            val packageType = Package(code, None, Unpacked)
+            val packageType = PackageType(code, None, Unpacked)
             Json.toJson(packageType) mustBe Json.parse(s"""
               |{
               |  "code": "$code",
@@ -71,7 +71,7 @@ class PackageSpec extends SpecBase with ScalaCheckPropertyChecks with Generators
               |  "type": "Bulk"
               |}
               |""".stripMargin)
-            json.as[Package] mustBe Package(code, Some(description), Bulk)
+            json.as[PackageType] mustBe PackageType(code, Some(description), Bulk)
         }
       }
 
@@ -84,40 +84,40 @@ class PackageSpec extends SpecBase with ScalaCheckPropertyChecks with Generators
               |  "type": "Unpacked"
               |}
               |""".stripMargin)
-            json.as[Package] mustBe Package(code, None, Unpacked)
+            json.as[PackageType] mustBe PackageType(code, None, Unpacked)
         }
       }
     }
 
     "must convert to select item" in {
-      forAll(Gen.alphaNumStr, Gen.option(Gen.alphaNumStr), arbitrary[Boolean], arbitrary[PackageType]) {
+      forAll(Gen.alphaNumStr, Gen.option(Gen.alphaNumStr), arbitrary[Boolean], arbitrary[PackingType]) {
         (code, description, selected, packageType) =>
-          val `package` = Package(code, description, packageType)
+          val `package` = PackageType(code, description, packageType)
           `package`.toSelectItem(selected) mustBe SelectItem(Some(code), s"${`package`}", selected)
       }
     }
 
     "must format as string" - {
       "when description defined and non-empty" in {
-        forAll(Gen.alphaNumStr, nonEmptyString, arbitrary[PackageType]) {
+        forAll(Gen.alphaNumStr, nonEmptyString, arbitrary[PackingType]) {
           (code, description, packageType) =>
-            val `package` = Package(code, Some(description), packageType)
+            val `package` = PackageType(code, Some(description), packageType)
             `package`.toString mustBe s"($code) $description"
         }
       }
 
       "when description defined and empty" in {
-        forAll(Gen.alphaNumStr, arbitrary[PackageType]) {
+        forAll(Gen.alphaNumStr, arbitrary[PackingType]) {
           (code, packageType) =>
-            val `package` = Package(code, Some(""), packageType)
+            val `package` = PackageType(code, Some(""), packageType)
             `package`.toString mustBe code
         }
       }
 
       "when description undefined" in {
-        forAll(Gen.alphaNumStr, arbitrary[PackageType]) {
+        forAll(Gen.alphaNumStr, arbitrary[PackingType]) {
           (code, packageType) =>
-            val `package` = Package(code, None, packageType)
+            val `package` = PackageType(code, None, packageType)
             `package`.toString mustBe code
         }
       }

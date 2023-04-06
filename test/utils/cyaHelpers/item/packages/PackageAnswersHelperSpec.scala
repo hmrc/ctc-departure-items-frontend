@@ -19,7 +19,7 @@ package utils.cyaHelpers.item.packages
 import base.SpecBase
 import controllers.item.packages.index.routes
 import generators.Generators
-import models.reference.Package
+import models.reference.PackageType
 import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -45,7 +45,7 @@ class PackageAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks wi
       }
 
       "when user answers populated with complete packages" in {
-        forAll(arbitrary[Mode], arbitrary[Package](arbitraryOtherPackage)) {
+        forAll(arbitrary[Mode], arbitrary[PackageType](arbitraryOtherPackage)) {
           (mode, `package`) =>
             val userAnswers = emptyUserAnswers
               .setValue(PackageTypePage(itemIndex, Index(0)), `package`)
