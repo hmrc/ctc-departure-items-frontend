@@ -266,6 +266,164 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         }
       }
     }
+
+    "cusCodeReader" - {
+
+      "can be read from user answers" - {
+        "when add CUS code yes/no is no" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(AddCUSCodeYesNoPage(itemIndex), false)
+
+          val expectedResult = None
+
+          val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+            ItemDomain.cusCodeReader(itemIndex)
+          ).run(userAnswers)
+
+          result.value mustBe expectedResult
+        }
+
+        "when CUS code is answered" in {
+          forAll(nonEmptyString) {
+            cusCode =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AddCUSCodeYesNoPage(itemIndex), true)
+                .setValue(CustomsUnionAndStatisticsCodePage(itemIndex), cusCode)
+
+              val expectedResult = Some(cusCode)
+
+              val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                ItemDomain.cusCodeReader(itemIndex)
+              ).run(userAnswers)
+
+              result.value mustBe expectedResult
+          }
+        }
+      }
+
+      "can not be read from user answers" - {
+        "when add CUS code yes/no is unanswered" in {
+          val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+            ItemDomain.cusCodeReader(itemIndex)
+          ).run(emptyUserAnswers)
+
+          result.left.value.page mustBe AddCUSCodeYesNoPage(itemIndex)
+        }
+
+        "when CUS code is unanswered" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(AddCUSCodeYesNoPage(itemIndex), true)
+
+          val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+            ItemDomain.cusCodeReader(itemIndex)
+          ).run(userAnswers)
+
+          result.left.value.page mustBe CustomsUnionAndStatisticsCodePage(itemIndex)
+        }
+      }
+    }
+
+    "commodityCodeReader" - {
+
+      "can be read from user answers" - {
+        "when TIR Carnet reference number is defined" - {
+          "and commodity code has been provided" in {
+            forAll(nonEmptyString, nonEmptyString) {
+              (tirReference, commodityCode) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(TransitOperationTIRCarnetNumberPage, tirReference)
+                  .setValue(AddCommodityCodeYesNoPage(itemIndex), true)
+                  .setValue(CommodityCodePage(itemIndex), commodityCode)
+
+                val expectedResult = Some(commodityCode)
+
+                val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                  ItemDomain.commodityCodeReader(itemIndex)
+                ).run(userAnswers)
+
+                result.value mustBe expectedResult
+            }
+          }
+
+          "and commodity code has not been provided" in {
+            forAll(nonEmptyString) {
+              tirReference =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(TransitOperationTIRCarnetNumberPage, tirReference)
+                  .setValue(AddCommodityCodeYesNoPage(itemIndex), false)
+
+                val expectedResult = None
+
+                val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                  ItemDomain.commodityCodeReader(itemIndex)
+                ).run(userAnswers)
+
+                result.value mustBe expectedResult
+            }
+          }
+        }
+
+        "when TIR Carnet reference number is undefined" in {
+          forAll(nonEmptyString) {
+            commodityCode =>
+              val userAnswers = emptyUserAnswers
+                .setValue(CommodityCodePage(itemIndex), commodityCode)
+
+              val expectedResult = Some(commodityCode)
+
+              val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                ItemDomain.commodityCodeReader(itemIndex)
+              ).run(userAnswers)
+
+              result.value mustBe expectedResult
+          }
+        }
+      }
+
+      "can not be read from user answers" - {
+
+        "when TIR Carnet reference number is defined" - {
+          "and add commodity code yes/no is unanswered" in {
+            forAll(nonEmptyString) {
+              tirReference =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(TransitOperationTIRCarnetNumberPage, tirReference)
+
+                val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                  ItemDomain.commodityCodeReader(itemIndex)
+                ).run(userAnswers)
+
+                result.left.value.page mustBe AddCommodityCodeYesNoPage(itemIndex)
+            }
+          }
+
+          "and commodity code is unanswered" in {
+            forAll(nonEmptyString) {
+              tirReference =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(TransitOperationTIRCarnetNumberPage, tirReference)
+                  .setValue(AddCommodityCodeYesNoPage(itemIndex), true)
+
+                val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                  ItemDomain.commodityCodeReader(itemIndex)
+                ).run(userAnswers)
+
+                result.left.value.page mustBe CommodityCodePage(itemIndex)
+            }
+          }
+        }
+
+        "when TIR Carnet reference number is undefined" - {
+          "and commodity code is unanswered" in {
+            val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+              ItemDomain.commodityCodeReader(itemIndex)
+            ).run(emptyUserAnswers)
+
+            result.left.value.page mustBe CommodityCodePage(itemIndex)
+          }
+        }
+      }
+    }
   }
 
 }
