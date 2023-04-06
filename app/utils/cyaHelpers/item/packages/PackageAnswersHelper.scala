@@ -17,12 +17,12 @@
 package utils.cyaHelpers.item.packages
 
 import config.FrontendAppConfig
+import controllers.item.packages.index.routes
 import models.journeyDomain.item.packages.PackageDomain
 import models.{Index, Mode, UserAnswers}
 import pages.item.packages.index.PackageTypePage
 import pages.sections.packages.PackagesSection
 import play.api.i18n.Messages
-import play.api.mvc.Call
 import utils.cyaHelpers.AnswersHelper
 import viewmodels.ListItem
 
@@ -35,7 +35,7 @@ class PackageAnswersHelper(userAnswers: UserAnswers, mode: Mode, itemIndex: Inde
         buildListItem[PackageDomain](
           nameWhenComplete = _.toString,
           nameWhenInProgress = userAnswers.get(PackageTypePage(itemIndex, packageIndex)).map(_.toString),
-          removeRoute = Option(Call("GET", "#")) // TODO: Update when remove route is ready
+          removeRoute = Some(routes.RemovePackageController.onPageLoad(lrn, mode, itemIndex, packageIndex))
         )(PackageDomain.userAnswersReader(itemIndex, packageIndex))
     }
 

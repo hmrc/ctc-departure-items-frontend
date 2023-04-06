@@ -18,3 +18,10 @@ GET        /:itemIndex/packages/:packageIndex/shipping-mark/:lrn                
 POST       /:itemIndex/packages/:packageIndex/shipping-mark/:lrn                  controllers.item.packages.index.ShippingMarkController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index, packageIndex: Index)
 GET        /:itemIndex/packages/:packageIndex/change-shipping-mark/:lrn           controllers.item.packages.index.ShippingMarkController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index, packageIndex: Index)
 POST       /:itemIndex/packages/:packageIndex/change-shipping-mark/:lrn           controllers.item.packages.index.ShippingMarkController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index, packageIndex: Index)
+
+GET        /:itemIndex/packages/:packageIndex/remove/:lrn                         controllers.item.packages.index.RemovePackageController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index, packageIndex: Index)
+POST       /:itemIndex/packages/:packageIndex/remove/:lrn                         controllers.item.packages.index.RemovePackageController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index, packageIndex: Index)
+GET        /:itemIndex/packages/:packageIndex/change-remove/:lrn                  controllers.item.packages.index.RemovePackageController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index, packageIndex: Index)
+POST       /:itemIndex/packages/:packageIndex/change-remove/:lrn                  controllers.item.packages.index.RemovePackageController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index, packageIndex: Index)
+
+
