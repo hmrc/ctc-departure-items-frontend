@@ -14,21 +14,14 @@
  * limitations under the License.
  */
 
-package forms
+package models
 
-import forms.mappings.Mappings
-import models.PackageTypeList
-import models.reference.PackageType
-import play.api.data.Form
+sealed trait PackingType
 
-import javax.inject.Inject
+object PackingType extends EnumerableType[PackingType] {
+  case object Bulk extends PackingType
+  case object Unpacked extends PackingType
+  case object Other extends PackingType
 
-class PackageTypeFormProvider @Inject() extends Mappings {
-
-  def apply(prefix: String, packageTypeList: PackageTypeList): Form[PackageType] =
-    Form(
-      "value" -> text(s"$prefix.error.required")
-        .verifying(s"$prefix.error.required", value => packageTypeList.packageTypes.exists(_.code == value))
-        .transform[PackageType](value => packageTypeList.getPackageType(value).get, _.code)
-    )
+  override val values: Seq[PackingType] = Seq(Bulk, Unpacked, Other)
 }
