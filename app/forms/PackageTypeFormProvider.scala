@@ -17,7 +17,7 @@
 package forms
 
 import forms.mappings.Mappings
-import models.PackageTypeList
+import models.PackageList
 import models.reference.Package
 import play.api.data.Form
 
@@ -25,10 +25,10 @@ import javax.inject.Inject
 
 class PackageTypeFormProvider @Inject() extends Mappings {
 
-  def apply(prefix: String, packageTypesList: PackageTypeList): Form[Package] =
+  def apply(prefix: String, packageList: PackageList): Form[Package] =
     Form(
       "value" -> text(s"$prefix.error.required")
-        .verifying(s"$prefix.error.required", value => packageTypesList.packageTypes.exists(_.code == value))
-        .transform[Package](value => packageTypesList.getPackageType(value).get, _.code)
+        .verifying(s"$prefix.error.required", value => packageList.packages.exists(_.code == value))
+        .transform[Package](value => packageList.getPackageType(value).get, _.code)
     )
 }

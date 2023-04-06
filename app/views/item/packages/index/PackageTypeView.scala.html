@@ -16,7 +16,7 @@
 
 @import controllers.item.packages.index.routes
 @import models.LocalReferenceNumber
-@import models.reference.PackageType
+@import models.reference.Package
 @import models.Selectable
 @import models.Selectable._
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
@@ -31,7 +31,7 @@
     button: Button
 )
 
-@(form: Form[PackageType], lrn: LocalReferenceNumber, packageTypes: Seq[PackageType], mode: Mode, itemIndex: Index, packageIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[Package], lrn: LocalReferenceNumber, packages: Seq[Package], mode: Mode, itemIndex: Index, packageIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("item.packages.index.packageType.title"),
@@ -51,7 +51,7 @@
                 additionalHtml = messages("item.packages.index.packageType.paragraph").toParagraph
             ),
             hint = Some(messages("item.packages.index.packageType.hint")),
-            selectItems = packageTypes.toSelectItems(form.value),
+            selectItems = packages.toSelectItems(form.value),
             placeholder = messages("item.packages.index.packageType.placeholder")
         )
 

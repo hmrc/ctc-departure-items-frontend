@@ -17,7 +17,7 @@
 package services
 
 import connectors.ReferenceDataConnector
-import models.PackageTypeList
+import models.PackageList
 import models.reference.Package
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -26,11 +26,11 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class PackagesService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
 
-  def getPackageTypes()(implicit hc: HeaderCarrier): Future[PackageTypeList] =
+  def getPackages()(implicit hc: HeaderCarrier): Future[PackageList] =
     referenceDataConnector
-      .getPackageTypes()
+      .getPackages()
       .map(sort)
 
-  private def sort(packageTypes: Seq[Package]): PackageTypeList =
-    PackageTypeList(packageTypes.sortBy(_.description.map(_.toLowerCase)))
+  private def sort(packages: Seq[Package]): PackageList =
+    PackageList(packages.sortBy(_.description.map(_.toLowerCase)))
 }

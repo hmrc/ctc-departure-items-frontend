@@ -100,7 +100,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       }
     }
 
-    "getPackageTypes" - {
+    "getPackages" - {
 
       "must return list of package types when successful" in {
         server.stubFor(
@@ -113,12 +113,12 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
           Package("UC", Some("Uncaged"), PackageType.Other)
         )
 
-        connector.getPackageTypes().futureValue mustEqual expectResult
+        connector.getPackages().futureValue mustEqual expectResult
       }
 
       "must return an exception when an error response is returned" in {
 
-        checkErrorResponse(s"/$baseUrl/kinds-of-package", connector.getPackageTypes())
+        checkErrorResponse(s"/$baseUrl/kinds-of-package", connector.getPackages())
       }
 
     }

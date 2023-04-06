@@ -49,7 +49,7 @@ class PackageTypeController @Inject() (
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, packageIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      service.getPackageTypes.map {
+      service.getPackages.map {
         packageTypeList =>
           val form = formProvider(prefix, packageTypeList)
           val preparedForm = request.userAnswers.get(index.PackageTypePage(itemIndex, packageIndex)) match {
@@ -57,19 +57,19 @@ class PackageTypeController @Inject() (
             case Some(value) => form.fill(value)
           }
 
-          Ok(view(preparedForm, lrn, packageTypeList.packageTypes, mode, itemIndex, packageIndex))
+          Ok(view(preparedForm, lrn, packageTypeList.packages, mode, itemIndex, packageIndex))
       }
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, packageIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      service.getPackageTypes.flatMap {
+      service.getPackages.flatMap {
         packageTypeList =>
           val form = formProvider(prefix, packageTypeList)
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, packageTypeList.packageTypes, mode, itemIndex, packageIndex))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, packageTypeList.packages, mode, itemIndex, packageIndex))),
               value => {
                 implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex, packageIndex)
                 index.PackageTypePage(itemIndex, packageIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()

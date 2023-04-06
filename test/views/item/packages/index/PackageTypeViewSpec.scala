@@ -17,7 +17,7 @@
 package views.item.packages.index
 
 import forms.PackageTypeFormProvider
-import models.{NormalMode, PackageTypeList}
+import models.{NormalMode, PackageList}
 import models.reference.Package
 import org.scalacheck.Arbitrary
 import play.api.data.Form
@@ -29,7 +29,7 @@ class PackageTypeViewSpec extends InputSelectViewBehaviours[Package] {
 
   private val arg = itemIndex.display.toString
 
-  override def form: Form[Package] = new PackageTypeFormProvider()(prefix, PackageTypeList(values))
+  override def form: Form[Package] = new PackageTypeFormProvider()(prefix, PackageList(values))
 
   override def applyView(form: Form[Package]): HtmlFormat.Appendable =
     injector.instanceOf[PackageTypeView].apply(form, lrn, values, NormalMode, itemIndex, packageIndex)(fakeRequest, messages)

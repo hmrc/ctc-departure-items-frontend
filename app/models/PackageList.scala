@@ -18,9 +18,9 @@ package models
 
 import models.reference.Package
 
-case class PackageTypeList(packageTypes: Seq[Package]) {
+case class PackageList(packages: Seq[Package]) {
 
   def getPackageType(code: String): Option[Package] =
-    packageTypes.find(_.code == code)
+    packages.find(_.code == code)
 
 }

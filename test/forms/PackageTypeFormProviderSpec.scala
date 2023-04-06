@@ -18,7 +18,7 @@ package forms
 
 import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
-import models.PackageTypeList
+import models.PackageList
 import play.api.data.FormError
 import generators.Generators
 import org.scalacheck.Gen
@@ -30,7 +30,7 @@ class PackageTypeFormProviderSpec extends SpecBase with StringFieldBehaviours wi
 
   private val packageType1    = arbitraryPackage.arbitrary.sample.get
   private val packageType2    = arbitraryPackage.arbitrary.sample.get
-  private val packageTypeList = PackageTypeList(Seq(packageType1, packageType2))
+  private val packageTypeList = PackageList(Seq(packageType1, packageType2))
 
   private val form = new PackageTypeFormProvider()(prefix, packageTypeList)
 
