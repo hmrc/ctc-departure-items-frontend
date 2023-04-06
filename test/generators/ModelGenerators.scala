@@ -114,18 +114,18 @@ trait ModelGenerators {
     } yield Call(method, url)
   }
 
-  implicit lazy val arbitraryPackageType: Arbitrary[PackingType] = Arbitrary {
+  implicit lazy val arbitraryPackingType: Arbitrary[PackingType] = Arbitrary {
     Gen.oneOf(PackingType.values)
   }
 
-  implicit lazy val arbitraryPackage: Arbitrary[PackageType] = Arbitrary {
+  implicit lazy val arbitraryPackageType: Arbitrary[PackageType] = Arbitrary {
     for {
       packageType <- arbitrary[PackingType]
-      value       <- arbitrary[PackageType](arbitraryPackage(packageType))
+      value       <- arbitrary[PackageType](arbitraryPackageType(packageType))
     } yield value
   }
 
-  private def arbitraryPackage(packageType: PackingType): Arbitrary[PackageType] =
+  private def arbitraryPackageType(packageType: PackingType): Arbitrary[PackageType] =
     Arbitrary {
       for {
         code <- nonEmptyString
@@ -133,9 +133,9 @@ trait ModelGenerators {
       } yield PackageType(code, desc, packageType)
     }
 
-  lazy val arbitraryUnpackedPackage: Arbitrary[PackageType] = arbitraryPackage(PackingType.Unpacked)
-  lazy val arbitraryBulkPackage: Arbitrary[PackageType]     = arbitraryPackage(PackingType.Bulk)
-  lazy val arbitraryOtherPackage: Arbitrary[PackageType]    = arbitraryPackage(PackingType.Other)
+  lazy val arbitraryUnpackedPackageType: Arbitrary[PackageType] = arbitraryPackageType(PackingType.Unpacked)
+  lazy val arbitraryBulkPackageType: Arbitrary[PackageType]     = arbitraryPackageType(PackingType.Bulk)
+  lazy val arbitraryOtherPackageType: Arbitrary[PackageType]    = arbitraryPackageType(PackingType.Other)
 
   lazy val arbitraryIncompleteTaskStatus: Arbitrary[TaskStatus] = Arbitrary {
     Gen.oneOf(TaskStatus.InProgress, TaskStatus.NotStarted, TaskStatus.CannotStartYet)

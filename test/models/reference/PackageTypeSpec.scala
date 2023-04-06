@@ -91,34 +91,34 @@ class PackageTypeSpec extends SpecBase with ScalaCheckPropertyChecks with Genera
 
     "must convert to select item" in {
       forAll(Gen.alphaNumStr, Gen.option(Gen.alphaNumStr), arbitrary[Boolean], arbitrary[PackingType]) {
-        (code, description, selected, packageType) =>
-          val `package` = PackageType(code, description, packageType)
-          `package`.toSelectItem(selected) mustBe SelectItem(Some(code), s"${`package`}", selected)
+        (code, description, selected, packingType) =>
+          val packageType = PackageType(code, description, packingType)
+          packageType.toSelectItem(selected) mustBe SelectItem(Some(code), s"$packageType", selected)
       }
     }
 
     "must format as string" - {
       "when description defined and non-empty" in {
         forAll(Gen.alphaNumStr, nonEmptyString, arbitrary[PackingType]) {
-          (code, description, packageType) =>
-            val `package` = PackageType(code, Some(description), packageType)
-            `package`.toString mustBe s"($code) $description"
+          (code, description, packingType) =>
+            val packageType = PackageType(code, Some(description), packingType)
+            packageType.toString mustBe s"($code) $description"
         }
       }
 
       "when description defined and empty" in {
         forAll(Gen.alphaNumStr, arbitrary[PackingType]) {
-          (code, packageType) =>
-            val `package` = PackageType(code, Some(""), packageType)
-            `package`.toString mustBe code
+          (code, packingType) =>
+            val packageType = PackageType(code, Some(""), packingType)
+            packageType.toString mustBe code
         }
       }
 
       "when description undefined" in {
         forAll(Gen.alphaNumStr, arbitrary[PackingType]) {
-          (code, packageType) =>
-            val `package` = PackageType(code, None, packageType)
-            `package`.toString mustBe code
+          (code, packingType) =>
+            val packageType = PackageType(code, None, packingType)
+            packageType.toString mustBe code
         }
       }
     }

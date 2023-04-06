@@ -45,26 +45,26 @@ class PackageAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks wi
       }
 
       "when user answers populated with complete packages" in {
-        forAll(arbitrary[Mode], arbitrary[PackageType](arbitraryOtherPackage)) {
-          (mode, `package`) =>
+        forAll(arbitrary[Mode], arbitrary[PackageType](arbitraryOtherPackageType)) {
+          (mode, packageType) =>
             val userAnswers = emptyUserAnswers
-              .setValue(PackageTypePage(itemIndex, Index(0)), `package`)
+              .setValue(PackageTypePage(itemIndex, Index(0)), packageType)
               .setValue(ShippingMarkPage(itemIndex, Index(0)), nonEmptyString.sample.value)
-              .setValue(PackageTypePage(itemIndex, Index(1)), `package`)
+              .setValue(PackageTypePage(itemIndex, Index(1)), packageType)
               .setValue(ShippingMarkPage(itemIndex, Index(1)), nonEmptyString.sample.value)
 
             val helper = new PackageAnswersHelper(userAnswers, mode, itemIndex)
             helper.listItems mustBe Seq(
               Right(
                 ListItem(
-                  name = `package`.toString,
+                  name = packageType.toString,
                   changeUrl = routes.PackageTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url,
                   removeUrl = Some(routes.RemovePackageController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url)
                 )
               ),
               Right(
                 ListItem(
-                  name = `package`.toString,
+                  name = packageType.toString,
                   changeUrl = routes.PackageTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url,
                   removeUrl = Some(routes.RemovePackageController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url)
                 )

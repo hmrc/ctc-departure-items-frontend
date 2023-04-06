@@ -35,8 +35,8 @@ import scala.concurrent.Future
 
 class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val packageType1    = arbitraryPackage.arbitrary.sample.get
-  private val packageType2    = arbitraryPackage.arbitrary.sample.get
+  private val packageType1    = arbitraryPackageType.arbitrary.sample.get
+  private val packageType2    = arbitraryPackageType.arbitrary.sample.get
   private val packageTypeList = PackageTypeList(Seq(packageType1, packageType2))
 
   private val formProvider = new PackageTypeFormProvider()

@@ -749,7 +749,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
       "must return Some(Row)" - {
         "when package is defined" in {
-          forAll(arbitrary[Mode], arbitrary[PackageType](arbitraryOtherPackage)) {
+          forAll(arbitrary[Mode], arbitrary[PackageType](arbitraryOtherPackageType)) {
             (mode, `package`) =>
               val userAnswers = emptyUserAnswers
                 .setValue(PackageTypePage(itemIndex, packageIndex), `package`)

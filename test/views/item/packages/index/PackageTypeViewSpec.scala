@@ -34,7 +34,7 @@ class PackageTypeViewSpec extends InputSelectViewBehaviours[PackageType] {
   override def applyView(form: Form[PackageType]): HtmlFormat.Appendable =
     injector.instanceOf[PackageTypeView].apply(form, lrn, values, NormalMode, itemIndex, packageIndex)(fakeRequest, messages)
 
-  implicit override val arbitraryT: Arbitrary[PackageType] = arbitraryPackage
+  implicit override val arbitraryT: Arbitrary[PackageType] = arbitraryPackageType
 
   override val prefix: String = "item.packages.index.packageType"
 
