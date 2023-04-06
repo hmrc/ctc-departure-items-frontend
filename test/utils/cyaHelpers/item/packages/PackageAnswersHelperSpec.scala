@@ -23,8 +23,7 @@ import models.reference.Package
 import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.item.packages.index.PackageTypePage
-import play.api.mvc.Call
+import pages.item.packages.index.{PackageTypePage, ShippingMarkPage}
 import viewmodels.ListItem
 
 class PackageAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -46,24 +45,26 @@ class PackageAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks wi
       }
 
       "when user answers populated with complete packages" in {
-        forAll(arbitrary[Mode], arbitrary[Package]) {
-          (mode, packageType) =>
+        forAll(arbitrary[Mode], arbitrary[Package](arbitraryOtherPackage)) {
+          (mode, `package`) =>
             val userAnswers = emptyUserAnswers
-              .setValue(PackageTypePage(itemIndex, Index(0)), packageType)
-              .setValue(PackageTypePage(itemIndex, Index(1)), packageType)
+              .setValue(PackageTypePage(itemIndex, Index(0)), `package`)
+              .setValue(ShippingMarkPage(itemIndex, Index(0)), nonEmptyString.sample.value)
+              .setValue(PackageTypePage(itemIndex, Index(1)), `package`)
+              .setValue(ShippingMarkPage(itemIndex, Index(1)), nonEmptyString.sample.value)
 
             val helper = new PackageAnswersHelper(userAnswers, mode, itemIndex)
             helper.listItems mustBe Seq(
               Right(
                 ListItem(
-                  name = packageType.toString,
+                  name = `package`.toString,
                   changeUrl = routes.PackageTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url,
                   removeUrl = Some(routes.RemovePackageController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url)
                 )
               ),
               Right(
                 ListItem(
-                  name = packageType.toString,
+                  name = `package`.toString,
                   changeUrl = routes.PackageTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url,
                   removeUrl = Some(routes.RemovePackageController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url)
                 )

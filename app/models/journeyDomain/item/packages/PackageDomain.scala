@@ -16,20 +16,23 @@
 
 package models.journeyDomain.item.packages
 
-import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
-import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
+import cats.implicits._
+import models.journeyDomain.Stage._
+import models.journeyDomain._
 import models.reference.Package
-import models.{Index, Mode, UserAnswers}
-import pages.item.packages.index.PackageTypePage
+import models.{Index, Mode, PackageType, UserAnswers}
+import pages.item.packages.index._
 import play.api.mvc.Call
 import uk.gov.hmrc.http.HttpVerbs.GET
 
 case class PackageDomain(
-  `type`: Package
+  `package`: Package,
+  numberOfPackages: Option[Int],
+  shippingMark: Option[String]
 )(itemIndex: Index, packageIndex: Index)
     extends JourneyDomainModel {
 
-  override def toString: String = `type`.toString
+  override def toString: String = `package`.toString
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some {
     stage match {
@@ -42,6 +45,29 @@ case class PackageDomain(
 
 object PackageDomain {
 
-  implicit def userAnswersReader(itemIndex: Index, packagesIndex: Index): UserAnswersReader[PackageDomain] =
-    PackageTypePage(itemIndex, packagesIndex).reader.map(PackageDomain(_)(itemIndex, packagesIndex))
+  implicit def userAnswersReader(itemIndex: Index, packageIndex: Index): UserAnswersReader[PackageDomain] = {
+    lazy val shippingMarkReads = AddShippingMarkYesNoPage(itemIndex, packageIndex)
+      .filterOptionalDependent(identity)(ShippingMarkPage(itemIndex, packageIndex).reader)
+
+    PackageTypePage(itemIndex, packageIndex).reader.flatMap {
+      case value @ Package(_, _, PackageType.Unpacked) =>
+        (
+          UserAnswersReader(value),
+          NumberOfPackagesPage(itemIndex, packageIndex).reader.map(Some(_)),
+          shippingMarkReads
+        ).tupled.map((PackageDomain.apply _).tupled).map(_(itemIndex, packageIndex))
+      case value @ Package(_, _, PackageType.Bulk) =>
+        (
+          UserAnswersReader(value),
+          UserAnswersReader(None),
+          shippingMarkReads
+        ).tupled.map((PackageDomain.apply _).tupled).map(_(itemIndex, packageIndex))
+      case value @ Package(_, _, PackageType.Other) =>
+        (
+          UserAnswersReader(value),
+          UserAnswersReader(None),
+          ShippingMarkPage(itemIndex, packageIndex).reader.map(Some(_))
+        ).tupled.map((PackageDomain.apply _).tupled).map(_(itemIndex, packageIndex))
+    }
+  }
 }
