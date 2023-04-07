@@ -27,6 +27,7 @@ import pages.sections.dangerousGoods.DangerousGoodsListSection
 import pages.sections.packages.PackagesSection
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import utils.cyaHelpers.AnswersHelper
 
 class ItemAnswersHelper(
@@ -212,7 +213,7 @@ class ItemAnswersHelper(
     getAnswersAndBuildSectionRows(PackagesSection(itemIndex))(`package`)
 
   def `package`(packageIndex: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[PackageDomain](
-    formatAnswer = formatAsText,
+    formatAnswer = _.asString.toText,
     prefix = "item.index.checkYourAnswers.package",
     id = Some(s"change-package-${packageIndex.display}"),
     args = packageIndex.display

@@ -22,6 +22,7 @@ import models.journeyDomain._
 import models.reference.PackageType
 import models.{Index, Mode, PackingType, UserAnswers}
 import pages.item.packages.index._
+import play.api.i18n.Messages
 import play.api.mvc.Call
 
 case class PackageDomain(
@@ -31,7 +32,9 @@ case class PackageDomain(
 )(itemIndex: Index, packageIndex: Index)
     extends JourneyDomainModel {
 
-  def asString: String = PackageDomain.asString(`type`, numberOfPackages)
+  override def toString: String = `type`.toString
+
+  def asString(implicit messages: Messages): String = PackageDomain.asString(`type`, numberOfPackages)
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some {
     stage match {
@@ -44,9 +47,11 @@ case class PackageDomain(
 
 object PackageDomain {
 
-  def asString(packageType: PackageType, numberOfPackages: Option[Int]): String =
-    numberOfPackages.fold(s"1 ${packageType.toString}")(
-      x => s"$x ${packageType.toString}"
+  def asString(packageType: PackageType, numberOfPackages: Option[Int])(implicit messages: Messages): String =
+    numberOfPackages.fold(
+      messages("packages.value.withoutNumberOfPackages", packageType.toString)
+    )(
+      quantity => messages("packages.value.withNumberOfPackages", quantity, packageType.toString)
     )
 
   implicit def userAnswersReader(itemIndex: Index, packageIndex: Index): UserAnswersReader[PackageDomain] = {
