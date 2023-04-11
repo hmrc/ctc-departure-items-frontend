@@ -213,7 +213,7 @@ class ItemAnswersHelper(
     getAnswersAndBuildSectionRows(PackagesSection(itemIndex))(`package`)
 
   def `package`(packageIndex: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[PackageDomain](
-    formatAnswer = _.asString.toText,
+    formatAnswer = _.toString.toText,
     prefix = "item.index.checkYourAnswers.package",
     id = Some(s"change-package-${packageIndex.display}"),
     args = packageIndex.display

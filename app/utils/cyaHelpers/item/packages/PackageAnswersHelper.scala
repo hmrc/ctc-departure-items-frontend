@@ -33,7 +33,7 @@ class PackageAnswersHelper(userAnswers: UserAnswers, mode: Mode, itemIndex: Inde
     buildListItems(PackagesSection(itemIndex)) {
       packageIndex =>
         buildListItem[PackageDomain](
-          nameWhenComplete = _.asString,
+          nameWhenComplete = _.toString,
           nameWhenInProgress = userAnswers.get(PackageTypePage(itemIndex, packageIndex)).map(_.toString),
           removeRoute = Some(routes.RemovePackageController.onPageLoad(lrn, mode, itemIndex, packageIndex))
         )(PackageDomain.userAnswersReader(itemIndex, packageIndex))
