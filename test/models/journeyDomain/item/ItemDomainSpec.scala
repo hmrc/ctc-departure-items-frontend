@@ -559,6 +559,144 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         }
       }
     }
+
+    "grossWeightReader" - {
+
+      "can not be read from user answers" - {
+        "when gross weight is unanswered" in {
+          val result: EitherType[ItemDomain] = UserAnswersReader[ItemDomain](
+            ItemDomain.userAnswersReader(itemIndex)
+          ).run(emptyUserAnswers)
+
+          result.left.value.page mustBe DescriptionPage(itemIndex)
+        }
+      }
+    }
+
+    "netWeightReader" - {
+      "can be read from user answers" - {
+        "when net weight is defined" - {
+          "and reduced data indicator is 0" in {
+            forAll(positiveBigDecimals) {
+              netWeight =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(ApprovedOperatorPage, false)
+                  .setValue(AddItemNetWeightYesNoPage(itemIndex), true)
+                  .setValue(NetWeightPage(itemIndex), netWeight)
+
+                val expectedResult = Some(netWeight)
+
+                val result: EitherType[Option[BigDecimal]] = UserAnswersReader[Option[BigDecimal]](
+                  ItemDomain.netWeightReader(itemIndex)
+                ).run(userAnswers)
+
+                result.value mustBe expectedResult
+            }
+          }
+
+          "and reduced indicator is 1" in {
+            val userAnswers = emptyUserAnswers
+              .setValue(ApprovedOperatorPage, true)
+              .setValue(AddItemNetWeightYesNoPage(itemIndex), true)
+
+            val expectedResult = None
+
+            val result: EitherType[Option[BigDecimal]] = UserAnswersReader[Option[BigDecimal]](
+              ItemDomain.netWeightReader(itemIndex)
+            ).run(userAnswers)
+
+            result.value mustBe expectedResult
+          }
+        }
+        "when net weight is not defined" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(ApprovedOperatorPage, false)
+            .setValue(AddItemNetWeightYesNoPage(itemIndex), false)
+
+          val expectedResult = None
+
+          val result: EitherType[Option[BigDecimal]] = UserAnswersReader[Option[BigDecimal]](
+            ItemDomain.netWeightReader(itemIndex)
+          ).run(userAnswers)
+
+          result.value mustBe expectedResult
+        }
+
+      }
+
+      "can not be read from user answers" - {
+
+        "when add net weight is unanswered" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(ApprovedOperatorPage, false)
+
+          val result: EitherType[Option[BigDecimal]] = UserAnswersReader[Option[BigDecimal]](
+            ItemDomain.netWeightReader(itemIndex)
+          ).run(userAnswers)
+
+          result.left.value.page mustBe AddItemNetWeightYesNoPage(itemIndex)
+
+        }
+
+        "when net weight is unanswered" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(ApprovedOperatorPage, false)
+            .setValue(AddItemNetWeightYesNoPage(itemIndex), true)
+
+          val result: EitherType[Option[BigDecimal]] = UserAnswersReader[Option[BigDecimal]](
+            ItemDomain.netWeightReader(itemIndex)
+          ).run(userAnswers)
+
+          result.left.value.page mustBe NetWeightPage(itemIndex)
+
+        }
+      }
+    }
+
+    "supplementaryUnitsReader" - {
+      "can be read from user answers" - {
+        "when supplementary units added" in {
+          forAll(positiveBigDecimals) {
+            supplementaryUnit =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AddSupplementaryUnitsYesNoPage(itemIndex), true)
+                .setValue(SupplementaryUnitsPage(itemIndex), supplementaryUnit)
+
+              val expectedResult = Some(supplementaryUnit)
+
+              val result: EitherType[Option[BigDecimal]] = UserAnswersReader[Option[BigDecimal]](
+                ItemDomain.supplementaryUnitsReader(itemIndex)
+              ).run(userAnswers)
+
+              result.value mustBe expectedResult
+          }
+        }
+
+        "when supplementary units not added" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(AddSupplementaryUnitsYesNoPage(itemIndex), false)
+
+          val expectedResult = None
+
+          val result: EitherType[Option[BigDecimal]] = UserAnswersReader[Option[BigDecimal]](
+            ItemDomain.supplementaryUnitsReader(itemIndex)
+          ).run(userAnswers)
+
+          result.value mustBe expectedResult
+        }
+      }
+
+      "can not be read from user answers" - {
+        "when add supplementary units yes/no is unanswered" in {
+          val result: EitherType[Option[BigDecimal]] = UserAnswersReader[Option[BigDecimal]](
+            ItemDomain.supplementaryUnitsReader(itemIndex)
+          ).run(emptyUserAnswers)
+
+          result.left.value.page mustBe AddSupplementaryUnitsYesNoPage(itemIndex)
+        }
+      }
+    }
   }
 
 }
