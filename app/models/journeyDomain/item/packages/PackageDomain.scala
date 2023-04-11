@@ -31,7 +31,7 @@ case class PackageDomain(
 )(itemIndex: Index, packageIndex: Index)
     extends JourneyDomainModel {
 
-  override def toString: String = PackageDomain.asString(`type`, numberOfPackages)
+  override def toString: String = s"${numberOfPackages.getOrElse(1)} ${`type`}"
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some {
     stage match {
@@ -43,9 +43,6 @@ case class PackageDomain(
 }
 
 object PackageDomain {
-
-  def asString(packageType: PackageType, numberOfPackages: Option[Int]): String =
-    s"${numberOfPackages.getOrElse(1)} $packageType"
 
   implicit def userAnswersReader(itemIndex: Index, packageIndex: Index): UserAnswersReader[PackageDomain] = {
     lazy val shippingMarkReads = AddShippingMarkYesNoPage(itemIndex, packageIndex)
