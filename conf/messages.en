@@ -209,6 +209,9 @@ item.supplementaryUnits.error.invalidCharacters = The number of supplementary un
 item.supplementaryUnits.error.invalidFormat = The number of supplementary units must only include 6 decimal places or less
 item.supplementaryUnits.error.invalidValue = The number of supplementary units must be 16 characters or less
 
+packages.value.withoutNumberOfPackages = 1 {0}
+packages.value.withNumberOfPackages = {0} {1}
+
 item.packages.index.packageType.title = What type of package are you using for the item?
 item.packages.index.packageType.heading = What type of package are you using for the item?
 item.packages.index.packageType.paragraph = This means the packaging used to store and protect the item during transit.
@@ -243,6 +246,14 @@ item.packages.index.shippingMark.error.required = Enter the shipping mark
 item.packages.index.shippingMark.error.length = The shipping mark must be 512 characters or less
 item.packages.index.shippingMark.error.invalidCharacters = The shipping mark must only include letters a to z and numbers 0 to 9
 
-item.packages.index.removePackage.title = Are you sure you want to remove the {0}?
-item.packages.index.removePackage.heading = Are you sure you want to remove the {0}?
+item.packages.index.removePackage.title = Are you sure you want to remove {0} from this item?
+item.packages.index.removePackage.heading = Are you sure you want to remove {0} from this item?
 item.packages.index.removePackage.error.required = Select yes if you want to remove {0} from this item
+
+item.packages.addAnotherPackage.singular.title = You have added 1 type of package
+item.packages.addAnotherPackage.singular.heading = You have added 1 type of package
+item.packages.addAnotherPackage.plural.title = You have added {0} types of packages
+item.packages.addAnotherPackage.plural.heading = You have added {0} types of packages
+item.packages.addAnotherPackage.error.required = Select yes if you want to add another type of package
+item.packages.addAnotherPackage.label = Do you want to add another type of package?
+item.packages.addAnotherPackage.maxLimit.label = You cannot add any more types of packages. To add another, you need to remove one first.

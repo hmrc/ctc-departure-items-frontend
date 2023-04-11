@@ -27,6 +27,7 @@ import pages.sections.dangerousGoods.DangerousGoodsListSection
 import pages.sections.packages.PackagesSection
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import utils.cyaHelpers.AnswersHelper
 
 class ItemAnswersHelper(

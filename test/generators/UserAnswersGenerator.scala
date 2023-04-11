@@ -18,6 +18,7 @@ package generators
 
 import models.journeyDomain.item.ItemDomain
 import models.journeyDomain.item.dangerousGoods.DangerousGoodsDomain
+import models.journeyDomain.item.packages.PackageDomain
 import models.journeyDomain.{ItemsDomain, ReaderError, UserAnswersReader}
 import models.{EoriNumber, Index, LocalReferenceNumber, RichJsObject, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
@@ -65,4 +66,7 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators {
 
   def arbitraryDangerousGoodsAnswers(userAnswers: UserAnswers, itemIndex: Index, dangerousGoods: Index): Gen[UserAnswers] =
     buildUserAnswers[DangerousGoodsDomain](userAnswers)(DangerousGoodsDomain.userAnswersReader(itemIndex, dangerousGoods))
+
+  def arbitraryPackageAnswers(userAnswers: UserAnswers, itemIndex: Index, packageIndex: Index): Gen[UserAnswers] =
+    buildUserAnswers[PackageDomain](userAnswers)(PackageDomain.userAnswersReader(itemIndex, packageIndex))
 }

@@ -17,6 +17,7 @@
 package controllers.item.packages.index
 
 import controllers.actions._
+import controllers.item.packages.routes
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.reference.PackageType
@@ -26,7 +27,7 @@ import pages.item.packages.index.PackageTypePage
 import pages.sections.packages.PackageSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.item.packages.index.RemovePackageView
@@ -64,7 +65,7 @@ class RemovePackageController @Inject() (
     .andThen(getMandatoryPage(PackageTypePage(itemIndex, packageIndex)))
     .async {
       implicit request =>
-        lazy val redirect = Call("GET", "#")
+        lazy val redirect = routes.AddAnotherPackageController.onPageLoad(lrn, mode, itemIndex)
         form(packageType)
           .bindFromRequest()
           .fold(
