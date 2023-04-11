@@ -35,7 +35,10 @@ case class ItemDomain(
   ucr: Option[String],
   cusCode: Option[String],
   combinedNomenclatureCode: Option[String],
-  dangerousGoods: Option[DangerousGoodsListDomain]
+  dangerousGoods: Option[DangerousGoodsListDomain],
+  grossWeight: BigDecimal,
+  netWeight: Option[BigDecimal],
+  supplementaryUnits: Option[BigDecimal]
 )(index: Index)
     extends JourneyDomainModel
 
@@ -50,7 +53,10 @@ object ItemDomain {
       ucrReader(itemIndex),
       cusCodeReader(itemIndex),
       combinedNomenclatureCodeReader(itemIndex),
-      dangerousGoodsReader(itemIndex)
+      dangerousGoodsReader(itemIndex),
+      GrossWeightPage(itemIndex).reader,
+      netWeightReader(itemIndex),
+      supplementaryUnitsReader(itemIndex)
     ).tupled.map((ItemDomain.apply _).tupled).map(_(itemIndex))
 
   def declarationTypeReader(itemIndex: Index): UserAnswersReader[Option[DeclarationType]] =
@@ -110,4 +116,19 @@ object ItemDomain {
   def dangerousGoodsReader(itemIndex: Index): UserAnswersReader[Option[DangerousGoodsListDomain]] =
     AddDangerousGoodsYesNoPage(itemIndex)
       .filterOptionalDependent(identity)(DangerousGoodsListDomain.userAnswersReader(itemIndex))
+
+  def netWeightReader(itemIndex: Index): UserAnswersReader[Option[BigDecimal]] =
+    ApprovedOperatorPage.reader.flatMap {
+      case true => none[BigDecimal].pure[UserAnswersReader]
+      case false =>
+        AddItemNetWeightYesNoPage(itemIndex).filterOptionalDependent(identity) {
+          NetWeightPage(itemIndex).reader
+        }
+    }
+
+  def supplementaryUnitsReader(itemIndex: Index): UserAnswersReader[Option[BigDecimal]] =
+    AddSupplementaryUnitsYesNoPage(itemIndex).filterOptionalDependent(identity) {
+      SupplementaryUnitsPage(itemIndex).reader
+    }
+
 }

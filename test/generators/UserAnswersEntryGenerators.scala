@@ -58,6 +58,11 @@ trait UserAnswersEntryGenerators {
       case AddUCRYesNoPage(_)                      => arbitrary[Boolean].map(Json.toJson(_))
       case UniqueConsignmentReferencePage(_)       => Gen.alphaNumStr.map(JsString)
       case AddDangerousGoodsYesNoPage(_)           => arbitrary[Boolean].map(Json.toJson(_))
+      case GrossWeightPage(_)                      => arbitrary[BigDecimal].map(Json.toJson(_))
+      case AddItemNetWeightYesNoPage(_)            => arbitrary[Boolean].map(Json.toJson(_))
+      case NetWeightPage(_)                        => arbitrary[BigDecimal].map(Json.toJson(_))
+      case AddSupplementaryUnitsYesNoPage(_)       => arbitrary[Boolean].map(Json.toJson(_))
+      case SupplementaryUnitsPage(_)               => arbitrary[BigDecimal].map(Json.toJson(_))
     }
     pf orElse
       generateDangerousGoodsAnswer
