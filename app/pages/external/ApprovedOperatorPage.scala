@@ -16,10 +16,10 @@
 
 package pages.external
 
-import pages.QuestionPage
+import pages.ReadOnlyPage
 import play.api.libs.json.JsPath
 
-case object ApprovedOperatorPage extends QuestionPage[Boolean] {
+case object ApprovedOperatorPage extends ReadOnlyPage[Boolean] {
 
   override def path: JsPath = consignmentPath \ toString
 
