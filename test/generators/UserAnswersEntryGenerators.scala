@@ -39,6 +39,7 @@ trait UserAnswersEntryGenerators {
       case ConsignmentUCRPage                  => Gen.alphaNumStr.map(JsString)
       case ConsignmentCountryOfDispatchPage    => arbitrary[Country].map(Json.toJson(_))
       case ConsignmentCountryOfDestinationPage => arbitrary[Country].map(Json.toJson(_))
+      case ApprovedOperatorPage                => arbitrary[Boolean].map(Json.toJson(_))
     }
   }
 
