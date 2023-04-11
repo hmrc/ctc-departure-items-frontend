@@ -424,6 +424,89 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         }
       }
     }
+
+    "combinedNomenclatureCodeReader" - {
+
+      "can be read from user answers" - {
+        "when commodity code is defined" - {
+          "and office of departure is in CL112" in {
+            val userAnswers = emptyUserAnswers
+              .setValue(CustomsOfficeOfDepartureInCL112Page, true)
+
+            val expectedResult = None
+
+            val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+              ItemDomain.combinedNomenclatureCodeReader(itemIndex)
+            ).run(userAnswers)
+
+            result.value mustBe expectedResult
+          }
+
+          "and office of departure is not in CL112" in {
+            forAll(nonEmptyString, nonEmptyString) {
+              (commodityCode, combinedNomenclatureCode) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(CommodityCodePage(itemIndex), commodityCode)
+                  .setValue(CustomsOfficeOfDepartureInCL112Page, false)
+                  .setValue(AddCombinedNomenclatureCodeYesNoPage(itemIndex), true)
+                  .setValue(CombinedNomenclatureCodePage(itemIndex), combinedNomenclatureCode)
+
+                val expectedResult = Some(combinedNomenclatureCode)
+
+                val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                  ItemDomain.combinedNomenclatureCodeReader(itemIndex)
+                ).run(userAnswers)
+
+                result.value mustBe expectedResult
+            }
+          }
+        }
+
+        "when commodity code is undefined" in {
+          val expectedResult = None
+
+          val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+            ItemDomain.combinedNomenclatureCodeReader(itemIndex)
+          ).run(emptyUserAnswers)
+
+          result.value mustBe expectedResult
+        }
+      }
+
+      "can not be read from user answers" - {
+
+        "when add combined nomenclature code yes/no is unanswered" in {
+          forAll(nonEmptyString) {
+            commodityCode =>
+              val userAnswers = emptyUserAnswers
+                .setValue(CommodityCodePage(itemIndex), commodityCode)
+                .setValue(CustomsOfficeOfDepartureInCL112Page, false)
+
+              val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                ItemDomain.combinedNomenclatureCodeReader(itemIndex)
+              ).run(userAnswers)
+
+              result.left.value.page mustBe AddCombinedNomenclatureCodeYesNoPage(itemIndex)
+          }
+        }
+
+        "when combined nomenclature code is unanswered" in {
+          forAll(nonEmptyString) {
+            commodityCode =>
+              val userAnswers = emptyUserAnswers
+                .setValue(CommodityCodePage(itemIndex), commodityCode)
+                .setValue(CustomsOfficeOfDepartureInCL112Page, false)
+                .setValue(AddCombinedNomenclatureCodeYesNoPage(itemIndex), true)
+
+              val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                ItemDomain.combinedNomenclatureCodeReader(itemIndex)
+              ).run(userAnswers)
+
+              result.left.value.page mustBe CombinedNomenclatureCodePage(itemIndex)
+          }
+        }
+      }
+    }
   }
 
 }
