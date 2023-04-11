@@ -19,12 +19,14 @@ package models.journeyDomain.item
 import base.SpecBase
 import generators.Generators
 import models.DeclarationType
+import models.journeyDomain.item.dangerousGoods.{DangerousGoodsDomain, DangerousGoodsListDomain}
 import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.reference.Country
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.external._
 import pages.item._
+import pages.item.dangerousGoods.index.UNNumberPage
 
 class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -504,6 +506,56 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               result.left.value.page mustBe CombinedNomenclatureCodePage(itemIndex)
           }
+        }
+      }
+    }
+
+    "dangerousGoodsReader" - {
+      "can be read from user answers" - {
+        "when dangerous goods added" in {
+          forAll(nonEmptyString) {
+            unNumber =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AddDangerousGoodsYesNoPage(itemIndex), true)
+                .setValue(UNNumberPage(itemIndex, dangerousGoodsIndex), unNumber)
+
+              val expectedResult = Some(
+                DangerousGoodsListDomain(
+                  Seq(
+                    DangerousGoodsDomain(unNumber)(itemIndex, dangerousGoodsIndex)
+                  )
+                )
+              )
+
+              val result: EitherType[Option[DangerousGoodsListDomain]] = UserAnswersReader[Option[DangerousGoodsListDomain]](
+                ItemDomain.dangerousGoodsReader(itemIndex)
+              ).run(userAnswers)
+
+              result.value mustBe expectedResult
+          }
+        }
+
+        "when dangerous goods not added" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(AddDangerousGoodsYesNoPage(itemIndex), false)
+
+          val expectedResult = None
+
+          val result: EitherType[Option[DangerousGoodsListDomain]] = UserAnswersReader[Option[DangerousGoodsListDomain]](
+            ItemDomain.dangerousGoodsReader(itemIndex)
+          ).run(userAnswers)
+
+          result.value mustBe expectedResult
+        }
+      }
+
+      "can not be read from user answers" - {
+        "when add dangerous goods yes/no is unanswered" in {
+          val result: EitherType[Option[DangerousGoodsListDomain]] = UserAnswersReader[Option[DangerousGoodsListDomain]](
+            ItemDomain.dangerousGoodsReader(itemIndex)
+          ).run(emptyUserAnswers)
+
+          result.left.value.page mustBe AddDangerousGoodsYesNoPage(itemIndex)
         }
       }
     }

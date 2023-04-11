@@ -35,7 +35,7 @@ case class ItemDomain(
   ucr: Option[String],
   cusCode: Option[String],
   combinedNomenclatureCode: Option[String],
-  dangerousGoods: DangerousGoodsListDomain
+  dangerousGoods: Option[DangerousGoodsListDomain]
 )(index: Index)
     extends JourneyDomainModel
 
@@ -50,7 +50,7 @@ object ItemDomain {
       ucrReader(itemIndex),
       cusCodeReader(itemIndex),
       combinedNomenclatureCodeReader(itemIndex),
-      DangerousGoodsListDomain.userAnswersReader(itemIndex)
+      dangerousGoodsReader(itemIndex)
     ).tupled.map((ItemDomain.apply _).tupled).map(_(itemIndex))
 
   def declarationTypeReader(itemIndex: Index): UserAnswersReader[Option[DeclarationType]] =
@@ -106,4 +106,8 @@ object ItemDomain {
       case false =>
         none[String].pure[UserAnswersReader]
     }
+
+  def dangerousGoodsReader(itemIndex: Index): UserAnswersReader[Option[DangerousGoodsListDomain]] =
+    AddDangerousGoodsYesNoPage(itemIndex)
+      .filterOptionalDependent(identity)(DangerousGoodsListDomain.userAnswersReader(itemIndex))
 }
