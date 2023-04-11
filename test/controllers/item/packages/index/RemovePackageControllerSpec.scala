@@ -16,6 +16,7 @@
 
 package controllers.item.packages.index
 
+import controllers.item.packages.{routes => packageRoutes}
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import generators.Generators
@@ -29,7 +30,6 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.item.packages.index.PackageTypePage
 import pages.sections.packages.PackageSection
 import play.api.data.Form
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.item.packages.index.RemovePackageView
@@ -85,8 +85,8 @@ class RemovePackageControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
         status(result) mustEqual SEE_OTHER
 
-        //TODO: Add AddAnotherPackage url when page is added
-        redirectLocation(result).value mustEqual Call("GET", "#").url
+        redirectLocation(result).value mustEqual
+          packageRoutes.AddAnotherPackageController.onPageLoad(userAnswers.lrn, mode, itemIndex).url
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
@@ -114,8 +114,8 @@ class RemovePackageControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
         status(result) mustEqual SEE_OTHER
 
-        //TODO: Add AddAnotherPackage url when page is added
-        redirectLocation(result).value mustEqual Call("GET", "#").url
+        redirectLocation(result).value mustEqual
+          packageRoutes.AddAnotherPackageController.onPageLoad(userAnswers.lrn, mode, itemIndex).url
 
         verify(mockSessionRepository, never()).set(any())(any())
       }

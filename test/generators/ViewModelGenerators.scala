@@ -24,6 +24,7 @@ import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import viewmodels.item.dangerousGoods.AddAnotherDangerousGoodsViewModel
+import viewmodels.item.packages.AddAnotherPackageViewModel
 import viewmodels.{Link, ListItem}
 import viewmodels.sections.Section
 
@@ -171,11 +172,17 @@ trait ViewModelGenerators {
     } yield ListItem(name, changeUrl, removeUrl)
   }
 
-  implicit lazy val arbitraryAddAnotherSealViewModel: Arbitrary[AddAnotherDangerousGoodsViewModel] = Arbitrary {
+  implicit lazy val arbitraryAddAnotherDangerousGoodsViewModel: Arbitrary[AddAnotherDangerousGoodsViewModel] = Arbitrary {
     for {
       listItems    <- arbitrary[Seq[ListItem]]
       onSubmitCall <- arbitrary[Call]
     } yield AddAnotherDangerousGoodsViewModel(listItems, onSubmitCall)
   }
 
+  implicit lazy val arbitraryAddAnotherPackageViewModel: Arbitrary[AddAnotherPackageViewModel] = Arbitrary {
+    for {
+      listItems    <- arbitrary[Seq[ListItem]]
+      onSubmitCall <- arbitrary[Call]
+    } yield AddAnotherPackageViewModel(listItems, onSubmitCall)
+  }
 }

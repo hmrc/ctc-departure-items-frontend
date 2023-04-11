@@ -22,8 +22,9 @@ import generators.Generators
 import models.reference.PackageType
 import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.item.packages.index.{PackageTypePage, ShippingMarkPage}
+import pages.item.packages.index.{AddShippingMarkYesNoPage, NumberOfPackagesPage, PackageTypePage, ShippingMarkPage}
 import viewmodels.ListItem
 
 class PackageAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -44,32 +45,69 @@ class PackageAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks wi
         }
       }
 
-      "when user answers populated with complete packages" in {
-        forAll(arbitrary[Mode], arbitrary[PackageType](arbitraryOtherPackageType)) {
-          (mode, packageType) =>
-            val userAnswers = emptyUserAnswers
-              .setValue(PackageTypePage(itemIndex, Index(0)), packageType)
-              .setValue(ShippingMarkPage(itemIndex, Index(0)), nonEmptyString.sample.value)
-              .setValue(PackageTypePage(itemIndex, Index(1)), packageType)
-              .setValue(ShippingMarkPage(itemIndex, Index(1)), nonEmptyString.sample.value)
+      "when user answers populated with complete packages" - {
+        "when packageType is not unpacked" in {
+          forAll(arbitrary[Mode], arbitrary[PackageType](arbitraryOtherPackageType)) {
+            (mode, packageType) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(PackageTypePage(itemIndex, Index(0)), packageType)
+                .setValue(ShippingMarkPage(itemIndex, Index(0)), nonEmptyString.sample.value)
+                .setValue(PackageTypePage(itemIndex, Index(1)), packageType)
+                .setValue(ShippingMarkPage(itemIndex, Index(1)), nonEmptyString.sample.value)
 
-            val helper = new PackageAnswersHelper(userAnswers, mode, itemIndex)
-            helper.listItems mustBe Seq(
-              Right(
-                ListItem(
-                  name = packageType.toString,
-                  changeUrl = routes.PackageTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url,
-                  removeUrl = Some(routes.RemovePackageController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url)
-                )
-              ),
-              Right(
-                ListItem(
-                  name = packageType.toString,
-                  changeUrl = routes.PackageTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url,
-                  removeUrl = Some(routes.RemovePackageController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url)
+              val helper = new PackageAnswersHelper(userAnswers, mode, itemIndex)
+              helper.listItems mustBe Seq(
+                Right(
+                  ListItem(
+                    name = s"1 ${packageType.toString}",
+                    changeUrl = routes.PackageTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url,
+                    removeUrl = Some(routes.RemovePackageController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url)
+                  )
+                ),
+                Right(
+                  ListItem(
+                    name = s"1 ${packageType.toString}",
+                    changeUrl = routes.PackageTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url,
+                    removeUrl = Some(routes.RemovePackageController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url)
+                  )
                 )
               )
-            )
+          }
+        }
+
+        "when packageType is unpacked" in {
+          forAll(arbitrary[Mode], Gen.posNum[Int].sample.value, arbitrary[PackageType](arbitraryUnpackedPackageType)) {
+            (mode, quantity, packageType) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(PackageTypePage(itemIndex, Index(0)), packageType)
+                .setValue(NumberOfPackagesPage(itemIndex, Index(0)), quantity)
+                .setValue(AddShippingMarkYesNoPage(itemIndex, Index(0)), true)
+                .setValue(ShippingMarkPage(itemIndex, Index(0)), nonEmptyString.sample.value)
+                .setValue(PackageTypePage(itemIndex, Index(1)), packageType)
+                .setValue(NumberOfPackagesPage(itemIndex, Index(1)), quantity)
+                .setValue(AddShippingMarkYesNoPage(itemIndex, Index(1)), true)
+                .setValue(ShippingMarkPage(itemIndex, Index(1)), nonEmptyString.sample.value)
+
+              val quantityString = String.format("%,d", quantity)
+
+              val helper = new PackageAnswersHelper(userAnswers, mode, itemIndex)
+              helper.listItems mustBe Seq(
+                Right(
+                  ListItem(
+                    name = s"$quantityString ${packageType.toString}",
+                    changeUrl = routes.PackageTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url,
+                    removeUrl = Some(routes.RemovePackageController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url)
+                  )
+                ),
+                Right(
+                  ListItem(
+                    name = s"$quantityString ${packageType.toString}",
+                    changeUrl = routes.PackageTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url,
+                    removeUrl = Some(routes.RemovePackageController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url)
+                  )
+                )
+              )
+          }
         }
       }
     }

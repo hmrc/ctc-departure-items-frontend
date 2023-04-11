@@ -23,7 +23,6 @@ import models.reference.PackageType
 import models.{Index, Mode, PackingType, UserAnswers}
 import pages.item.packages.index._
 import play.api.mvc.Call
-import uk.gov.hmrc.http.HttpVerbs.GET
 
 case class PackageDomain(
   `type`: PackageType,
@@ -32,13 +31,13 @@ case class PackageDomain(
 )(itemIndex: Index, packageIndex: Index)
     extends JourneyDomainModel {
 
-  override def toString: String = `type`.toString
+  override def toString: String = s"${numberOfPackages.getOrElse(1)} ${`type`}"
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some {
     stage match {
       case AccessingJourney =>
         controllers.item.packages.index.routes.PackageTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, packageIndex)
-      case CompletingJourney => Call(GET, "#")
+      case CompletingJourney => controllers.item.packages.routes.AddAnotherPackageController.onPageLoad(userAnswers.lrn, mode, itemIndex)
     }
   }
 }

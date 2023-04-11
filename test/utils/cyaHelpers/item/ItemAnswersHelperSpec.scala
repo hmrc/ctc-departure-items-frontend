@@ -32,7 +32,6 @@ import pages.item.dangerousGoods.index.UNNumberPage
 import pages.item.packages.index.{AddShippingMarkYesNoPage, NumberOfPackagesPage, PackageTypePage, ShippingMarkPage}
 
 class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
-
   "ItemAnswersHelper" - {
 
     "itemDescription" - {
@@ -735,7 +734,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
       }
     }
 
-    "packages" - {
+    "package" - {
       "must return None" - {
         "when package is undefined" in {
           forAll(arbitrary[Mode]) {
@@ -748,17 +747,47 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
       }
 
       "must return Some(Row)" - {
-        "when package is defined" in {
-          forAll(arbitrary[Mode], arbitrary[PackageType](arbitraryOtherPackageType)) {
-            (mode, packageType) =>
-              val userAnswers = emptyUserAnswers
-                .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
-                .setValue(ShippingMarkPage(itemIndex, packageIndex), nonEmptyString.sample.value)
+        "when package is defined and number of packages is undefined" in {
+          val packageType = arbitrary[PackageType](arbitraryOtherPackageType).sample.value
+
+          val initialUserAnswers = emptyUserAnswers
+            .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+            .setValue(ShippingMarkPage(itemIndex, packageIndex), nonEmptyString.sample.value)
+
+          forAll(arbitrary[Mode], arbitraryPackageAnswers(initialUserAnswers, itemIndex, packageIndex)) {
+            (mode, userAnswers) =>
               val helper = new ItemAnswersHelper(userAnswers, mode, itemIndex)
               val result = helper.`package`(packageIndex).get
 
               result.key.value mustBe "Package 1"
-              result.value.value mustBe packageType.toString
+              result.value.value mustBe s"1 ${packageType.toString}"
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe PackageTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, packageIndex).url
+              action.visuallyHiddenText.get mustBe "package 1"
+              action.id mustBe "change-package-1"
+          }
+        }
+
+        "when package is defined and number of packages is defined" in {
+          val packageType = arbitrary[PackageType](arbitraryUnpackedPackageType).sample.value
+          val quantity    = Gen.posNum[Int].sample.value
+          val initialUserAnswers = emptyUserAnswers
+            .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+            .setValue(NumberOfPackagesPage(itemIndex, packageIndex), quantity)
+            .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
+            .setValue(ShippingMarkPage(itemIndex, packageIndex), nonEmptyString.sample.value)
+
+          forAll(arbitrary[Mode], arbitraryPackageAnswers(initialUserAnswers, itemIndex, packageIndex)) {
+            (mode, userAnswers) =>
+              val helper = new ItemAnswersHelper(userAnswers, mode, itemIndex)
+              val result = helper.`package`(packageIndex).get
+
+              result.key.value mustBe "Package 1"
+              val quantityString = String.format("%,d", quantity)
+              result.value.value mustBe s"$quantityString ${packageType.toString}"
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
