@@ -31,7 +31,9 @@ case class ItemDomain(
   declarationType: Option[DeclarationType],
   countryOfDispatch: Option[Country],
   countryOfDestination: Option[Country],
-  ucr: Option[String]
+  ucr: Option[String],
+  cusCode: Option[String],
+  combinedNomenclatureCode: Option[String]
 )(index: Index)
     extends JourneyDomainModel
 
@@ -43,7 +45,9 @@ object ItemDomain {
       declarationTypeReader(itemIndex),
       countryOfDispatchReader(itemIndex),
       countryOfDestinationReader(itemIndex),
-      ucrReader(itemIndex)
+      ucrReader(itemIndex),
+      cusCodeReader(itemIndex),
+      combinedNomenclatureCodeReader(itemIndex)
     ).tupled.map((ItemDomain.apply _).tupled).map(_(itemIndex))
 
   def declarationTypeReader(itemIndex: Index): UserAnswersReader[Option[DeclarationType]] =
@@ -69,5 +73,34 @@ object ItemDomain {
   def ucrReader(itemIndex: Index): UserAnswersReader[Option[String]] =
     ConsignmentUCRPage.filterDependent(_.isEmpty) {
       UniqueConsignmentReferencePage(itemIndex).reader
+    }
+
+  def cusCodeReader(itemIndex: Index): UserAnswersReader[Option[String]] =
+    AddCUSCodeYesNoPage(itemIndex).filterOptionalDependent(identity) {
+      CustomsUnionAndStatisticsCodePage(itemIndex).reader
+    }
+
+  def commodityCodeReader(itemIndex: Index): UserAnswersReader[Option[String]] =
+    TransitOperationTIRCarnetNumberPage.isDefined.flatMap {
+      case true =>
+        AddCommodityCodeYesNoPage(itemIndex).filterOptionalDependent(identity) {
+          CommodityCodePage(itemIndex).reader
+        }
+      case false =>
+        CommodityCodePage(itemIndex).reader.map(Some(_))
+    }
+
+  def combinedNomenclatureCodeReader(itemIndex: Index): UserAnswersReader[Option[String]] =
+    CommodityCodePage(itemIndex).isDefined.flatMap {
+      case true =>
+        CustomsOfficeOfDepartureInCL112Page
+          .filterOptionalDependent(!_) {
+            AddCombinedNomenclatureCodeYesNoPage(itemIndex).filterOptionalDependent(identity) {
+              CombinedNomenclatureCodePage(itemIndex).reader
+            }
+          }
+          .map(_.flatten)
+      case false =>
+        none[String].pure[UserAnswersReader]
     }
 }
