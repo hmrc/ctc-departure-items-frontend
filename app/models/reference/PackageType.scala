@@ -17,13 +17,17 @@
 package models.reference
 
 import models.{PackingType, Selectable}
+import org.apache.commons.text.StringEscapeUtils
 import play.api.libs.json.{Json, OFormat}
 
 case class PackageType(code: String, description: Option[String], `type`: PackingType) extends Selectable {
 
-  override def toString: String = description match {
-    case Some(value) if value.trim.nonEmpty => s"($code) $value"
-    case _                                  => code
+  override def toString: String = {
+    val str = description match {
+      case Some(value) if value.trim.nonEmpty => s"($code) $value"
+      case _                                  => code
+    }
+    StringEscapeUtils.unescapeXml(str)
   }
 
   override val value: String = code
