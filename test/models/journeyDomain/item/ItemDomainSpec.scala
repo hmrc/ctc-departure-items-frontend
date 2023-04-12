@@ -600,7 +600,6 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
           "and reduced indicator is 1" in {
             val userAnswers = emptyUserAnswers
               .setValue(ApprovedOperatorPage, true)
-              .setValue(AddItemNetWeightYesNoPage(itemIndex), true)
 
             val expectedResult = None
 
@@ -610,7 +609,25 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
             result.value mustBe expectedResult
           }
+
+          "and reduced indicator is undefined (infer as false)" in {
+            forAll(positiveBigDecimals) {
+              netWeight =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(AddItemNetWeightYesNoPage(itemIndex), true)
+                  .setValue(NetWeightPage(itemIndex), netWeight)
+
+                val expectedResult = Some(netWeight)
+
+                val result: EitherType[Option[BigDecimal]] = UserAnswersReader[Option[BigDecimal]](
+                  ItemDomain.netWeightReader(itemIndex)
+                ).run(userAnswers)
+
+                result.value mustBe expectedResult
+            }
+          }
         }
+
         "when net weight is not defined" in {
           val userAnswers = emptyUserAnswers
             .setValue(ApprovedOperatorPage, false)

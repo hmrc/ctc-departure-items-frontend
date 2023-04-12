@@ -123,9 +123,10 @@ object ItemDomain {
       .filterOptionalDependent(identity)(DangerousGoodsListDomain.userAnswersReader(itemIndex))
 
   def netWeightReader(itemIndex: Index): UserAnswersReader[Option[BigDecimal]] =
-    ApprovedOperatorPage.reader.flatMap {
-      case true => none[BigDecimal].pure[UserAnswersReader]
-      case false =>
+    ApprovedOperatorPage.optionalReader.flatMap {
+      case Some(true) =>
+        none[BigDecimal].pure[UserAnswersReader]
+      case _ =>
         AddItemNetWeightYesNoPage(itemIndex).filterOptionalDependent(identity) {
           NetWeightPage(itemIndex).reader
         }
