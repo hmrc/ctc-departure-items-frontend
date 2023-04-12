@@ -36,7 +36,12 @@ case class AddCommodityCodeYesNoPage(itemIndex: Index) extends QuestionPage[Bool
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(false) => userAnswers.remove(CommodityCodePage(itemIndex))
-      case _           => super.cleanup(value, userAnswers)
+      case Some(false) =>
+        userAnswers
+          .remove(CommodityCodePage(itemIndex))
+          .flatMap(_.remove(AddCombinedNomenclatureCodeYesNoPage(itemIndex)))
+          .flatMap(_.remove(CombinedNomenclatureCodePage(itemIndex)))
+      case _ =>
+        super.cleanup(value, userAnswers)
     }
 }

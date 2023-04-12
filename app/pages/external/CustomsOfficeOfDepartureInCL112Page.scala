@@ -16,20 +16,12 @@
 
 package pages.external
 
-import models.reference.Country
 import pages.ReadOnlyPage
 import play.api.libs.json.JsPath
 
-case object CustomsOfficeOfDeparturePage extends ReadOnlyPage[Country] {
-
-  override def path: JsPath = preTaskListPath \ toString
-
-  override def toString: String = "officeOfDeparture"
-}
-
 case object CustomsOfficeOfDepartureInCL112Page extends ReadOnlyPage[Boolean] {
 
-  override def path: JsPath = CustomsOfficeOfDeparturePage.path \ toString
+  override def path: JsPath = preTaskListPath \ "officeOfDeparture" \ toString
 
   override def toString: String = "isInCL112"
 }
