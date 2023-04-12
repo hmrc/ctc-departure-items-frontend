@@ -121,6 +121,11 @@ class PackageTypeSpec extends SpecBase with ScalaCheckPropertyChecks with Genera
             packageType.toString mustBe code
         }
       }
+
+      "when description contains html" in {
+        val packageType = PackageType("VY", Some("Bulk, solid, large particles (&quot;nodules&quot;)"), PackingType.Bulk)
+        packageType.toString mustBe "(VY) Bulk, solid, large particles (\"nodules\")"
+      }
     }
   }
 
