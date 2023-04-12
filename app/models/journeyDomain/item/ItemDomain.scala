@@ -35,6 +35,7 @@ case class ItemDomain(
   countryOfDestination: Option[Country],
   ucr: Option[String],
   cusCode: Option[String],
+  commodityCode: Option[String],
   combinedNomenclatureCode: Option[String],
   dangerousGoods: Option[DangerousGoodsListDomain],
   grossWeight: BigDecimal,
@@ -54,6 +55,7 @@ object ItemDomain {
       countryOfDestinationReader(itemIndex),
       ucrReader(itemIndex),
       cusCodeReader(itemIndex),
+      commodityCodeReader(itemIndex),
       combinedNomenclatureCodeReader(itemIndex),
       dangerousGoodsReader(itemIndex),
       GrossWeightPage(itemIndex).reader,
@@ -121,9 +123,10 @@ object ItemDomain {
       .filterOptionalDependent(identity)(DangerousGoodsListDomain.userAnswersReader(itemIndex))
 
   def netWeightReader(itemIndex: Index): UserAnswersReader[Option[BigDecimal]] =
-    ApprovedOperatorPage.reader.flatMap {
-      case true => none[BigDecimal].pure[UserAnswersReader]
-      case false =>
+    ApprovedOperatorPage.optionalReader.flatMap {
+      case Some(true) =>
+        none[BigDecimal].pure[UserAnswersReader]
+      case _ =>
         AddItemNetWeightYesNoPage(itemIndex).filterOptionalDependent(identity) {
           NetWeightPage(itemIndex).reader
         }
