@@ -33,7 +33,8 @@ case class DangerousGoodsDomain(
     stage match {
       case AccessingJourney =>
         controllers.item.dangerousGoods.index.routes.UNNumberController.onPageLoad(userAnswers.lrn, mode, itemIndex, dangerousGoodsIndex)
-      case CompletingJourney => controllers.item.dangerousGoods.routes.AddAnotherDangerousGoodsController.onPageLoad(userAnswers.lrn, mode, itemIndex)
+      case CompletingJourney =>
+        controllers.item.dangerousGoods.routes.AddAnotherDangerousGoodsController.onPageLoad(userAnswers.lrn, mode, itemIndex)
     }
   }
 }
