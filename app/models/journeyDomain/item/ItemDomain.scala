@@ -19,6 +19,7 @@ package models.journeyDomain.item
 import cats.implicits._
 import models.DeclarationType._
 import models.journeyDomain.item.dangerousGoods.DangerousGoodsListDomain
+import models.journeyDomain.item.packages.PackagesDomain
 import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
 import models.reference.Country
 import models.{DeclarationType, Index}
@@ -38,7 +39,8 @@ case class ItemDomain(
   dangerousGoods: Option[DangerousGoodsListDomain],
   grossWeight: BigDecimal,
   netWeight: Option[BigDecimal],
-  supplementaryUnits: Option[BigDecimal]
+  supplementaryUnits: Option[BigDecimal],
+  packages: PackagesDomain
 )(index: Index)
     extends JourneyDomainModel
 
@@ -56,7 +58,8 @@ object ItemDomain {
       dangerousGoodsReader(itemIndex),
       GrossWeightPage(itemIndex).reader,
       netWeightReader(itemIndex),
-      supplementaryUnitsReader(itemIndex)
+      supplementaryUnitsReader(itemIndex),
+      packagesReader(itemIndex)
     ).tupled.map((ItemDomain.apply _).tupled).map(_(itemIndex))
 
   def declarationTypeReader(itemIndex: Index): UserAnswersReader[Option[DeclarationType]] =
@@ -131,4 +134,6 @@ object ItemDomain {
       SupplementaryUnitsPage(itemIndex).reader
     }
 
+  def packagesReader(itemIndex: Index): UserAnswersReader[PackagesDomain] =
+    PackagesDomain.userAnswersReader(itemIndex)
 }

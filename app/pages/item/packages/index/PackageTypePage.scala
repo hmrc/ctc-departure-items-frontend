@@ -24,6 +24,8 @@ import pages.sections.packages.PackageSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
+import scala.util.Try
+
 case class PackageTypePage(itemIndex: Index, packageIndex: Index) extends QuestionPage[PackageType] {
 
   override def path: JsPath = PackageSection(itemIndex, packageIndex).path \ toString
@@ -32,4 +34,14 @@ case class PackageTypePage(itemIndex: Index, packageIndex: Index) extends Questi
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.PackageTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, packageIndex))
+
+  override def cleanup(value: Option[PackageType], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(_) =>
+        userAnswers
+          .remove(NumberOfPackagesPage(itemIndex, packageIndex))
+          .flatMap(_.remove(AddShippingMarkYesNoPage(itemIndex, packageIndex)))
+          .flatMap(_.remove(ShippingMarkPage(itemIndex, packageIndex)))
+      case None => super.cleanup(value, userAnswers)
+    }
 }

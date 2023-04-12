@@ -17,7 +17,7 @@
 package generators
 
 import models.DeclarationType
-import models.reference.Country
+import models.reference.{Country, PackageType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.libs.json._
@@ -66,13 +66,24 @@ trait UserAnswersEntryGenerators {
       case SupplementaryUnitsPage(_)               => arbitrary[BigDecimal].map(Json.toJson(_))
     }
     pf orElse
-      generateDangerousGoodsAnswer
+      generateDangerousGoodsAnswer orElse
+      generatePackagesAnswer
   }
 
   private def generateDangerousGoodsAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.item.dangerousGoods.index._
     {
       case UNNumberPage(_, _) => Gen.alphaNumStr.map(JsString)
+    }
+  }
+
+  private def generatePackagesAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+    import pages.item.packages.index._
+    {
+      case PackageTypePage(_, _)          => arbitrary[PackageType].map(Json.toJson(_))
+      case NumberOfPackagesPage(_, _)     => Gen.posNum[Int].map(Json.toJson(_))
+      case AddShippingMarkYesNoPage(_, _) => arbitrary[Boolean].map(Json.toJson(_))
+      case ShippingMarkPage(_, _)         => Gen.alphaNumStr.map(JsString)
     }
   }
 

@@ -20,13 +20,16 @@ import base.SpecBase
 import generators.Generators
 import models.DeclarationType
 import models.journeyDomain.item.dangerousGoods.{DangerousGoodsDomain, DangerousGoodsListDomain}
+import models.journeyDomain.item.packages.{PackageDomain, PackagesDomain}
 import models.journeyDomain.{EitherType, UserAnswersReader}
-import models.reference.Country
+import models.reference.{Country, PackageType}
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.external._
 import pages.item._
 import pages.item.dangerousGoods.index.UNNumberPage
+import pages.item.packages.index._
 
 class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -694,6 +697,101 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
           ).run(emptyUserAnswers)
 
           result.left.value.page mustBe AddSupplementaryUnitsYesNoPage(itemIndex)
+        }
+      }
+    }
+
+    "packagesReader" - {
+      "can be read from user answers" - {
+        "when unpacked packageType added" in {
+          forAll(arbitrary[PackageType](arbitraryUnpackedPackageType), Gen.posNum[Int].sample.value, arbitrary[String]) {
+            (packageType, quantity, shippingMark) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+                .setValue(NumberOfPackagesPage(itemIndex, packageIndex), quantity)
+                .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
+                .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
+
+              val expectedResult =
+                PackagesDomain(
+                  Seq(
+                    PackageDomain(
+                      packageType,
+                      Some(quantity),
+                      Some(shippingMark)
+                    )(itemIndex, packageIndex)
+                  )
+                )
+
+              val result: EitherType[PackagesDomain] = UserAnswersReader[PackagesDomain](
+                ItemDomain.packagesReader(itemIndex)
+              ).run(userAnswers)
+
+              result.value mustBe expectedResult
+          }
+        }
+
+        "when bulk packageType added" in {
+          forAll(arbitrary[PackageType](arbitraryBulkPackageType), arbitrary[String]) {
+            (packageType, shippingMark) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+                .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
+                .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
+
+              val expectedResult =
+                PackagesDomain(
+                  Seq(
+                    PackageDomain(
+                      packageType,
+                      None,
+                      Some(shippingMark)
+                    )(itemIndex, packageIndex)
+                  )
+                )
+
+              val result: EitherType[PackagesDomain] = UserAnswersReader[PackagesDomain](
+                ItemDomain.packagesReader(itemIndex)
+              ).run(userAnswers)
+
+              result.value mustBe expectedResult
+          }
+        }
+
+        "when other packageType added" in {
+          forAll(arbitrary[PackageType](arbitraryOtherPackageType), arbitrary[String]) {
+            (packageType, shippingMark) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+                .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
+
+              val expectedResult =
+                PackagesDomain(
+                  Seq(
+                    PackageDomain(
+                      packageType,
+                      None,
+                      Some(shippingMark)
+                    )(itemIndex, packageIndex)
+                  )
+                )
+
+              val result: EitherType[PackagesDomain] = UserAnswersReader[PackagesDomain](
+                ItemDomain.packagesReader(itemIndex)
+              ).run(userAnswers)
+
+              result.value mustBe expectedResult
+          }
+        }
+      }
+
+      "can not be read from user answers" - {
+        "when packages is not added" in {
+          val result: EitherType[PackagesDomain] = UserAnswersReader[PackagesDomain](
+            ItemDomain.packagesReader(itemIndex)
+          ).run(emptyUserAnswers)
+
+          result.left.value.page mustBe PackageTypePage(itemIndex, packageIndex)
         }
       }
     }
