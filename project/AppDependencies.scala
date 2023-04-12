@@ -13,6 +13,7 @@ object AppDependencies {
     "org.typelevel"     %% "cats-core"                      % "2.9.0",
     "com.chuusai"       %% "shapeless"                      % "2.3.10",
     "uk.gov.hmrc"       %% "play-allowlist-filter"          % "1.1.0",
+    "org.apache.commons" % "commons-text"                   % "1.10.0"
   )
 
   val test: Seq[ModuleID] = Seq(
