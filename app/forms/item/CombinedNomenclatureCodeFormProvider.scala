@@ -16,9 +16,9 @@
 
 package forms.item
 
-import forms.Constants.maxCombinedNomenclatureCodeLength
-import models.domain.StringFieldRegex.alphaNumericRegex
+import forms.Constants.exactCombinedNomenclatureCodeLength
 import forms.mappings.Mappings
+import models.domain.StringFieldRegex.alphaNumericRegex
 import play.api.data.Form
 
 import javax.inject.Inject
@@ -31,7 +31,7 @@ class CombinedNomenclatureCodeFormProvider @Inject() extends Mappings {
         .verifying(
           forms.StopOnFirstFail[String](
             regexp(alphaNumericRegex, s"$prefix.error.invalidCharacters"),
-            maxLength(maxCombinedNomenclatureCodeLength, s"$prefix.error.length")
+            exactLength(exactCombinedNomenclatureCodeLength, s"$prefix.error.length")
           )
         )
     )

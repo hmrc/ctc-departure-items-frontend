@@ -16,6 +16,7 @@
 
 package forms.item.dangerousGoods
 
+import forms.Constants.exactUNNumberLength
 import forms.behaviours.StringFieldBehaviours
 import models.domain.StringFieldRegex.alphaNumericRegex
 import org.scalacheck.Gen
@@ -27,7 +28,6 @@ class UNNumberFormProviderSpec extends StringFieldBehaviours {
   val requiredKey    = s"$prefix.error.required"
   val lengthKey      = s"$prefix.error.length"
   val invalidKey     = s"$prefix.error.invalidCharacters"
-  val maxLength      = 4
 
   val form = new UNNumberFormProvider()(prefix)
 
@@ -38,14 +38,14 @@ class UNNumberFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      stringsWithMaxLength(exactUNNumberLength)
     )
 
-    behave like fieldWithMaxLength(
+    behave like fieldWithExactLength(
       form,
       fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      exactLength = exactUNNumberLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(exactUNNumberLength))
     )
 
     behave like mandatoryField(
@@ -58,7 +58,7 @@ class UNNumberFormProviderSpec extends StringFieldBehaviours {
       form,
       fieldName,
       error = FormError(fieldName, invalidKey, Seq(alphaNumericRegex.regex)),
-      maxLength
+      exactUNNumberLength
     )
   }
 }

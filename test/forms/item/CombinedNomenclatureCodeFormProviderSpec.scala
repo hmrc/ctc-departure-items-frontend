@@ -16,7 +16,7 @@
 
 package forms.item
 
-import forms.Constants.maxCombinedNomenclatureCodeLength
+import forms.Constants.exactCombinedNomenclatureCodeLength
 import forms.behaviours.StringFieldBehaviours
 import models.domain.StringFieldRegex.alphaNumericRegex
 import org.scalacheck.Gen
@@ -38,14 +38,14 @@ class CombinedNomenclatureCodeFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxCombinedNomenclatureCodeLength)
+      stringsWithMaxLength(exactCombinedNomenclatureCodeLength)
     )
 
-    behave like fieldWithMaxLength(
+    behave like fieldWithExactLength(
       form,
       fieldName,
-      maxLength = maxCombinedNomenclatureCodeLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxCombinedNomenclatureCodeLength))
+      exactLength = exactCombinedNomenclatureCodeLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(exactCombinedNomenclatureCodeLength))
     )
 
     behave like mandatoryField(
@@ -58,7 +58,7 @@ class CombinedNomenclatureCodeFormProviderSpec extends StringFieldBehaviours {
       form,
       fieldName,
       error = FormError(fieldName, invalidKey, Seq(alphaNumericRegex.regex)),
-      maxCombinedNomenclatureCodeLength
+      exactCombinedNomenclatureCodeLength
     )
   }
 }

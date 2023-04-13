@@ -97,7 +97,7 @@ item.customsUnionAndStatisticsCode.hint = This will be 9 characters long and inc
 item.customsUnionAndStatisticsCode.checkYourAnswersLabel = Customs Union and Statistics (CUS) code
 item.customsUnionAndStatisticsCode.change.hidden = customs Union and Statistics (CUS) code
 item.customsUnionAndStatisticsCode.error.required = Enter the Customs Union and Statistics (CUS) code
-item.customsUnionAndStatisticsCode.error.length = The Customs Union and Statistics (CUS) code must be 9 characters or less
+item.customsUnionAndStatisticsCode.error.length = The Customs Union and Statistics (CUS) code must be 9 characters long
 item.customsUnionAndStatisticsCode.error.invalidCharacters = The Customs Union and Statistics (CUS) code must only include letters a to z and numbers 0 to 9
 
 item.addCommodityCodeYesNo.title = Do you want to add a commodity code?
@@ -113,7 +113,7 @@ item.commodityCode.hint = This will be 6 characters long and include both letter
 item.commodityCode.checkYourAnswersLabel = Commodity code
 item.commodityCode.change.hidden = commodity code
 item.commodityCode.error.required = Enter the commodity code
-item.commodityCode.error.length = The commodity code must be 6 characters or less
+item.commodityCode.error.length = The commodity code must be 6 characters long
 item.commodityCode.error.invalidCharacters = The commodity code must only include letters a to z and numbers 0 to 9
 
 item.addCombinedNomenclatureCodeYesNo.title = Do you want to add a combined nomenclature code?
@@ -129,7 +129,7 @@ item.combinedNomenclatureCode.hint = This will be 2 characters long and include 
 item.combinedNomenclatureCode.checkYourAnswersLabel = Combined nomenclature code
 item.combinedNomenclatureCode.change.hidden = combined nomenclature code
 item.combinedNomenclatureCode.error.required = Enter the combined nomenclature code
-item.combinedNomenclatureCode.error.length = The combined nomenclature code must be 2 characters or less
+item.combinedNomenclatureCode.error.length = The combined nomenclature code must be 2 characters long
 item.combinedNomenclatureCode.error.invalidCharacters = The combined nomenclature code must only include letters a to z and numbers 0 to 9
 
 item.addDangerousGoodsYesNo.title = Does the item contain any dangerous goods?
@@ -144,7 +144,7 @@ item.dangerousGoods.index.unNumber.heading = What is the UN number for the dange
 item.dangerousGoods.index.unNumber.hint = This will be 4 characters long and include both letters and numbers.
 item.dangerousGoods.index.unNumber.checkYourAnswersLabel = What is the UN number for the dangerous goods
 item.dangerousGoods.index.unNumber.error.required = Enter the UN number for the dangerous goods
-item.dangerousGoods.index.unNumber.error.length = The UN number must be 4 characters or less
+item.dangerousGoods.index.unNumber.error.length = The UN number must be 4 characters long
 item.dangerousGoods.index.unNumber.error.invalidCharacters = The UN number must only include letters a to z and numbers 0 to 9
 
 item.dangerousGoods.addAnotherDangerousGoods.singular.title = You have added 1 UN number for dangerous goods

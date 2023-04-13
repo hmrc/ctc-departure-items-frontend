@@ -79,6 +79,9 @@ trait Constraints {
         Invalid(errorKey, args: _*)
     }
 
+  protected def exactLength(exact: Int, errorKey: String): Constraint[String] =
+    lengthConstraint(errorKey, _.length == exact, Seq(exact))
+
   protected def maxLength(maximum: Int, errorKey: String): Constraint[String] =
     maxLength(maximum, errorKey, Seq(maximum))
 

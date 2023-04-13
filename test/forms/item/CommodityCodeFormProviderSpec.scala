@@ -16,6 +16,7 @@
 
 package forms.item
 
+import forms.Constants.exactCommodityCodeLength
 import forms.behaviours.StringFieldBehaviours
 import models.domain.StringFieldRegex.alphaNumericRegex
 import org.scalacheck.Gen
@@ -27,7 +28,6 @@ class CommodityCodeFormProviderSpec extends StringFieldBehaviours {
   val requiredKey    = s"$prefix.error.required"
   val lengthKey      = s"$prefix.error.length"
   val invalidKey     = s"$prefix.error.invalidCharacters"
-  val maxLength      = 6
 
   val form = new CommodityCodeFormProvider()(prefix)
 
@@ -38,14 +38,14 @@ class CommodityCodeFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      stringsWithMaxLength(exactCommodityCodeLength)
     )
 
-    behave like fieldWithMaxLength(
+    behave like fieldWithExactLength(
       form,
       fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      exactLength = exactCommodityCodeLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(exactCommodityCodeLength))
     )
 
     behave like mandatoryField(
@@ -58,7 +58,7 @@ class CommodityCodeFormProviderSpec extends StringFieldBehaviours {
       form,
       fieldName,
       error = FormError(fieldName, invalidKey, Seq(alphaNumericRegex.regex)),
-      maxLength
+      exactCommodityCodeLength
     )
   }
 }
