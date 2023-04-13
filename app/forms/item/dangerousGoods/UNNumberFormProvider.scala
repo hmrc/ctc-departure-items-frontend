@@ -16,7 +16,7 @@
 
 package forms.item.dangerousGoods
 
-import forms.Constants.maxUNNumberLength
+import forms.Constants.exactUNNumberLength
 import forms.mappings.Mappings
 import models.domain.StringFieldRegex.alphaNumericRegex
 import play.api.data.Form
@@ -31,7 +31,7 @@ class UNNumberFormProvider @Inject() extends Mappings {
         .verifying(
           forms.StopOnFirstFail[String](
             regexp(alphaNumericRegex, s"$prefix.error.invalidCharacters"),
-            maxLength(maxUNNumberLength, s"$prefix.error.length")
+            exactLength(exactUNNumberLength, s"$prefix.error.length")
           )
         )
     )

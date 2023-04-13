@@ -16,7 +16,7 @@
 
 package forms.item
 
-import forms.Constants.maxCUSCodeLength
+import forms.Constants.exactCUSCodeLength
 import forms.mappings.Mappings
 import models.domain.StringFieldRegex.alphaNumericRegex
 import play.api.data.Form
@@ -31,7 +31,7 @@ class CUSCodeFormProvider @Inject() extends Mappings {
         .verifying(
           forms.StopOnFirstFail[String](
             regexp(alphaNumericRegex, s"$prefix.error.invalidCharacters"),
-            maxLength(maxCUSCodeLength, s"$prefix.error.length")
+            exactLength(exactCUSCodeLength, s"$prefix.error.length")
           )
         )
     )

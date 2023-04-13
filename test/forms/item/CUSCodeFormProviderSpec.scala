@@ -16,7 +16,7 @@
 
 package forms.item
 
-import forms.Constants.maxCUSCodeLength
+import forms.Constants.exactCUSCodeLength
 import forms.behaviours.StringFieldBehaviours
 import models.domain.StringFieldRegex.alphaNumericRegex
 import org.scalacheck.Gen
@@ -38,14 +38,14 @@ class CUSCodeFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxCUSCodeLength)
+      stringsWithMaxLength(exactCUSCodeLength)
     )
 
-    behave like fieldWithMaxLength(
+    behave like fieldWithExactLength(
       form,
       fieldName,
-      maxLength = maxCUSCodeLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxCUSCodeLength))
+      exactLength = exactCUSCodeLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(exactCUSCodeLength))
     )
 
     behave like mandatoryField(
@@ -58,7 +58,7 @@ class CUSCodeFormProviderSpec extends StringFieldBehaviours {
       form,
       fieldName,
       error = FormError(fieldName, invalidKey, Seq(alphaNumericRegex.regex)),
-      maxCUSCodeLength
+      exactCUSCodeLength
     )
   }
 }
