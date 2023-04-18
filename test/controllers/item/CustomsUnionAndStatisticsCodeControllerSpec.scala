@@ -63,14 +63,14 @@ class CustomsUnionAndStatisticsCodeControllerSpec extends SpecBase with AppWithD
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(CustomsUnionAndStatisticsCodePage(itemIndex), "test")
+      val userAnswers = emptyUserAnswers.setValue(CustomsUnionAndStatisticsCodePage(itemIndex), "validCode")
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, customsUnionAndStatisticsCodeRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> "test"))
+      val filledForm = form.bind(Map("value" -> "validCode"))
 
       val view = injector.instanceOf[CustomsUnionAndStatisticsCodeView]
 
@@ -87,7 +87,7 @@ class CustomsUnionAndStatisticsCodeControllerSpec extends SpecBase with AppWithD
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
       val request = FakeRequest(POST, customsUnionAndStatisticsCodeRoute)
-        .withFormUrlEncodedBody(("value", "test"))
+        .withFormUrlEncodedBody(("value", "validCode"))
 
       val result = route(app, request).value
 
@@ -133,7 +133,7 @@ class CustomsUnionAndStatisticsCodeControllerSpec extends SpecBase with AppWithD
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, customsUnionAndStatisticsCodeRoute)
-        .withFormUrlEncodedBody(("value", "test"))
+        .withFormUrlEncodedBody(("value", "validCode"))
 
       val result = route(app, request).value
 

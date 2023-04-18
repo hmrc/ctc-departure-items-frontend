@@ -1,0 +1,6 @@
+->         /                                                 app.item.packages.index.Routes
+
+GET        /:itemIndex/packages/add-another/:lrn             controllers.item.packages.AddAnotherPackageController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+POST       /:itemIndex/packages/add-another/:lrn             controllers.item.packages.AddAnotherPackageController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+GET        /:itemIndex/packages/change-add-another/:lrn      controllers.item.packages.AddAnotherPackageController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+POST       /:itemIndex/packages/change-add-another/:lrn      controllers.item.packages.AddAnotherPackageController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)

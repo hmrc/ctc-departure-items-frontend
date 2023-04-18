@@ -59,6 +59,8 @@ trait Generators extends UserAnswersGenerator with ModelGenerators with DomainMo
     genIntersperseString(numberGen.toString, ",")
   }
 
+  def positiveBigDecimals: Gen[BigDecimal] = positiveInts.map(BigDecimal(_))
+
   def intsLargerThanMaxValue: Gen[BigInt] =
     arbitrary[BigInt] retryUntil (
       x => x > Int.MaxValue
@@ -141,6 +143,12 @@ trait Generators extends UserAnswersGenerator with ModelGenerators with DomainMo
   def stringsWithLength(length: Int, charGen: Gen[Char] = Gen.alphaNumChar): Gen[String] =
     for {
       chars <- listOfN(length, charGen)
+    } yield chars.mkString
+
+  def stringsWithLengthNotEqual(length: Int, charGen: Gen[Char] = Gen.alphaNumChar): Gen[String] =
+    for {
+      len   <- Gen.posNum[Int].filter(_ != length)
+      chars <- listOfN(len, charGen)
     } yield chars.mkString
 
   def stringsLongerThan(minLength: Int, charGen: Gen[Char] = Gen.alphaNumChar): Gen[String] = for {

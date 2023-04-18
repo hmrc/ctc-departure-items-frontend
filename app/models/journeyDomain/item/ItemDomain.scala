@@ -18,6 +18,8 @@ package models.journeyDomain.item
 
 import cats.implicits._
 import models.DeclarationType._
+import models.journeyDomain.item.dangerousGoods.DangerousGoodsListDomain
+import models.journeyDomain.item.packages.PackagesDomain
 import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
 import models.reference.Country
 import models.{DeclarationType, Index}
@@ -31,7 +33,15 @@ case class ItemDomain(
   declarationType: Option[DeclarationType],
   countryOfDispatch: Option[Country],
   countryOfDestination: Option[Country],
-  ucr: Option[String]
+  ucr: Option[String],
+  cusCode: Option[String],
+  commodityCode: Option[String],
+  combinedNomenclatureCode: Option[String],
+  dangerousGoods: Option[DangerousGoodsListDomain],
+  grossWeight: BigDecimal,
+  netWeight: Option[BigDecimal],
+  supplementaryUnits: Option[BigDecimal],
+  packages: PackagesDomain
 )(index: Index)
     extends JourneyDomainModel
 
@@ -43,7 +53,15 @@ object ItemDomain {
       declarationTypeReader(itemIndex),
       countryOfDispatchReader(itemIndex),
       countryOfDestinationReader(itemIndex),
-      ucrReader(itemIndex)
+      ucrReader(itemIndex),
+      cusCodeReader(itemIndex),
+      commodityCodeReader(itemIndex),
+      combinedNomenclatureCodeReader(itemIndex),
+      dangerousGoodsReader(itemIndex),
+      GrossWeightPage(itemIndex).reader,
+      netWeightReader(itemIndex),
+      supplementaryUnitsReader(itemIndex),
+      packagesReader(itemIndex)
     ).tupled.map((ItemDomain.apply _).tupled).map(_(itemIndex))
 
   def declarationTypeReader(itemIndex: Index): UserAnswersReader[Option[DeclarationType]] =
@@ -70,4 +88,55 @@ object ItemDomain {
     ConsignmentUCRPage.filterDependent(_.isEmpty) {
       UniqueConsignmentReferencePage(itemIndex).reader
     }
+
+  def cusCodeReader(itemIndex: Index): UserAnswersReader[Option[String]] =
+    AddCUSCodeYesNoPage(itemIndex).filterOptionalDependent(identity) {
+      CustomsUnionAndStatisticsCodePage(itemIndex).reader
+    }
+
+  def commodityCodeReader(itemIndex: Index): UserAnswersReader[Option[String]] =
+    TransitOperationTIRCarnetNumberPage.isDefined.flatMap {
+      case true =>
+        AddCommodityCodeYesNoPage(itemIndex).filterOptionalDependent(identity) {
+          CommodityCodePage(itemIndex).reader
+        }
+      case false =>
+        CommodityCodePage(itemIndex).reader.map(Some(_))
+    }
+
+  def combinedNomenclatureCodeReader(itemIndex: Index): UserAnswersReader[Option[String]] =
+    CommodityCodePage(itemIndex).isDefined.flatMap {
+      case true =>
+        CustomsOfficeOfDepartureInCL112Page
+          .filterOptionalDependent(!_) {
+            AddCombinedNomenclatureCodeYesNoPage(itemIndex).filterOptionalDependent(identity) {
+              CombinedNomenclatureCodePage(itemIndex).reader
+            }
+          }
+          .map(_.flatten)
+      case false =>
+        none[String].pure[UserAnswersReader]
+    }
+
+  def dangerousGoodsReader(itemIndex: Index): UserAnswersReader[Option[DangerousGoodsListDomain]] =
+    AddDangerousGoodsYesNoPage(itemIndex)
+      .filterOptionalDependent(identity)(DangerousGoodsListDomain.userAnswersReader(itemIndex))
+
+  def netWeightReader(itemIndex: Index): UserAnswersReader[Option[BigDecimal]] =
+    ApprovedOperatorPage.optionalReader.flatMap {
+      case Some(true) =>
+        none[BigDecimal].pure[UserAnswersReader]
+      case _ =>
+        AddItemNetWeightYesNoPage(itemIndex).filterOptionalDependent(identity) {
+          NetWeightPage(itemIndex).reader
+        }
+    }
+
+  def supplementaryUnitsReader(itemIndex: Index): UserAnswersReader[Option[BigDecimal]] =
+    AddSupplementaryUnitsYesNoPage(itemIndex).filterOptionalDependent(identity) {
+      SupplementaryUnitsPage(itemIndex).reader
+    }
+
+  def packagesReader(itemIndex: Index): UserAnswersReader[PackagesDomain] =
+    PackagesDomain.userAnswersReader(itemIndex)
 }

@@ -16,7 +16,7 @@
 
 package forms.item
 
-import forms.Constants.maxCommodityCodeLength
+import forms.Constants.exactCommodityCodeLength
 import forms.mappings.Mappings
 import models.domain.StringFieldRegex.alphaNumericRegex
 import play.api.data.Form
@@ -31,7 +31,7 @@ class CommodityCodeFormProvider @Inject() extends Mappings {
         .verifying(
           forms.StopOnFirstFail[String](
             regexp(alphaNumericRegex, s"$prefix.error.invalidCharacters"),
-            maxLength(maxCommodityCodeLength, s"$prefix.error.length")
+            exactLength(exactCommodityCodeLength, s"$prefix.error.length")
           )
         )
     )

@@ -63,14 +63,14 @@ class CommodityCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(CommodityCodePage(itemIndex), "test")
+      val userAnswers = emptyUserAnswers.setValue(CommodityCodePage(itemIndex), "string")
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, commodityCodeRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> "test"))
+      val filledForm = form.bind(Map("value" -> "string"))
 
       val view = injector.instanceOf[CommodityCodeView]
 
@@ -87,7 +87,7 @@ class CommodityCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
       val request = FakeRequest(POST, commodityCodeRoute)
-        .withFormUrlEncodedBody(("value", "test"))
+        .withFormUrlEncodedBody(("value", "string"))
 
       val result = route(app, request).value
 
@@ -133,7 +133,7 @@ class CommodityCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, commodityCodeRoute)
-        .withFormUrlEncodedBody(("value", "test string"))
+        .withFormUrlEncodedBody(("value", "string"))
 
       val result = route(app, request).value
 

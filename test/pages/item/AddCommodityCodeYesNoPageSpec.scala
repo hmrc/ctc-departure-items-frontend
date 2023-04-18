@@ -16,7 +16,6 @@
 
 package pages.item
 
-import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class AddCommodityCodeYesNoPageSpec extends PageBehaviours {
@@ -31,16 +30,39 @@ class AddCommodityCodeYesNoPageSpec extends PageBehaviours {
 
     "cleanup" - {
       "when no selected" - {
-        "must remove commodity code" in {
-          forAll(arbitrary[String]) {
-            commodityCode =>
+        "must remove commodity code and nomenclature code" in {
+          forAll(nonEmptyString, nonEmptyString) {
+            (commodityCode, nomenclatureCode) =>
               val userAnswers = emptyUserAnswers
                 .setValue(AddCommodityCodeYesNoPage(itemIndex), true)
                 .setValue(CommodityCodePage(itemIndex), commodityCode)
+                .setValue(AddCombinedNomenclatureCodeYesNoPage(itemIndex), true)
+                .setValue(CombinedNomenclatureCodePage(itemIndex), nomenclatureCode)
 
               val result = userAnswers.setValue(AddCommodityCodeYesNoPage(itemIndex), false)
 
               result.get(CommodityCodePage(itemIndex)) must not be defined
+              result.get(AddCombinedNomenclatureCodeYesNoPage(itemIndex)) must not be defined
+              result.get(CombinedNomenclatureCodePage(itemIndex)) must not be defined
+          }
+        }
+      }
+
+      "when yes selected" - {
+        "must do nothing" in {
+          forAll(nonEmptyString, nonEmptyString) {
+            (commodityCode, nomenclatureCode) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AddCommodityCodeYesNoPage(itemIndex), true)
+                .setValue(CommodityCodePage(itemIndex), commodityCode)
+                .setValue(AddCombinedNomenclatureCodeYesNoPage(itemIndex), true)
+                .setValue(CombinedNomenclatureCodePage(itemIndex), nomenclatureCode)
+
+              val result = userAnswers.setValue(AddCommodityCodeYesNoPage(itemIndex), true)
+
+              result.get(CommodityCodePage(itemIndex)) must be(defined)
+              result.get(AddCombinedNomenclatureCodeYesNoPage(itemIndex)) must be(defined)
+              result.get(CombinedNomenclatureCodePage(itemIndex)) must be(defined)
           }
         }
       }

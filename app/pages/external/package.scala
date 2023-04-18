@@ -20,9 +20,10 @@ import play.api.libs.json.{__, JsPath}
 
 package object external {
 
-  lazy val preTaskListPath: JsPath = __ \ "preTaskList"
-
+  lazy val preTaskListPath: JsPath   = __ \ "preTaskList"
+  lazy val traderDetailsPath: JsPath = __ \ "traderDetails"
   lazy val transportPath: JsPath     = __ \ "transportDetails"
   lazy val preRequisitesPath: JsPath = transportPath \ "preRequisites"
+  lazy val consignmentPath: JsPath   = traderDetailsPath \ "consignment"
 
 }

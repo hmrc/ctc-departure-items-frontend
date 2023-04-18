@@ -36,3 +36,8 @@ class FakeDangerousGoodsNavigator(desiredRoute: Call, mode: Mode, itemIndex: Ind
     extends DangerousGoodsNavigator(mode, itemIndex, dangerousGoodsIndex) {
   override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }
+
+class FakePackageNavigator(desiredRoute: Call, mode: Mode, itemIndex: Index, packageIndex: Index)(implicit config: FrontendAppConfig)
+    extends PackageNavigator(mode, itemIndex, packageIndex) {
+  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
+}

@@ -18,10 +18,13 @@ package utils.cyaHelpers.item
 
 import config.FrontendAppConfig
 import models.journeyDomain.item.dangerousGoods.DangerousGoodsDomain
-import models.reference.Country
+import models.journeyDomain.item.packages.PackageDomain
+import models.reference.{Country, PackageType}
 import models.{DeclarationType, Index, Mode, UserAnswers}
 import pages.item._
+import pages.item.packages.index.{AddShippingMarkYesNoPage, NumberOfPackagesPage, PackageTypePage, ShippingMarkPage}
 import pages.sections.dangerousGoods.DangerousGoodsListSection
+import pages.sections.packages.PackagesSection
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.cyaHelpers.AnswersHelper
@@ -134,4 +137,84 @@ class ItemAnswersHelper(
     args = dangerousGoodsIndex.display
   )(DangerousGoodsDomain.userAnswersReader(itemIndex, dangerousGoodsIndex))
 
+  def grossWeight: Option[SummaryListRow] = getAnswerAndBuildRow[BigDecimal](
+    page = GrossWeightPage(itemIndex),
+    formatAnswer = formatAsText,
+    prefix = "item.grossWeight",
+    id = Some(s"change-gross-weight-${itemIndex.display}"),
+    args = itemIndex.display
+  )
+
+  def itemNetWeightYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddItemNetWeightYesNoPage(itemIndex),
+    formatAnswer = formatAsYesOrNo,
+    prefix = "item.addItemNetWeightYesNo",
+    id = Some("change-add-item-net-weight")
+  )
+
+  def netWeight: Option[SummaryListRow] = getAnswerAndBuildRow[BigDecimal](
+    page = NetWeightPage(itemIndex),
+    formatAnswer = formatAsText,
+    prefix = "item.netWeight",
+    id = Some(s"change-net-weight-${itemIndex.display}"),
+    args = itemIndex.display
+  )
+
+  def supplementaryUnitsYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddSupplementaryUnitsYesNoPage(itemIndex),
+    formatAnswer = formatAsYesOrNo,
+    prefix = "item.addSupplementaryUnitsYesNo",
+    id = Some("change-add-supplementary-units"),
+    args = itemIndex.display
+  )
+
+  def supplementaryUnits: Option[SummaryListRow] = getAnswerAndBuildRow[BigDecimal](
+    page = SupplementaryUnitsPage(itemIndex),
+    formatAnswer = formatAsText,
+    prefix = "item.supplementaryUnits",
+    id = Some(s"change-supplementary-units-${itemIndex.display}"),
+    args = itemIndex.display
+  )
+
+  def packageType(packageIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[PackageType](
+    page = PackageTypePage(itemIndex, packageIndex),
+    formatAnswer = formatAsText,
+    prefix = "item.packages.index.packageType",
+    id = Some(s"change-type-${packageIndex.display}"),
+    args = packageIndex.display
+  )
+
+  def numberOfPackages(packageIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[Int](
+    page = NumberOfPackagesPage(itemIndex, packageIndex),
+    formatAnswer = formatAsText,
+    prefix = "item.packages.index.numberOfPackages",
+    id = Some(s"change-type-quantity-${packageIndex.display}"),
+    args = packageIndex.display
+  )
+
+  def shippingMarkYesNo(packageIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddShippingMarkYesNoPage(itemIndex, packageIndex),
+    formatAnswer = formatAsYesOrNo,
+    prefix = "item.packages.index.addShippingMarkYesNo",
+    id = Some(s"change-add-shipping-mark-${packageIndex.display}"),
+    args = packageIndex.display
+  )
+
+  def shippingMark(packageIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = ShippingMarkPage(itemIndex, packageIndex),
+    formatAnswer = formatAsText,
+    prefix = "item.packages.index.shippingMark",
+    id = Some(s"change-shipping-mark-${packageIndex.display}"),
+    args = packageIndex.display
+  )
+
+  def packages: Seq[SummaryListRow] =
+    getAnswersAndBuildSectionRows(PackagesSection(itemIndex))(`package`)
+
+  def `package`(packageIndex: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[PackageDomain](
+    formatAnswer = formatAsText,
+    prefix = "item.index.checkYourAnswers.package",
+    id = Some(s"change-package-${packageIndex.display}"),
+    args = packageIndex.display
+  )(PackageDomain.userAnswersReader(itemIndex, packageIndex))
 }

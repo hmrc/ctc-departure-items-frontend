@@ -3,6 +3,7 @@ package controllers.$package$
 import base.{SpecBase, AppWithDefaultMockFixtures}
 import forms.YesNoFormProvider
 import models.NormalMode
+import navigation.$navRoute$NavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar

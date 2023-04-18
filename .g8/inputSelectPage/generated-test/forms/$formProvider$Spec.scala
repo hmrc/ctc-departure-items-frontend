@@ -34,7 +34,7 @@ class $formProvider$Spec extends StringFieldBehaviours with Generators{
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "not bind if customs office id does not exist in the $referenceListClass;format="decap"$" in {
+    "not bind if $referenceClass;format="decap"$ id does not exist in the $referenceListClass;format="decap"$" in {
       val boundForm = form.bind(Map("value" -> "foobar"))
       val field     = boundForm("value")
       field.errors mustNot be(empty)

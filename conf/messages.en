@@ -29,6 +29,8 @@ date.minute.capitalized = Minute
 
 item.caption = Item {0}
 item.dangerousGoods.caption = Item {0} - Dangerous goods
+item.measurement.caption = Item {0} - Measurement
+item.packages.caption = Item {0} - Packages
 
 item.description.title = Enter a description of item {0}
 item.description.heading = Enter a description of item {0}
@@ -95,7 +97,7 @@ item.customsUnionAndStatisticsCode.hint = This will be 9 characters long and inc
 item.customsUnionAndStatisticsCode.checkYourAnswersLabel = Customs Union and Statistics (CUS) code
 item.customsUnionAndStatisticsCode.change.hidden = customs Union and Statistics (CUS) code
 item.customsUnionAndStatisticsCode.error.required = Enter the Customs Union and Statistics (CUS) code
-item.customsUnionAndStatisticsCode.error.length = The Customs Union and Statistics (CUS) code must be 9 characters or less
+item.customsUnionAndStatisticsCode.error.length = The Customs Union and Statistics (CUS) code must be 9 characters long
 item.customsUnionAndStatisticsCode.error.invalidCharacters = The Customs Union and Statistics (CUS) code must only include letters a to z and numbers 0 to 9
 
 item.addCommodityCodeYesNo.title = Do you want to add a commodity code?
@@ -111,7 +113,7 @@ item.commodityCode.hint = This will be 6 characters long and include both letter
 item.commodityCode.checkYourAnswersLabel = Commodity code
 item.commodityCode.change.hidden = commodity code
 item.commodityCode.error.required = Enter the commodity code
-item.commodityCode.error.length = The commodity code must be 6 characters or less
+item.commodityCode.error.length = The commodity code must be 6 characters long
 item.commodityCode.error.invalidCharacters = The commodity code must only include letters a to z and numbers 0 to 9
 
 item.addCombinedNomenclatureCodeYesNo.title = Do you want to add a combined nomenclature code?
@@ -127,7 +129,7 @@ item.combinedNomenclatureCode.hint = This will be 2 characters long and include 
 item.combinedNomenclatureCode.checkYourAnswersLabel = Combined nomenclature code
 item.combinedNomenclatureCode.change.hidden = combined nomenclature code
 item.combinedNomenclatureCode.error.required = Enter the combined nomenclature code
-item.combinedNomenclatureCode.error.length = The combined nomenclature code must be 2 characters or less
+item.combinedNomenclatureCode.error.length = The combined nomenclature code must be 2 characters long
 item.combinedNomenclatureCode.error.invalidCharacters = The combined nomenclature code must only include letters a to z and numbers 0 to 9
 
 item.addDangerousGoodsYesNo.title = Does the item contain any dangerous goods?
@@ -142,7 +144,7 @@ item.dangerousGoods.index.unNumber.heading = What is the UN number for the dange
 item.dangerousGoods.index.unNumber.hint = This will be 4 characters long and include both letters and numbers.
 item.dangerousGoods.index.unNumber.checkYourAnswersLabel = What is the UN number for the dangerous goods
 item.dangerousGoods.index.unNumber.error.required = Enter the UN number for the dangerous goods
-item.dangerousGoods.index.unNumber.error.length = The UN number must be 4 characters or less
+item.dangerousGoods.index.unNumber.error.length = The UN number must be 4 characters long
 item.dangerousGoods.index.unNumber.error.invalidCharacters = The UN number must only include letters a to z and numbers 0 to 9
 
 item.dangerousGoods.addAnotherDangerousGoods.singular.title = You have added 1 UN number for dangerous goods
@@ -159,3 +161,99 @@ item.dangerousGoods.index.removeUNNumber.error.required = Select yes if you want
 
 item.index.checkYourAnswers.dangerousGoods.label = Dangerous goods {0}
 item.index.checkYourAnswers.dangerousGoods.change.hidden = dangerous goods {0}
+item.index.checkYourAnswers.package.label = Package {0}
+item.index.checkYourAnswers.package.change.hidden = package {0}
+
+item.addItemNetWeightYesNo.title = Do you want to add the item’s net weight?
+item.addItemNetWeightYesNo.heading = Do you want to add the item’s net weight?
+item.addItemNetWeightYesNo.paragraph = This is the weight of the item’s goods, excluding all packaging.
+item.addItemNetWeightYesNo.checkYourAnswersLabel = Do you want to add the item’s net weight?
+item.addItemNetWeightYesNo.change.hidden = if you want to add the item’s net weight
+item.addItemNetWeightYesNo.error.required = Select yes if you want to add the net weight of item {0}
+
+item.netWeight.title = What is the item’s net weight?
+item.netWeight.heading = What is the item’s net weight?
+item.netWeight.hint = Enter the weight in kilograms (kg), up to 6 decimal places.
+item.netWeight.checkYourAnswersLabel = Net weight
+item.netWeight.change.hidden = net weight of item {0}
+item.netWeight.error.invalidCharacters = The net weight must only include numbers 0 to 9 and a decimal point
+item.netWeight.error.required = Enter the item’s net weight
+item.netWeight.error.invalidFormat = The net weight must only include 6 decimal places or less
+item.netWeight.error.invalidValue = The net weight must be 16 characters or less
+
+item.grossWeight.title = What is the item’s gross weight?
+item.grossWeight.heading = What is the item’s gross weight?
+item.grossWeight.paragraph = This is the combined weight of the item’s goods and packaging.
+item.grossWeight.hint = Enter the weight in kilograms (kg), up to 6 decimal places.
+item.grossWeight.checkYourAnswersLabel = Gross weight
+item.grossWeight.change.hidden = gross weight of item {0}
+item.grossWeight.error.required = Enter the item’s gross weight
+item.grossWeight.error.invalidCharacters = The gross weight must only include numbers 0 to 9 and a decimal point
+item.grossWeight.error.invalidFormat = The gross weight must only include 6 decimal places or less
+item.grossWeight.error.invalidValue = The gross weight must be 16 characters or less
+
+item.addSupplementaryUnitsYesNo.title = Do you want to add supplementary units?
+item.addSupplementaryUnitsYesNo.heading = Do you want to add supplementary units?
+item.addSupplementaryUnitsYesNo.paragraph = This can be any unit of measurement, such as litres, square metres or number of parts.
+item.addSupplementaryUnitsYesNo.checkYourAnswersLabel = Do you want to add supplementary units?
+item.addSupplementaryUnitsYesNo.change.hidden = if you want to add supplementary units for item {0}
+item.addSupplementaryUnitsYesNo.error.required = Select yes if you want to add supplementary units
+
+item.supplementaryUnits.title = How many supplementary units does the item include?
+item.supplementaryUnits.heading = How many supplementary units does the item include?
+item.supplementaryUnits.hint = This number can include up to 6 decimal places.
+item.supplementaryUnits.checkYourAnswersLabel = Number of supplementary units
+item.supplementaryUnits.change.hidden = number of supplementary units for item {0}
+item.supplementaryUnits.error.required = Enter how many supplementary units the item includes
+item.supplementaryUnits.error.invalidCharacters = The number of supplementary units must only include numbers 0 to 9 and a decimal point
+item.supplementaryUnits.error.invalidFormat = The number of supplementary units must only include 6 decimal places or less
+item.supplementaryUnits.error.invalidValue = The number of supplementary units must be 16 characters or less
+
+packages.value.withoutNumberOfPackages = 1 {0}
+packages.value.withNumberOfPackages = {0} {1}
+
+item.packages.index.packageType.title = What type of package are you using for the item?
+item.packages.index.packageType.heading = What type of package are you using for the item?
+item.packages.index.packageType.paragraph = This means the packaging used to store and protect the item during transit.
+item.packages.index.packageType.hint = Enter the package or code, like cylinder or CY.
+item.packages.index.packageType.placeholder = Select a packageType
+item.packages.index.packageType.change.hidden = package type for package {0}
+item.packages.index.packageType.checkYourAnswersLabel = Package type
+item.packages.index.packageType.error.required = Enter the type of package you are using for the item
+
+item.packages.index.numberOfPackages.title = How many {0} are you using?
+item.packages.index.numberOfPackages.heading = How many {0} are you using?
+item.packages.index.numberOfPackages.checkYourAnswersLabel = Package quantity
+item.packages.index.numberOfPackages.change.hidden = package quantity for package {0}
+item.packages.index.numberOfPackages.error.nonNumeric = The quantity must only include numbers 0 to 9
+item.packages.index.numberOfPackages.error.required = Enter the number of {0} you are using
+item.packages.index.numberOfPackages.error.wholeNumber = The quantity must only include numbers 0 to 9
+item.packages.index.numberOfPackages.error.maximum = The quantity must be 99,999,999 or less
+item.packages.index.numberOfPackages.error.negative = The quantity must be 0 or more
+
+item.packages.index.addShippingMarkYesNo.title = Do you want to add a shipping mark?
+item.packages.index.addShippingMarkYesNo.heading = Do you want to add a shipping mark?
+item.packages.index.addShippingMarkYesNo.paragraph = This tells carriers what type of product is inside the package and helps consignees identify the order once it’s been delivered.
+item.packages.index.addShippingMarkYesNo.checkYourAnswersLabel = Do you want to add a shipping mark?
+item.packages.index.addShippingMarkYesNo.change.hidden = if you want to add a shipping mark for package {0}
+item.packages.index.addShippingMarkYesNo.error.required = Select yes if you want to add a shipping mark
+
+item.packages.index.shippingMark.title = What is the shipping mark?
+item.packages.index.shippingMark.heading = What is the shipping mark?
+item.packages.index.shippingMark.checkYourAnswersLabel = Shipping mark
+item.packages.index.shippingMark.change.hidden = shipping mark for package {0}
+item.packages.index.shippingMark.error.required = Enter the shipping mark
+item.packages.index.shippingMark.error.length = The shipping mark must be 512 characters or less
+item.packages.index.shippingMark.error.invalidCharacters = The shipping mark must only include letters a to z and numbers 0 to 9
+
+item.packages.index.removePackage.title = Are you sure you want to remove {0} from this item?
+item.packages.index.removePackage.heading = Are you sure you want to remove {0} from this item?
+item.packages.index.removePackage.error.required = Select yes if you want to remove {0} from this item
+
+item.packages.addAnotherPackage.singular.title = You have added 1 type of package
+item.packages.addAnotherPackage.singular.heading = You have added 1 type of package
+item.packages.addAnotherPackage.plural.title = You have added {0} types of packages
+item.packages.addAnotherPackage.plural.heading = You have added {0} types of packages
+item.packages.addAnotherPackage.error.required = Select yes if you want to add another type of package
+item.packages.addAnotherPackage.label = Do you want to add another type of package?
+item.packages.addAnotherPackage.maxLimit.label = You cannot add any more types of packages. To add another, you need to remove one first.

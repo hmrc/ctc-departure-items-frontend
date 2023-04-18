@@ -19,6 +19,7 @@ package connectors
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
 import helper.WireMockServerHandler
+import models.PackingType
 import models.reference._
 import org.scalacheck.Gen
 import org.scalatest.Assertion
@@ -54,6 +55,22 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       |]
       |""".stripMargin
 
+  private val packageTypeJson: String =
+    """
+      |[
+      | {
+      |    "code": "VA",
+      |    "description": "Vat",
+      |    "type": "Other"
+      |  },
+      |  {
+      |    "code": "UC",
+      |    "description": "Uncaged",
+      |    "type": "Other"
+      |  }
+      |]
+      |""".stripMargin
+
   "Reference Data" - {
 
     "getCountries" - {
@@ -81,6 +98,29 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       "must return an exception when an error response is returned" in {
         checkErrorResponse(s"/$baseUrl/countries?customsOfficeRole=ANY", connector.getCountries(Nil))
       }
+    }
+
+    "getPackageTypes" - {
+
+      "must return list of package types when successful" in {
+        server.stubFor(
+          get(urlEqualTo(s"/$baseUrl/kinds-of-package"))
+            .willReturn(okJson(packageTypeJson))
+        )
+
+        val expectResult = Seq(
+          PackageType("VA", Some("Vat"), PackingType.Other),
+          PackageType("UC", Some("Uncaged"), PackingType.Other)
+        )
+
+        connector.getPackageTypes().futureValue mustEqual expectResult
+      }
+
+      "must return an exception when an error response is returned" in {
+
+        checkErrorResponse(s"/$baseUrl/kinds-of-package", connector.getPackageTypes())
+      }
+
     }
 
   }
