@@ -84,7 +84,7 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> document1.code))
+      val filledForm = form.bind(Map("value" -> document1.value))
 
       val view = injector.instanceOf[DocumentView]
 
@@ -102,7 +102,7 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, documentRoute)
-        .withFormUrlEncodedBody(("value", document1.code))
+        .withFormUrlEncodedBody(("value", document1.value))
 
       val result = route(app, request).value
 
@@ -159,7 +159,7 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, documentRoute)
-        .withFormUrlEncodedBody(("value", document1.code))
+        .withFormUrlEncodedBody(("value", document1.value))
 
       val result = route(app, request).value
 
@@ -174,7 +174,7 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, documentRoute)
-        .withFormUrlEncodedBody(("value", document1.code))
+        .withFormUrlEncodedBody(("value", document1.value))
 
       val result = route(app, request).value
 

@@ -262,3 +262,4 @@ item.packages.addAnotherPackage.maxLimit.label = You cannot add any more types o
 item.documents.index.document.title = Which document do you want to attach?
 item.documents.index.document.heading = Which document do you want to attach?
 item.documents.index.document.placeholder = Select a document
+item.documents.index.document.error.required = Select which document you want to attach

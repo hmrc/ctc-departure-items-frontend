@@ -179,8 +179,8 @@ trait Formatters {
       lazy val error = Left(Seq(FormError(key, errorKey, args)))
       data.get(key) match {
         case None => error
-        case Some(code) =>
-          documentList.documents.find(_.code == code) match {
+        case Some(value) =>
+          documentList.documents.find(_.value == value) match {
             case Some(document) => Right(document)
             case None           => error
           }
@@ -188,6 +188,6 @@ trait Formatters {
     }
 
     override def unbind(key: String, document: Document): Map[String, String] =
-      Map(key -> document.code)
+      Map(key -> document.value)
   }
 }
