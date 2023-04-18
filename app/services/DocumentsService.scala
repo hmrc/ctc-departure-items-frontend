@@ -14,11 +14,15 @@
  * limitations under the License.
  */
 
-package pages.sections
+package services
 
-import pages.{QuestionPage, ReadOnlyPage}
-import play.api.libs.json.JsValue
+import models.{DocumentList, RichOptionalJsArray, UserAnswers}
+import pages.sections.external.DocumentsSection
 
-trait Section[T <: JsValue] extends QuestionPage[T]
+import javax.inject.Inject
 
-trait ReadOnlySection[T <: JsValue] extends ReadOnlyPage[T]
+class DocumentsService @Inject() () {
+
+  def getDocuments(userAnswers: UserAnswers): Option[DocumentList] =
+    userAnswers.get(DocumentsSection).validate(DocumentList.reads).filter(_.documents.nonEmpty)
+}

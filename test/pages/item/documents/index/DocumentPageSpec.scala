@@ -14,11 +14,19 @@
  * limitations under the License.
  */
 
-package pages.sections
+package pages.item.documents.index
 
-import pages.{QuestionPage, ReadOnlyPage}
-import play.api.libs.json.JsValue
+import models.Document
+import pages.behaviours.PageBehaviours
 
-trait Section[T <: JsValue] extends QuestionPage[T]
+class DocumentPageSpec extends PageBehaviours {
 
-trait ReadOnlySection[T <: JsValue] extends ReadOnlyPage[T]
+  "DocumentPage" - {
+
+    beRetrievable[Document](DocumentPage(itemIndex, documentIndex))
+
+    beSettable[Document](DocumentPage(itemIndex, documentIndex))
+
+    beRemovable[Document](DocumentPage(itemIndex, documentIndex))
+  }
+}

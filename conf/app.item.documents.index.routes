@@ -1,0 +1,5 @@
+
+GET        /:itemIndex/documents/:documentIndex/select-document/:lrn                           controllers.item.documents.index.DocumentController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index, documentIndex: Index)
+POST       /:itemIndex/documents/:documentIndex/select-document/:lrn                           controllers.item.documents.index.DocumentController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index, documentIndex: Index)
+GET        /:itemIndex/documents/:documentIndex/change-select-document/:lrn                    controllers.item.documents.index.DocumentController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index, documentIndex: Index)
+POST       /:itemIndex/documents/:documentIndex/change-select-document/:lrn                    controllers.item.documents.index.DocumentController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index, documentIndex: Index)

@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 
-package pages.sections
+package pages.sections.documents
 
-import pages.{QuestionPage, ReadOnlyPage}
-import play.api.libs.json.JsValue
+import models.Index
+import pages.sections.Section
+import play.api.libs.json.{JsObject, JsPath}
 
-trait Section[T <: JsValue] extends QuestionPage[T]
+case class DocumentSection(itemIndex: Index, documentIndex: Index) extends Section[JsObject] {
 
-trait ReadOnlySection[T <: JsValue] extends ReadOnlyPage[T]
+  override def path: JsPath = DocumentsSection(itemIndex).path \ documentIndex.position
+
+}

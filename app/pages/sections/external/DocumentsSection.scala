@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 
-package pages.sections
+package pages.sections.external
 
-import pages.{QuestionPage, ReadOnlyPage}
-import play.api.libs.json.JsValue
+import pages.sections.ReadOnlySection
+import play.api.libs.json.{JsArray, JsPath}
 
-trait Section[T <: JsValue] extends QuestionPage[T]
+case object DocumentsSection extends ReadOnlySection[JsArray] {
 
-trait ReadOnlySection[T <: JsValue] extends ReadOnlyPage[T]
+  override def path: JsPath = JsPath \ toString
+
+  override def toString: String = "documents"
+}

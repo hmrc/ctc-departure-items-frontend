@@ -44,7 +44,7 @@ class ErrorHandler @Inject() (
       case result if isClientError(result) =>
         Future.successful(Redirect(s"${config.departureHubUrl}/bad-request"))
       case _ =>
-        Future.successful(Redirect(s"${config.departureHubUrl}/technical-difficulties"))
+        Future.successful(Redirect(config.technicalDifficultiesUrl))
     }
 
   override def onServerError(request: RequestHeader, exception: Throwable): Future[Result] = {

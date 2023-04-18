@@ -14,11 +14,18 @@
  * limitations under the License.
  */
 
-package pages.sections
+package forms
 
-import pages.{QuestionPage, ReadOnlyPage}
-import play.api.libs.json.JsValue
+import forms.mappings.Mappings
+import models.{Document, DocumentList}
+import play.api.data.Form
 
-trait Section[T <: JsValue] extends QuestionPage[T]
+import javax.inject.Inject
 
-trait ReadOnlySection[T <: JsValue] extends ReadOnlyPage[T]
+class DocumentFormProvider @Inject() extends Mappings {
+
+  def apply(prefix: String, documentList: DocumentList, args: Any*): Form[Document] =
+    Form(
+      "value" -> document(documentList, s"$prefix.error.required", args)
+    )
+}

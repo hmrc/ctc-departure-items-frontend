@@ -1,5 +1,6 @@
 ->         /                                                                app.item.dangerousGoods.Routes
 ->         /                                                                app.item.packages.Routes
+->         /                                                                app.item.documents.Routes
 
 GET        /:itemIndex/description/:lrn                                     controllers.item.DescriptionController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
 POST       /:itemIndex/description/:lrn                                     controllers.item.DescriptionController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)

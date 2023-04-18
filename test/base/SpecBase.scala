@@ -53,6 +53,7 @@ trait SpecBase
   val itemIndex: Index           = Index(0)
   val dangerousGoodsIndex: Index = Index(0)
   val packageIndex: Index        = Index(0)
+  val documentIndex: Index       = Index(0)
 
   def fakeRequest: FakeRequest[AnyContent] = FakeRequest("", "")
 
