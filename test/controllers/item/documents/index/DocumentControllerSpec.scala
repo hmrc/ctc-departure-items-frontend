@@ -53,7 +53,7 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
       .overrides(bind(classOf[DocumentNavigatorProvider]).toInstance(fakeDocumentNavigatorProvider))
       .overrides(bind(classOf[DocumentsService]).toInstance(mockDocumentsService))
 
-  "ItemCountryOfDestination Controller" - {
+  "Document Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
