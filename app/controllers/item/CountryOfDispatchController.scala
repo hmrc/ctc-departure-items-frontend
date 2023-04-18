@@ -18,7 +18,7 @@ package controllers.item
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.CountryFormProvider
+import forms.SelectableFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
 import pages.item.CountryOfDispatchPage
@@ -37,7 +37,7 @@ class CountryOfDispatchController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: ItemNavigatorProvider,
   actions: Actions,
-  formProvider: CountryFormProvider,
+  formProvider: SelectableFormProvider,
   service: CountriesService,
   val controllerComponents: MessagesControllerComponents,
   view: CountryOfDispatchView
@@ -57,7 +57,7 @@ class CountryOfDispatchController @Inject() (
             case Some(value) => form.fill(value)
           }
 
-          Ok(view(preparedForm, lrn, countryList.countries, mode, itemIndex))
+          Ok(view(preparedForm, lrn, countryList.values, mode, itemIndex))
       }
   }
 
@@ -69,7 +69,7 @@ class CountryOfDispatchController @Inject() (
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, countryList.countries, mode, itemIndex))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, countryList.values, mode, itemIndex))),
               value => {
                 implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
                 CountryOfDispatchPage(itemIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()

@@ -17,8 +17,9 @@
 package components
 
 import a11ySpecBase.A11ySpecBase
-import forms.CountryFormProvider
-import models.CountryList
+import forms.SelectableFormProvider
+import models.SelectableList
+import models.reference.Country
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.twirl.api.Html
@@ -35,14 +36,14 @@ class InputSelectSpec extends A11ySpecBase {
     val prefix         = Gen.alphaNumStr.sample.value
     val title          = nonEmptyString.sample.value
     val caption        = Gen.option(nonEmptyString).sample.value
-    val countryList    = arbitrary[CountryList].sample.value
+    val countryList    = arbitrary[SelectableList[Country]].sample.value
     val label          = nonEmptyString.sample.value
     val hint           = Gen.option(nonEmptyString).sample.value
     val placeholder    = nonEmptyString.sample.value
-    val selectedValue  = Gen.oneOf(None, Some(countryList.countries.head)).sample.value
-    val selectItems    = countryList.countries.toSelectItems(selectedValue)
+    val selectedValue  = Gen.oneOf(None, Some(countryList.values.head)).sample.value
+    val selectItems    = countryList.values.toSelectItems(selectedValue)
     val additionalHtml = arbitrary[Html].sample.value
-    val form           = new CountryFormProvider()(prefix, countryList)
+    val form           = new SelectableFormProvider()(prefix, countryList)
     val preparedForm = selectedValue match {
       case Some(country) => form.fill(country)
       case None          => form

@@ -17,16 +17,15 @@
 package forms
 
 import forms.mappings.Mappings
-import models.CountryList
-import models.reference.Country
+import models.{Selectable, SelectableList}
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class CountryFormProvider @Inject() extends Mappings {
+class SelectableFormProvider @Inject() extends Mappings {
 
-  def apply(prefix: String, countryList: CountryList, args: Any*): Form[Country] =
+  def apply[T <: Selectable](prefix: String, selectableList: SelectableList[T], args: Any*): Form[T] =
     Form(
-      "value" -> country(countryList, s"$prefix.error.required", args)
+      "value" -> selectable[T](selectableList, s"$prefix.error.required", args)
     )
 }

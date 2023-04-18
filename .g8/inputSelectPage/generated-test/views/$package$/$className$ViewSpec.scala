@@ -1,10 +1,9 @@
 package views.$package$
 
-import forms.$formProvider$
+import forms.SelectableFormProvider
 import views.behaviours.InputSelectViewBehaviours
-import models.NormalMode
+import models.{NormalMode, SelectableList}
 import models.reference.$referenceClass$
-import models.$referenceListClass$
 import org.scalacheck.Arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -12,7 +11,7 @@ import views.html.$package$.$className$View
 
 class $className$ViewSpec extends InputSelectViewBehaviours[$referenceClass$] {
 
-  override def form: Form[$referenceClass$] = new $formProvider$()(prefix, $referenceListClass$(values))
+  override def form: Form[$referenceClass$] = new SelectableFormProvider()(prefix, SelectableList(values))
 
   override def applyView(form: Form[$referenceClass$]): HtmlFormat.Appendable =
     injector.instanceOf[$className$View].apply(form, lrn, values, NormalMode)(fakeRequest, messages)

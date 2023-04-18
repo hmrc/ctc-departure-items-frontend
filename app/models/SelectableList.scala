@@ -18,19 +18,19 @@ package models
 
 import play.api.libs.json.{JsArray, JsError, JsSuccess, Reads}
 
-case class DocumentList(documents: Seq[Document])
+case class SelectableList[T <: Selectable](values: Seq[T])
 
-object DocumentList {
+object SelectableList {
 
-  implicit val reads: Reads[DocumentList] = Reads[DocumentList] {
+  implicit val documentsReads: Reads[SelectableList[Document]] = Reads[SelectableList[Document]] {
     case JsArray(values) =>
       JsSuccess(
-        DocumentList(
+        SelectableList(
           values.zipWithIndex.flatMap {
             case (value, index) => value.validate[Document](Document.reads(index)).asOpt
           }.toSeq
         )
       )
-    case _ => JsError("DocumentList::reads: Failed to read document list from cache")
+    case _ => JsError("SelectableList::documentsReads: Failed to read documents from cache")
   }
 }

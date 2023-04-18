@@ -17,7 +17,7 @@
 package services
 
 import base.SpecBase
-import models.{Document, DocumentList}
+import models.{Document, SelectableList}
 import play.api.libs.json.{JsObject, Json}
 
 class DocumentsServiceSpec extends SpecBase {
@@ -62,7 +62,7 @@ class DocumentsServiceSpec extends SpecBase {
 
           val result = service.getDocuments(userAnswers)
 
-          result.value mustBe DocumentList(
+          result.value mustBe SelectableList(
             Seq(
               Document(0, "Type 1", "Code 1", Some("Description 1"), "Ref no. 1"),
               Document(1, "Type 2", "Code 2", None, "Ref no. 2")

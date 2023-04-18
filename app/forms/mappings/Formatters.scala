@@ -16,8 +16,7 @@
 
 package forms.mappings
 
-import models.reference.Country
-import models.{CountryList, Document, DocumentList, Enumerable, RichString}
+import models.{Enumerable, RichString, Selectable, SelectableList}
 import play.api.data.FormError
 import play.api.data.format.Formatter
 
@@ -147,47 +146,26 @@ trait Formatters {
         baseFormatter.unbind(key, value.toString)
     }
 
-  private[mappings] def countryFormatter(
-    countryList: CountryList,
+  private[mappings] def selectableFormatter[T <: Selectable](
+    selectableList: SelectableList[T],
     errorKey: String,
     args: Seq[Any] = Seq.empty
-  ): Formatter[Country] = new Formatter[Country] {
+  ): Formatter[T] = new Formatter[T] {
 
-    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Country] = {
+    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], T] = {
       lazy val error = Left(Seq(FormError(key, errorKey, args)))
       data.get(key) match {
-        case None => error
-        case Some(code) =>
-          countryList.countries.find(_.code.code == code) match {
-            case Some(country) => Right(country)
-            case None          => error
-          }
-      }
-    }
-
-    override def unbind(key: String, country: Country): Map[String, String] =
-      Map(key -> country.code.code)
-  }
-
-  private[mappings] def documentFormatter(
-    documentList: DocumentList,
-    errorKey: String,
-    args: Seq[Any] = Seq.empty
-  ): Formatter[Document] = new Formatter[Document] {
-
-    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Document] = {
-      lazy val error = Left(Seq(FormError(key, errorKey, args)))
-      data.get(key) match {
-        case None => error
+        case None =>
+          error
         case Some(value) =>
-          documentList.documents.find(_.value == value) match {
-            case Some(document) => Right(document)
-            case None           => error
+          selectableList.values.find(_.value == value) match {
+            case Some(selectable) => Right(selectable)
+            case None             => error
           }
       }
     }
 
-    override def unbind(key: String, document: Document): Map[String, String] =
-      Map(key -> document.value)
+    override def unbind(key: String, selectable: T): Map[String, String] =
+      Map(key -> selectable.value)
   }
 }
