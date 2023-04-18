@@ -19,6 +19,7 @@ import models.journeyDomain.UserAnswersReader
 import play.api.libs.json._
 
 import scala.annotation.nowarn
+import scala.language.implicitConversions
 
 package object models {
 
@@ -202,5 +203,9 @@ package object models {
         (acc, c) =>
           acc + c.toString.trim
       }
+  }
+
+  implicit def successfulReads[T](value: T): Reads[T] = Reads {
+    _ => JsSuccess(value)
   }
 }

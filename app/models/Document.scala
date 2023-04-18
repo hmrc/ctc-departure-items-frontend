@@ -38,10 +38,9 @@ case class Document(
 object Document {
 
   def reads(index: Int): Reads[Document] = {
+
     def readsForKey(key: String): Reads[Document] = (
-      Reads(
-        _ => JsSuccess(index)
-      ) and
+      (index: Reads[Int]) and
         (__ \ key \ "type").read[String] and
         (__ \ key \ "code").read[String] and
         (__ \ key \ "description").readNullable[String] and
