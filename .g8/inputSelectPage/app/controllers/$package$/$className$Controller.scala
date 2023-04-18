@@ -2,7 +2,7 @@ package controllers.$package$
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.$formProvider$
+import forms.SelectableFormProvider
 import models.{Mode, LocalReferenceNumber}
 import navigation.{$navRoute$NavigatorProvider, UserAnswersNavigator}
 import pages.$package$.$className$Page
@@ -21,7 +21,7 @@ class $className$Controller @Inject()(
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: $navRoute$NavigatorProvider,
   actions: Actions,
-  formProvider: $formProvider$,
+  formProvider: SelectableFormProvider,
   service: $serviceName$,
   val controllerComponents: MessagesControllerComponents,
   view: $className$View
@@ -39,7 +39,7 @@ class $className$Controller @Inject()(
             case Some(value) => form.fill(value)
           }
 
-          Ok(view(preparedForm, lrn, $referenceListClass;format="decap"$.$referenceClassPlural;format="decap"$, mode))
+          Ok(view(preparedForm, lrn, $referenceListClass;format="decap"$.values, mode))
       }
   }
 
@@ -49,7 +49,7 @@ class $className$Controller @Inject()(
         $referenceListClass;format="decap"$ =>
           val form = formProvider(prefix, $referenceListClass;format="decap"$)
           form.bindFromRequest().fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, $referenceListClass;format="decap"$.$referenceClassPlural;format="decap"$, mode))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, $referenceListClass;format="decap"$.values, mode))),
             value => {
               implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
               $className$Page.writeToUserAnswers(value).updateTask().writeToSession().navigate()
