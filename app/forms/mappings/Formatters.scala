@@ -17,7 +17,7 @@
 package forms.mappings
 
 import models.reference.Country
-import models.{CountryList, Enumerable, RichString}
+import models.{CountryList, Document, DocumentList, Enumerable, RichString}
 import play.api.data.FormError
 import play.api.data.format.Formatter
 
@@ -167,5 +167,27 @@ trait Formatters {
 
     override def unbind(key: String, country: Country): Map[String, String] =
       Map(key -> country.code.code)
+  }
+
+  private[mappings] def documentFormatter(
+    documentList: DocumentList,
+    errorKey: String,
+    args: Seq[Any] = Seq.empty
+  ): Formatter[Document] = new Formatter[Document] {
+
+    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Document] = {
+      lazy val error = Left(Seq(FormError(key, errorKey, args)))
+      data.get(key) match {
+        case None => error
+        case Some(code) =>
+          documentList.documents.find(_.code == code) match {
+            case Some(document) => Right(document)
+            case None           => error
+          }
+      }
+    }
+
+    override def unbind(key: String, document: Document): Map[String, String] =
+      Map(key -> document.code)
   }
 }

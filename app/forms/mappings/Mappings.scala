@@ -17,7 +17,7 @@
 package forms.mappings
 
 import models.reference.Country
-import models.{CountryList, Enumerable}
+import models.{CountryList, Document, DocumentList, Enumerable}
 import play.api.data.FieldMapping
 import play.api.data.Forms.of
 import play.api.data.format.Formats.ignoredFormat
@@ -75,4 +75,11 @@ trait Mappings extends Formatters with Constraints {
     args: Seq[Any] = Seq.empty
   ): FieldMapping[Country] =
     of(countryFormatter(countryList, errorKey, args))
+
+  protected def document(
+    documentList: DocumentList,
+    errorKey: String = "error.required",
+    args: Seq[Any] = Seq.empty
+  ): FieldMapping[Document] =
+    of(documentFormatter(documentList, errorKey, args))
 }

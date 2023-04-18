@@ -50,5 +50,5 @@ object Document {
     readsForKey("type") orElse readsForKey("previousDocumentType")
   }
 
-  implicit val writes: Writes[Document] = Json.writes[Document]
+  implicit val format: Format[Document] = Json.format[Document]
 }

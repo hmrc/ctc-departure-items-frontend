@@ -31,6 +31,7 @@ item.caption = Item {0}
 item.dangerousGoods.caption = Item {0} - Dangerous goods
 item.measurement.caption = Item {0} - Measurement
 item.packages.caption = Item {0} - Packages
+item.documents.caption = Item {0} - Documents
 
 item.description.title = Enter a description of item {0}
 item.description.heading = Enter a description of item {0}
@@ -257,3 +258,7 @@ item.packages.addAnotherPackage.plural.heading = You have added {0} types of pac
 item.packages.addAnotherPackage.error.required = Select yes if you want to add another type of package
 item.packages.addAnotherPackage.label = Do you want to add another type of package?
 item.packages.addAnotherPackage.maxLimit.label = You cannot add any more types of packages. To add another, you need to remove one first.
+
+item.documents.index.document.title = Which document do you want to attach?
+item.documents.index.document.heading = Which document do you want to attach?
+item.documents.index.document.placeholder = Select a document
