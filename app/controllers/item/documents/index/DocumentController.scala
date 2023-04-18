@@ -19,7 +19,7 @@ package controllers.item.documents.index
 import config.FrontendAppConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.DocumentFormProvider
+import forms.SelectableFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{DocumentNavigatorProvider, UserAnswersNavigator}
 import pages.item.documents.index.DocumentPage
@@ -39,7 +39,7 @@ class DocumentController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: DocumentNavigatorProvider,
   actions: Actions,
-  formProvider: DocumentFormProvider,
+  formProvider: SelectableFormProvider,
   service: DocumentsService,
   val controllerComponents: MessagesControllerComponents,
   view: DocumentView,
@@ -60,7 +60,7 @@ class DocumentController @Inject() (
             case None        => form
             case Some(value) => form.fill(value)
           }
-          Ok(view(preparedForm, lrn, documentList.documents, mode, itemIndex, documentIndex))
+          Ok(view(preparedForm, lrn, documentList.values, mode, itemIndex, documentIndex))
         case None =>
           handleError
       }
@@ -74,7 +74,7 @@ class DocumentController @Inject() (
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, documentList.documents, mode, itemIndex, documentIndex))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, documentList.values, mode, itemIndex, documentIndex))),
               value => {
                 implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex, documentIndex)
                 DocumentPage(itemIndex, documentIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()

@@ -18,22 +18,22 @@ package forms
 
 import forms.behaviours.StringFieldBehaviours
 import generators.Generators
-import models.{Document, DocumentList}
+import models.{Document, SelectableList}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.data.FormError
 
-class DocumentFormProviderSpec extends StringFieldBehaviours with Generators {
+class SelectableFormProviderSpec extends StringFieldBehaviours with Generators {
 
   private val prefix      = Gen.alphaNumStr.sample.value
   private val requiredKey = s"$prefix.error.required"
 
-  private val document1    = arbitrary[Document].sample.value
-  private val document2    = arbitrary[Document].sample.value
-  private val documentList = DocumentList(Seq(document1, document2))
-  private val arg          = Gen.alphaNumStr.sample.value
+  private val selectable1    = arbitrary[Document].sample.value
+  private val selectable2    = arbitrary[Document].sample.value
+  private val selectableList = SelectableList(Seq(selectable1, selectable2))
+  private val arg            = Gen.alphaNumStr.sample.value
 
-  private val form = new DocumentFormProvider()(prefix, documentList, arg)
+  private val form = new SelectableFormProvider()(prefix, selectableList, arg)
 
   ".value" - {
 
@@ -51,14 +51,14 @@ class DocumentFormProviderSpec extends StringFieldBehaviours with Generators {
       requiredError = FormError(fieldName, requiredKey, Seq(arg))
     )
 
-    "not bind if document does not exist in the document list" in {
+    "not bind if value does not exist in the list" in {
       val boundForm = form.bind(Map("value" -> "foobar"))
       val field     = boundForm("value")
       field.errors mustNot be(empty)
     }
 
-    "bind a document which is in the document list" in {
-      val boundForm = form.bind(Map("value" -> document1.value))
+    "bind a value which is in the list" in {
+      val boundForm = form.bind(Map("value" -> selectable1.value))
       val field     = boundForm("value")
       field.errors must be(empty)
     }

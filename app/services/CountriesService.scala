@@ -17,7 +17,7 @@
 package services
 
 import connectors.ReferenceDataConnector
-import models.CountryList
+import models.SelectableList
 import models.reference.Country
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -26,14 +26,14 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CountriesService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
 
-  def getCountries()(implicit hc: HeaderCarrier): Future[CountryList] =
+  def getCountries()(implicit hc: HeaderCarrier): Future[SelectableList[Country]] =
     getCountries(Nil)
 
-  private def getCountries(queryParameters: Seq[(String, String)])(implicit hc: HeaderCarrier): Future[CountryList] =
+  private def getCountries(queryParameters: Seq[(String, String)])(implicit hc: HeaderCarrier): Future[SelectableList[Country]] =
     referenceDataConnector
       .getCountries(queryParameters)
       .map(sort)
 
-  private def sort(countries: Seq[Country]): CountryList =
-    CountryList(countries.sortBy(_.description.toLowerCase))
+  private def sort(countries: Seq[Country]): SelectableList[Country] =
+    SelectableList(countries.sortBy(_.description.toLowerCase))
 }

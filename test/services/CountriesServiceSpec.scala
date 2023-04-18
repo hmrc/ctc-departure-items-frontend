@@ -19,7 +19,7 @@ package services
 import base.SpecBase
 import connectors.ReferenceDataConnector
 import generators.Generators
-import models.CountryList
+import models.SelectableList
 import models.reference.{Country, CountryCode}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, verify, when}
@@ -52,7 +52,7 @@ class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach with Generat
           .thenReturn(Future.successful(countries))
 
         service.getCountries().futureValue mustBe
-          CountryList(Seq(country2, country3, country1))
+          SelectableList(Seq(country2, country3, country1))
 
         verify(mockRefDataConnector).getCountries(eqTo(Nil))(any(), any())
       }
