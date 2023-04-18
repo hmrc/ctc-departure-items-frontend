@@ -21,10 +21,10 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
   private val $referenceClass;format="decap"$1 = arbitrary$referenceClass$.arbitrary.sample.get
   private val $referenceClass;format="decap"$2 = arbitrary$referenceClass$.arbitrary.sample.get
-  private val $referenceListClass;format="decap"$ = SelectableList(Seq($referenceClass;format="decap"$1, $referenceClass;format="decap"$2))
+  private val $referenceClass$List;format="decap"$ = SelectableList(Seq($referenceClass;format="decap"$1, $referenceClass;format="decap"$2))
 
   private val formProvider = new SelectableFormProvider()
-  private val form         = formProvider("$package$.$className;format="decap"$", $referenceListClass;format="decap"$)
+  private val form         = formProvider("$package$.$className;format="decap"$", $referenceClass$;format="decap"$List)
   private val mode         = NormalMode
 
   private val mock$serviceName$: $serviceName$ = mock[$serviceName$]
@@ -40,7 +40,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
     "must return OK and the correct view for a GET" in {
 
-      when(mock$serviceName$.$lookupReferenceListMethod$(any())).thenReturn(Future.successful($referenceListClass;format="decap"$))
+      when(mock$serviceName$.$lookupReferenceListMethod$(any())).thenReturn(Future.successful($referenceClass$;format="decap"$List))
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, $className;format="decap"$Route)
@@ -52,12 +52,12 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, $referenceListClass;format="decap"$.values, mode)(request, messages).toString
+        view(form, lrn, $referenceClass$;format="decap"$List.values, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      when(mock$serviceName$.$lookupReferenceListMethod$(any())).thenReturn(Future.successful($referenceListClass;format="decap"$))
+      when(mock$serviceName$.$lookupReferenceListMethod$(any())).thenReturn(Future.successful($referenceClass$;format="decap"$List))
       val userAnswers = emptyUserAnswers.setValue($className$Page, $referenceClass;format="decap"$1)
       setExistingUserAnswers(userAnswers)
 
@@ -72,12 +72,12 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, $referenceListClass;format="decap"$.values, mode)(request, messages).toString
+        view(filledForm, lrn, $referenceClass$;format="decap"$List.values, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
-      when(mock$serviceName$.$lookupReferenceListMethod$(any())).thenReturn(Future.successful($referenceListClass;format="decap"$))
+      when(mock$serviceName$.$lookupReferenceListMethod$(any())).thenReturn(Future.successful($referenceClass$;format="decap"$List))
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
@@ -94,7 +94,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      when(mock$serviceName$.$lookupReferenceListMethod$(any())).thenReturn(Future.successful($referenceListClass;format="decap"$))
+      when(mock$serviceName$.$lookupReferenceListMethod$(any())).thenReturn(Future.successful($referenceClass$;format="decap"$List))
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, $className;format="decap"$Route).withFormUrlEncodedBody(("value", "invalid value"))
@@ -107,7 +107,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, $referenceListClass;format="decap"$.values, mode)(request, messages).toString
+        view(boundForm, lrn, $referenceClass$;format="decap"$List.values, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
