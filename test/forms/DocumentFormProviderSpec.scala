@@ -28,12 +28,12 @@ class DocumentFormProviderSpec extends StringFieldBehaviours with Generators {
   private val prefix      = Gen.alphaNumStr.sample.value
   private val requiredKey = s"$prefix.error.required"
 
-  private val document1   = arbitrary[Document].sample.value
-  private val document2   = arbitrary[Document].sample.value
-  private val countryList = DocumentList(Seq(document1, document2))
-  private val arg         = Gen.alphaNumStr.sample.value
+  private val document1    = arbitrary[Document].sample.value
+  private val document2    = arbitrary[Document].sample.value
+  private val documentList = DocumentList(Seq(document1, document2))
+  private val arg          = Gen.alphaNumStr.sample.value
 
-  private val form = new DocumentFormProvider()(prefix, countryList, arg)
+  private val form = new DocumentFormProvider()(prefix, documentList, arg)
 
   ".value" - {
 
