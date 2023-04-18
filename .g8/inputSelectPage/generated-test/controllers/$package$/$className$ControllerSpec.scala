@@ -21,7 +21,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
   private val $referenceClass;format="decap"$1 = arbitrary$referenceClass$.arbitrary.sample.get
   private val $referenceClass;format="decap"$2 = arbitrary$referenceClass$.arbitrary.sample.get
-  private val $referenceClass$List;format="decap"$ = SelectableList(Seq($referenceClass;format="decap"$1, $referenceClass;format="decap"$2))
+  private val $referenceClass;format="decap"$List = SelectableList(Seq($referenceClass;format="decap"$1, $referenceClass;format="decap"$2))
 
   private val formProvider = new SelectableFormProvider()
   private val form         = formProvider("$package$.$className;format="decap"$", $referenceClass;format="decap"$List)
