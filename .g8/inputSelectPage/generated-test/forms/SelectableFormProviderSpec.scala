@@ -14,9 +14,9 @@ class SelectableFormProviderSpec extends StringFieldBehaviours with Generators{
 
   private val $referenceClass;format="decap"$1 = arbitrary$referenceClass$.arbitrary.sample.get
   private val $referenceClass;format="decap"$2 = arbitrary$referenceClass$.arbitrary.sample.get
-  private val $referenceClass$;format="decap"$List = SelectableList(Seq($referenceClass;format="decap"$1, $referenceClass;format="decap"$2))
+  private val $referenceClass;format="decap"$List = SelectableList(Seq($referenceClass;format="decap"$1, $referenceClass;format="decap"$2))
 
-  private val form = new SelectableFormProvider()(prefix, $referenceClass$;format="decap"$List)
+  private val form = new SelectableFormProvider()(prefix, $referenceClass;format="decap"$List)
 
   ".value" - {
 

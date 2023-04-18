@@ -32,24 +32,24 @@ class $className$Controller @Inject()(
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
       service.$lookupReferenceListMethod$.map {
-        $referenceClass$List =>
-          val form = formProvider(prefix, $referenceClass$;format="decap"$List)
+        $referenceClass;format="decap"$List =>
+          val form = formProvider(prefix, $referenceClass;format="decap"$List)
           val preparedForm = request.userAnswers.get($className$Page) match {
             case None => form
             case Some(value) => form.fill(value)
           }
 
-          Ok(view(preparedForm, lrn, $referenceClass$;format="decap"$List.values, mode))
+          Ok(view(preparedForm, lrn, $referenceClass;format="decap"$List.values, mode))
       }
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
       service.$lookupReferenceListMethod$.flatMap {
-        $referenceClass$;format="decap"$List =>
-          val form = formProvider(prefix, $referenceClass$;format="decap"$List)
+        $referenceClass;format="decap"$List =>
+          val form = formProvider(prefix, $referenceClass;format="decap"$List)
           form.bindFromRequest().fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, $referenceClass$;format="decap"$List.values, mode))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, $referenceClass;format="decap"$List.values, mode))),
             value => {
               implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
               $className$Page.writeToUserAnswers(value).updateTask().writeToSession().navigate()
