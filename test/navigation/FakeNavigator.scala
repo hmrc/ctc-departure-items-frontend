@@ -41,3 +41,8 @@ class FakePackageNavigator(desiredRoute: Call, mode: Mode, itemIndex: Index, pac
     extends PackageNavigator(mode, itemIndex, packageIndex) {
   override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }
+
+class FakeDocumentNavigator(desiredRoute: Call, mode: Mode, itemIndex: Index, documentIndex: Index)(implicit config: FrontendAppConfig)
+    extends DocumentNavigator(mode, itemIndex, documentIndex) {
+  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
+}

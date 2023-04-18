@@ -18,15 +18,16 @@ package controllers.item.documents.index
 
 import config.FrontendAppConfig
 import controllers.actions._
+import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.DocumentFormProvider
-import models.{DocumentList, Index, LocalReferenceNumber, Mode, RichOptionalJsArray}
-import navigation.ItemNavigatorProvider
+import models.{Index, LocalReferenceNumber, Mode}
+import navigation.{DocumentNavigatorProvider, UserAnswersNavigator}
 import pages.item.documents.index.DocumentPage
-import pages.sections.external.DocumentsSection
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
+import services.DocumentsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.item.documents.index.DocumentView
 
@@ -36,9 +37,10 @@ import scala.concurrent.{ExecutionContext, Future}
 class DocumentController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigatorProvider: ItemNavigatorProvider,
+  navigatorProvider: DocumentNavigatorProvider,
   actions: Actions,
   formProvider: DocumentFormProvider,
+  service: DocumentsService,
   val controllerComponents: MessagesControllerComponents,
   view: DocumentView,
   config: FrontendAppConfig
@@ -47,11 +49,11 @@ class DocumentController @Inject() (
     with I18nSupport
     with Logging {
 
-  private val prefix: String = "item.countryOfDispatch"
+  private val prefix: String = "item.documents.index.document"
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      request.userAnswers.get(DocumentsSection).validate(DocumentList.reads) match {
+      service.getDocuments(request.userAnswers) match {
         case Some(documentList) =>
           val form = formProvider(prefix, documentList)
           val preparedForm = request.userAnswers.get(DocumentPage(itemIndex, documentIndex)) match {
@@ -66,9 +68,18 @@ class DocumentController @Inject() (
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      request.userAnswers.get(DocumentsSection).validate(DocumentList.reads) match {
+      service.getDocuments(request.userAnswers) match {
         case Some(documentList) =>
-          ??? // Pass docs to form and view, then navigate
+          val form = formProvider(prefix, documentList)
+          form
+            .bindFromRequest()
+            .fold(
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, documentList.documents, mode, itemIndex, documentIndex))),
+              value => {
+                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex, documentIndex)
+                DocumentPage(itemIndex, documentIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+              }
+            )
         case None =>
           Future.successful(handleError)
       }
