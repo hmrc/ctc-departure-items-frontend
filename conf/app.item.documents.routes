@@ -1,1 +1,3 @@
 ->         /                                                        app.item.documents.index.Routes
+
+GET        /:lrn/item/documents/you-have-attached-1-document-to-this-item                        controllers.item.documents.AddAnotherDocumentController.onPageLoad(lrn: LocalReferenceNumber)
