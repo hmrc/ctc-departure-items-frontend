@@ -94,5 +94,5 @@ POST       /:itemIndex/measurement/change-supplementary-units/:lrn          cont
 
 GET        /:itemIndex/documents/attach/:lrn                                controllers.item.AddDocumentsYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
 POST       /:itemIndex/documents/attach/:lrn                                controllers.item.AddDocumentsYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
-GET        /:itemIndex/documents/attach/:lrn                                controllers.item.AddDocumentsYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
-POST       /:itemIndex/documents/attach/:lrn                                controllers.item.AddDocumentsYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+GET        /:itemIndex/documents/change-attach/:lrn                         controllers.item.AddDocumentsYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+POST       /:itemIndex/documents/change-attach/:lrn                         controllers.item.AddDocumentsYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
