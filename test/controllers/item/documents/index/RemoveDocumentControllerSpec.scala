@@ -32,9 +32,10 @@ import views.html.item.documents.index.RemoveDocumentView
 
 class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val document                 = arbitrary[Document].sample.value
   private val formProvider             = new YesNoFormProvider()
-  private val form                     = formProvider("item.documents.index.removeDocument")
+  private def form(document: Document) = formProvider("item.documents.index.removeDocument", document)
+
+  private val document                 = arbitrary[Document].sample.value
   private val mode                     = NormalMode
   private lazy val removeDocumentRoute = routes.RemoveDocumentController.onPageLoad(lrn, mode, itemIndex, documentIndex).url
 
@@ -54,27 +55,7 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, mode, itemIndex, documentIndex)(request, messages).toString
-    }
-
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = emptyUserAnswers.setValue(DocumentPage(itemIndex, documentIndex), document)
-
-      setExistingUserAnswers(userAnswers)
-
-      val request = FakeRequest(GET, removeDocumentRoute)
-
-      val result = route(app, request).value
-
-      val filledForm = form.bind(Map("value" -> "true"))
-
-      val view = injector.instanceOf[RemoveDocumentView]
-
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(filledForm, lrn, mode, itemIndex, documentIndex)(request, messages).toString
+        view(form(document), lrn, mode, itemIndex, documentIndex, document)(request, messages).toString
     }
 
     "must redirect to the next page" - {
@@ -119,10 +100,12 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers.setValue(DocumentPage(itemIndex, documentIndex), document)
+
+      setExistingUserAnswers(userAnswers)
 
       val request   = FakeRequest(POST, removeDocumentRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form.bind(Map("value" -> ""))
+      val boundForm = form(document).bind(Map("value" -> ""))
 
       val result = route(app, request).value
 
@@ -131,7 +114,7 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       val view = injector.instanceOf[RemoveDocumentView]
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, mode, itemIndex, documentIndex)(request, messages).toString
+        view(boundForm, lrn, mode, itemIndex, documentIndex, document)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET" - {

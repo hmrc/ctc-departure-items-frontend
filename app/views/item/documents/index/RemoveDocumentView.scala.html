@@ -27,10 +27,10 @@
     button: Button
 )
 
-@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, documentIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, documentIndex: Index, document: Document)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("item.documents.index.removeDocument.title"),
+    title = messages("item.documents.index.removeDocument.title", document.toString),
     showBackLink = true,
     lrn = lrn
 ) {
@@ -42,7 +42,8 @@
         @inputYesNo(
             field = form("value"),
             yesNoType = OrdinaryYesNo(
-                heading = messages("item.documents.index.removeDocument.heading")
+                heading = messages("item.documents.index.removeDocument.heading", document.toString),
+                caption = Some(messages("item.documents.caption", itemIndex.display))
             )
         )
 

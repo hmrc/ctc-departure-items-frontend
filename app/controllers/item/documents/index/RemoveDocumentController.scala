@@ -47,15 +47,17 @@ class RemoveDocumentController @Inject() (
 
   private type Request = SpecificDataRequestProvider1[Document]#SpecificDataRequest[_]
 
-  private def form(implicit request: Request): Form[Boolean] =
-    formProvider("item.documents.index.removeDocument", request.arg)
+  private def document(implicit request: Request): Document = request.arg
+
+  private def form(document: Document): Form[Boolean] =
+    formProvider("item.documents.index.removeDocument", document)
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, documentIndex: Index): Action[AnyContent] =
     actions
       .requireData(lrn)
       .andThen(getMandatoryPage(DocumentPage(itemIndex, documentIndex))) {
         implicit request =>
-          Ok(view(form, lrn, mode, itemIndex, documentIndex))
+          Ok(view(form(document), lrn, mode, itemIndex, documentIndex, document))
       }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, documentIndex: Index): Action[AnyContent] =
@@ -66,10 +68,10 @@ class RemoveDocumentController @Inject() (
         implicit request =>
           lazy val redirect = Call("GET", "#") //TODO - change to AddAnotherDocumentController when built
 
-          form
+          form(document)
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex, documentIndex))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex, documentIndex, document))),
               {
                 case true =>
                   DocumentSection(itemIndex, documentIndex)

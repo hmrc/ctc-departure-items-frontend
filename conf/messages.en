@@ -270,7 +270,6 @@ item.addDocumentsYesNo.heading = Do you want to attach any documents to this ite
 item.addDocumentsYesNo.checkYourAnswersLabel = Do you want to attach any documents to this item?
 item.addDocumentsYesNo.error.required = Select yes if you want to attach any documents to this item
 
-item.documents.index.removeDocument.title = Are you sure you want to remove the {0} from this item
-item.documents.index.removeDocument.heading = Are you sure you want to remove the {0} from this item
-item.documents.index.removeDocument.checkYourAnswersLabel = Are you sure you want to remove the {0} from this item
-item.documents.index.removeDocument.error.required = Select yes if Are you sure you want to remove the {0} from this item
+item.documents.index.removeDocument.title = Are you sure you want to remove the {0} from this item?
+item.documents.index.removeDocument.heading = Are you sure you want to remove the {0} from this item?
+item.documents.index.removeDocument.error.required = Select yes if you want to remove the {0} from this item
