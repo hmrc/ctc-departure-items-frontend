@@ -1,3 +1,6 @@
-->         /                                                        app.item.documents.index.Routes
+->         /                                                     app.item.documents.index.Routes
 
-GET        /:lrn/item/documents/you-have-attached-1-document-to-this-item                        controllers.item.documents.AddAnotherDocumentController.onPageLoad(lrn: LocalReferenceNumber)
+GET        /:itemIndex/documents/attach-another/:lrn             controllers.item.documents.AddAnotherDocumentController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+POST       /:itemIndex/documents/attach-another/:lrn             controllers.item.documents.AddAnotherDocumentController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+GET        /:itemIndex/documents/change-attach-another/:lrn      controllers.item.documents.AddAnotherDocumentController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+POST       /:itemIndex/documents/change-attach-another/:lrn      controllers.item.documents.AddAnotherDocumentController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)

@@ -24,6 +24,7 @@ import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import viewmodels.item.dangerousGoods.AddAnotherDangerousGoodsViewModel
+import viewmodels.item.documents.AddAnotherDocumentViewModel
 import viewmodels.item.packages.AddAnotherPackageViewModel
 import viewmodels.{Link, ListItem}
 import viewmodels.sections.Section
@@ -184,5 +185,12 @@ trait ViewModelGenerators {
       listItems    <- arbitrary[Seq[ListItem]]
       onSubmitCall <- arbitrary[Call]
     } yield AddAnotherPackageViewModel(listItems, onSubmitCall)
+  }
+
+  implicit lazy val arbitraryAddAnotherDocumentViewModel: Arbitrary[AddAnotherDocumentViewModel] = Arbitrary {
+    for {
+      listItems <- arbitrary[Seq[ListItem]]
+      onSubmitCall <- arbitrary[Call]
+    } yield AddAnotherDocumentViewModel(listItems, onSubmitCall)
   }
 }

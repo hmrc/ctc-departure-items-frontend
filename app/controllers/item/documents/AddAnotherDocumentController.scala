@@ -16,24 +16,57 @@
 
 package controllers.item.documents
 
+import config.FrontendAppConfig
 import controllers.actions._
+import forms.AddAnotherFormProvider
+
 import javax.inject.Inject
-import models.LocalReferenceNumber
+import models.{Index, LocalReferenceNumber, Mode}
+import navigation.ItemNavigatorProvider
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.item.documents.AddAnotherDocumentViewModel
+import viewmodels.item.documents.AddAnotherDocumentViewModel.AddAnotherDocumentViewModelProvider
 import views.html.item.documents.AddAnotherDocumentView
 
 class AddAnotherDocumentController @Inject() (
   override val messagesApi: MessagesApi,
   actions: Actions,
+  navigatorProvider: ItemNavigatorProvider,
+  formProvider: AddAnotherFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: AddAnotherDocumentView
-) extends FrontendBaseController
+  view: AddAnotherDocumentView,
+  viewModelProvider: AddAnotherDocumentViewModelProvider
+)(implicit config: FrontendAppConfig)
+    extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = actions.requireData(lrn) {
+  private def form(viewModel: AddAnotherDocumentViewModel): Form[Boolean] = formProvider(viewModel.prefix, viewModel.allowMore)
+
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      Ok(view(lrn))
+      val viewModel = viewModelProvider(request.userAnswers, mode, itemIndex)
+      viewModel.count match {
+        case 0 =>
+          Redirect(controllers.item.documents.index.routes.DocumentController.onPageLoad(lrn, mode, itemIndex, Index(0)))
+        case _ =>
+          Ok(view(form(viewModel), lrn, viewModel, itemIndex))
+      }
+  }
+
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
+    implicit request =>
+      val viewModel = viewModelProvider(request.userAnswers, mode, itemIndex)
+      form(viewModel)
+        .bindFromRequest()
+        .fold(
+          formWithErrors => BadRequest(view(formWithErrors, lrn, viewModel, itemIndex)),
+          {
+            case true  => Redirect(controllers.item.documents.index.routes.DocumentController.onPageLoad(lrn, mode, itemIndex, viewModel.nextIndex))
+            case false => Redirect(navigatorProvider(mode, itemIndex).nextPage(request.userAnswers))
+          }
+        )
   }
 }
