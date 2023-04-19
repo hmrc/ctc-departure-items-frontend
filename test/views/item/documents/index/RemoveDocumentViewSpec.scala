@@ -16,16 +16,20 @@
 
 package views.item.documents.index
 
-import models.NormalMode
+import generators.Generators
+import models.{Document, NormalMode}
+import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
 import views.html.item.documents.index.RemoveDocumentView
 
-class RemoveDocumentViewSpec extends YesNoViewBehaviours {
+class RemoveDocumentViewSpec extends YesNoViewBehaviours with Generators {
+
+  private val document = arbitrary[Document].sample.value
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[RemoveDocumentView].apply(form, lrn, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[RemoveDocumentView].apply(form, lrn, NormalMode, itemIndex, documentIndex)(fakeRequest, messages)
 
   override val prefix: String = "item.documents.index.removeDocument"
 
