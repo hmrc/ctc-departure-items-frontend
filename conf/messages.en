@@ -263,3 +263,9 @@ item.documents.index.document.title = Which document do you want to attach?
 item.documents.index.document.heading = Which document do you want to attach?
 item.documents.index.document.placeholder = Select a document
 item.documents.index.document.error.required = Select which document you want to attach
+
+
+item.addDocumentsYesNo.title = Do you want to attach any documents to this item?
+item.addDocumentsYesNo.heading = Do you want to attach any documents to this item?
+item.addDocumentsYesNo.checkYourAnswersLabel = Do you want to attach any documents to this item?
+item.addDocumentsYesNo.error.required = Select yes if you want to attach any documents to this item
