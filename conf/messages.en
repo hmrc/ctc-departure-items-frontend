@@ -263,8 +263,12 @@ item.documents.index.document.title = Which document do you want to attach?
 item.documents.index.document.heading = Which document do you want to attach?
 item.documents.index.document.placeholder = Select a document
 item.documents.index.document.error.required = Select which document you want to attach
-transport.identificationNumber.title = What is the departure means’ identification number?
-transport.identificationNumber.heading = What is the departure means’ identification number?
-transport.identificationNumber.checkYourAnswersLabel = What is the departure means’ identification number?
-transport.identificationNumber.error.required = Enter What is the departure means’ identification number?
-transport.identificationNumber.error.length = What is the departure means’ identification number? must be 35 characters or less
+
+transport.identificationNumber.title = What is the departure means’ identification number
+transport.identificationNumber.heading = What is the departure means’ identification number
+transport.identificationNumber.caption = Transport details - Departure means of transport
+transport.identificationNumber.hint = This can be up to 35 characters long and include both letters and numbers.
+transport.identificationNumber.checkYourAnswersLabel = Departure means’ identification number
+transport.identificationNumber.error.required = Enter the departure means’ identification number
+transport.identificationNumber.error.length = The departure means’ identification number must be 35 characters or less
+transport.identificationNumber.error.invalid = The departure means identification number must only include letters a to z and numbers 0 to 9

@@ -17,9 +17,9 @@ import scala.concurrent.Future
 
 class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val formProvider = new IdentificationNumber()
-  private val form         = formProvider("transport.identificationNumber")
-  private val mode         = NormalMode
+  private val formProvider                   = new IdentificationNumber()
+  private val form                           = formProvider("transport.identificationNumber")
+  private val mode                           = NormalMode
   private lazy val identificationNumberRoute = routes.IdentificationNumberController.onPageLoad(lrn, mode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
@@ -86,7 +86,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
 
       val invalidAnswer = ""
 
-      val request = FakeRequest(POST, identificationNumberRoute).withFormUrlEncodedBody(("value", ""))
+      val request    = FakeRequest(POST, identificationNumberRoute).withFormUrlEncodedBody(("value", ""))
       val filledForm = form.bind(Map("value" -> invalidAnswer))
 
       val result = route(app, request).value

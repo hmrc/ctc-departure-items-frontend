@@ -1,5 +1,5 @@
 
-GET        /:lrn/transport/what-is-the-departure-means’-identification-number?                        controllers.transport.IdentificationNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /:lrn/transport/what-is-the-departure-means’-identification-number?                        controllers.transport.IdentificationNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /:lrn/transport/change-what-is-the-departure-means’-identification-number?                 controllers.transport.IdentificationNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /:lrn/transport/change-what-is-the-departure-means’-identification-number?                 controllers.transport.IdentificationNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+GET        /:lrn/transport-details/departure-means-of-transport/identification-number                        controllers.transport.IdentificationNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/transport-details/departure-means-of-transport/identification-number                        controllers.transport.IdentificationNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/transport-details/departure-means-of-transport/change-identification-number                 controllers.transport.IdentificationNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/transport-details/departure-means-of-transport/change-identification-number                 controllers.transport.IdentificationNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

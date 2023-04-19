@@ -6,10 +6,10 @@ import play.api.data.FormError
 
 class IdentificationNumberSpec extends StringFieldBehaviours {
 
-  private val prefix      = Gen.alphaNumStr.sample.value
-  val requiredKey = s"$prefix.error.required"
-  val lengthKey = s"$prefix.error.length"
-  val maxLength = 35
+  private val prefix = Gen.alphaNumStr.sample.value
+  val requiredKey    = s"$prefix.error.required"
+  val lengthKey      = s"$prefix.error.length"
+  val maxLength      = 35
 
   val form = new IdentificationNumber()(prefix)
 
