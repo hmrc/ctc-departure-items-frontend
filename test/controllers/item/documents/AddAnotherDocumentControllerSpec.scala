@@ -60,15 +60,15 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
     reset(mockViewModelProvider)
   }
 
-  private val listItem = arbitrary[ListItem].sample.value
-  private val listItems = Seq.fill(Gen.choose(1, frontendAppConfig.maxDocuments - 1).sample.value)(listItem)
+  private val listItem          = arbitrary[ListItem].sample.value
+  private val listItems         = Seq.fill(Gen.choose(1, frontendAppConfig.maxDocuments - 1).sample.value)(listItem)
   private val maxedOutListItems = Seq.fill(frontendAppConfig.maxDocuments)(listItem)
 
   private val viewModel = arbitrary[AddAnotherDocumentViewModel].sample.value
 
-  private val emptyViewModel = viewModel.copy(listItems = Nil)
+  private val emptyViewModel       = viewModel.copy(listItems = Nil)
   private val notMaxedOutViewModel = viewModel.copy(listItems = listItems)
-  private val maxedOutViewModel = viewModel.copy(listItems = maxedOutListItems)
+  private val maxedOutViewModel    = viewModel.copy(listItems = maxedOutListItems)
 
   "AddAnotherDocument Controller" - {
 
@@ -86,7 +86,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual
-        controllers.item.documents.index.routes.DocumentController.onPageLoad(lrn, mode, itemIndex, Index(0)).url
+        controllers.item.routes.AddDocumentsYesNoController.onPageLoad(lrn, mode, itemIndex).url
     }
 
     "must return OK and the correct view for a GET" - {
@@ -129,7 +129,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
 
     "when max limit not reached" - {
       "when yes submitted" - {
-        "must redirect to PackageType page at next index" in {
+        "must redirect to Document page at next index" in {
           when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
             .thenReturn(notMaxedOutViewModel)
 
@@ -154,7 +154,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
 
           setExistingUserAnswers(emptyUserAnswers)
 
-          val request = FakeRequest(POST, addAnotherPackageRoute)
+          val request = FakeRequest(POST, addAnotherDocumentRoute)
             .withFormUrlEncodedBody(("value", "false"))
 
           val result = route(app, request).value
@@ -165,5 +165,74 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
         }
       }
     }
+
+    "when max limit reached" - {
+      "must redirect to next page" in {
+        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
+          .thenReturn(maxedOutViewModel)
+
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(POST, addAnotherDocumentRoute)
+          .withFormUrlEncodedBody(("value", ""))
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual onwardRoute.url
+      }
+    }
+
+    "must return a Bad Request and errors" - {
+      "when invalid data is submitted and max limit not reached" in {
+        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
+          .thenReturn(notMaxedOutViewModel)
+
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(POST, addAnotherDocumentRoute)
+          .withFormUrlEncodedBody(("value", ""))
+
+        val boundForm = form(notMaxedOutViewModel).bind(Map("value" -> ""))
+
+        val result = route(app, request).value
+
+        val view = injector.instanceOf[AddAnotherDocumentView]
+
+        status(result) mustEqual BAD_REQUEST
+
+        contentAsString(result) mustEqual
+          view(boundForm, lrn, notMaxedOutViewModel, itemIndex)(request, messages, frontendAppConfig).toString
+      }
+    }
+
+    "must redirect to Session Expired for a GET if no existing data is found" in {
+
+      setNoExistingUserAnswers()
+
+      val request = FakeRequest(GET, addAnotherDocumentRoute)
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+    }
+
+    "must redirect to Session Expired for a POST if no existing data is found" in {
+
+      setNoExistingUserAnswers()
+
+      val request = FakeRequest(POST, addAnotherDocumentRoute)
+        .withFormUrlEncodedBody(("value", "true"))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+    }
+
   }
 }

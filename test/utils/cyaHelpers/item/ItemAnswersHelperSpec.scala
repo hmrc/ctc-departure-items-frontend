@@ -18,17 +18,19 @@ package utils.cyaHelpers.item
 
 import base.SpecBase
 import controllers.item.dangerousGoods.index.routes.UNNumberController
+import controllers.item.documents.index.routes.DocumentController
 import controllers.item.packages.index.routes.{AddShippingMarkYesNoController, NumberOfPackagesController, PackageTypeController, ShippingMarkController}
 import controllers.item.routes._
 import forms.Constants.maxNumberOfPackages
 import generators.Generators
 import models.reference.{Country, PackageType}
-import models.{DeclarationType, Mode}
+import models.{DeclarationType, Document, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.item._
 import pages.item.dangerousGoods.index.UNNumberPage
+import pages.item.documents.index.DocumentPage
 import pages.item.packages.index.{AddShippingMarkYesNoPage, NumberOfPackagesPage, PackageTypePage, ShippingMarkPage}
 
 class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -943,6 +945,77 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               action.href mustBe ShippingMarkController.onPageLoad(answers.lrn, mode, itemIndex, packageIndex).url
               action.visuallyHiddenText.get mustBe "shipping mark for package 1"
               action.id mustBe "change-shipping-mark-1"
+          }
+        }
+      }
+    }
+
+    "documentYesNo" - {
+      "must return None" - {
+        "when AddDocumentsYesNoPage is undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+              val result = helper.documentsYesNo
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when AddDocumentsYesNoPage is defined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val answers = emptyUserAnswers
+                .setValue(AddDocumentsYesNoPage(itemIndex), true)
+
+              val helper = new ItemAnswersHelper(answers, mode, index)
+              val result = helper.documentsYesNo.get
+
+              result.key.value mustBe "Do you want to attach any documents to this item?"
+              result.value.value mustBe "Yes"
+
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe AddDocumentsYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
+              action.visuallyHiddenText.get mustBe "if you want to attach any documents to this item"
+              action.id mustBe "change-add-documents"
+          }
+        }
+      }
+    }
+
+    "document" - {
+      "must return None" - {
+        "when document is undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+              val result = helper.document(documentIndex)
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when document is defined" in {
+          forAll(arbitrary[Mode], arbitrary[Document]) {
+            (mode, document) =>
+              val userAnswers = emptyUserAnswers.setValue(DocumentPage(itemIndex, documentIndex), document)
+              val helper = new ItemAnswersHelper(userAnswers, mode, itemIndex)
+              val result = helper.document(documentIndex).get
+
+              result.key.value mustBe "Document 1"
+              result.value.value mustBe document.toString
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe DocumentController.onPageLoad(userAnswers.lrn, mode, itemIndex, documentIndex).url
+              action.visuallyHiddenText.get mustBe "document 1"
+              action.id mustBe "change-document-1"
           }
         }
       }
