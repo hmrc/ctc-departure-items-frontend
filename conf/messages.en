@@ -32,6 +32,7 @@ item.dangerousGoods.caption = Item {0} - Dangerous goods
 item.measurement.caption = Item {0} - Measurement
 item.packages.caption = Item {0} - Packages
 item.documents.caption = Item {0} - Documents
+item.additionalReference.caption = Item {0} - Additional reference
 
 item.description.title = Enter a description of item {0}
 item.description.heading = Enter a description of item {0}
@@ -269,3 +270,8 @@ item.addDocumentsYesNo.title = Do you want to attach any documents to this item?
 item.addDocumentsYesNo.heading = Do you want to attach any documents to this item?
 item.addDocumentsYesNo.checkYourAnswersLabel = Do you want to attach any documents to this item?
 item.addDocumentsYesNo.error.required = Select yes if you want to attach any documents to this item
+
+item.addAdditionalReferenceYesNo.title = Do you want to add an additional reference for this item?
+item.addAdditionalReferenceYesNo.heading = Do you want to add an additional reference for this item?
+item.addAdditionalReferenceYesNo.checkYourAnswersLabel = Do you want to add an additional reference for this item?
+item.addAdditionalReferenceYesNo.error.required = Select yes if you want to add an additional reference for this item
