@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import config.FrontendAppConfig
 @import controllers.item.documents.index.routes
 @import models.LocalReferenceNumber
 @import models.Document
@@ -28,10 +29,17 @@
     formHelper: FormWithCSRF,
     inputSelect: InputSelect,
     errorSummary: ErrorSummary,
-    button: Button
+    button: Button,
+    config: FrontendAppConfig
 )
 
 @(form: Form[Document], lrn: LocalReferenceNumber, documentList: Seq[Document], mode: Mode, itemIndex: Index, documentIndex: Index)(implicit request: Request[_], messages: Messages)
+
+@html = {
+    @messages("item.documents.index.document.paragraph").toParagraph
+
+    <a id="documents" href="@config.documentsFrontendUrl(lrn)">@messages("item.documents.index.document.link")</a>
+}
 
 @mainTemplate(
     title = messages("item.documents.index.document.title"),
@@ -45,11 +53,11 @@
 
         @inputSelect(
             field = form("value"),
-            selectType = OrdinarySelect(
+            selectType = SelectWithAdditionalHtml(
                 heading = messages("item.documents.index.document.heading"),
-                caption = Some(messages("item.documents.caption", itemIndex.display))
+                caption = Some(messages("item.documents.caption", itemIndex.display)),
+                additionalHtml = html
             ),
-            hint = None,
             selectItems = documentList.toSelectItems(form.value),
             placeholder = messages("item.documents.index.document.placeholder")
         )
