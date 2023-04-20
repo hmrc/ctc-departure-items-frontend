@@ -41,6 +41,14 @@ class DocumentViewSpec extends InputSelectViewBehaviours[Document] {
 
   behave like pageWithSectionCaption(s"Item ${itemIndex.display} - Documents")
 
+  behave like pageWithContent("p", "You can only select a document if you have added it in your Documents section.")
+
+  behave like pageWithLink(
+    id = "documents",
+    expectedText = "Go to your Documents section to add another document.",
+    expectedHref = s"http://localhost:10132/manage-transit-movements/departures/documents/$lrn"
+  )
+
   behave like pageWithHeading()
 
   behave like pageWithoutHint()

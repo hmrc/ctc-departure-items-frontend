@@ -262,6 +262,8 @@ item.packages.addAnotherPackage.maxLimit.label = You cannot add any more types o
 
 item.documents.index.document.title = Which document do you want to attach?
 item.documents.index.document.heading = Which document do you want to attach?
+item.documents.index.document.paragraph = You can only select a document if you have added it in your Documents section.
+item.documents.index.document.link = Go to your Documents section to add another document.
 item.documents.index.document.placeholder = Select a document
 item.documents.index.document.error.required = Select which document you want to attach
 
@@ -270,6 +272,10 @@ item.addDocumentsYesNo.heading = Do you want to attach any documents to this ite
 item.addDocumentsYesNo.checkYourAnswersLabel = Do you want to attach any documents to this item?
 item.addDocumentsYesNo.change.hidden = if you want to attach any documents to this item
 item.addDocumentsYesNo.error.required = Select yes if you want to attach any documents to this item
+
+item.documents.index.removeDocument.title = Are you sure you want to remove the {0} from this item?
+item.documents.index.removeDocument.heading = Are you sure you want to remove the {0} from this item?
+item.documents.index.removeDocument.error.required = Select yes if you want to remove the {0} from this item
 
 item.addAdditionalReferenceYesNo.title = Do you want to add an additional reference for this item?
 item.addAdditionalReferenceYesNo.heading = Do you want to add an additional reference for this item?
