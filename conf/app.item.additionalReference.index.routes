@@ -1,0 +1,5 @@
+
+GET        /:itemIndex/additionalReference/:additionalReferenceIndex/type/:lrn                       controllers.item.additionalReference.index.AdditionalReferenceController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode,itemIndex: Index, additionalReferenceIndex: Index)
+POST       /:itemIndex/additionalReference/:additionalReferenceIndex/type/:lrn                       controllers.item.additionalReference.index.AdditionalReferenceController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index, additionalReferenceIndex: Index)
+GET        /:itemIndex/additionalReference/:additionalReferenceIndex/change-type/:lrn                controllers.item.additionalReference.index.AdditionalReferenceController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index, additionalReferenceIndex: Index)
+POST       /:itemIndex/additionalReference/:additionalReferenceIndex/change-type/:lrn                controllers.item.additionalReference.index.AdditionalReferenceController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index, additionalReferenceIndex: Index)

@@ -17,23 +17,22 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
-import generators.Generators
-import models.{Document, SelectableList}
-import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.Gen
+import models.SelectableList
 import play.api.data.FormError
+import generators.Generators
+import org.scalacheck.Gen
 
 class SelectableFormProviderSpec extends StringFieldBehaviours with Generators {
 
   private val prefix      = Gen.alphaNumStr.sample.value
   private val requiredKey = s"$prefix.error.required"
+  private val maxLength   = 8
 
-  private val selectable1    = arbitrary[Document].sample.value
-  private val selectable2    = arbitrary[Document].sample.value
-  private val selectableList = SelectableList(Seq(selectable1, selectable2))
-  private val arg            = Gen.alphaNumStr.sample.value
+  private val additionalReference1    = arbitraryAdditionalReference.arbitrary.sample.get
+  private val additionalReference2    = arbitraryAdditionalReference.arbitrary.sample.get
+  private val additionalReferenceList = SelectableList(Seq(additionalReference1, additionalReference2))
 
-  private val form = new SelectableFormProvider()(prefix, selectableList, arg)
+  private val form = new SelectableFormProvider()(prefix, additionalReferenceList)
 
   ".value" - {
 
@@ -42,13 +41,13 @@ class SelectableFormProviderSpec extends StringFieldBehaviours with Generators {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      nonEmptyString
+      stringsWithMaxLength(maxLength)
     )
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey, Seq(arg))
+      requiredError = FormError(fieldName, requiredKey)
     )
 
     "not bind if value does not exist in the list" in {
@@ -58,7 +57,7 @@ class SelectableFormProviderSpec extends StringFieldBehaviours with Generators {
     }
 
     "bind a value which is in the list" in {
-      val boundForm = form.bind(Map("value" -> selectable1.value))
+      val boundForm = form.bind(Map("value" -> additionalReference1.value))
       val field     = boundForm("value")
       field.errors must be(empty)
     }

@@ -269,6 +269,7 @@ item.documents.index.document.link = Go to your Documents section to add another
 item.documents.index.document.placeholder = Select a document
 item.documents.index.document.error.required = Select which document you want to attach
 
+
 item.addDocumentsYesNo.title = Do you want to attach any documents to this item?
 item.addDocumentsYesNo.heading = Do you want to attach any documents to this item?
 item.addDocumentsYesNo.checkYourAnswersLabel = Do you want to attach any documents to this item?
@@ -283,6 +284,14 @@ item.addAdditionalReferenceYesNo.title = Do you want to add an additional refere
 item.addAdditionalReferenceYesNo.heading = Do you want to add an additional reference for this item?
 item.addAdditionalReferenceYesNo.checkYourAnswersLabel = Do you want to add an additional reference for this item?
 item.addAdditionalReferenceYesNo.error.required = Select yes if you want to add an additional reference for this item
+
+item.additionalReference.index.additionalReference.title = What type of additional reference do you want to add?
+item.additionalReference.index.additionalReference.heading = What type of additional reference do you want to add?
+item.additionalReference.index.additionalReference.placeholder = Select an additional reference
+item.additionalReference.index.additionalReference.change.hidden = What type of additional reference do you want to add?
+item.additionalReference.index.additionalReference.checkYourAnswersLabel = What type of additional reference do you want to add?
+item.additionalReference.index.additionalReference.error.required = Select the type of additional reference
+
 
 item.documents.addAnotherDocument.singular.title = You have attached 1 document to this item
 item.documents.addAnotherDocument.singular.heading = You have attached 1 document to this item
