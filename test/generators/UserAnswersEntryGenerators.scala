@@ -16,8 +16,8 @@
 
 package generators
 
-import models.{DeclarationType, Document}
 import models.reference.{Country, PackageType}
+import models.{DeclarationType, Document}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.libs.json._
@@ -35,6 +35,7 @@ trait UserAnswersEntryGenerators {
   private def generateExternalAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.external._
     {
+      case CustomsOfficeOfDeparturePage        => Gen.alphaNumStr.map(JsString)
       case CustomsOfficeOfDepartureInCL112Page => arbitrary[Boolean].map(JsBoolean)
       case TransitOperationDeclarationTypePage => arbitrary[DeclarationType].map(Json.toJson(_))
       case TransitOperationTIRCarnetNumberPage => Gen.alphaNumStr.map(JsString)

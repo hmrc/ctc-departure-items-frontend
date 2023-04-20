@@ -24,7 +24,7 @@ case class DocumentsDomain(value: Seq[DocumentDomain])
 
 object DocumentsDomain {
 
-  implicit def userAnswersReader(itemIndex: Index): UserAnswersReader[DocumentsDomain] =
+  def userAnswersReader(itemIndex: Index): UserAnswersReader[DocumentsDomain] =
     DocumentsSection(itemIndex).arrayReader
       .flatMap {
         case x if x.isEmpty =>

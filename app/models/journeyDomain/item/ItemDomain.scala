@@ -17,6 +17,7 @@
 package models.journeyDomain.item
 
 import cats.implicits._
+import config.Constants.GB
 import models.DeclarationType._
 import models.journeyDomain.item.dangerousGoods.DangerousGoodsListDomain
 import models.journeyDomain.item.documents.DocumentsDomain
@@ -144,6 +145,14 @@ object ItemDomain {
     PackagesDomain.userAnswersReader(itemIndex)
 
   def documentsReader(itemIndex: Index): UserAnswersReader[Option[DocumentsDomain]] =
-    AddDocumentsYesNoPage(itemIndex)
-      .filterOptionalDependent(identity)(DocumentsDomain.userAnswersReader(itemIndex))
+    for {
+      declarationType       <- TransitOperationDeclarationTypePage.reader
+      isGBOfficeOfDeparture <- CustomsOfficeOfDeparturePage.reader.map(_.startsWith(GB))
+      reader <- (declarationType, isGBOfficeOfDeparture) match {
+        case (T2 | T2F, true) =>
+          DocumentsDomain.userAnswersReader(itemIndex).map(Some(_))
+        case _ =>
+          AddDocumentsYesNoPage(itemIndex).filterOptionalDependent(identity)(DocumentsDomain.userAnswersReader(itemIndex))
+      }
+    } yield reader
 }
