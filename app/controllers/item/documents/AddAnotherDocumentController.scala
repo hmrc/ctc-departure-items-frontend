@@ -19,8 +19,6 @@ package controllers.item.documents
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.AddAnotherFormProvider
-
-import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.ItemNavigatorProvider
 import play.api.data.Form
@@ -30,6 +28,8 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.item.documents.AddAnotherDocumentViewModel
 import viewmodels.item.documents.AddAnotherDocumentViewModel.AddAnotherDocumentViewModelProvider
 import views.html.item.documents.AddAnotherDocumentView
+
+import javax.inject.Inject
 
 class AddAnotherDocumentController @Inject() (
   override val messagesApi: MessagesApi,

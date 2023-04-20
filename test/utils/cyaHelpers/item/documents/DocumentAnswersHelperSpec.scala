@@ -23,7 +23,6 @@ import models.{Document, Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.item.documents.index.DocumentPage
-import play.api.mvc.Call
 import viewmodels.ListItem
 
 class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -57,14 +56,14 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
                 ListItem(
                   name = document.toString,
                   changeUrl = routes.DocumentController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url,
-                  removeUrl = Some(Call("GET", "#").url)
+                  removeUrl = Some(routes.RemoveDocumentController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url)
                 )
               ),
               Right(
                 ListItem(
                   name = document.toString,
                   changeUrl = routes.DocumentController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url,
-                  removeUrl = Some(Call("GET", "#").url)
+                  removeUrl = Some(routes.RemoveDocumentController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url)
                 )
               )
             )

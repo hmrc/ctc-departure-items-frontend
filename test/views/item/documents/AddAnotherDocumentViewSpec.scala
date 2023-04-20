@@ -16,20 +16,46 @@
 
 package views.item.documents
 
+import forms.AddAnotherFormProvider
+import org.scalacheck.Arbitrary.arbitrary
+import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.ViewBehaviours
+import viewmodels.item.documents.AddAnotherDocumentViewModel
+import views.behaviours.ListWithActionsViewBehaviours
 import views.html.item.documents.AddAnotherDocumentView
 
-class AddAnotherDocumentViewSpec extends ViewBehaviours {
+class AddAnotherDocumentViewSpec extends ListWithActionsViewBehaviours {
 
-  override def view: HtmlFormat.Appendable =
-    injector.instanceOf[AddAnotherDocumentView].apply(lrn)(fakeRequest, messages)
+  override def maxNumber: Int = frontendAppConfig.maxDocuments
+
+  private def formProvider(viewModel: AddAnotherDocumentViewModel) =
+    new AddAnotherFormProvider()(viewModel.prefix, viewModel.allowMore)
+
+  private val viewModel            = arbitrary[AddAnotherDocumentViewModel].sample.value
+  private val notMaxedOutViewModel = viewModel.copy(listItems = listItems)
+  private val maxedOutViewModel    = viewModel.copy(listItems = maxedOutListItems)
+
+  override def form: Form[Boolean] = formProvider(notMaxedOutViewModel)
+
+  override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
+    injector
+      .instanceOf[AddAnotherDocumentView]
+      .apply(form, lrn, notMaxedOutViewModel, itemIndex)(fakeRequest, messages, frontendAppConfig)
+
+  override def applyMaxedOutView: HtmlFormat.Appendable =
+    injector
+      .instanceOf[AddAnotherDocumentView]
+      .apply(formProvider(maxedOutViewModel), lrn, maxedOutViewModel, itemIndex)(fakeRequest, messages, frontendAppConfig)
 
   override val prefix: String = "item.documents.addAnotherDocument"
 
-  behave like pageWithTitle()
-
   behave like pageWithBackLink()
 
-  behave like pageWithHeading()
+  behave like pageWithSectionCaption(s"Item ${itemIndex.display} - Documents")
+
+  behave like pageWithMoreItemsAllowed(notMaxedOutViewModel.count)()
+
+  behave like pageWithItemsMaxedOut(maxedOutViewModel.count)
+
+  behave like pageWithSubmitButton("Save and continue")
 }

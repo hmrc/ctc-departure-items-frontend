@@ -17,6 +17,7 @@
 package controllers.item.documents.index
 
 import controllers.actions._
+import controllers.item.documents.routes
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.requests.SpecificDataRequestProvider1
@@ -25,7 +26,7 @@ import pages.item.documents.index.DocumentPage
 import pages.sections.documents.DocumentSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.item.documents.index.RemoveDocumentView
@@ -66,8 +67,7 @@ class RemoveDocumentController @Inject() (
       .andThen(getMandatoryPage(DocumentPage(itemIndex, documentIndex)))
       .async {
         implicit request =>
-          lazy val redirect = Call("GET", "#") //TODO - change to AddAnotherDocumentController when built
-
+          lazy val redirect = routes.AddAnotherDocumentController.onPageLoad(lrn, mode, itemIndex)
           form(document)
             .bindFromRequest()
             .fold(

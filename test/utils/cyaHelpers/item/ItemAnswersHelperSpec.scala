@@ -1004,8 +1004,8 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
           forAll(arbitrary[Mode], arbitrary[Document]) {
             (mode, document) =>
               val userAnswers = emptyUserAnswers.setValue(DocumentPage(itemIndex, documentIndex), document)
-              val helper = new ItemAnswersHelper(userAnswers, mode, itemIndex)
-              val result = helper.document(documentIndex).get
+              val helper      = new ItemAnswersHelper(userAnswers, mode, itemIndex)
+              val result      = helper.document(documentIndex).get
 
               result.key.value mustBe "Document 1"
               result.value.value mustBe document.toString

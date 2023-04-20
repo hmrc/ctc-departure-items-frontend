@@ -165,6 +165,8 @@ item.index.checkYourAnswers.dangerousGoods.label = Dangerous goods {0}
 item.index.checkYourAnswers.dangerousGoods.change.hidden = dangerous goods {0}
 item.index.checkYourAnswers.package.label = Package {0}
 item.index.checkYourAnswers.package.change.hidden = package {0}
+item.index.checkYourAnswers.document.label = Document {0}
+item.index.checkYourAnswers.document.change.hidden = document {0}
 
 item.addItemNetWeightYesNo.title = Do you want to add the item’s net weight?
 item.addItemNetWeightYesNo.heading = Do you want to add the item’s net weight?

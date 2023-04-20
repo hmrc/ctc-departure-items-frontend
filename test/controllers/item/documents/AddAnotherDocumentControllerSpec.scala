@@ -35,7 +35,6 @@ import viewmodels.ListItem
 import viewmodels.item.documents.AddAnotherDocumentViewModel
 import viewmodels.item.documents.AddAnotherDocumentViewModel.AddAnotherDocumentViewModelProvider
 import views.html.item.documents.AddAnotherDocumentView
-import views.html.item.packages.AddAnotherPackageView
 
 class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators with MockitoSugar {
 

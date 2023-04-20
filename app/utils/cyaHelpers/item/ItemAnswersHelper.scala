@@ -232,7 +232,7 @@ class ItemAnswersHelper(
 
   def document(documentIndex: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[DocumentDomain](
     formatAnswer = formatAsText,
-    prefix = "item.index.checkYourAnswers.documents",
+    prefix = "item.index.checkYourAnswers.document",
     id = Some(s"change-document-${documentIndex.display}"),
     args = documentIndex.display
   )(DocumentDomain.userAnswersReader(itemIndex, documentIndex))

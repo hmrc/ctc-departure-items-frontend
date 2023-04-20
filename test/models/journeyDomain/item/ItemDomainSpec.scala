@@ -18,8 +18,9 @@ package models.journeyDomain.item
 
 import base.SpecBase
 import generators.Generators
-import models.DeclarationType
+import models.{DeclarationType, Document}
 import models.journeyDomain.item.dangerousGoods.{DangerousGoodsDomain, DangerousGoodsListDomain}
+import models.journeyDomain.item.documents.{DocumentDomain, DocumentsDomain}
 import models.journeyDomain.item.packages.{PackageDomain, PackagesDomain}
 import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.reference.{Country, PackageType}
@@ -29,6 +30,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.external._
 import pages.item._
 import pages.item.dangerousGoods.index.UNNumberPage
+import pages.item.documents.index.DocumentPage
 import pages.item.packages.index._
 
 class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -809,6 +811,56 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
           ).run(emptyUserAnswers)
 
           result.left.value.page mustBe PackageTypePage(itemIndex, packageIndex)
+        }
+      }
+    }
+
+    "documentsReader" - {
+      "can be read from user answers" - {
+        "when documents added" in {
+          forAll(arbitrary[Document]) {
+            document =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AddDocumentsYesNoPage(itemIndex), true)
+                .setValue(DocumentPage(itemIndex, documentIndex), document)
+
+              val expectedResult = Some(
+                DocumentsDomain(
+                  Seq(
+                    DocumentDomain(document)(itemIndex, documentIndex)
+                  )
+                )
+              )
+
+              val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
+                ItemDomain.documentsReader(itemIndex)
+              ).run(userAnswers)
+
+              result.value mustBe expectedResult
+          }
+        }
+
+        "when documents not added" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(AddDocumentsYesNoPage(itemIndex), false)
+
+          val expectedResult = None
+
+          val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
+            ItemDomain.documentsReader(itemIndex)
+          ).run(userAnswers)
+
+          result.value mustBe expectedResult
+        }
+      }
+
+      "can not be read from user answers" - {
+        "when add documents yes/no is unanswered" in {
+          val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
+            ItemDomain.documentsReader(itemIndex)
+          ).run(emptyUserAnswers)
+
+          result.left.value.page mustBe AddDocumentsYesNoPage(itemIndex)
         }
       }
     }
