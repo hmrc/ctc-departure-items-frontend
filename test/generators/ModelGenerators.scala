@@ -148,6 +148,14 @@ trait ModelGenerators {
   lazy val arbitraryBulkPackageType: Arbitrary[PackageType]     = arbitraryPackageType(PackingType.Bulk)
   lazy val arbitraryOtherPackageType: Arbitrary[PackageType]    = arbitraryPackageType(PackingType.Other)
 
+  implicit lazy val arbitraryAdditionalReference: Arbitrary[AdditionalReference] =
+    Arbitrary {
+      for {
+        documentType <- nonEmptyString
+        description  <- nonEmptyString
+      } yield AdditionalReference(documentType, description)
+    }
+
   lazy val arbitraryIncompleteTaskStatus: Arbitrary[TaskStatus] = Arbitrary {
     Gen.oneOf(TaskStatus.InProgress, TaskStatus.NotStarted, TaskStatus.CannotStartYet)
   }
