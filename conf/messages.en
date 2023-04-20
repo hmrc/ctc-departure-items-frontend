@@ -292,7 +292,6 @@ item.additionalReference.index.additionalReference.change.hidden = What type of 
 item.additionalReference.index.additionalReference.checkYourAnswersLabel = What type of additional reference do you want to add?
 item.additionalReference.index.additionalReference.error.required = Select the type of additional reference
 
-
 item.documents.addAnotherDocument.singular.title = You have attached 1 document to this item
 item.documents.addAnotherDocument.singular.heading = You have attached 1 document to this item
 item.documents.addAnotherDocument.plural.title = You have attached {0} documents to this item
@@ -300,3 +299,8 @@ item.documents.addAnotherDocument.plural.heading = You have attached {0} documen
 item.documents.addAnotherDocument.error.required = Select yes if you want to attach another document
 item.documents.addAnotherDocument.label = Do you want to attach another document?
 item.documents.addAnotherDocument.maxLimit.label = You cannot attach any more documents. To attach another, you need to remove one first.
+
+item.additionalReference.index.addAdditionalReferenceNumberYesNo.title = Do you want to add an additional reference number?
+item.additionalReference.index.addAdditionalReferenceNumberYesNo.heading = Do you want to add an additional reference number?
+item.additionalReference.index.addAdditionalReferenceNumberYesNo.checkYourAnswersLabel = Do you want to add an additional reference number?
+item.additionalReference.index.addAdditionalReferenceNumberYesNo.error.required = Select yes if you want to add an additional reference number
