@@ -18,6 +18,7 @@ package generators
 
 import models.journeyDomain.item.ItemDomain
 import models.journeyDomain.item.dangerousGoods.DangerousGoodsDomain
+import models.journeyDomain.item.documents.DocumentDomain
 import models.journeyDomain.item.packages.PackageDomain
 import models.journeyDomain.{ItemsDomain, ReaderError, UserAnswersReader}
 import models.{EoriNumber, Index, LocalReferenceNumber, RichJsObject, UserAnswers}
@@ -69,4 +70,7 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators {
 
   def arbitraryPackageAnswers(userAnswers: UserAnswers, itemIndex: Index, packageIndex: Index): Gen[UserAnswers] =
     buildUserAnswers[PackageDomain](userAnswers)(PackageDomain.userAnswersReader(itemIndex, packageIndex))
+
+  def arbitraryDocumentAnswers(userAnswers: UserAnswers, itemIndex: Index, documentIndex: Index): Gen[UserAnswers] =
+    buildUserAnswers[DocumentDomain](userAnswers)(DocumentDomain.userAnswersReader(itemIndex, documentIndex))
 }

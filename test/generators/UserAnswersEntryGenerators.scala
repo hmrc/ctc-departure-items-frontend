@@ -16,8 +16,8 @@
 
 package generators
 
-import models.DeclarationType
 import models.reference.{Country, PackageType}
+import models.{DeclarationType, Document}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.libs.json._
@@ -35,6 +35,7 @@ trait UserAnswersEntryGenerators {
   private def generateExternalAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.external._
     {
+      case CustomsOfficeOfDeparturePage        => Gen.alphaNumStr.map(JsString)
       case CustomsOfficeOfDepartureInCL112Page => arbitrary[Boolean].map(JsBoolean)
       case TransitOperationDeclarationTypePage => arbitrary[DeclarationType].map(Json.toJson(_))
       case TransitOperationTIRCarnetNumberPage => Gen.alphaNumStr.map(JsString)
@@ -66,10 +67,12 @@ trait UserAnswersEntryGenerators {
       case NetWeightPage(_)                        => arbitrary[BigDecimal].map(Json.toJson(_))
       case AddSupplementaryUnitsYesNoPage(_)       => arbitrary[Boolean].map(JsBoolean)
       case SupplementaryUnitsPage(_)               => arbitrary[BigDecimal].map(Json.toJson(_))
+      case AddDocumentsYesNoPage(_)                => arbitrary[Boolean].map(JsBoolean)
     }
     pf orElse
       generateDangerousGoodsAnswer orElse
-      generatePackagesAnswer
+      generatePackagesAnswer orElse
+      generateDocumentsAnswer
   }
 
   private def generateDangerousGoodsAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
@@ -86,6 +89,13 @@ trait UserAnswersEntryGenerators {
       case NumberOfPackagesPage(_, _)     => Gen.posNum[Int].map(Json.toJson(_))
       case AddShippingMarkYesNoPage(_, _) => arbitrary[Boolean].map(JsBoolean)
       case ShippingMarkPage(_, _)         => Gen.alphaNumStr.map(JsString)
+    }
+  }
+
+  private def generateDocumentsAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+    import pages.item.documents.index._
+    {
+      case DocumentPage(_, _) => arbitrary[Document].map(Json.toJson(_))
     }
   }
 
