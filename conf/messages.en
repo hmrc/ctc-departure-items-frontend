@@ -165,6 +165,8 @@ item.index.checkYourAnswers.dangerousGoods.label = Dangerous goods {0}
 item.index.checkYourAnswers.dangerousGoods.change.hidden = dangerous goods {0}
 item.index.checkYourAnswers.package.label = Package {0}
 item.index.checkYourAnswers.package.change.hidden = package {0}
+item.index.checkYourAnswers.document.label = Document {0}
+item.index.checkYourAnswers.document.change.hidden = document {0}
 
 item.addItemNetWeightYesNo.title = Do you want to add the item’s net weight?
 item.addItemNetWeightYesNo.heading = Do you want to add the item’s net weight?
@@ -267,10 +269,10 @@ item.documents.index.document.link = Go to your Documents section to add another
 item.documents.index.document.placeholder = Select a document
 item.documents.index.document.error.required = Select which document you want to attach
 
-
 item.addDocumentsYesNo.title = Do you want to attach any documents to this item?
 item.addDocumentsYesNo.heading = Do you want to attach any documents to this item?
 item.addDocumentsYesNo.checkYourAnswersLabel = Do you want to attach any documents to this item?
+item.addDocumentsYesNo.change.hidden = if you want to attach any documents to this item
 item.addDocumentsYesNo.error.required = Select yes if you want to attach any documents to this item
 
 item.documents.index.removeDocument.title = Are you sure you want to remove the {0} from this item?
@@ -281,3 +283,11 @@ item.addAdditionalReferenceYesNo.title = Do you want to add an additional refere
 item.addAdditionalReferenceYesNo.heading = Do you want to add an additional reference for this item?
 item.addAdditionalReferenceYesNo.checkYourAnswersLabel = Do you want to add an additional reference for this item?
 item.addAdditionalReferenceYesNo.error.required = Select yes if you want to add an additional reference for this item
+
+item.documents.addAnotherDocument.singular.title = You have attached 1 document to this item
+item.documents.addAnotherDocument.singular.heading = You have attached 1 document to this item
+item.documents.addAnotherDocument.plural.title = You have attached {0} documents to this item
+item.documents.addAnotherDocument.plural.heading = You have attached {0} documents to this item
+item.documents.addAnotherDocument.error.required = Select yes if you want to attach another document
+item.documents.addAnotherDocument.label = Do you want to attach another document?
+item.documents.addAnotherDocument.maxLimit.label = You cannot attach any more documents. To attach another, you need to remove one first.

@@ -16,6 +16,7 @@
 
 package controllers.item.documents.index
 
+import controllers.item.documents.{routes => documentRoutes}
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import generators.Generators
@@ -72,10 +73,12 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual "#" //TODO: update to add another page
+        redirectLocation(result).value mustEqual
+          documentRoutes.AddAnotherDocumentController.onPageLoad(userAnswers.lrn, mode, itemIndex).url
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
+
         userAnswersCaptor.getValue.get(DocumentSection(itemIndex, documentIndex)) mustNot be(defined)
       }
 
@@ -92,7 +95,8 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual "#" //TODO: update to add another page
+        redirectLocation(result).value mustEqual
+          documentRoutes.AddAnotherDocumentController.onPageLoad(userAnswers.lrn, mode, itemIndex).url
 
         verify(mockSessionRepository, never()).set(any())(any())
       }

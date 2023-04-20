@@ -21,7 +21,6 @@ import models.journeyDomain._
 import models.{Document, Index, Mode, UserAnswers}
 import pages.item.documents.index.DocumentPage
 import play.api.mvc.Call
-import uk.gov.hmrc.http.HttpVerbs.GET
 
 case class DocumentDomain(
   document: Document
@@ -35,7 +34,7 @@ case class DocumentDomain(
       case AccessingJourney =>
         controllers.item.documents.index.routes.DocumentController.onPageLoad(userAnswers.lrn, mode, itemIndex, documentIndex)
       case CompletingJourney =>
-        Call(GET, "#") // TODO - add another document page
+        controllers.item.documents.routes.AddAnotherDocumentController.onPageLoad(userAnswers.lrn, mode, itemIndex)
     }
   }
 }
