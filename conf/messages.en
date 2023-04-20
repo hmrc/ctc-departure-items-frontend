@@ -262,6 +262,8 @@ item.packages.addAnotherPackage.maxLimit.label = You cannot add any more types o
 
 item.documents.index.document.title = Which document do you want to attach?
 item.documents.index.document.heading = Which document do you want to attach?
+item.documents.index.document.paragraph = You can only select a document if you have added it in your Documents section.
+item.documents.index.document.link = Go to your Documents section to add another document.
 item.documents.index.document.placeholder = Select a document
 item.documents.index.document.error.required = Select which document you want to attach
 

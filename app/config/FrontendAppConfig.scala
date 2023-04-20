@@ -64,4 +64,9 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   val cacheUrl: String = servicesConfig.fullServiceUrl("manage-transit-movements-departure-cache")
 
   val dependentTasks: Seq[String] = configuration.get[Seq[String]]("dependent-tasks")
+
+  def documentsFrontendUrl(lrn: LocalReferenceNumber): String = {
+    val url: String = configuration.get[String]("urls.documentsFrontend")
+    url.replace(":lrn", lrn.toString)
+  }
 }
