@@ -17,19 +17,18 @@
 package pages.item.additionalReference.index
 
 import controllers.item.additionalReference.index.routes
-import models.reference.AdditionalReference
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.additionalReference.AdditionalReferenceSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class AdditionalReferencePage(itemIndex: Index, additionalReferenceIndex: Index) extends QuestionPage[AdditionalReference] {
+case class AddAdditionalReferenceNumberYesNoPage(itemIndex: Index, additionalReferenceIndex: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = AdditionalReferenceSection(itemIndex, additionalReferenceIndex).path \ toString
 
-  override def toString: String = "additionalReference"
+  override def toString: String = "addAdditionalReferenceNumberYesNo"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.AdditionalReferenceController.onPageLoad(userAnswers.lrn, mode, itemIndex, additionalReferenceIndex))
+    Some(routes.AddAdditionalReferenceNumberYesNoController.onPageLoad(userAnswers.lrn, mode, itemIndex, additionalReferenceIndex))
 }
