@@ -1,1 +1,5 @@
 ->         /                                                                app.item.additionalReference.index.Routes
+GET        /item/additionalReference/you-have-added-1-additional-reference/:lrn                        controllers.item.additionalReference.AddAnotherAdditionalReferenceController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /item/additionalReference/you-have-added-1-additional-reference/:lrn                        controllers.item.additionalReference.AddAnotherAdditionalReferenceController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /item/additionalReference/change-you-have-added-1-additional-reference/:lrn                 controllers.item.additionalReference.AddAnotherAdditionalReferenceController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /item/additionalReference/change-you-have-added-1-additional-reference/:lrn                 controllers.item.additionalReference.AddAnotherAdditionalReferenceController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
