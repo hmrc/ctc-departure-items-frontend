@@ -317,3 +317,11 @@ item.additionalReference.addAnotherAdditionalReference.title = You have added 1 
 item.additionalReference.addAnotherAdditionalReference.heading = You have added 1 additional reference
 item.additionalReference.addAnotherAdditionalReference.checkYourAnswersLabel = You have added 1 additional reference
 item.additionalReference.addAnotherAdditionalReference.error.required = Select yes if You have added 1 additional reference
+
+item.additionalReference.addAnotherAdditionalReference.singular.title = You have added 1 additional reference
+item.additionalReference.addAnotherAdditionalReference.singular.heading = You have added 1 additional reference
+item.additionalReference.addAnotherAdditionalReference.plural.title = You have added {0} additional references
+item.additionalReference.addAnotherAdditionalReference.plural.heading = You have added {0} additional references
+item.additionalReference.addAnotherAdditionalReference.error.required = Select yes if you want to add another additional reference
+item.additionalReference.addAnotherAdditionalReference.label = Do you want to add another additional reference?
+item.additionalReference.addAnotherAdditionalReference.maxLimit.label = You cannot add any more additional references. To add another, you need to remove one first.

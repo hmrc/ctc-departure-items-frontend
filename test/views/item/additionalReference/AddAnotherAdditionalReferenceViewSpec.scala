@@ -16,26 +16,46 @@
 
 package views.item.additionalReference
 
-import models.NormalMode
+import forms.AddAnotherFormProvider
+import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.YesNoViewBehaviours
+import viewmodels.item.additionalReference.AddAnotherAdditionalReferenceViewModel
+import views.behaviours.ListWithActionsViewBehaviours
 import views.html.item.additionalReference.AddAnotherAdditionalReferenceView
 
-class AddAnotherAdditionalReferenceViewSpec extends YesNoViewBehaviours {
+class AddAnotherAdditionalReferenceViewSpec extends ListWithActionsViewBehaviours {
+
+  override def maxNumber: Int = frontendAppConfig.maxAdditionalReferences
+
+  private def formProvider(viewModel: AddAnotherAdditionalReferenceViewModel) =
+    new AddAnotherFormProvider()(viewModel.prefix, viewModel.allowMore)
+
+  private val viewModel            = arbitrary[AddAnotherAdditionalReferenceViewModel].sample.value
+  private val notMaxedOutViewModel = viewModel.copy(listItems = listItems)
+  private val maxedOutViewModel    = viewModel.copy(listItems = maxedOutListItems)
+
+  override def form: Form[Boolean] = formProvider(notMaxedOutViewModel)
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[AddAnotherAdditionalReferenceView].apply(form, lrn, NormalMode)(fakeRequest, messages)
+    injector
+      .instanceOf[AddAnotherAdditionalReferenceView]
+      .apply(form, lrn, notMaxedOutViewModel, itemIndex)(fakeRequest, messages, frontendAppConfig)
+
+  override def applyMaxedOutView: HtmlFormat.Appendable =
+    injector
+      .instanceOf[AddAnotherAdditionalReferenceView]
+      .apply(formProvider(maxedOutViewModel), lrn, maxedOutViewModel, itemIndex)(fakeRequest, messages, frontendAppConfig)
 
   override val prefix: String = "item.additionalReference.addAnotherAdditionalReference"
 
-  behave like pageWithTitle()
-
   behave like pageWithBackLink()
 
-  behave like pageWithHeading()
+  behave like pageWithSectionCaption(s"Item ${itemIndex.display} - Additional reference")
 
-  behave like pageWithRadioItems()
+  behave like pageWithMoreItemsAllowed(notMaxedOutViewModel.count)()
+
+  behave like pageWithItemsMaxedOut(maxedOutViewModel.count)
 
   behave like pageWithSubmitButton("Save and continue")
 }

@@ -1,5 +1,6 @@
-->         /                                                                app.item.additionalReference.index.Routes
-GET        /item/additionalReference/you-have-added-1-additional-reference/:lrn                        controllers.item.additionalReference.AddAnotherAdditionalReferenceController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /item/additionalReference/you-have-added-1-additional-reference/:lrn                        controllers.item.additionalReference.AddAnotherAdditionalReferenceController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /item/additionalReference/change-you-have-added-1-additional-reference/:lrn                 controllers.item.additionalReference.AddAnotherAdditionalReferenceController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /item/additionalReference/change-you-have-added-1-additional-reference/:lrn                 controllers.item.additionalReference.AddAnotherAdditionalReferenceController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+->         /                                                                              app.item.additionalReference.index.Routes
+
+GET        /items/:itemIndex/additional-reference/add-another/:lrn                        controllers.item.additionalReference.AddAnotherAdditionalReferenceController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+POST       /items/:itemIndex/additional-reference/add-another/:lrn                        controllers.item.additionalReference.AddAnotherAdditionalReferenceController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+GET        /items/:itemIndex/additional-reference/change-add-another/:lrn                 controllers.item.additionalReference.AddAnotherAdditionalReferenceController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+POST       /items/:itemIndex/additional-reference/change-add-another/:lrn                 controllers.item.additionalReference.AddAnotherAdditionalReferenceController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)

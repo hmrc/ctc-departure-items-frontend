@@ -17,99 +17,193 @@
 package controllers.item.additionalReference
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.YesNoFormProvider
-import models.NormalMode
+import forms.AddAnotherFormProvider
+import generators.Generators
+import models.{Index, NormalMode}
 import navigation.ItemNavigatorProvider
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, when}
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import viewmodels.ListItem
+import viewmodels.item.additionalReference.AddAnotherAdditionalReferenceViewModel
+import viewmodels.item.additionalReference.AddAnotherAdditionalReferenceViewModel.AddAnotherAdditionalReferenceViewModelProvider
 import views.html.item.additionalReference.AddAnotherAdditionalReferenceView
 
-import scala.concurrent.Future
+class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators with MockitoSugar {
 
-class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
+  private val formProvider = new AddAnotherFormProvider()
 
-  private val formProvider                            = new YesNoFormProvider()
-  private val form                                    = formProvider("item.additionalReference.addAnotherAdditionalReference")
+  private def form(viewModel: AddAnotherAdditionalReferenceViewModel): Form[Boolean] =
+    formProvider(viewModel.prefix, viewModel.allowMore(frontendAppConfig))
+
   private val mode                                    = NormalMode
-  private lazy val addAnotherAdditionalReferenceRoute = routes.AddAnotherAdditionalReferenceController.onPageLoad(lrn, mode).url
+  private lazy val addAnotherAdditionalReferenceRoute = routes.AddAnotherAdditionalReferenceController.onPageLoad(lrn, mode, itemIndex).url
+
+  private val mockViewModelProvider = mock[AddAnotherAdditionalReferenceViewModelProvider]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
+      .overrides(bind(classOf[AddAnotherAdditionalReferenceViewModelProvider]).toInstance(mockViewModelProvider))
       .overrides(bind(classOf[ItemNavigatorProvider]).toInstance(fakeItemNavigatorProvider))
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockViewModelProvider)
+  }
+
+  private val listItem          = arbitrary[ListItem].sample.value
+  private val listItems         = Seq.fill(Gen.choose(1, frontendAppConfig.maxAdditionalReferences - 1).sample.value)(listItem)
+  private val maxedOutListItems = Seq.fill(frontendAppConfig.maxAdditionalReferences)(listItem)
+
+  private val viewModel = arbitrary[AddAnotherAdditionalReferenceViewModel].sample.value
+
+  private val emptyViewModel       = viewModel.copy(listItems = Nil)
+  private val notMaxedOutViewModel = viewModel.copy(listItems = listItems)
+  private val maxedOutViewModel    = viewModel.copy(listItems = maxedOutListItems)
 
   "AddAnotherAdditionalReference Controller" - {
 
-    "must return OK and the correct view for a GET" in {
+    "must redirect to add additional reference yes no page when 0 additional references added" in {
+      when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
+        .thenReturn(emptyViewModel)
 
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, addAnotherAdditionalReferenceRoute)
-      val result  = route(app, request).value
-
-      val view = injector.instanceOf[AddAnotherAdditionalReferenceView]
-
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(form, lrn, mode)(request, messages).toString
-    }
-
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = emptyUserAnswers.setValue(AddAnotherAdditionalReferencePage, true)
-      setExistingUserAnswers(userAnswers)
-
-      val request = FakeRequest(GET, addAnotherAdditionalReferenceRoute)
-
-      val result = route(app, request).value
-
-      val filledForm = form.bind(Map("value" -> "true"))
-
-      val view = injector.instanceOf[AddAnotherAdditionalReferenceView]
-
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(filledForm, lrn, mode)(request, messages).toString
-    }
-
-    "must redirect to the next page when valid data is submitted" in {
-
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
-
-      setExistingUserAnswers(emptyUserAnswers)
-
-      val request = FakeRequest(POST, addAnotherAdditionalReferenceRoute)
         .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual onwardRoute.url
+      redirectLocation(result).value mustEqual
+        controllers.item.additionalReference.index.routes.AddAdditionalReferenceNumberYesNoController.onPageLoad(lrn, mode, itemIndex, Index(0)).url
     }
 
-    "must return a Bad Request and errors when invalid data is submitted" in {
+    "must return OK and the correct view for a GET" - {
+      "when max limit not reached" in {
+        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
+          .thenReturn(notMaxedOutViewModel)
 
-      setExistingUserAnswers(emptyUserAnswers)
+        setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, addAnotherAdditionalReferenceRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form.bind(Map("value" -> ""))
+        val request = FakeRequest(GET, addAnotherAdditionalReferenceRoute)
 
-      val result = route(app, request).value
+        val result = route(app, request).value
 
-      status(result) mustEqual BAD_REQUEST
+        val view = injector.instanceOf[AddAnotherAdditionalReferenceView]
 
-      val view = injector.instanceOf[AddAnotherAdditionalReferenceView]
+        status(result) mustEqual OK
 
-      contentAsString(result) mustEqual
-        view(boundForm, lrn, mode)(request, messages).toString
+        contentAsString(result) mustEqual
+          view(form(notMaxedOutViewModel), lrn, notMaxedOutViewModel, itemIndex)(request, messages, frontendAppConfig).toString
+      }
+
+      "when max limit reached" in {
+        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
+          .thenReturn(maxedOutViewModel)
+
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(GET, addAnotherAdditionalReferenceRoute)
+
+        val result = route(app, request).value
+
+        val view = injector.instanceOf[AddAnotherAdditionalReferenceView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(form(maxedOutViewModel), lrn, maxedOutViewModel, itemIndex)(request, messages, frontendAppConfig).toString
+      }
+    }
+
+    "when max limit not reached" - {
+      "when yes submitted" - {
+        "must redirect to additional reference type page at next index" in {
+          when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
+            .thenReturn(notMaxedOutViewModel)
+
+          setExistingUserAnswers(emptyUserAnswers)
+
+          val request = FakeRequest(POST, addAnotherAdditionalReferenceRoute)
+            .withFormUrlEncodedBody(("value", "true"))
+
+          val result = route(app, request).value
+
+          status(result) mustEqual SEE_OTHER
+
+          redirectLocation(result).value mustEqual
+            controllers.item.additionalReference.index.routes.AdditionalReferenceController.onPageLoad(lrn, mode, itemIndex, Index(listItems.length)).url
+        }
+      }
+
+      "when no submitted" - {
+        "must redirect to next page" in {
+          when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
+            .thenReturn(notMaxedOutViewModel)
+
+          setExistingUserAnswers(emptyUserAnswers)
+
+          val request = FakeRequest(POST, addAnotherAdditionalReferenceRoute)
+            .withFormUrlEncodedBody(("value", "false"))
+
+          val result = route(app, request).value
+
+          status(result) mustEqual SEE_OTHER
+
+          redirectLocation(result).value mustEqual onwardRoute.url
+        }
+      }
+    }
+
+    "when max limit reached" - {
+      "must redirect to next page" in {
+        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
+          .thenReturn(maxedOutViewModel)
+
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(POST, addAnotherAdditionalReferenceRoute)
+          .withFormUrlEncodedBody(("value", ""))
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual onwardRoute.url
+      }
+    }
+
+    "must return a Bad Request and errors" - {
+      "when invalid data is submitted and max limit not reached" in {
+        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
+          .thenReturn(notMaxedOutViewModel)
+
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(POST, addAnotherAdditionalReferenceRoute)
+          .withFormUrlEncodedBody(("value", ""))
+
+        val boundForm = form(notMaxedOutViewModel).bind(Map("value" -> ""))
+
+        val result = route(app, request).value
+
+        val view = injector.instanceOf[AddAnotherAdditionalReferenceView]
+
+        status(result) mustEqual BAD_REQUEST
+
+        contentAsString(result) mustEqual
+          view(boundForm, lrn, notMaxedOutViewModel, itemIndex)(request, messages, frontendAppConfig).toString
+      }
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

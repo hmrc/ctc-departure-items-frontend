@@ -14,37 +14,51 @@
  * limitations under the License.
  *@
 
-@import controllers.item.additionalReference.routes
+@import config.FrontendAppConfig
 @import models.LocalReferenceNumber
 @import viewmodels.components.InputYesNoViewModel._
-@import views.html.components.{Button, ErrorSummary, InputYesNo}
+@import viewmodels.item.additionalReference.AddAnotherAdditionalReferenceViewModel
+@import views.html.components.{Button, ErrorSummary, Heading, InputYesNo, ListWithActions}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
+    heading: Heading,
+    listWithActions: ListWithActions,
     inputYesNo: InputYesNo,
     errorSummary: ErrorSummary,
     button: Button
 )
 
-@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], lrn: LocalReferenceNumber, viewModel: AddAnotherAdditionalReferenceViewModel, itemIndex: Index)(implicit request: Request[_], messages: Messages, config: FrontendAppConfig)
 
 @mainTemplate(
-    title = messages("item.additionalReference.addAnotherAdditionalReference.title"),
+    title = viewModel.title,
     showBackLink = true,
     lrn = lrn
 ) {
 
-    @formHelper(action = routes.AddAnotherAdditionalReferenceController.onSubmit(lrn, mode), Symbol("autoComplete") -> "off") {
+    @errorSummary(form.errors)
 
-        @errorSummary(form.errors)
+    @heading(
+        heading = viewModel.heading,
+        caption = Some(messages("item.additionalReference.caption", itemIndex.display))
+    )
 
-        @inputYesNo(
-            field = form("value"),
-            yesNoType = OrdinaryYesNo(
-                heading = messages("item.additionalReference.addAnotherAdditionalReference.heading")
+    @listWithActions(viewModel.listItems)
+
+    @formHelper(action = viewModel.onSubmitCall, Symbol("autoComplete") -> "off") {
+
+        @if(viewModel.allowMore) {
+            @inputYesNo(
+                field = form("value"),
+                yesNoType = YesNoWithLegend(
+                    legend = viewModel.legend
+                )
             )
-        )
+        } else {
+            <p class="govuk-body" data-testId="maxLimit">@viewModel.maxLimitLabel</p>
+        }
 
         @button(attributes = Map("id" -> "submit"))
     }
