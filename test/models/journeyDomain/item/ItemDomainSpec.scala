@@ -20,17 +20,19 @@ import base.SpecBase
 import config.Constants.GB
 import generators.Generators
 import models.DeclarationType._
+import models.journeyDomain.item.additionalReferences.{AdditionalReferenceDomain, AdditionalReferencesDomain}
 import models.journeyDomain.item.dangerousGoods.{DangerousGoodsDomain, DangerousGoodsListDomain}
 import models.journeyDomain.item.documents.{DocumentDomain, DocumentsDomain}
 import models.journeyDomain.item.packages.{PackageDomain, PackagesDomain}
 import models.journeyDomain.{EitherType, UserAnswersReader}
-import models.reference.{Country, PackageType}
+import models.reference.{AdditionalReference, Country, PackageType}
 import models.{DeclarationType, Document, Index}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.external._
 import pages.item._
+import pages.item.additionalReference.index._
 import pages.item.dangerousGoods.index.UNNumberPage
 import pages.item.documents.index.DocumentPage
 import pages.item.packages.index._
@@ -947,6 +949,57 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                 result.left.value.page mustBe AddDocumentsYesNoPage(itemIndex)
             }
           }
+        }
+      }
+    }
+
+    "additionalReferencesReader" - {
+      "can be read from user answers" - {
+        "when additional references added" in {
+          forAll(arbitrary[AdditionalReference]) {
+            `type` =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AddAdditionalReferenceYesNoPage(itemIndex), true)
+                .setValue(AdditionalReferencePage(itemIndex, additionalReferenceIndex), `type`)
+                .setValue(AddAdditionalReferenceNumberYesNoPage(itemIndex, additionalReferenceIndex), false)
+
+              val expectedResult = Some(
+                AdditionalReferencesDomain(
+                  Seq(
+                    AdditionalReferenceDomain(`type`, None)(itemIndex, additionalReferenceIndex)
+                  )
+                )
+              )
+
+              val result: EitherType[Option[AdditionalReferencesDomain]] = UserAnswersReader[Option[AdditionalReferencesDomain]](
+                ItemDomain.additionalReferencesReader(itemIndex)
+              ).run(userAnswers)
+
+              result.value mustBe expectedResult
+          }
+        }
+
+        "when additional references not added" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(AddAdditionalReferenceYesNoPage(itemIndex), false)
+
+          val expectedResult = None
+
+          val result: EitherType[Option[AdditionalReferencesDomain]] = UserAnswersReader[Option[AdditionalReferencesDomain]](
+            ItemDomain.additionalReferencesReader(itemIndex)
+          ).run(userAnswers)
+
+          result.value mustBe expectedResult
+        }
+      }
+
+      "can not be read from user answers" - {
+        "when add additional references yes/no is unanswered" in {
+          val result: EitherType[Option[AdditionalReferencesDomain]] = UserAnswersReader[Option[AdditionalReferencesDomain]](
+            ItemDomain.additionalReferencesReader(itemIndex)
+          ).run(emptyUserAnswers)
+
+          result.left.value.page mustBe AddAdditionalReferenceYesNoPage(itemIndex)
         }
       }
     }

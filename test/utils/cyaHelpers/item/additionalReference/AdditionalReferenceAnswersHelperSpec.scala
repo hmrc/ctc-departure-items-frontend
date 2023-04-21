@@ -19,12 +19,12 @@ package utils.cyaHelpers.item.additionalReference
 import base.SpecBase
 import controllers.item.additionalReference.index.routes
 import generators.Generators
-import models.reference.AdditionalReference
 import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.item.AddAdditionalReferenceYesNoPage
-import pages.item.additionalReference.index.AdditionalReferencePage
+import pages.item.additionalReference.index.{AddAdditionalReferenceNumberYesNoPage, AdditionalReferenceNumberPage, AdditionalReferencePage}
 import viewmodels.ListItem
 
 class AdditionalReferenceAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -46,28 +46,31 @@ class AdditionalReferenceAnswersHelperSpec extends SpecBase with ScalaCheckPrope
       }
 
       "when user answers populated with complete additional references" in {
-        forAll(arbitrary[Mode]) {
-          mode =>
-            val c651OrC658Document    = ""
-            val nonC658OrC658Document = ""
+        forAll(arbitrary[Mode], Gen.alphaNumStr) {
+          (mode, additionalReferenceNumber) =>
+            val c651OrC658Document    = arbitraryC651OrC658AdditionalReference.arbitrary.sample.value
+            val nonC658OrC658Document = arbitraryNonC651OrC658AdditionalReference.arbitrary.sample.value
 
             val userAnswers = emptyUserAnswers
               .setValue(AddAdditionalReferenceYesNoPage(itemIndex), true)
-              .setValue(AdditionalReferencePage(itemIndex, Index(0)), c651Document)
-              .setValue(AdditionalReferencePage(itemIndex, Index(1)), c658Document)
+              .setValue(AdditionalReferencePage(itemIndex, Index(0)), c651OrC658Document)
+              .setValue(AdditionalReferenceNumberPage(itemIndex, Index(0)), additionalReferenceNumber)
+              .setValue(AdditionalReferencePage(itemIndex, Index(1)), nonC658OrC658Document)
+              .setValue(AddAdditionalReferenceNumberYesNoPage(itemIndex, Index(1)), true)
+              .setValue(AdditionalReferenceNumberPage(itemIndex, Index(1)), additionalReferenceNumber)
 
             val helper = new AdditionalReferenceAnswersHelper(userAnswers, mode, itemIndex)
             helper.listItems mustBe Seq(
               Right(
                 ListItem(
-                  name = additionalReference.toString,
+                  name = c651OrC658Document.toString,
                   changeUrl = routes.AdditionalReferenceController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url,
                   removeUrl = None //TODO: switch to remove controller when built
                 )
               ),
               Right(
                 ListItem(
-                  name = additionalReference.toString,
+                  name = nonC658OrC658Document.toString,
                   changeUrl = routes.AdditionalReferenceController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url,
                   removeUrl = None //TODO: switch to remove controller when built
                 )

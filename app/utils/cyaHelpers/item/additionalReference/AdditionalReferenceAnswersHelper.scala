@@ -17,7 +17,7 @@
 package utils.cyaHelpers.item.additionalReference
 
 import config.FrontendAppConfig
-import models.journeyDomain.item.additionalReference.AdditionalReferenceDomain
+import models.journeyDomain.item.additionalReferences.AdditionalReferenceDomain
 import models.{Index, Mode, UserAnswers}
 import pages.item.additionalReference.index.AdditionalReferencePage
 import pages.sections.additionalReference.AdditionalReferencesSection

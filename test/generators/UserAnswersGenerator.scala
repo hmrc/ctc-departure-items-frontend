@@ -17,7 +17,7 @@
 package generators
 
 import models.journeyDomain.item.ItemDomain
-import models.journeyDomain.item.additionalReference.AdditionalReferenceDomain
+import models.journeyDomain.item.additionalReferences.AdditionalReferenceDomain
 import models.journeyDomain.item.dangerousGoods.DangerousGoodsDomain
 import models.journeyDomain.item.documents.DocumentDomain
 import models.journeyDomain.item.packages.PackageDomain
