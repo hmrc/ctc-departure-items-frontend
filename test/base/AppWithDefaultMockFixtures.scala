@@ -80,6 +80,10 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   protected val fakeDocumentNavigatorProvider: DocumentNavigatorProvider =
     (mode: Mode, itemIndex: Index, documentIndex: Index) => new FakeDocumentNavigator(onwardRoute, mode, itemIndex, documentIndex)
 
+  protected val fakeAdditionalReferenceNavigatorProvider: AdditionalReferenceNavigatorProvider =
+    (mode: Mode, itemIndex: Index, additionalReferenceIndex: Index) =>
+      new FakeAdditionalReferenceNavigator(onwardRoute, mode, itemIndex, additionalReferenceIndex)
+
   def guiceApplicationBuilder(): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .overrides(

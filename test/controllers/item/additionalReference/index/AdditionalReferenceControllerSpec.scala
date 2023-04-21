@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.SelectableFormProvider
 import generators.Generators
 import models.{NormalMode, SelectableList}
-import navigation.ItemNavigatorProvider
+import navigation.AdditionalReferenceNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.item.additionalReference.index.AdditionalReferencePage
@@ -49,7 +49,7 @@ class AdditionalReferenceControllerSpec extends SpecBase with AppWithDefaultMock
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[ItemNavigatorProvider]).toInstance(fakeItemNavigatorProvider))
+      .overrides(bind(classOf[AdditionalReferenceNavigatorProvider]).toInstance(fakeAdditionalReferenceNavigatorProvider))
       .overrides(bind(classOf[AdditionalReferencesService]).toInstance(mockAdditionalReferencesService))
 
   "AdditionalReference Controller" - {
