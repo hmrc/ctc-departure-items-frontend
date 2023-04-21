@@ -17,6 +17,8 @@
 package pages.item
 
 import pages.behaviours.PageBehaviours
+import pages.sections.additionalReference.AdditionalReferencesSection
+import play.api.libs.json.{JsArray, Json}
 
 class AddAdditionalReferenceYesNoPageSpec extends PageBehaviours {
 
@@ -27,5 +29,29 @@ class AddAdditionalReferenceYesNoPageSpec extends PageBehaviours {
     beSettable[Boolean](AddAdditionalReferenceYesNoPage(itemIndex))
 
     beRemovable[Boolean](AddAdditionalReferenceYesNoPage(itemIndex))
+
+    "cleanup" - {
+      "when no selected" - {
+        "must remove additional references" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(AdditionalReferencesSection(itemIndex), JsArray(Seq(Json.obj("foo" -> "bar"))))
+
+          val result = userAnswers.setValue(AddAdditionalReferenceYesNoPage(itemIndex), false)
+
+          result.get(AdditionalReferencesSection(itemIndex)) must not be defined
+        }
+      }
+
+      "when yes selected" - {
+        "must do nothing" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(AdditionalReferencesSection(itemIndex), JsArray(Seq(Json.obj("foo" -> "bar"))))
+
+          val result = userAnswers.setValue(AddAdditionalReferenceYesNoPage(itemIndex), true)
+
+          result.get(AdditionalReferencesSection(itemIndex)) must be(defined)
+        }
+      }
+    }
   }
 }
