@@ -26,9 +26,7 @@ object SelectableList {
     case JsArray(values) =>
       JsSuccess(
         SelectableList(
-          values.zipWithIndex.flatMap {
-            case (value, index) => value.validate[Document](Document.reads(index)).asOpt
-          }.toSeq
+          values.flatMap(_.validate[Document](Document.reads).asOpt).toSeq
         )
       )
     case _ => JsError("SelectableList::documentsReads: Failed to read documents from cache")

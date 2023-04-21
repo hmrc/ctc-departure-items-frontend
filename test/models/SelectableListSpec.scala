@@ -19,6 +19,8 @@ package models
 import base.SpecBase
 import play.api.libs.json.Json
 
+import java.util.UUID
+
 class SelectableListSpec extends SpecBase {
 
   "documentsReads" - {
@@ -28,7 +30,8 @@ class SelectableListSpec extends SpecBase {
            |  {
            |    "type" : {
            |  	  "type" : "Support",
-           |  	  "code" : "1"
+           |  	  "code" : "1",
+           |      "uuid" : "8e5a3f69-7d6d-490a-8071-002b1d35d3c1"
            |    },
            |    "details" : {
            |      "documentReferenceNumber" : "RefNo1"
@@ -37,7 +40,8 @@ class SelectableListSpec extends SpecBase {
            |  {
            |    "type" : {
            |  	  "type" : "Transport",
-           |  	  "code" : "2"
+           |  	  "code" : "2",
+           |      "uuid" : "5e6fe4c6-f09f-4a95-b892-47a092a3b027"
            |    },
            |    "details" : {
            |      "documentReferenceNumber" : "RefNo2"
@@ -46,7 +50,8 @@ class SelectableListSpec extends SpecBase {
            |  {
            |    "type" : {
            |  	  "type" : "Previous",
-           |  	  "code" : "3"
+           |  	  "code" : "3",
+           |      "uuid" : "d5d5832c-b754-47b7-9f59-4f69b7361902"
            |    },
            |    "details" : {
            |      "documentReferenceNumber" : "RefNo3"
@@ -55,7 +60,8 @@ class SelectableListSpec extends SpecBase {
            |  {
            |    "previousDocumentType" : {
            |  	  "type" : "Previous",
-           |  	  "code" : "4"
+           |  	  "code" : "4",
+           |      "uuid" : "4b36f3af-665b-46a5-9a04-c8342654b57a"
            |    },
            |    "details" : {
            |      "documentReferenceNumber" : "RefNo4"
@@ -69,28 +75,28 @@ class SelectableListSpec extends SpecBase {
       result mustBe SelectableList(
         Seq(
           Document(
-            index = 0,
+            uuid = UUID.fromString("8e5a3f69-7d6d-490a-8071-002b1d35d3c1"),
             `type` = "Support",
             code = "1",
             description = None,
             referenceNumber = "RefNo1"
           ),
           Document(
-            index = 1,
+            uuid = UUID.fromString("5e6fe4c6-f09f-4a95-b892-47a092a3b027"),
             `type` = "Transport",
             code = "2",
             description = None,
             referenceNumber = "RefNo2"
           ),
           Document(
-            index = 2,
+            uuid = UUID.fromString("d5d5832c-b754-47b7-9f59-4f69b7361902"),
             `type` = "Previous",
             code = "3",
             description = None,
             referenceNumber = "RefNo3"
           ),
           Document(
-            index = 3,
+            uuid = UUID.fromString("4b36f3af-665b-46a5-9a04-c8342654b57a"),
             `type` = "Previous",
             code = "4",
             description = None,

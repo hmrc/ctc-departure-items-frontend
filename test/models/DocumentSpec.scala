@@ -24,15 +24,16 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
 import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
+import java.util.UUID
+
 class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   private val typeGen = Gen.oneOf("Transport", "Support", "Previous")
 
-  private val i = arbitrary[Int].sample.value
-
   "must deserialise from mongo" - {
 
     val referenceNumber = "85968459869045"
+    val uuid            = "8e5a3f69-7d6d-490a-8071-002b1d35d3c1"
 
     "when transport document" in {
 
@@ -44,7 +45,8 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
           |  "type" : {
           |  	 "type" : "Transport",
           |  	 "code" : "$code",
-          |  	 "description" : "$description"
+          |  	 "description" : "$description",
+          |    "uuid" : "$uuid"
           |  },
           |  "details" : {
           |  	 "documentReferenceNumber" : "$referenceNumber"
@@ -53,14 +55,14 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
           |""".stripMargin)
 
       val expectedResult = Document(
-        index = i,
+        uuid = UUID.fromString(uuid),
         `type` = "Transport",
         code = code,
         description = Some(description),
         referenceNumber = referenceNumber
       )
 
-      val result = json.as[Document](Document.reads(i))
+      val result = json.as[Document](Document.reads)
 
       result mustBe expectedResult
     }
@@ -75,7 +77,8 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
           |  "type" : {
           |  	 "type" : "Support",
           |  	 "code" : "$code",
-          |  	 "description" : "$description"
+          |  	 "description" : "$description",
+          |    "uuid" : "$uuid"
           |  },
           |  "details" : {
           |  	 "documentReferenceNumber" : "$referenceNumber",
@@ -86,14 +89,14 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
           |""".stripMargin)
 
       val expectedResult = Document(
-        index = i,
+        uuid = UUID.fromString(uuid),
         `type` = "Support",
         code = code,
         description = Some(description),
         referenceNumber = referenceNumber
       )
 
-      val result = json.as[Document](Document.reads(i))
+      val result = json.as[Document](Document.reads)
 
       result mustBe expectedResult
     }
@@ -108,7 +111,8 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
           |  "type" : {
           |  	 "type" : "Previous",
           |  	 "code" : "$code",
-          |  	 "description" : "$description"
+          |  	 "description" : "$description",
+          |    "uuid" : "$uuid"
           |  },
           |  "details" : {
           |  	 "documentReferenceNumber" : "$referenceNumber",
@@ -132,14 +136,14 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
           |""".stripMargin)
 
       val expectedResult = Document(
-        index = i,
+        uuid = UUID.fromString(uuid),
         `type` = "Previous",
         code = code,
         description = Some(description),
         referenceNumber = referenceNumber
       )
 
-      val result = json.as[Document](Document.reads(i))
+      val result = json.as[Document](Document.reads)
 
       result mustBe expectedResult
     }
@@ -154,7 +158,8 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
           |  "previousDocumentType" : {
           |  	 "type" : "Previous",
           |  	 "code" : "$code",
-          |  	 "description" : "$description"
+          |  	 "description" : "$description",
+          |    "uuid" : "$uuid"
           |  },
           |  "details" : {
           |  	 "documentReferenceNumber" : "$referenceNumber",
@@ -166,14 +171,14 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
           |""".stripMargin)
 
       val expectedResult = Document(
-        index = i,
+        uuid = UUID.fromString(uuid),
         `type` = "Previous",
         code = code,
         description = Some(description),
         referenceNumber = referenceNumber
       )
 
-      val result = json.as[Document](Document.reads(i))
+      val result = json.as[Document](Document.reads)
 
       result mustBe expectedResult
     }
@@ -181,10 +186,10 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
 
   "must format as string" - {
     "when description defined" in {
-      forAll(typeGen, nonEmptyString, nonEmptyString, nonEmptyString) {
-        (`type`, code, description, referenceNumber) =>
+      forAll(arbitrary[UUID], typeGen, nonEmptyString, nonEmptyString, nonEmptyString) {
+        (uuid, `type`, code, description, referenceNumber) =>
           val document = Document(
-            index = i,
+            uuid = uuid,
             `type` = `type`,
             code = code,
             description = Some(description),
@@ -196,10 +201,10 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
     }
 
     "when description undefined" in {
-      forAll(typeGen, nonEmptyString, nonEmptyString) {
-        (`type`, code, referenceNumber) =>
+      forAll(arbitrary[UUID], typeGen, nonEmptyString, nonEmptyString) {
+        (uuid, `type`, code, referenceNumber) =>
           val document = Document(
-            index = i,
+            uuid = uuid,
             `type` = `type`,
             code = code,
             description = None,
@@ -212,10 +217,10 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
   }
 
   "must convert to select item" in {
-    forAll(arbitrary[Int], typeGen, nonEmptyString, Gen.option(nonEmptyString), nonEmptyString, arbitrary[Boolean]) {
-      (index, `type`, code, description, referenceNumber, selected) =>
-        val document = Document(index, `type`, code, description, referenceNumber)
-        document.toSelectItem(selected) mustBe SelectItem(Some(index.toString), document.toString, selected)
+    forAll(arbitrary[UUID], typeGen, nonEmptyString, Gen.option(nonEmptyString), nonEmptyString, arbitrary[Boolean]) {
+      (uuid, `type`, code, description, referenceNumber, selected) =>
+        val document = Document(uuid, `type`, code, description, referenceNumber)
+        document.toSelectItem(selected) mustBe SelectItem(Some(uuid.toString), document.toString, selected)
     }
   }
 }
