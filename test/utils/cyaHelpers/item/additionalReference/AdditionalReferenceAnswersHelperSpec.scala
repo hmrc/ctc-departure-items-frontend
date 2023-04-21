@@ -65,14 +65,14 @@ class AdditionalReferenceAnswersHelperSpec extends SpecBase with ScalaCheckPrope
                 ListItem(
                   name = c651OrC658Document.toString,
                   changeUrl = routes.AdditionalReferenceController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url,
-                  removeUrl = None //TODO: switch to remove controller when built
+                  removeUrl = Some(routes.RemoveAdditionalReferenceController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url)
                 )
               ),
               Right(
                 ListItem(
                   name = nonC658OrC658Document.toString,
                   changeUrl = routes.AdditionalReferenceController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url,
-                  removeUrl = None //TODO: switch to remove controller when built
+                  removeUrl = Some(routes.RemoveAdditionalReferenceController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url)
                 )
               )
             )

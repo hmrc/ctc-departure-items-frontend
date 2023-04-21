@@ -17,6 +17,7 @@
 package utils.cyaHelpers.item.additionalReference
 
 import config.FrontendAppConfig
+import controllers.item.additionalReference.index.routes
 import models.journeyDomain.item.additionalReferences.AdditionalReferenceDomain
 import models.{Index, Mode, UserAnswers}
 import pages.item.additionalReference.index.AdditionalReferencePage
@@ -34,7 +35,7 @@ class AdditionalReferenceAnswersHelper(userAnswers: UserAnswers, mode: Mode, ite
         buildListItem[AdditionalReferenceDomain](
           nameWhenComplete = _.toString,
           nameWhenInProgress = userAnswers.get(AdditionalReferencePage(itemIndex, additionalReferenceIndex)).map(_.toString),
-          removeRoute = None //TODO - change to remove route when built
+          removeRoute = Some(routes.RemoveAdditionalReferenceController.onPageLoad(userAnswers.lrn, mode, itemIndex, additionalReferenceIndex))
         )(AdditionalReferenceDomain.userAnswersReader(itemIndex, additionalReferenceIndex))
     }
 
