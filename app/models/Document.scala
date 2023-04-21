@@ -20,7 +20,6 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
 case class Document(
-  index: Int,
   `type`: String,
   code: String,
   description: Option[String],
@@ -32,16 +31,15 @@ case class Document(
     case None        => s"$code - $referenceNumber"
   }
 
-  override val value: String = index.toString
+  override val value: String = this.toString
 }
 
 object Document {
 
-  def reads(index: Int): Reads[Document] = {
+  def reads: Reads[Document] = {
 
     def readsForKey(key: String): Reads[Document] = (
-      (index: Reads[Int]) and
-        (__ \ key \ "type").read[String] and
+      (__ \ key \ "type").read[String] and
         (__ \ key \ "code").read[String] and
         (__ \ key \ "description").readNullable[String] and
         (__ \ "details" \ "documentReferenceNumber").read[String]

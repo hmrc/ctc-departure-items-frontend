@@ -69,28 +69,24 @@ class SelectableListSpec extends SpecBase {
       result mustBe SelectableList(
         Seq(
           Document(
-            index = 0,
             `type` = "Support",
             code = "1",
             description = None,
             referenceNumber = "RefNo1"
           ),
           Document(
-            index = 1,
             `type` = "Transport",
             code = "2",
             description = None,
             referenceNumber = "RefNo2"
           ),
           Document(
-            index = 2,
             `type` = "Previous",
             code = "3",
             description = None,
             referenceNumber = "RefNo3"
           ),
           Document(
-            index = 3,
             `type` = "Previous",
             code = "4",
             description = None,

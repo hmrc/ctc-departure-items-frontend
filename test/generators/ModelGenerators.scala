@@ -62,12 +62,11 @@ trait ModelGenerators {
   implicit lazy val arbitraryDocument: Arbitrary[Document] =
     Arbitrary {
       for {
-        index           <- positiveInts
         documentType    <- nonEmptyString
         code            <- nonEmptyString
         description     <- Gen.option(nonEmptyString)
         referenceNumber <- nonEmptyString
-      } yield Document(index, documentType, code, description, referenceNumber)
+      } yield Document(documentType, code, description, referenceNumber)
     }
 
   implicit lazy val arbitraryLocalReferenceNumber: Arbitrary[LocalReferenceNumber] =

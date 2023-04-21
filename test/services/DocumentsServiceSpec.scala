@@ -64,8 +64,8 @@ class DocumentsServiceSpec extends SpecBase {
 
           result.value mustBe SelectableList(
             Seq(
-              Document(0, "Type 1", "Code 1", Some("Description 1"), "Ref no. 1"),
-              Document(1, "Type 2", "Code 2", None, "Ref no. 2")
+              Document("Type 1", "Code 1", Some("Description 1"), "Ref no. 1"),
+              Document("Type 2", "Code 2", None, "Ref no. 2")
             )
           )
         }
