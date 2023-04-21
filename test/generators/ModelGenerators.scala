@@ -16,6 +16,7 @@
 
 package generators
 
+import config.Constants._
 import models.AddressLine.{Country => _, _}
 import models._
 import models.reference._
@@ -151,6 +152,14 @@ trait ModelGenerators {
     Arbitrary {
       for {
         documentType <- nonEmptyString
+        description  <- nonEmptyString
+      } yield AdditionalReference(documentType, description)
+    }
+
+  val arbitraryC651OrC658AdditionalReference: Arbitrary[AdditionalReference] =
+    Arbitrary {
+      for {
+        documentType <- Gen.oneOf(C651, C658)
         description  <- nonEmptyString
       } yield AdditionalReference(documentType, description)
     }

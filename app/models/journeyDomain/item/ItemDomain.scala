@@ -19,6 +19,7 @@ package models.journeyDomain.item
 import cats.implicits._
 import config.Constants.GB
 import models.DeclarationType._
+import models.journeyDomain.item.additionalReferences.AdditionalReferencesDomain
 import models.journeyDomain.item.dangerousGoods.DangerousGoodsListDomain
 import models.journeyDomain.item.documents.DocumentsDomain
 import models.journeyDomain.item.packages.PackagesDomain
@@ -44,7 +45,8 @@ case class ItemDomain(
   netWeight: Option[BigDecimal],
   supplementaryUnits: Option[BigDecimal],
   packages: PackagesDomain,
-  documents: Option[DocumentsDomain]
+  documents: Option[DocumentsDomain],
+  additionalReferences: Option[AdditionalReferencesDomain]
 )(index: Index)
     extends JourneyDomainModel
 
@@ -65,7 +67,8 @@ object ItemDomain {
       netWeightReader(itemIndex),
       supplementaryUnitsReader(itemIndex),
       packagesReader(itemIndex),
-      documentsReader(itemIndex)
+      documentsReader(itemIndex),
+      additionalReferencesReader(itemIndex)
     ).tupled.map((ItemDomain.apply _).tupled).map(_(itemIndex))
 
   def declarationTypeReader(itemIndex: Index): UserAnswersReader[Option[DeclarationType]] =
@@ -155,4 +158,8 @@ object ItemDomain {
           AddDocumentsYesNoPage(itemIndex).filterOptionalDependent(identity)(DocumentsDomain.userAnswersReader(itemIndex))
       }
     } yield reader
+
+  def additionalReferencesReader(itemIndex: Index): UserAnswersReader[Option[AdditionalReferencesDomain]] =
+    AddAdditionalReferenceYesNoPage(itemIndex)
+      .filterOptionalDependent(identity)(AdditionalReferencesDomain.userAnswersReader(itemIndex))
 }
