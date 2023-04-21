@@ -17,6 +17,8 @@
 package pages.item
 
 import pages.behaviours.PageBehaviours
+import pages.sections.documents.DocumentsSection
+import play.api.libs.json.{JsArray, Json}
 
 class AddDocumentsYesNoPageSpec extends PageBehaviours {
 
@@ -27,5 +29,29 @@ class AddDocumentsYesNoPageSpec extends PageBehaviours {
     beSettable[Boolean](AddDocumentsYesNoPage(itemIndex))
 
     beRemovable[Boolean](AddDocumentsYesNoPage(itemIndex))
+
+    "cleanup" - {
+      "when no selected" - {
+        "must remove documents" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(DocumentsSection(itemIndex), JsArray(Seq(Json.obj("foo" -> "bar"))))
+
+          val result = userAnswers.setValue(AddDocumentsYesNoPage(itemIndex), false)
+
+          result.get(DocumentsSection(itemIndex)) must not be defined
+        }
+      }
+
+      "when yes selected" - {
+        "must do nothing" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(DocumentsSection(itemIndex), JsArray(Seq(Json.obj("foo" -> "bar"))))
+
+          val result = userAnswers.setValue(AddDocumentsYesNoPage(itemIndex), true)
+
+          result.get(DocumentsSection(itemIndex)) must be(defined)
+        }
+      }
+    }
   }
 }

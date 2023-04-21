@@ -24,6 +24,8 @@ import pages.sections.additionalReference.AdditionalReferenceSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
+import scala.util.Try
+
 case class AdditionalReferencePage(itemIndex: Index, additionalReferenceIndex: Index) extends QuestionPage[AdditionalReference] {
 
   override def path: JsPath = AdditionalReferenceSection(itemIndex, additionalReferenceIndex).path \ toString
@@ -32,4 +34,14 @@ case class AdditionalReferencePage(itemIndex: Index, additionalReferenceIndex: I
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.AdditionalReferenceController.onPageLoad(userAnswers.lrn, mode, itemIndex, additionalReferenceIndex))
+
+  override def cleanup(value: Option[AdditionalReference], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(_) =>
+        userAnswers
+          .remove(AddAdditionalReferenceNumberYesNoPage(itemIndex, additionalReferenceIndex))
+          .flatMap(_.remove(AdditionalReferenceNumberPage(itemIndex, additionalReferenceIndex)))
+      case _ =>
+        super.cleanup(value, userAnswers)
+    }
 }

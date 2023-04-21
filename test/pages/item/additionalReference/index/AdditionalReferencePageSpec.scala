@@ -17,6 +17,7 @@
 package pages.item.additionalReference.index
 
 import models.reference.AdditionalReference
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class AdditionalReferencePageSpec extends PageBehaviours {
@@ -28,5 +29,42 @@ class AdditionalReferencePageSpec extends PageBehaviours {
     beSettable[AdditionalReference](AdditionalReferencePage(itemIndex, additionalReferenceIndex))
 
     beRemovable[AdditionalReference](AdditionalReferencePage(itemIndex, additionalReferenceIndex))
+
+    "when value changes" - {
+      "must clean up subsequent pages" in {
+        forAll(arbitrary[AdditionalReference]) {
+          value =>
+            forAll(arbitrary[AdditionalReference].retryUntil(_ != value), nonEmptyString) {
+              (differentValue, referenceNumber) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(AdditionalReferencePage(itemIndex, additionalReferenceIndex), value)
+                  .setValue(AddAdditionalReferenceNumberYesNoPage(itemIndex, additionalReferenceIndex), true)
+                  .setValue(AdditionalReferenceNumberPage(itemIndex, additionalReferenceIndex), referenceNumber)
+
+                val result = userAnswers.setValue(AdditionalReferencePage(itemIndex, additionalReferenceIndex), differentValue)
+
+                result.get(AddAdditionalReferenceNumberYesNoPage(itemIndex, additionalReferenceIndex)) mustNot be(defined)
+                result.get(AdditionalReferenceNumberPage(itemIndex, additionalReferenceIndex)) mustNot be(defined)
+            }
+        }
+      }
+    }
+
+    "when value has not changed" - {
+      "must not clean up subsequent pages" in {
+        forAll(arbitrary[AdditionalReference], nonEmptyString) {
+          (value, referenceNumber) =>
+            val userAnswers = emptyUserAnswers
+              .setValue(AdditionalReferencePage(itemIndex, additionalReferenceIndex), value)
+              .setValue(AddAdditionalReferenceNumberYesNoPage(itemIndex, additionalReferenceIndex), true)
+              .setValue(AdditionalReferenceNumberPage(itemIndex, additionalReferenceIndex), referenceNumber)
+
+            val result = userAnswers.setValue(AdditionalReferencePage(itemIndex, additionalReferenceIndex), value)
+
+            result.get(AddAdditionalReferenceNumberYesNoPage(itemIndex, additionalReferenceIndex)) must be(defined)
+            result.get(AdditionalReferenceNumberPage(itemIndex, additionalReferenceIndex)) must be(defined)
+        }
+      }
+    }
   }
 }
