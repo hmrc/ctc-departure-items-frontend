@@ -16,7 +16,7 @@
 
 package generators
 
-import models.reference.{Country, PackageType}
+import models.reference.{AdditionalReference, Country, PackageType}
 import models.{DeclarationType, Document}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -68,11 +68,13 @@ trait UserAnswersEntryGenerators {
       case AddSupplementaryUnitsYesNoPage(_)       => arbitrary[Boolean].map(JsBoolean)
       case SupplementaryUnitsPage(_)               => arbitrary[BigDecimal].map(Json.toJson(_))
       case AddDocumentsYesNoPage(_)                => arbitrary[Boolean].map(JsBoolean)
+      case AddAdditionalReferenceYesNoPage(_)      => arbitrary[Boolean].map(JsBoolean)
     }
     pf orElse
       generateDangerousGoodsAnswer orElse
-      generatePackagesAnswer orElse
-      generateDocumentsAnswer
+      generatePackageAnswer orElse
+      generateDocumentAnswer orElse
+      generateAdditionalReferenceAnswer
   }
 
   private def generateDangerousGoodsAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
@@ -82,7 +84,7 @@ trait UserAnswersEntryGenerators {
     }
   }
 
-  private def generatePackagesAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+  private def generatePackageAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.item.packages.index._
     {
       case PackageTypePage(_, _)          => arbitrary[PackageType].map(Json.toJson(_))
@@ -92,10 +94,19 @@ trait UserAnswersEntryGenerators {
     }
   }
 
-  private def generateDocumentsAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+  private def generateDocumentAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.item.documents.index._
     {
       case DocumentPage(_, _) => arbitrary[Document].map(Json.toJson(_))
+    }
+  }
+
+  private def generateAdditionalReferenceAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+    import pages.item.additionalReference.index._
+    {
+      case AdditionalReferencePage(_, _)               => arbitrary[AdditionalReference].map(Json.toJson(_))
+      case AddAdditionalReferenceNumberYesNoPage(_, _) => arbitrary[Boolean].map(JsBoolean)
+      case AdditionalReferenceNumberPage(_, _)         => Gen.alphaNumStr.map(JsString)
     }
   }
 

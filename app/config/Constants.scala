@@ -20,4 +20,7 @@ object Constants {
   val GB = "GB"
   val XI = "XI"
   val AD = "AD"
+
+  val C651 = "C651"
+  val C658 = "C658"
 }
