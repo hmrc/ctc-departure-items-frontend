@@ -31,7 +31,7 @@ case class Document(
     case None        => s"$code - $referenceNumber"
   }
 
-  override val value: String = toString
+  override val value: String = this.toString
 }
 
 object Document {
