@@ -16,16 +16,19 @@
 
 package forms
 
+import forms.Constants.maxAdditionalReferenceNumLength
 import forms.behaviours.StringFieldBehaviours
+import forms.item.additionalReference.AdditionalReferenceNumberFormProvider
+import models.domain.StringFieldRegex.stringFieldRegex
 import org.scalacheck.Gen
 import play.api.data.FormError
 
 class AdditionalReferenceNumberFormProviderSpec extends StringFieldBehaviours {
 
-  private val prefix = Gen.alphaNumStr.sample.value
-  val requiredKey    = s"$prefix.error.required"
-  val lengthKey      = s"$prefix.error.length"
-  val maxLength      = 70
+  private val prefix      = Gen.alphaNumStr.sample.value
+  private val requiredKey = s"$prefix.error.required"
+  private val invalidKey  = s"$prefix.error.invalidCharacters"
+  private val lengthKey   = s"$prefix.error.length"
 
   val form = new AdditionalReferenceNumberFormProvider()(prefix)
 
@@ -36,20 +39,27 @@ class AdditionalReferenceNumberFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
-    )
-
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      stringsWithMaxLength(maxAdditionalReferenceNumLength)
     )
 
     behave like mandatoryField(
       form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
+    )
+
+    behave like fieldWithMaxLength(
+      form,
+      fieldName,
+      maxLength = maxAdditionalReferenceNumLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(maxAdditionalReferenceNumLength))
+    )
+
+    behave like fieldWithInvalidCharacters(
+      form,
+      fieldName,
+      error = FormError(fieldName, invalidKey, Seq(stringFieldRegex.regex)),
+      maxAdditionalReferenceNumLength
     )
   }
 }

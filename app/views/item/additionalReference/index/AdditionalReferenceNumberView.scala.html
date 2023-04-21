@@ -15,15 +15,16 @@
  *@
 
 @import controllers.item.additionalReference.index.routes
+@import forms.Constants.maxAdditionalReferenceNumLength
 @import models.LocalReferenceNumber
 @import viewmodels.components.InputTextViewModel._
-@import viewmodels.InputSize
-@import views.html.components.{Button, ErrorSummary, InputText}
+@import viewmodels.components.InputCharacterCountViewModel._
+@import views.html.components.{Button, ErrorSummary, InputCharacterCount}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
-    inputText: InputText,
+    inputCharacterCount: InputCharacterCount,
     errorSummary: ErrorSummary,
     button: Button
 )
@@ -40,12 +41,15 @@
 
         @errorSummary(form.errors)
 
-        @inputText(
+        @inputCharacterCount(
             field = form("value"),
-            inputTextType = OrdinaryTextInput(
-                heading = messages("item.additionalReference.index.additionalReferenceNumber.heading")
+            inputCharacterCountType = OrdinaryInputCharacterCount(
+                heading = messages("item.additionalReference.index.additionalReferenceNumber.heading"),
+                caption = Some(messages("item.additionalReference.caption", itemIndex.display))
             ),
-            inputClass = InputSize.Width20
+            label = messages("item.additionalReference.index.additionalReferenceNumber.heading", itemIndex.display),
+            maxLength = maxAdditionalReferenceNumLength,
+            rows = 2
         )
 
         @button(attributes = Map("id" -> "submit"))
