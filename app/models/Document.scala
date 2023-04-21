@@ -19,10 +19,7 @@ package models
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
-import java.util.UUID
-
 case class Document(
-  uuid: UUID,
   `type`: String,
   code: String,
   description: Option[String],
@@ -34,7 +31,7 @@ case class Document(
     case None        => s"$code - $referenceNumber"
   }
 
-  override val value: String = uuid.toString
+  override val value: String = toString
 }
 
 object Document {
@@ -42,8 +39,7 @@ object Document {
   def reads: Reads[Document] = {
 
     def readsForKey(key: String): Reads[Document] = (
-      (__ \ key \ "uuid").read[UUID] and
-        (__ \ key \ "type").read[String] and
+      (__ \ key \ "type").read[String] and
         (__ \ key \ "code").read[String] and
         (__ \ key \ "description").readNullable[String] and
         (__ \ "details" \ "documentReferenceNumber").read[String]

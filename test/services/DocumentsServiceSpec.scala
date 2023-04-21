@@ -20,8 +20,6 @@ import base.SpecBase
 import models.{Document, SelectableList}
 import play.api.libs.json.{JsObject, Json}
 
-import java.util.UUID
-
 class DocumentsServiceSpec extends SpecBase {
 
   private val service = injector.instanceOf[DocumentsService]
@@ -40,8 +38,7 @@ class DocumentsServiceSpec extends SpecBase {
               |      "previousDocumentType" : {
               |        "type" : "Type 1",
               |        "code" : "Code 1",
-              |        "description" : "Description 1",
-              |        "uuid" : "8e5a3f69-7d6d-490a-8071-002b1d35d3c1"
+              |        "description" : "Description 1"
               |      },
               |      "details" : {
               |        "documentReferenceNumber" : "Ref no. 1"
@@ -50,8 +47,7 @@ class DocumentsServiceSpec extends SpecBase {
               |    {
               |      "type" : {
               |        "type" : "Type 2",
-              |        "code" : "Code 2",
-              |        "uuid" : "5e6fe4c6-f09f-4a95-b892-47a092a3b027"
+              |        "code" : "Code 2"
               |      },
               |      "details" : {
               |        "documentReferenceNumber" : "Ref no. 2"
@@ -68,8 +64,8 @@ class DocumentsServiceSpec extends SpecBase {
 
           result.value mustBe SelectableList(
             Seq(
-              Document(UUID.fromString("8e5a3f69-7d6d-490a-8071-002b1d35d3c1"), "Type 1", "Code 1", Some("Description 1"), "Ref no. 1"),
-              Document(UUID.fromString("5e6fe4c6-f09f-4a95-b892-47a092a3b027"), "Type 2", "Code 2", None, "Ref no. 2")
+              Document("Type 1", "Code 1", Some("Description 1"), "Ref no. 1"),
+              Document("Type 2", "Code 2", None, "Ref no. 2")
             )
           )
         }
