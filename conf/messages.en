@@ -304,3 +304,9 @@ item.additionalReference.index.addAdditionalReferenceNumberYesNo.title = Do you 
 item.additionalReference.index.addAdditionalReferenceNumberYesNo.heading = Do you want to add an additional reference number?
 item.additionalReference.index.addAdditionalReferenceNumberYesNo.checkYourAnswersLabel = Do you want to add an additional reference number?
 item.additionalReference.index.addAdditionalReferenceNumberYesNo.error.required = Select yes if you want to add an additional reference number
+
+item.additionalReference.index.additionalReferenceNumber.title = Enter the additional reference number
+item.additionalReference.index.additionalReferenceNumber.heading = Enter the additional reference number
+item.additionalReference.index.additionalReferenceNumber.checkYourAnswersLabel = Enter the additional reference number
+item.additionalReference.index.additionalReferenceNumber.error.required = Enter Enter the additional reference number
+item.additionalReference.index.additionalReferenceNumber.error.length = Enter the additional reference number must be 70 characters or less
