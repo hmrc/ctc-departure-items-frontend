@@ -18,6 +18,7 @@ package controllers.item.additionalReference.index
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
+import controllers.item.additionalReference.routes
 import forms.YesNoFormProvider
 import models.reference.AdditionalReference
 import models.requests.SpecificDataRequestProvider1
@@ -67,7 +68,7 @@ class RemoveAdditionalReferenceController @Inject() (
       .andThen(getMandatoryPage(AdditionalReferencePage(itemIndex, additionalReferenceIndex)))
       .async {
         implicit request =>
-          lazy val redirect = Call("GET", "#") // TODO: redirect to AddAnother page
+          lazy val redirect = routes.AddAnotherAdditionalReferenceController.onPageLoad(lrn, mode, itemIndex)
           form(additionalReference)
             .bindFromRequest()
             .fold(

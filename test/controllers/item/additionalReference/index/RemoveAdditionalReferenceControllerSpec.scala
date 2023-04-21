@@ -17,6 +17,7 @@
 package controllers.item.additionalReference.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import controllers.item.additionalReference.{routes => additionalReferenceRoutes}
 import forms.YesNoFormProvider
 import generators.Generators
 import models.reference.AdditionalReference
@@ -27,7 +28,6 @@ import org.mockito.Mockito.{never, verify}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.item.additionalReference.index.AdditionalReferencePage
 import pages.sections.additionalReference.AdditionalReferenceSection
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.item.additionalReference.index.RemoveAdditionalReferenceView
@@ -74,7 +74,7 @@ class RemoveAdditionalReferenceControllerSpec extends SpecBase with AppWithDefau
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual Call("GET", "#").url // TODO: redirect to AddAnother route
+        redirectLocation(result).value mustEqual additionalReferenceRoutes.AddAnotherAdditionalReferenceController.onPageLoad(lrn, mode, itemIndex).url
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
@@ -95,7 +95,7 @@ class RemoveAdditionalReferenceControllerSpec extends SpecBase with AppWithDefau
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual Call("GET", "#").url // TODO: redirect to AddAnother route
+        redirectLocation(result).value mustEqual additionalReferenceRoutes.AddAnotherAdditionalReferenceController.onPageLoad(lrn, mode, itemIndex).url
 
         verify(mockSessionRepository, never()).set(any())(any())
       }
