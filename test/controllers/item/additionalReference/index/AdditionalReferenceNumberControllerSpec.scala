@@ -1,3 +1,19 @@
+/*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package controllers.item.additionalReference.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
@@ -17,10 +33,10 @@ import scala.concurrent.Future
 
 class AdditionalReferenceNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val formProvider = new AdditionalReferenceNumberFormProvider()
-  private val form         = formProvider("item.additionalReference.index.additionalReferenceNumber")
-  private val mode         = NormalMode
-  private lazy val additionalReferenceNumberRoute = routes.AdditionalReferenceNumberController.onPageLoad(lrn, mode).url
+  private val formProvider                        = new AdditionalReferenceNumberFormProvider()
+  private val form                                = formProvider("item.additionalReference.index.additionalReferenceNumber")
+  private val mode                                = NormalMode
+  private lazy val additionalReferenceNumberRoute = routes.AdditionalReferenceNumberController.onPageLoad(lrn, mode, itemIndex, additionalReferenceIndex).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -42,12 +58,12 @@ class AdditionalReferenceNumberControllerSpec extends SpecBase with AppWithDefau
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, mode)(request, messages).toString
+        view(form, lrn, mode, itemIndex, additionalReferenceIndex)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(AdditionalReferenceNumberPage, "test string")
+      val userAnswers = emptyUserAnswers.setValue(AdditionalReferenceNumberPage(itemIndex, additionalReferenceIndex), "test string")
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, additionalReferenceNumberRoute)
@@ -61,7 +77,7 @@ class AdditionalReferenceNumberControllerSpec extends SpecBase with AppWithDefau
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, mode)(request, messages).toString
+        view(filledForm, lrn, mode, itemIndex, additionalReferenceIndex)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -86,7 +102,7 @@ class AdditionalReferenceNumberControllerSpec extends SpecBase with AppWithDefau
 
       val invalidAnswer = ""
 
-      val request = FakeRequest(POST, additionalReferenceNumberRoute).withFormUrlEncodedBody(("value", ""))
+      val request    = FakeRequest(POST, additionalReferenceNumberRoute).withFormUrlEncodedBody(("value", ""))
       val filledForm = form.bind(Map("value" -> invalidAnswer))
 
       val result = route(app, request).value
@@ -96,7 +112,7 @@ class AdditionalReferenceNumberControllerSpec extends SpecBase with AppWithDefau
       val view = injector.instanceOf[AdditionalReferenceNumberView]
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, mode)(request, messages).toString
+        view(filledForm, lrn, mode, itemIndex, additionalReferenceIndex)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
