@@ -22,6 +22,7 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.SelectableFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{DocumentNavigatorProvider, UserAnswersNavigator}
+import pages.item.documents.AnyDocumentsInProgressPage
 import pages.item.documents.index.DocumentPage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -77,12 +78,22 @@ class DocumentController @Inject() (
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, documentList.values, mode, itemIndex, documentIndex))),
               value => {
                 implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex, documentIndex)
-                DocumentPage(itemIndex, documentIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+                DocumentPage(itemIndex, documentIndex)
+                  .writeToUserAnswers(value)
+                  .appendValue(AnyDocumentsInProgressPage(itemIndex), false)
+                  .updateTask()
+                  .writeToSession()
+                  .navigate()
               }
             )
         case None =>
           Future.successful(handleError)
       }
+  }
+
+  def redirectToDocuments(lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
+    implicit request =>
+      AnyDocumentsInProgressPage(itemIndex).writeToUserAnswers(true).updateTask().writeToSession().navigateTo(config.documentsFrontendUrl(lrn))
   }
 
   private def handleError: Result = {

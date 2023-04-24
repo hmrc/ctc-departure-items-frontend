@@ -73,7 +73,7 @@ trait UserAnswersEntryGenerators {
     pf orElse
       generateDangerousGoodsAnswer orElse
       generatePackageAnswer orElse
-      generateDocumentAnswer orElse
+      generateDocumentsAnswer orElse
       generateAdditionalReferenceAnswer
   }
 
@@ -92,6 +92,14 @@ trait UserAnswersEntryGenerators {
       case AddShippingMarkYesNoPage(_, _) => arbitrary[Boolean].map(JsBoolean)
       case ShippingMarkPage(_, _)         => Gen.alphaNumStr.map(JsString)
     }
+  }
+
+  private def generateDocumentsAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+    import pages.item.documents._
+    val pf: PartialFunction[Gettable[_], Gen[JsValue]] = {
+      case AnyDocumentsInProgressPage(_) => arbitrary[Boolean].map(JsBoolean)
+    }
+    pf orElse generateDocumentAnswer
   }
 
   private def generateDocumentAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {

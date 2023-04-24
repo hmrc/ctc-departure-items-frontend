@@ -18,6 +18,7 @@ package models.journeyDomain.item.documents
 
 import models.journeyDomain.{JsArrayGettableAsReaderOps, UserAnswersReader}
 import models.{Index, RichJsArray}
+import pages.item.documents.AnyDocumentsInProgressPage
 import pages.sections.documents.DocumentsSection
 
 case class DocumentsDomain(value: Seq[DocumentDomain])
@@ -25,12 +26,15 @@ case class DocumentsDomain(value: Seq[DocumentDomain])
 object DocumentsDomain {
 
   def userAnswersReader(itemIndex: Index): UserAnswersReader[DocumentsDomain] =
-    DocumentsSection(itemIndex).arrayReader
-      .flatMap {
-        case x if x.isEmpty =>
-          UserAnswersReader(DocumentDomain.userAnswersReader(itemIndex, Index(0))).map(Seq(_))
-        case x =>
-          x.traverse[DocumentDomain](DocumentDomain.userAnswersReader(itemIndex, _))
-      }
-      .map(DocumentsDomain(_))
+    AnyDocumentsInProgressPage(itemIndex).reader.flatMap {
+      _ =>
+        DocumentsSection(itemIndex).arrayReader
+          .flatMap {
+            case x if x.isEmpty =>
+              UserAnswersReader(DocumentDomain.userAnswersReader(itemIndex, Index(0))).map(Seq(_))
+            case x =>
+              x.traverse[DocumentDomain](DocumentDomain.userAnswersReader(itemIndex, _))
+          }
+          .map(DocumentsDomain(_))
+    }
 }
