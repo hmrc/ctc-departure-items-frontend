@@ -16,6 +16,7 @@
 
 package pages.item.additionalReference.index
 
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class AddAdditionalReferenceNumberYesNoPageSpec extends PageBehaviours {
@@ -27,5 +28,37 @@ class AddAdditionalReferenceNumberYesNoPageSpec extends PageBehaviours {
     beSettable[Boolean](AddAdditionalReferenceNumberYesNoPage(itemIndex, additionalReferenceIndex))
 
     beRemovable[Boolean](AddAdditionalReferenceNumberYesNoPage(itemIndex, additionalReferenceIndex))
+
+    "cleanup" - {
+      "when no selected" - {
+        "must remove reference number" in {
+          forAll(arbitrary[String]) {
+            referenceNumber =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AddAdditionalReferenceNumberYesNoPage(itemIndex, additionalReferenceIndex), true)
+                .setValue(AdditionalReferenceNumberPage(itemIndex, additionalReferenceIndex), referenceNumber)
+
+              val result = userAnswers.setValue(AddAdditionalReferenceNumberYesNoPage(itemIndex, additionalReferenceIndex), false)
+
+              result.get(AdditionalReferenceNumberPage(itemIndex, additionalReferenceIndex)) must not be defined
+          }
+        }
+      }
+
+      "when yes selected" - {
+        "must do nothing" in {
+          forAll(arbitrary[String]) {
+            code =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AddAdditionalReferenceNumberYesNoPage(itemIndex, additionalReferenceIndex), true)
+                .setValue(AdditionalReferenceNumberPage(itemIndex, additionalReferenceIndex), code)
+
+              val result = userAnswers.setValue(AddAdditionalReferenceNumberYesNoPage(itemIndex, additionalReferenceIndex), true)
+
+              result.get(AdditionalReferenceNumberPage(itemIndex, additionalReferenceIndex)) must be(defined)
+          }
+        }
+      }
+    }
   }
 }
