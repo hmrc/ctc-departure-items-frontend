@@ -32,13 +32,12 @@ class AdditionalReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyC
       val navigator         = navigatorProvider.apply(mode, itemIndex, additionalReferenceIndex)
 
       "when answers complete" - {
-        "must redirect to add another additional reference page" ignore {
+        "must redirect to add another additional reference page" in {
           forAll(arbitraryAdditionalReferenceAnswers(emptyUserAnswers, itemIndex, additionalReferenceIndex)) {
             answers =>
               navigator
                 .nextPage(answers)
-                .mustBe(???)
-            //TODO: Add AddAnotherAdditionalReference route when page is done
+                .mustBe(controllers.item.additionalReference.routes.AddAnotherAdditionalReferenceController.onPageLoad(answers.lrn, mode, itemIndex))
           }
         }
       }

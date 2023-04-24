@@ -31,7 +31,6 @@ import viewmodels.item.additionalReference.AddAnotherAdditionalReferenceViewMode
 import views.html.item.additionalReference.AddAnotherAdditionalReferenceView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
 
 class AddAnotherAdditionalReferenceController @Inject() (
   override val messagesApi: MessagesApi,
@@ -42,7 +41,7 @@ class AddAnotherAdditionalReferenceController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherAdditionalReferenceView,
   viewModelProvider: AddAnotherAdditionalReferenceViewModelProvider
-)(implicit ec: ExecutionContext, config: FrontendAppConfig)
+)(implicit config: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 
