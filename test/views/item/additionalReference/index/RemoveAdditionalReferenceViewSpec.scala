@@ -18,8 +18,6 @@ package views.item.additionalReference.index
 
 import generators.Generators
 import models.NormalMode
-import models.reference.AdditionalReference
-import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
@@ -27,24 +25,22 @@ import views.html.item.additionalReference.index.RemoveAdditionalReferenceView
 
 class RemoveAdditionalReferenceViewSpec extends YesNoViewBehaviours with Generators {
 
-  private val additionalReference = arbitrary[AdditionalReference].sample.value
-
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
       .instanceOf[RemoveAdditionalReferenceView]
-      .apply(form, lrn, NormalMode, itemIndex, additionalReferenceIndex, additionalReference)(fakeRequest, messages)
+      .apply(form, lrn, NormalMode, itemIndex, additionalReferenceIndex)(fakeRequest, messages)
 
   override val prefix: String = "item.additionalReference.index.removeAdditionalReference"
 
-  behave like pageWithTitle(additionalReference)
+  behave like pageWithTitle(additionalReferenceIndex.display)
 
   behave like pageWithBackLink()
 
   behave like pageWithSectionCaption(s"Item ${itemIndex.display} - Additional reference")
 
-  behave like pageWithHeading(additionalReference)
+  behave like pageWithHeading(additionalReferenceIndex.display)
 
-  behave like pageWithRadioItems(args = Seq(additionalReference))
+  behave like pageWithRadioItems(args = Seq(additionalReferenceIndex.display))
 
   behave like pageWithSubmitButton("Save and continue")
 }

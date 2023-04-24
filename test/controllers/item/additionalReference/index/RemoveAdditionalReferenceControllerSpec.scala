@@ -20,13 +20,10 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.item.additionalReference.{routes => additionalReferenceRoutes}
 import forms.YesNoFormProvider
 import generators.Generators
-import models.reference.AdditionalReference
-import models.{NormalMode, UserAnswers}
+import models.{Index, NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, verify}
-import org.scalacheck.Arbitrary.arbitrary
-import pages.item.additionalReference.index.AdditionalReferencePage
 import pages.sections.additionalReference.AdditionalReferenceSection
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -34,20 +31,16 @@ import views.html.item.additionalReference.index.RemoveAdditionalReferenceView
 
 class RemoveAdditionalReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val formProvider                                   = new YesNoFormProvider()
-  private def form(additionalReference: AdditionalReference) = formProvider("item.additionalReference.index.removeAdditionalReference", additionalReference)
-
-  private val additionalReference                 = arbitrary[AdditionalReference].sample.value
-  private val mode                                = NormalMode
-  private lazy val removeAdditionalReferenceRoute = routes.RemoveAdditionalReferenceController.onPageLoad(lrn, mode, itemIndex, additionalReferenceIndex).url
+  private val formProvider                          = new YesNoFormProvider()
+  private def form(additionalReferenceIndex: Index) = formProvider("item.additionalReference.index.removeAdditionalReference", additionalReferenceIndex.display)
+  private val mode                                  = NormalMode
+  private lazy val removeAdditionalReferenceRoute   = routes.RemoveAdditionalReferenceController.onPageLoad(lrn, mode, itemIndex, additionalReferenceIndex).url
 
   "RemoveAdditionalReference Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      val userAnswers = emptyUserAnswers.setValue(AdditionalReferencePage(itemIndex, additionalReferenceIndex), additionalReference)
-
-      setExistingUserAnswers(userAnswers)
+      setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, removeAdditionalReferenceRoute)
       val result  = route(app, request).value
@@ -57,15 +50,13 @@ class RemoveAdditionalReferenceControllerSpec extends SpecBase with AppWithDefau
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form(additionalReference), lrn, mode, itemIndex, additionalReferenceIndex, additionalReference)(request, messages).toString
+        view(form(additionalReferenceIndex), lrn, mode, itemIndex, additionalReferenceIndex)(request, messages).toString
     }
 
     "must redirect to the next page" - {
       "when yes is submitted" in {
 
-        val userAnswers = emptyUserAnswers.setValue(AdditionalReferencePage(itemIndex, additionalReferenceIndex), additionalReference)
-
-        setExistingUserAnswers(userAnswers)
+        setExistingUserAnswers(emptyUserAnswers)
 
         val request = FakeRequest(POST, removeAdditionalReferenceRoute)
           .withFormUrlEncodedBody(("value", "true"))
@@ -84,9 +75,7 @@ class RemoveAdditionalReferenceControllerSpec extends SpecBase with AppWithDefau
 
       "when no is submitted" in {
 
-        val userAnswers = emptyUserAnswers.setValue(AdditionalReferencePage(itemIndex, additionalReferenceIndex), additionalReference)
-
-        setExistingUserAnswers(userAnswers)
+        setExistingUserAnswers(emptyUserAnswers)
 
         val request = FakeRequest(POST, removeAdditionalReferenceRoute)
           .withFormUrlEncodedBody(("value", "false"))
@@ -103,12 +92,10 @@ class RemoveAdditionalReferenceControllerSpec extends SpecBase with AppWithDefau
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val userAnswers = emptyUserAnswers.setValue(AdditionalReferencePage(itemIndex, additionalReferenceIndex), additionalReference)
-
-      setExistingUserAnswers(userAnswers)
+      setExistingUserAnswers(emptyUserAnswers)
 
       val request   = FakeRequest(POST, removeAdditionalReferenceRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form(additionalReference).bind(Map("value" -> ""))
+      val boundForm = form(additionalReferenceIndex).bind(Map("value" -> ""))
 
       val result = route(app, request).value
 
@@ -117,65 +104,36 @@ class RemoveAdditionalReferenceControllerSpec extends SpecBase with AppWithDefau
       val view = injector.instanceOf[RemoveAdditionalReferenceView]
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, mode, itemIndex, additionalReferenceIndex, additionalReference)(request, messages).toString
+        view(boundForm, lrn, mode, itemIndex, additionalReferenceIndex)(request, messages).toString
     }
 
-    "must redirect to Session Expired for a GET" - {
-      "if no existing data is found" in {
+    "must redirect to Session Expired for a GET if no existing data is found" - {
 
-        setNoExistingUserAnswers()
+      setNoExistingUserAnswers()
 
-        val request = FakeRequest(GET, removeAdditionalReferenceRoute)
+      val request = FakeRequest(GET, removeAdditionalReferenceRoute)
 
-        val result = route(app, request).value
+      val result = route(app, request).value
 
-        status(result) mustEqual SEE_OTHER
+      status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
-      }
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
 
-      "if no document is found" in {
-
-        setExistingUserAnswers(emptyUserAnswers)
-
-        val request = FakeRequest(GET, removeAdditionalReferenceRoute)
-
-        val result = route(app, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
-      }
     }
 
-    "must redirect to Session Expired for a POST" - {
-      "if no document is found" in {
+    "must redirect to Session Expired for a POST if no existing data is found" - {
 
-        setNoExistingUserAnswers()
+      setNoExistingUserAnswers()
 
-        val request = FakeRequest(POST, removeAdditionalReferenceRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+      val request = FakeRequest(POST, removeAdditionalReferenceRoute)
+        .withFormUrlEncodedBody(("value", "true"))
 
-        val result = route(app, request).value
+      val result = route(app, request).value
 
-        status(result) mustEqual SEE_OTHER
+      status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
-      }
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
 
-      "if no existing data is found" in {
-
-        setExistingUserAnswers(emptyUserAnswers)
-
-        val request = FakeRequest(POST, removeAdditionalReferenceRoute)
-          .withFormUrlEncodedBody(("value", "true"))
-
-        val result = route(app, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
-      }
     }
   }
 }
