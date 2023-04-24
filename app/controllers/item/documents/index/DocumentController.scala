@@ -78,12 +78,7 @@ class DocumentController @Inject() (
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, documentList.values, mode, itemIndex, documentIndex))),
               value => {
                 implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex, documentIndex)
-                DocumentPage(itemIndex, documentIndex)
-                  .writeToUserAnswers(value)
-                  .appendValue(AnyDocumentsInProgressPage(itemIndex), false)
-                  .updateTask()
-                  .writeToSession()
-                  .navigate()
+                DocumentPage(itemIndex, documentIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
               }
             )
         case None =>
