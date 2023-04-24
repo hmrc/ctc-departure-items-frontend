@@ -17,10 +17,12 @@
 package models.journeyDomain.item.additionalReferences
 
 import config.Constants._
+import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
 import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
 import models.reference.AdditionalReference
 import models.{Index, Mode, UserAnswers}
 import pages.item.additionalReference.index._
+import play.api.i18n.Messages
 import play.api.mvc.Call
 
 case class AdditionalReferenceDomain(
@@ -29,8 +31,17 @@ case class AdditionalReferenceDomain(
 )(itemIndex: Index, additionalReferenceIndex: Index)
     extends JourneyDomainModel {
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
-    super.routeIfCompleted(userAnswers, mode, stage) // TODO
+  def asString(implicit messages: Messages): String =
+    messages("item.additionalReference.addAnotherAdditionalReference.table.label", additionalReferenceIndex.display, `type`)
+
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some {
+    stage match {
+      case AccessingJourney =>
+        controllers.item.additionalReference.index.routes.AdditionalReferenceController.onPageLoad(userAnswers.lrn, mode, itemIndex, additionalReferenceIndex)
+      case CompletingJourney =>
+        controllers.item.additionalReference.routes.AddAnotherAdditionalReferenceController.onPageLoad(userAnswers.lrn, mode, itemIndex)
+    }
+  }
 }
 
 object AdditionalReferenceDomain {

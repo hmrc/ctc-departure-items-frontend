@@ -164,6 +164,14 @@ trait ModelGenerators {
       } yield AdditionalReference(documentType, description)
     }
 
+  val arbitraryNonC651OrC658AdditionalReference: Arbitrary[AdditionalReference] =
+    Arbitrary {
+      for {
+        documentType <- nonEmptyString
+        description  <- nonEmptyString
+      } yield AdditionalReference(documentType, description)
+    }
+
   lazy val arbitraryIncompleteTaskStatus: Arbitrary[TaskStatus] = Arbitrary {
     Gen.oneOf(TaskStatus.InProgress, TaskStatus.NotStarted, TaskStatus.CannotStartYet)
   }
