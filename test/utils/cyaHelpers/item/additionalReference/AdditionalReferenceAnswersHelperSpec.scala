@@ -63,14 +63,14 @@ class AdditionalReferenceAnswersHelperSpec extends SpecBase with ScalaCheckPrope
             helper.listItems mustBe Seq(
               Right(
                 ListItem(
-                  name = c651OrC658Document.toString,
+                  name = s"Additional reference 1 - ${c651OrC658Document.toString}",
                   changeUrl = routes.AdditionalReferenceController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url,
                   removeUrl = Some(routes.RemoveAdditionalReferenceController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url)
                 )
               ),
               Right(
                 ListItem(
-                  name = nonC658OrC658Document.toString,
+                  name = s"Additional reference 2 - ${nonC658OrC658Document.toString}",
                   changeUrl = routes.AdditionalReferenceController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url,
                   removeUrl = Some(routes.RemoveAdditionalReferenceController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url)
                 )

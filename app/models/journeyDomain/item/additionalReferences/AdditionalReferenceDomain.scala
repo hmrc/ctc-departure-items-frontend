@@ -22,6 +22,7 @@ import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderO
 import models.reference.AdditionalReference
 import models.{Index, Mode, UserAnswers}
 import pages.item.additionalReference.index._
+import play.api.i18n.Messages
 import play.api.mvc.Call
 
 case class AdditionalReferenceDomain(
@@ -30,7 +31,8 @@ case class AdditionalReferenceDomain(
 )(itemIndex: Index, additionalReferenceIndex: Index)
     extends JourneyDomainModel {
 
-  override def toString: String = `type`.toString
+  def asString(implicit messages: Messages): String =
+    messages("item.additionalReference.addAnotherAdditionalReference.table.label", additionalReferenceIndex.display, `type`)
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some {
     stage match {
