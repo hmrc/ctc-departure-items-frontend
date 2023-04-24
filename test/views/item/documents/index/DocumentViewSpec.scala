@@ -46,7 +46,7 @@ class DocumentViewSpec extends InputSelectViewBehaviours[Document] {
 
   behave like pageWithLink(
     id = "documents",
-    expectedText = "Go to your Documents section to add another document.",
+    expectedText = "Go to your Documents section to add another document",
     expectedHref = routes.DocumentController.redirectToDocuments(lrn, itemIndex).url
   )
 
