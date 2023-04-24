@@ -25,7 +25,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
 import org.scalacheck.Arbitrary.arbitrary
-import pages.item.documents.AnyDocumentsInProgressPage
+import pages.item.documents.DocumentsInProgressPage
 import pages.item.documents.index.DocumentPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -96,7 +96,7 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
         view(filledForm, lrn, documentList.values, mode, itemIndex, documentIndex)(request, messages).toString
     }
 
-    "must redirect to the next page when valid data is submitted and set in-progress to false" in {
+    "must redirect to the next page when valid data is submitted" in {
 
       when(mockDocumentsService.getDocuments(any())).thenReturn(Some(documentList))
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
@@ -186,7 +186,7 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
     }
 
     "when user redirects to documents section" - {
-      "must set flag value and redirect" in {
+      "must set DocumentsInProgressPage to true and redirect" in {
         when(mockDocumentsService.getDocuments(any())).thenReturn(Some(documentList))
         when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
@@ -202,7 +202,7 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-        userAnswersCaptor.getValue.get(AnyDocumentsInProgressPage(itemIndex)).value mustBe true
+        userAnswersCaptor.getValue.get(DocumentsInProgressPage(itemIndex)).value mustBe true
       }
     }
   }

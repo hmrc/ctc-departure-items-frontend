@@ -24,11 +24,11 @@ import pages.sections.ItemSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class AnyDocumentsInProgressPage(itemIndex: Index) extends QuestionPage[Boolean] {
+case class DocumentsInProgressPage(itemIndex: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = ItemSection(itemIndex).path \ toString
 
-  override def toString: String = "anyDocumentsInProgress"
+  override def toString: String = "documentsInProgress"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.AddAnotherDocumentController.onPageLoad(userAnswers.lrn, mode, itemIndex))

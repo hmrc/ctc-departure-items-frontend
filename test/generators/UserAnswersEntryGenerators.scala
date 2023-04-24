@@ -97,7 +97,7 @@ trait UserAnswersEntryGenerators {
   private def generateDocumentsAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.item.documents._
     val pf: PartialFunction[Gettable[_], Gen[JsValue]] = {
-      case AnyDocumentsInProgressPage(_) => arbitrary[Boolean].map(JsBoolean)
+      case DocumentsInProgressPage(_) => arbitrary[Boolean].map(JsBoolean)
     }
     pf orElse generateDocumentAnswer
   }

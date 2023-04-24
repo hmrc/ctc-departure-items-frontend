@@ -27,7 +27,7 @@ import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
-import pages.item.documents.AnyDocumentsInProgressPage
+import pages.item.documents.DocumentsInProgressPage
 import play.api.data.Form
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -149,7 +149,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
       }
 
       "when no submitted" - {
-        "must redirect to next page" in {
+        "must redirect to next page and set DocumentsInProgressPage to false" in {
           when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
             .thenReturn(notMaxedOutViewModel)
 
@@ -166,7 +166,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
 
           val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
           verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-          userAnswersCaptor.getValue.get(AnyDocumentsInProgressPage(itemIndex)).value mustBe false
+          userAnswersCaptor.getValue.get(DocumentsInProgressPage(itemIndex)).value mustBe false
         }
       }
     }

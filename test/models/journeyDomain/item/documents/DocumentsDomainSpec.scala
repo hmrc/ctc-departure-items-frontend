@@ -21,7 +21,7 @@ import generators.Generators
 import models.Index
 import models.journeyDomain.{EitherType, UserAnswersReader}
 import org.scalacheck.Gen
-import pages.item.documents.AnyDocumentsInProgressPage
+import pages.item.documents.DocumentsInProgressPage
 
 class DocumentsDomainSpec extends SpecBase with Generators {
 
@@ -29,7 +29,7 @@ class DocumentsDomainSpec extends SpecBase with Generators {
 
     "can be parsed from UserAnswers" - {
 
-      "when no documents in progress" in {
+      "when documents not in progress" in {
         val numberOfDocuments = Gen.choose(1, frontendAppConfig.maxDocuments).sample.value
 
         val userAnswers = (0 until numberOfDocuments)
@@ -37,7 +37,7 @@ class DocumentsDomainSpec extends SpecBase with Generators {
             case (updatedUserAnswers, index) =>
               arbitraryDocumentAnswers(updatedUserAnswers, itemIndex, Index(index)).sample.value
           })
-          .setValue(AnyDocumentsInProgressPage(itemIndex), false)
+          .setValue(DocumentsInProgressPage(itemIndex), false)
 
         val result: EitherType[DocumentsDomain] = UserAnswersReader[DocumentsDomain](
           DocumentsDomain.userAnswersReader(itemIndex)
@@ -46,7 +46,7 @@ class DocumentsDomainSpec extends SpecBase with Generators {
         result.value.value.length mustBe numberOfDocuments
       }
 
-      "when no value set for AnyDocumentsInProgressPage" in {
+      "when no value set for DocumentsInProgressPage" in {
         val numberOfDocuments = Gen.choose(1, frontendAppConfig.maxDocuments).sample.value
 
         val userAnswers = (0 until numberOfDocuments).foldLeft(emptyUserAnswers)({
@@ -63,7 +63,7 @@ class DocumentsDomainSpec extends SpecBase with Generators {
     }
 
     "can not be parsed from user answers" - {
-      "when any documents in progress" in {
+      "when documents in progress" in {
         val numberOfDocuments = Gen.choose(1, frontendAppConfig.maxDocuments).sample.value
 
         val userAnswers = (0 until numberOfDocuments)
@@ -71,13 +71,13 @@ class DocumentsDomainSpec extends SpecBase with Generators {
             case (updatedUserAnswers, index) =>
               arbitraryDocumentAnswers(updatedUserAnswers, itemIndex, Index(index)).sample.value
           })
-          .setValue(AnyDocumentsInProgressPage(itemIndex), true)
+          .setValue(DocumentsInProgressPage(itemIndex), true)
 
         val result: EitherType[DocumentsDomain] = UserAnswersReader[DocumentsDomain](
           DocumentsDomain.userAnswersReader(itemIndex)
         ).run(userAnswers)
 
-        result.left.value.page mustBe AnyDocumentsInProgressPage(itemIndex)
+        result.left.value.page mustBe DocumentsInProgressPage(itemIndex)
       }
     }
   }

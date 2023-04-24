@@ -22,7 +22,7 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.AddAnotherFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
-import pages.item.documents.AnyDocumentsInProgressPage
+import pages.item.documents.DocumentsInProgressPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -73,7 +73,7 @@ class AddAnotherDocumentController @Inject() (
               Future.successful(Redirect(controllers.item.documents.index.routes.DocumentController.onPageLoad(lrn, mode, itemIndex, viewModel.nextIndex)))
             case false =>
               implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
-              AnyDocumentsInProgressPage(itemIndex).writeToUserAnswers(false).updateTask().writeToSession().navigate()
+              DocumentsInProgressPage(itemIndex).writeToUserAnswers(false).updateTask().writeToSession().navigate()
           }
         )
   }
