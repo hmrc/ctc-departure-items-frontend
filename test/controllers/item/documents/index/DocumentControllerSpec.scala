@@ -19,11 +19,13 @@ package controllers.item.documents.index
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.SelectableFormProvider
 import generators.Generators
-import models.{Document, NormalMode, SelectableList}
+import models.{Document, NormalMode, SelectableList, UserAnswers}
 import navigation.DocumentNavigatorProvider
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{verify, when}
 import org.scalacheck.Arbitrary.arbitrary
+import pages.item.documents.DocumentsInProgressPage
 import pages.item.documents.index.DocumentPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -181,6 +183,27 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual frontendAppConfig.technicalDifficultiesUrl
+    }
+
+    "when user redirects to documents section" - {
+      "must set DocumentsInProgressPage to true and redirect" in {
+        when(mockDocumentsService.getDocuments(any())).thenReturn(Some(documentList))
+        when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(GET, routes.DocumentController.redirectToDocuments(lrn, itemIndex).url)
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual frontendAppConfig.documentsFrontendUrl(lrn)
+
+        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
+        userAnswersCaptor.getValue.get(DocumentsInProgressPage(itemIndex)).value mustBe true
+      }
     }
   }
 }

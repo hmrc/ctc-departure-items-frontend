@@ -107,6 +107,11 @@ package object controllers {
         _ => call
       }
 
+    def navigateTo(url: String)(implicit executionContext: ExecutionContext): Future[Result] =
+      write.map {
+        _ => Redirect(url)
+      }
+
     private def navigate(result: Write[A] => Call)(implicit executionContext: ExecutionContext): Future[Result] =
       write.map {
         w => Redirect(result(w))
