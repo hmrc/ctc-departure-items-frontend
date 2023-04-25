@@ -18,7 +18,6 @@
 @import models.LocalReferenceNumber
 @import viewmodels.components.InputYesNoViewModel._
 @import views.html.components.{Button, ErrorSummary, InputYesNo}
-@import models.reference.AdditionalReference
 
 @this(
     mainTemplate: MainTemplate,
@@ -28,10 +27,10 @@
     button: Button
 )
 
-@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, additionalReferenceIndex: Index, additionalReference: AdditionalReference)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, additionalReferenceIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("item.additionalReference.index.removeAdditionalReference.title", additionalReference.toString),
+    title = messages("item.additionalReference.index.removeAdditionalReference.title", additionalReferenceIndex.display),
     showBackLink = true,
     lrn = lrn
 ) {
@@ -43,7 +42,7 @@
         @inputYesNo(
             field = form("value"),
             yesNoType = OrdinaryYesNo(
-                heading = messages("item.additionalReference.index.removeAdditionalReference.heading", additionalReference.toString),
+                heading = messages("item.additionalReference.index.removeAdditionalReference.heading", additionalReferenceIndex.display),
                 caption = Some(messages("item.additionalReference.caption", itemIndex.display))
             )
         )

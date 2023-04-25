@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package viewmodels
+package viewmodels.dangerousGoods
 
 import base.SpecBase
 import generators.Generators
