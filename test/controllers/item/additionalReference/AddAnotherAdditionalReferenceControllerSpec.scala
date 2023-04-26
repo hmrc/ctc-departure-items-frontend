@@ -85,7 +85,7 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual
-        controllers.item.additionalReference.index.routes.AddAdditionalReferenceNumberYesNoController.onPageLoad(lrn, mode, itemIndex, Index(0)).url
+        controllers.item.routes.AddAdditionalReferenceYesNoController.onPageLoad(lrn, mode, itemIndex).url
     }
 
     "must return OK and the correct view for a GET" - {
