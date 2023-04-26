@@ -56,21 +56,20 @@ class AdditionalReferenceAnswersHelperSpec extends SpecBase with ScalaCheckPrope
               .setValue(AdditionalReferencePage(itemIndex, Index(0)), c651OrC658Document)
               .setValue(AdditionalReferenceNumberPage(itemIndex, Index(0)), additionalReferenceNumber)
               .setValue(AdditionalReferencePage(itemIndex, Index(1)), nonC658OrC658Document)
-              .setValue(AddAdditionalReferenceNumberYesNoPage(itemIndex, Index(1)), true)
-              .setValue(AdditionalReferenceNumberPage(itemIndex, Index(1)), additionalReferenceNumber)
+              .setValue(AddAdditionalReferenceNumberYesNoPage(itemIndex, Index(1)), false)
 
             val helper = new AdditionalReferenceAnswersHelper(userAnswers, mode, itemIndex)
             helper.listItems mustBe Seq(
               Right(
                 ListItem(
-                  name = s"Additional reference 1 - ${c651OrC658Document.toString}",
+                  name = s"${c651OrC658Document.toString} - $additionalReferenceNumber",
                   changeUrl = routes.AdditionalReferenceController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url,
                   removeUrl = Some(routes.RemoveAdditionalReferenceController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url)
                 )
               ),
               Right(
                 ListItem(
-                  name = s"Additional reference 2 - ${nonC658OrC658Document.toString}",
+                  name = nonC658OrC658Document.toString,
                   changeUrl = routes.AdditionalReferenceController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url,
                   removeUrl = Some(routes.RemoveAdditionalReferenceController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url)
                 )
