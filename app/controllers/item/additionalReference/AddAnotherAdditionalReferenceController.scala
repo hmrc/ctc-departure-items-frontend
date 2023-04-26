@@ -52,7 +52,7 @@ class AddAnotherAdditionalReferenceController @Inject() (
       val viewModel = viewModelProvider(request.userAnswers, mode, itemIndex)
       viewModel.count match {
         case 0 =>
-          Redirect(controllers.item.additionalReference.index.routes.AddAdditionalReferenceNumberYesNoController.onPageLoad(lrn, mode, itemIndex, Index(0)))
+          Redirect(controllers.item.routes.AddAdditionalReferenceYesNoController.onPageLoad(lrn, mode, itemIndex))
         case _ =>
           Ok(view(form(viewModel), lrn, viewModel, itemIndex))
       }
