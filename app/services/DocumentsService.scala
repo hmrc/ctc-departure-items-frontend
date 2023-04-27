@@ -16,13 +16,21 @@
 
 package services
 
-import models.{Document, RichOptionalJsArray, SelectableList, UserAnswers}
+import models.{Document, Index, RichOptionalJsArray, SelectableList, UserAnswers}
+import pages.sections.documents.{DocumentsSection => ItemDocumentsSection}
 import pages.sections.external.DocumentsSection
 
 import javax.inject.Inject
 
 class DocumentsService @Inject() () {
 
-  def getDocuments(userAnswers: UserAnswers): Option[SelectableList[Document]] =
-    userAnswers.get(DocumentsSection).validate(SelectableList.documentsReads).filter(_.values.nonEmpty)
+  def getDocuments(userAnswers: UserAnswers, itemIndex: Index): Option[SelectableList[Document]] =
+    for {
+      documents <- userAnswers.get(DocumentsSection).validate(SelectableList.documentsReads)
+      itemDocuments = userAnswers.get(ItemDocumentsSection(itemIndex)).validate(SelectableList.itemDocumentsReads).getOrElse(SelectableList(Nil))
+      filteredDocuments <- documents.diff(itemDocuments) match {
+        case x if x.nonEmpty => Some(x)
+        case _               => None
+      }
+    } yield filteredDocuments
 }
