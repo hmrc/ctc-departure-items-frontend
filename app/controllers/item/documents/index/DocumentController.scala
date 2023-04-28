@@ -22,7 +22,6 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.SelectableFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{DocumentNavigatorProvider, UserAnswersNavigator}
-import pages.item.documents.DocumentsInProgressPage
 import pages.item.documents.index.DocumentPage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -84,12 +83,6 @@ class DocumentController @Inject() (
         case None =>
           Future.successful(handleError)
       }
-  }
-
-  // TODO - remove
-  def redirectToDocuments(lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
-    implicit request =>
-      DocumentsInProgressPage(itemIndex).writeToUserAnswers(true).updateTask().writeToSession().navigateTo(config.documentsFrontendUrl(lrn))
   }
 
   private def handleError: Result = {

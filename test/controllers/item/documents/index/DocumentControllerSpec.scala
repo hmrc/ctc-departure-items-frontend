@@ -17,6 +17,7 @@
 package controllers.item.documents.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import controllers.item.documents.{routes => documentRoutes}
 import forms.SelectableFormProvider
 import generators.Generators
 import models.{Document, NormalMode, SelectableList, UserAnswers}
@@ -192,7 +193,7 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
         setExistingUserAnswers(emptyUserAnswers)
 
-        val request = FakeRequest(GET, routes.DocumentController.redirectToDocuments(lrn, itemIndex).url)
+        val request = FakeRequest(GET, documentRoutes.AddAnotherDocumentController.redirectToDocuments(lrn, itemIndex).url)
 
         val result = route(app, request).value
 
