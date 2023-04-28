@@ -16,7 +16,7 @@
 
 package views.item
 
-import forms.BigDecimalFormProvider
+import forms.NetWeightFormProvider
 import models.NormalMode
 import org.scalacheck.Arbitrary
 import play.api.data.Form
@@ -27,12 +27,14 @@ import views.html.item.NetWeightView
 
 class NetWeightViewSpec extends InputTextViewBehaviours[BigDecimal] {
 
-  override def form: Form[BigDecimal] = new BigDecimalFormProvider()(prefix)
+  override def form: Form[BigDecimal] = new NetWeightFormProvider()(prefix, grossWeight)
 
   override def applyView(form: Form[BigDecimal]): HtmlFormat.Appendable =
     injector.instanceOf[NetWeightView].apply(form, lrn, NormalMode, itemIndex)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[BigDecimal] = Arbitrary(positiveBigDecimals)
+
+  private val grossWeight = arbitraryT.arbitrary.sample.value
 
   override val prefix: String = "item.netWeight"
 

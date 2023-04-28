@@ -18,10 +18,12 @@ package controllers.item
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.BigDecimalFormProvider
+import forms.NetWeightFormProvider
+import models.requests.SpecificDataRequestProvider1
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
-import pages.item.NetWeightPage
+import pages.item.{GrossWeightPage, NetWeightPage}
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -35,7 +37,8 @@ class NetWeightController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: ItemNavigatorProvider,
-  formProvider: BigDecimalFormProvider,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
+  formProvider: NetWeightFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: NetWeightView
@@ -43,27 +46,37 @@ class NetWeightController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("item.netWeight")
+  private type Request = SpecificDataRequestProvider1[BigDecimal]#SpecificDataRequest[_]
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(NetWeightPage(itemIndex)) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
-      Ok(view(preparedForm, lrn, mode, itemIndex))
-  }
+  private def grossWeight(implicit request: Request): BigDecimal = request.arg
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
-    implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex))),
-          value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
-            NetWeightPage(itemIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
-          }
-        )
-  }
+  private def form(grossWeight: BigDecimal): Form[BigDecimal] =
+    formProvider("item.netWeight", grossWeight)
+
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions
+    .requireData(lrn)
+    .andThen(getMandatoryPage(GrossWeightPage(itemIndex))) {
+      implicit request =>
+        val preparedForm = request.userAnswers.get(NetWeightPage(itemIndex)) match {
+          case None        => form(grossWeight)
+          case Some(value) => form(grossWeight).fill(value)
+        }
+        Ok(view(preparedForm, lrn, mode, itemIndex))
+    }
+
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions
+    .requireData(lrn)
+    .andThen(getMandatoryPage(GrossWeightPage(itemIndex)))
+    .async {
+      implicit request =>
+        form(grossWeight)
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex))),
+            value => {
+              implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
+              NetWeightPage(itemIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+            }
+          )
+    }
 }
