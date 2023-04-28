@@ -64,6 +64,8 @@
                 <p class="govuk-body" data-testId="maxLimit">@viewModel.maxLimitLabel</p>
             }
             case _ => {
+                <p class="govuk-body">@messages("item.documents.addAnotherDocument.paragraph")</p>
+
                 <p class="govuk-body">
                     <a class="govuk-link" id="documents" href="@routes.AddAnotherDocumentController.redirectToDocuments(lrn, itemIndex)">@messages("item.documents.addAnotherDocument.link")</a>
                 </p>

@@ -69,6 +69,8 @@ class AddAnotherDocumentViewSpec extends ListWithActionsViewBehaviours {
 
     behave like pageWithoutRadioItems(doc)
 
+    behave like pageWithContent(doc = doc, tag = "p", expectedText = "You can only attach another document if you have added it in your Documents section.")
+
     behave like pageWithLink(
       doc = doc,
       id = "documents",
