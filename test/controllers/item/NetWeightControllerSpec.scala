@@ -17,12 +17,12 @@
 package controllers.item
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.BigDecimalFormProvider
+import forms.NetWeightFormProvider
 import models.NormalMode
 import navigation.ItemNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.item.NetWeightPage
+import pages.item.{GrossWeightPage, NetWeightPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -33,8 +33,9 @@ import scala.concurrent.Future
 
 class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val formProvider        = new BigDecimalFormProvider()
-  private val form                = formProvider("item.netWeight")
+  private val formProvider        = new NetWeightFormProvider()
+  private val grossWeight         = BigDecimal(2)
+  private val form                = formProvider("item.netWeight", grossWeight)
   private val mode                = NormalMode
   private val validAnswer         = BigDecimal(1)
   private lazy val netWeightRoute = routes.NetWeightController.onPageLoad(lrn, mode, itemIndex).url
@@ -48,7 +49,9 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
     "must return OK and the correct view for a GET" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers.setValue(GrossWeightPage(itemIndex), grossWeight)
+
+      setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, netWeightRoute)
 
@@ -64,7 +67,9 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(NetWeightPage(itemIndex), validAnswer)
+      val userAnswers = emptyUserAnswers
+        .setValue(GrossWeightPage(itemIndex), grossWeight)
+        .setValue(NetWeightPage(itemIndex), validAnswer)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, netWeightRoute)
@@ -83,7 +88,9 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
     "must redirect to the next page when valid data is submitted" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers.setValue(GrossWeightPage(itemIndex), grossWeight)
+
+      setExistingUserAnswers(userAnswers)
 
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
@@ -99,7 +106,9 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers.setValue(GrossWeightPage(itemIndex), grossWeight)
+
+      setExistingUserAnswers(userAnswers)
 
       val invalidAnswer = ""
 
