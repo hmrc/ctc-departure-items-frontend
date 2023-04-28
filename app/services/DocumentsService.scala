@@ -27,10 +27,7 @@ class DocumentsService @Inject() () {
   def getDocuments(userAnswers: UserAnswers, itemIndex: Index): Option[SelectableList[Document]] =
     for {
       documents <- userAnswers.get(DocumentsSection).validate(SelectableList.documentsReads)
-      itemDocuments = userAnswers.get(ItemDocumentsSection(itemIndex)).validate(SelectableList.itemDocumentsReads).getOrElse(SelectableList(Nil))
-      filteredDocuments <- documents.diff(itemDocuments) match {
-        case x if x.nonEmpty => Some(x)
-        case _               => None
-      }
+      itemDocuments     = userAnswers.get(ItemDocumentsSection(itemIndex)).validate(SelectableList.itemDocumentsReads).getOrElse(SelectableList(Nil))
+      filteredDocuments = documents.diff(itemDocuments)
     } yield filteredDocuments
 }

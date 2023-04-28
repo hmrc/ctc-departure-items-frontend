@@ -149,7 +149,7 @@ class DocumentsServiceSpec extends SpecBase {
 
           val result = service.getDocuments(userAnswers, itemIndex)
 
-          result mustBe None
+          result mustBe Some(SelectableList(List()))
         }
       }
     }
