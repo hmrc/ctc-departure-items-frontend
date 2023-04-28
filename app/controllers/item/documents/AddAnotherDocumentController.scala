@@ -20,12 +20,13 @@ import config.FrontendAppConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.AddAnotherFormProvider
+import models.requests.DataRequest
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
 import pages.item.documents.DocumentsInProgressPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.item.documents.AddAnotherDocumentViewModel
@@ -50,14 +51,12 @@ class AddAnotherDocumentController @Inject() (
 
   private def form(viewModel: AddAnotherDocumentViewModel): Form[Boolean] = formProvider(viewModel.prefix, viewModel.allowMore)
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
       val viewModel = viewModelProvider(request.userAnswers, mode, itemIndex)
       viewModel.count match {
-        case 0 =>
-          Redirect(controllers.item.routes.AddDocumentsYesNoController.onPageLoad(lrn, mode, itemIndex))
-        case _ =>
-          Ok(view(form(viewModel), lrn, viewModel, itemIndex))
+        case 0 => redirectToNextPage(mode, itemIndex)
+        case _ => Future.successful(Ok(view(form(viewModel), lrn, viewModel, itemIndex)))
       }
   }
 
@@ -72,9 +71,13 @@ class AddAnotherDocumentController @Inject() (
             case true =>
               Future.successful(Redirect(controllers.item.documents.index.routes.DocumentController.onPageLoad(lrn, mode, itemIndex, viewModel.nextIndex)))
             case false =>
-              implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
-              DocumentsInProgressPage(itemIndex).writeToUserAnswers(false).updateTask().writeToSession().navigate()
+              redirectToNextPage(mode, itemIndex)
           }
         )
+  }
+
+  private def redirectToNextPage(mode: Mode, itemIndex: Index)(implicit request: DataRequest[_]): Future[Result] = {
+    implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
+    DocumentsInProgressPage(itemIndex).writeToUserAnswers(false).updateTask().writeToSession().navigate()
   }
 }
