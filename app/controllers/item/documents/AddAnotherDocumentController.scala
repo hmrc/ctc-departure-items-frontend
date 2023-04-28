@@ -20,13 +20,15 @@ import config.FrontendAppConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.AddAnotherFormProvider
-import models.{Index, LocalReferenceNumber, Mode}
+import models.requests.DataRequest
+import models.{Document, Index, LocalReferenceNumber, Mode}
 import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
 import pages.item.documents.DocumentsInProgressPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.DocumentsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.item.documents.AddAnotherDocumentViewModel
 import viewmodels.item.documents.AddAnotherDocumentViewModel.AddAnotherDocumentViewModelProvider
@@ -41,6 +43,7 @@ class AddAnotherDocumentController @Inject() (
   actions: Actions,
   navigatorProvider: ItemNavigatorProvider,
   formProvider: AddAnotherFormProvider,
+  service: DocumentsService,
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherDocumentView,
   viewModelProvider: AddAnotherDocumentViewModelProvider
@@ -48,26 +51,32 @@ class AddAnotherDocumentController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(viewModel: AddAnotherDocumentViewModel): Form[Boolean] = formProvider(viewModel.prefix, viewModel.allowMore)
+  private def form(viewModel: AddAnotherDocumentViewModel): Form[Boolean] =
+    formProvider(viewModel.prefix, viewModel.allowMore)
+
+  private def documents(itemIndex: Index)(implicit request: DataRequest[_]): Option[Seq[Document]] =
+    service.getDocuments(request.userAnswers, itemIndex).map(_.values)
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      val viewModel = viewModelProvider(request.userAnswers, mode, itemIndex)
+      val documentsCanBeAttached = documents(itemIndex)
+      val viewModel = viewModelProvider(request.userAnswers, mode, itemIndex, documents(itemIndex))
       viewModel.count match {
         case 0 =>
           Redirect(controllers.item.routes.AddDocumentsYesNoController.onPageLoad(lrn, mode, itemIndex))
         case _ =>
-          Ok(view(form(viewModel), lrn, viewModel, itemIndex))
+          Ok(view(form(viewModel, documentsCanBeAttached), lrn, viewModel, itemIndex, documentsCanBeAttached))
       }
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
+
       val viewModel = viewModelProvider(request.userAnswers, mode, itemIndex)
-      form(viewModel)
+      form(viewModel, canAttachADocument)
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, viewModel, itemIndex))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, viewModel, itemIndex, canAttachADocument))),
           {
             case true =>
               Future.successful(Redirect(controllers.item.documents.index.routes.DocumentController.onPageLoad(lrn, mode, itemIndex, viewModel.nextIndex)))
@@ -76,5 +85,10 @@ class AddAnotherDocumentController @Inject() (
               DocumentsInProgressPage(itemIndex).writeToUserAnswers(false).updateTask().writeToSession().navigate()
           }
         )
+  }
+
+  def redirectToDocuments(lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
+    implicit request =>
+      DocumentsInProgressPage(itemIndex).writeToUserAnswers(true).updateTask().writeToSession().navigateTo(config.documentsFrontendUrl(lrn))
   }
 }

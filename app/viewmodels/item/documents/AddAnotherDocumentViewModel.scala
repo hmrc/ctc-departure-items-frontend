@@ -18,7 +18,7 @@ package viewmodels.item.documents
 
 import config.FrontendAppConfig
 import controllers.item.documents.routes
-import models.{Index, Mode, UserAnswers}
+import models.{Document, Index, Mode, SelectableList, UserAnswers}
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import utils.cyaHelpers.item.documents.DocumentAnswersHelper
@@ -28,21 +28,24 @@ import javax.inject.Inject
 
 case class AddAnotherDocumentViewModel(
   override val listItems: Seq[ListItem],
-  onSubmitCall: Call
+  onSubmitCall: Call,
+  documents: Option[Seq[Document]]
 ) extends AddAnotherViewModel {
 
   override val prefix: String = "item.documents.addAnotherDocument"
 
   override def maxCount(implicit config: FrontendAppConfig): Int = config.maxDocuments
+
+  override def allowMore(implicit config: FrontendAppConfig): Boolean = super.allowMore && documents.exists(_.nonEmpty)
 }
 
 object AddAnotherDocumentViewModel {
 
   class AddAnotherDocumentViewModelProvider @Inject() () {
 
-    def apply(userAnswers: UserAnswers, mode: Mode, itemIndex: Index)(implicit
-      messages: Messages,
-      config: FrontendAppConfig
+    def apply(userAnswers: UserAnswers, mode: Mode, itemIndex: Index, documents: Option[Seq[Document]])(implicit
+                                                                                                 messages: Messages,
+                                                                                                 config: FrontendAppConfig
     ): AddAnotherDocumentViewModel = {
       val helper = new DocumentAnswersHelper(userAnswers, mode, itemIndex)
 
@@ -53,7 +56,8 @@ object AddAnotherDocumentViewModel {
 
       new AddAnotherDocumentViewModel(
         listItems,
-        onSubmitCall = routes.AddAnotherDocumentController.onSubmit(userAnswers.lrn, mode, itemIndex)
+        onSubmitCall = routes.AddAnotherDocumentController.onSubmit(userAnswers.lrn, mode, itemIndex),
+        documents = documents
       )
     }
   }

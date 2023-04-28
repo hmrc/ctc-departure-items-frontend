@@ -15,6 +15,7 @@
  *@
 
 @import config.FrontendAppConfig
+@import controllers.item.documents.routes
 @import models.LocalReferenceNumber
 @import viewmodels.components.InputYesNoViewModel._
 @import viewmodels.item.documents.AddAnotherDocumentViewModel
@@ -31,7 +32,7 @@
     button: Button
 )
 
-@(form: Form[Boolean], lrn: LocalReferenceNumber, viewModel: AddAnotherDocumentViewModel, itemIndex: Index)(implicit request: Request[_], messages: Messages, config: FrontendAppConfig)
+@(form: Form[Boolean], lrn: LocalReferenceNumber, viewModel: AddAnotherDocumentViewModel, itemIndex: Index, documentsAdded: Boolean)(implicit request: Request[_], messages: Messages, config: FrontendAppConfig)
 
 @mainTemplate(
     title = viewModel.title,
@@ -50,7 +51,13 @@
 
     @formHelper(action = viewModel.onSubmitCall, Symbol("autoComplete") -> "off") {
 
-        @if(viewModel.allowMore) {
+        @if(!documentsAdded && viewModel.allowMore) {
+            <p class="govuk-body">@messages("item.documents.addAnotherDocument.paragraph")</p>
+
+            <p class="govuk-body">
+                <a class="govuk-link" id="documents" href="@routes.AddAnotherDocumentController.redirectToDocuments(lrn, itemIndex)">@messages("item.documents.addAnotherDocument.link")</a>
+            </p>
+        } else if(viewModel.allowMore) {
             @inputYesNo(
                 field = form("value"),
                 yesNoType = YesNoWithLegend(
