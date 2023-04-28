@@ -52,31 +52,29 @@ class AddAnotherDocumentController @Inject() (
     with I18nSupport {
 
   private def form(viewModel: AddAnotherDocumentViewModel): Form[Boolean] =
-    formProvider(viewModel.prefix, viewModel.allowMore)
+    formProvider(viewModel.prefix, viewModel.allowMore && viewModel.canAttachMoreDocumentsToItem)
 
-  private def documents(itemIndex: Index)(implicit request: DataRequest[_]): Option[Seq[Document]] =
-    service.getDocuments(request.userAnswers, itemIndex).map(_.values)
+  private def documents(itemIndex: Index)(implicit request: DataRequest[_]): Seq[Document] =
+    service.getDocuments(request.userAnswers, itemIndex).map(_.values).getOrElse(Nil)
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      val documentsCanBeAttached = documents(itemIndex)
       val viewModel = viewModelProvider(request.userAnswers, mode, itemIndex, documents(itemIndex))
       viewModel.count match {
         case 0 =>
           Redirect(controllers.item.routes.AddDocumentsYesNoController.onPageLoad(lrn, mode, itemIndex))
         case _ =>
-          Ok(view(form(viewModel, documentsCanBeAttached), lrn, viewModel, itemIndex, documentsCanBeAttached))
+          Ok(view(form(viewModel), lrn, viewModel, itemIndex))
       }
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-
-      val viewModel = viewModelProvider(request.userAnswers, mode, itemIndex)
-      form(viewModel, canAttachADocument)
+      val viewModel = viewModelProvider(request.userAnswers, mode, itemIndex, documents(itemIndex))
+      form(viewModel)
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, viewModel, itemIndex, canAttachADocument))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, viewModel, itemIndex))),
           {
             case true =>
               Future.successful(Redirect(controllers.item.documents.index.routes.DocumentController.onPageLoad(lrn, mode, itemIndex, viewModel.nextIndex)))

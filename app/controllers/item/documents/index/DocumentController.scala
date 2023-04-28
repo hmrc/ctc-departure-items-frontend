@@ -86,6 +86,7 @@ class DocumentController @Inject() (
       }
   }
 
+  // TODO - remove
   def redirectToDocuments(lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
       DocumentsInProgressPage(itemIndex).writeToUserAnswers(true).updateTask().writeToSession().navigateTo(config.documentsFrontendUrl(lrn))
