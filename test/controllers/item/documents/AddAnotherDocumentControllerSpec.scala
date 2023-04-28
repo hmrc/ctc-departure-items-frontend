@@ -27,6 +27,7 @@ import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
+import pages.item.AddDocumentsYesNoPage
 import pages.item.documents.DocumentsInProgressPage
 import play.api.data.Form
 import play.api.inject.bind
@@ -90,7 +91,8 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
 
       val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-      userAnswersCaptor.getValue.get(DocumentsInProgressPage(itemIndex)).value mustBe false
+      userAnswersCaptor.getValue.get(AddDocumentsYesNoPage(itemIndex)) must not be defined
+      userAnswersCaptor.getValue.get(DocumentsInProgressPage(itemIndex)) must not be defined
     }
 
     "must return OK and the correct view for a GET" - {
