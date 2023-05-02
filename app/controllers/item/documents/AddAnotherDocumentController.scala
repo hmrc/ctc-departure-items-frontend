@@ -22,6 +22,7 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.AddAnotherFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
+import pages.item.AddDocumentsYesNoPage
 import pages.item.documents.DocumentsInProgressPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -50,14 +51,20 @@ class AddAnotherDocumentController @Inject() (
 
   private def form(viewModel: AddAnotherDocumentViewModel): Form[Boolean] = formProvider(viewModel.prefix, viewModel.allowMore)
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
       val viewModel = viewModelProvider(request.userAnswers, mode, itemIndex)
       viewModel.count match {
         case 0 =>
-          Redirect(controllers.item.routes.AddDocumentsYesNoController.onPageLoad(lrn, mode, itemIndex))
+          implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
+          AddDocumentsYesNoPage(itemIndex)
+            .removeFromUserAnswers()
+            .removeValue(DocumentsInProgressPage(itemIndex))
+            .updateTask()
+            .writeToSession()
+            .navigate()
         case _ =>
-          Ok(view(form(viewModel), lrn, viewModel, itemIndex))
+          Future.successful(Ok(view(form(viewModel), lrn, viewModel, itemIndex)))
       }
   }
 
