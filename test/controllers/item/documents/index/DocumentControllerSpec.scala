@@ -17,6 +17,7 @@
 package controllers.item.documents.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import controllers.item.documents.{routes => documentRoutes}
 import forms.SelectableFormProvider
 import generators.Generators
 import models.{Document, NormalMode, SelectableList, UserAnswers}
@@ -59,7 +60,7 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
     "must return OK and the correct view for a GET" in {
 
-      when(mockDocumentsService.getDocuments(any())).thenReturn(Some(documentList))
+      when(mockDocumentsService.getDocuments(any(), any())).thenReturn(Some(documentList))
 
       setExistingUserAnswers(emptyUserAnswers)
 
@@ -77,7 +78,7 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      when(mockDocumentsService.getDocuments(any())).thenReturn(Some(documentList))
+      when(mockDocumentsService.getDocuments(any(), any())).thenReturn(Some(documentList))
 
       val userAnswers = emptyUserAnswers.setValue(DocumentPage(itemIndex, documentIndex), document1)
       setExistingUserAnswers(userAnswers)
@@ -98,7 +99,7 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
     "must redirect to the next page when valid data is submitted" in {
 
-      when(mockDocumentsService.getDocuments(any())).thenReturn(Some(documentList))
+      when(mockDocumentsService.getDocuments(any(), any())).thenReturn(Some(documentList))
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
@@ -115,7 +116,7 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      when(mockDocumentsService.getDocuments(any())).thenReturn(Some(documentList))
+      when(mockDocumentsService.getDocuments(any(), any())).thenReturn(Some(documentList))
       setExistingUserAnswers(emptyUserAnswers)
 
       val request   = FakeRequest(POST, documentRoute).withFormUrlEncodedBody(("value", "invalid value"))
@@ -145,7 +146,7 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
     "must redirect to technical difficulties for a GET if fails to read documents" in {
 
-      when(mockDocumentsService.getDocuments(any())).thenReturn(None)
+      when(mockDocumentsService.getDocuments(any(), any())).thenReturn(None)
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, documentRoute)
@@ -172,7 +173,7 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
     "must redirect to technical difficulties for a POST if fails to read documents" in {
 
-      when(mockDocumentsService.getDocuments(any())).thenReturn(None)
+      when(mockDocumentsService.getDocuments(any(), any())).thenReturn(None)
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, documentRoute)
@@ -187,12 +188,12 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
     "when user redirects to documents section" - {
       "must set DocumentsInProgressPage to true and redirect" in {
-        when(mockDocumentsService.getDocuments(any())).thenReturn(Some(documentList))
+        when(mockDocumentsService.getDocuments(any(), any())).thenReturn(Some(documentList))
         when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
         setExistingUserAnswers(emptyUserAnswers)
 
-        val request = FakeRequest(GET, routes.DocumentController.redirectToDocuments(lrn, itemIndex).url)
+        val request = FakeRequest(GET, documentRoutes.AddAnotherDocumentController.redirectToDocuments(lrn, itemIndex).url)
 
         val result = route(app, request).value
 

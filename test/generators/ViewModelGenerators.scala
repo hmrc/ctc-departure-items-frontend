@@ -16,6 +16,7 @@
 
 package generators
 
+import models.Document
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.FormError
@@ -192,7 +193,8 @@ trait ViewModelGenerators {
     for {
       listItems    <- arbitrary[Seq[ListItem]]
       onSubmitCall <- arbitrary[Call]
-    } yield AddAnotherDocumentViewModel(listItems, onSubmitCall)
+      documents    <- listWithMaxLength[Document]()
+    } yield AddAnotherDocumentViewModel(listItems, onSubmitCall, documents)
   }
 
   implicit lazy val arbitraryAddAnotherAdditionalReferenceViewModel: Arbitrary[AddAnotherAdditionalReferenceViewModel] = Arbitrary {

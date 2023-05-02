@@ -16,6 +16,7 @@
 
 package views.item.documents
 
+import controllers.item.documents.routes
 import forms.AddAnotherFormProvider
 import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.Form
@@ -58,4 +59,23 @@ class AddAnotherDocumentViewSpec extends ListWithActionsViewBehaviours {
   behave like pageWithItemsMaxedOut(maxedOutViewModel.count)
 
   behave like pageWithSubmitButton("Save and continue")
+
+  "when no documents available to attach to item" - {
+    val viewModel = notMaxedOutViewModel.copy(documents = Nil)
+    val view = injector
+      .instanceOf[AddAnotherDocumentView]
+      .apply(formProvider(viewModel), lrn, viewModel, itemIndex)(fakeRequest, messages, frontendAppConfig)
+    val doc = parseView(view)
+
+    behave like pageWithoutRadioItems(doc)
+
+    behave like pageWithContent(doc = doc, tag = "p", expectedText = "You can only attach another document if you have added it in your Documents section.")
+
+    behave like pageWithLink(
+      doc = doc,
+      id = "documents",
+      expectedText = "Go to your Documents section to add another document",
+      expectedHref = routes.AddAnotherDocumentController.redirectToDocuments(lrn, itemIndex).url
+    )
+  }
 }

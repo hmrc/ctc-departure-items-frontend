@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package viewmodels.additionalReference
+package viewmodels.item.additionalReference
 
 import base.SpecBase
 import generators.Generators

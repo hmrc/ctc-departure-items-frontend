@@ -4,8 +4,6 @@ POST       /:itemIndex/documents/:documentIndex/select-document/:lrn            
 GET        /:itemIndex/documents/:documentIndex/change-select-document/:lrn                    controllers.item.documents.index.DocumentController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index, documentIndex: Index)
 POST       /:itemIndex/documents/:documentIndex/change-select-document/:lrn                    controllers.item.documents.index.DocumentController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index, documentIndex: Index)
 
-GET        /:itemIndex/documents/add-another/:lrn                                              controllers.item.documents.index.DocumentController.redirectToDocuments(lrn: LocalReferenceNumber, itemIndex: Index)
-
 GET        /:itemIndex/documents/:documentIndex/remove/:lrn                                    controllers.item.documents.index.RemoveDocumentController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index, documentIndex: Index)
 POST       /:itemIndex/documents/:documentIndex/remove/:lrn                                    controllers.item.documents.index.RemoveDocumentController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index, documentIndex: Index)
 GET        /:itemIndex/documents/:documentIndex/change-remove/:lrn                             controllers.item.documents.index.RemoveDocumentController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index, documentIndex: Index)

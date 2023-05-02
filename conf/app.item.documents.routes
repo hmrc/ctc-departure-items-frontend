@@ -4,3 +4,5 @@ GET        /:itemIndex/documents/attach-another/:lrn             controllers.ite
 POST       /:itemIndex/documents/attach-another/:lrn             controllers.item.documents.AddAnotherDocumentController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
 GET        /:itemIndex/documents/change-attach-another/:lrn      controllers.item.documents.AddAnotherDocumentController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
 POST       /:itemIndex/documents/change-attach-another/:lrn      controllers.item.documents.AddAnotherDocumentController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+
+GET        /:itemIndex/documents/add-another/:lrn                controllers.item.documents.AddAnotherDocumentController.redirectToDocuments(lrn: LocalReferenceNumber, itemIndex: Index)

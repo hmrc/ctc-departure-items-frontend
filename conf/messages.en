@@ -300,6 +300,8 @@ item.documents.addAnotherDocument.plural.heading = You have attached {0} documen
 item.documents.addAnotherDocument.error.required = Select yes if you want to attach another document
 item.documents.addAnotherDocument.label = Do you want to attach another document?
 item.documents.addAnotherDocument.maxLimit.label = You cannot attach any more documents. To attach another, you need to remove one first.
+item.documents.addAnotherDocument.paragraph = You can only attach another document if you have added it in your Documents section.
+item.documents.addAnotherDocument.link = Go to your Documents section to add another document
 
 item.additionalReference.index.addAdditionalReferenceNumberYesNo.title = Do you want to add an additional reference number?
 item.additionalReference.index.addAdditionalReferenceNumberYesNo.heading = Do you want to add an additional reference number?
