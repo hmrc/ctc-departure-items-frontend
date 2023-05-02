@@ -184,6 +184,7 @@ item.netWeight.error.invalidCharacters = The net weight must only include number
 item.netWeight.error.required = Enter the item’s net weight
 item.netWeight.error.invalidFormat = The net weight must only include 6 decimal places or less
 item.netWeight.error.invalidValue = The net weight must be 16 characters or less
+item.netWeight.error.maximum = The net weight must be less than or equal to the gross weight
 
 item.grossWeight.title = What is the item’s gross weight?
 item.grossWeight.heading = What is the item’s gross weight?

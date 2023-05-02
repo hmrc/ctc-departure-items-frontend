@@ -27,6 +27,7 @@ import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
+import pages.item.AddDocumentsYesNoPage
 import pages.item.documents.DocumentsInProgressPage
 import play.api.data.Form
 import play.api.inject.bind
@@ -73,7 +74,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
 
   "AddAnotherDocument Controller" - {
 
-    "must redirect to add document yes/no page when 0 document added" in {
+    "must redirect to next page when 0 document added" in {
       when(mockViewModelProvider.apply(any(), any(), any(), any())(any(), any()))
         .thenReturn(emptyViewModel)
 
@@ -86,8 +87,12 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual
-        controllers.item.routes.AddDocumentsYesNoController.onPageLoad(lrn, mode, itemIndex).url
+      redirectLocation(result).value mustEqual onwardRoute.url
+
+      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+      verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
+      userAnswersCaptor.getValue.get(AddDocumentsYesNoPage(itemIndex)) must not be defined
+      userAnswersCaptor.getValue.get(DocumentsInProgressPage(itemIndex)) must not be defined
     }
 
     "must return OK and the correct view for a GET" - {
