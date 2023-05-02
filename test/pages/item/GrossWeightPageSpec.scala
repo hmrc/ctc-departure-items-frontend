@@ -16,6 +16,7 @@
 
 package pages.item
 
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class GrossWeightPageSpec extends PageBehaviours {
@@ -27,5 +28,45 @@ class GrossWeightPageSpec extends PageBehaviours {
     beSettable[BigDecimal](GrossWeightPage(itemIndex))
 
     beRemovable[BigDecimal](GrossWeightPage(itemIndex))
+
+    "clean up" - {
+      "when value changes" - {
+        "must clean up net weight page" in {
+          forAll(arbitrary[BigDecimal]) {
+            value =>
+              forAll(arbitrary[BigDecimal].retryUntil(_ != value), arbitrary[BigDecimal].retryUntil(_ <= value)) {
+                (differentValue, netWeight) =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(GrossWeightPage(itemIndex), value)
+                    .setValue(NetWeightPage(itemIndex), netWeight)
+
+                  val result = userAnswers.setValue(GrossWeightPage(itemIndex), differentValue)
+
+                  result.get(NetWeightPage(itemIndex)) mustNot be(defined)
+              }
+
+          }
+        }
+      }
+
+      "when value has not changed" - {
+        "must clean up net weight page" in {
+          forAll(arbitrary[BigDecimal]) {
+            value =>
+              forAll(arbitrary[BigDecimal].retryUntil(_ <= value)) {
+                netWeight =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(GrossWeightPage(itemIndex), value)
+                    .setValue(NetWeightPage(itemIndex), netWeight)
+
+                  val result = userAnswers.setValue(GrossWeightPage(itemIndex), value)
+
+                  result.get(NetWeightPage(itemIndex)) must be(defined)
+              }
+
+          }
+        }
+      }
+    }
   }
 }
