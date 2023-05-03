@@ -18,12 +18,14 @@ package utils.cyaHelpers.item
 
 import config.FrontendAppConfig
 import models.journeyDomain.item.dangerousGoods.DangerousGoodsDomain
+import models.journeyDomain.item.documents.DocumentDomain
 import models.journeyDomain.item.packages.PackageDomain
 import models.reference.{Country, PackageType}
 import models.{DeclarationType, Index, Mode, UserAnswers}
 import pages.item._
 import pages.item.packages.index.{AddShippingMarkYesNoPage, NumberOfPackagesPage, PackageTypePage, ShippingMarkPage}
 import pages.sections.dangerousGoods.DangerousGoodsListSection
+import pages.sections.documents.DocumentsSection
 import pages.sections.packages.PackagesSection
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -217,4 +219,22 @@ class ItemAnswersHelper(
     id = Some(s"change-package-${packageIndex.display}"),
     args = packageIndex.display
   )(PackageDomain.userAnswersReader(itemIndex, packageIndex))
+
+  def documentsYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddDocumentsYesNoPage(itemIndex),
+    formatAnswer = formatAsYesOrNo,
+    prefix = "item.addDocumentsYesNo",
+    id = Some("change-add-documents")
+  )
+
+  def documents: Seq[SummaryListRow] =
+    getAnswersAndBuildSectionRows(DocumentsSection(itemIndex))(document)
+
+  def document(documentIndex: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[DocumentDomain](
+    formatAnswer = formatAsText,
+    prefix = "item.index.checkYourAnswers.document",
+    id = Some(s"change-document-${documentIndex.display}"),
+    args = documentIndex.display
+  )(DocumentDomain.userAnswersReader(itemIndex, documentIndex))
+
 }

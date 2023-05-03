@@ -28,8 +28,62 @@ class DocumentsServiceSpec extends SpecBase {
 
     "getDocuments" - {
 
-      "must return some documents" - {
-        "when documents present in user answers" in {
+      "must return some documents and filter out any documents already selected" - {
+        "when documents present in user answers and documents selected" in {
+          val json = Json
+            .parse("""
+              |{
+              |  "documents" : [
+              |    {
+              |      "previousDocumentType" : {
+              |        "type" : "Type 1",
+              |        "code" : "Code 1",
+              |        "description" : "Description 1"
+              |      },
+              |      "details" : {
+              |        "documentReferenceNumber" : "Ref no. 1"
+              |      }
+              |    },
+              |    {
+              |      "type" : {
+              |        "type" : "Type 2",
+              |        "code" : "Code 2"
+              |      },
+              |      "details" : {
+              |        "documentReferenceNumber" : "Ref no. 2"
+              |      }
+              |    }
+              |  ],
+              |  "items" : [
+              |    {
+              |      "documents" : [
+              |        {
+              |          "document" : {
+              |            "type" : "Type 1",
+              |            "code" : "Code 1",
+              |            "description" : "Description 1",
+              |            "referenceNumber" : "Ref no. 1"
+              |          }
+              |        }
+              |      ]
+              |    }
+              |  ]
+              |}
+              |""".stripMargin)
+            .as[JsObject]
+
+          val userAnswers = emptyUserAnswers.copy(data = json)
+
+          val result = service.getDocuments(userAnswers, itemIndex)
+
+          result.value mustBe SelectableList(
+            Seq(
+              Document("Type 2", "Code 2", None, "Ref no. 2")
+            )
+          )
+        }
+
+        "when documents present in user answers and no documents selected" in {
           val json = Json
             .parse("""
               |{
@@ -60,12 +114,12 @@ class DocumentsServiceSpec extends SpecBase {
 
           val userAnswers = emptyUserAnswers.copy(data = json)
 
-          val result = service.getDocuments(userAnswers)
+          val result = service.getDocuments(userAnswers, itemIndex)
 
           result.value mustBe SelectableList(
             Seq(
-              Document(0, "Type 1", "Code 1", Some("Description 1"), "Ref no. 1"),
-              Document(1, "Type 2", "Code 2", None, "Ref no. 2")
+              Document("Type 1", "Code 1", Some("Description 1"), "Ref no. 1"),
+              Document("Type 2", "Code 2", None, "Ref no. 2")
             )
           )
         }
@@ -73,7 +127,7 @@ class DocumentsServiceSpec extends SpecBase {
 
       "must return None" - {
         "when empty list of documents" in {
-          val result = service.getDocuments(emptyUserAnswers)
+          val result = service.getDocuments(emptyUserAnswers, itemIndex)
 
           result mustBe None
         }
@@ -93,9 +147,9 @@ class DocumentsServiceSpec extends SpecBase {
 
           val userAnswers = emptyUserAnswers.copy(data = json)
 
-          val result = service.getDocuments(userAnswers)
+          val result = service.getDocuments(userAnswers, itemIndex)
 
-          result mustBe None
+          result mustBe Some(SelectableList(List()))
         }
       }
     }

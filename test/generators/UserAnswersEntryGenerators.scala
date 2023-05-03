@@ -16,8 +16,8 @@
 
 package generators
 
-import models.DeclarationType
-import models.reference.{Country, PackageType}
+import models.reference.{AdditionalReference, Country, PackageType}
+import models.{DeclarationType, Document}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.libs.json._
@@ -35,6 +35,7 @@ trait UserAnswersEntryGenerators {
   private def generateExternalAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.external._
     {
+      case CustomsOfficeOfDeparturePage        => Gen.alphaNumStr.map(JsString)
       case CustomsOfficeOfDepartureInCL112Page => arbitrary[Boolean].map(JsBoolean)
       case TransitOperationDeclarationTypePage => arbitrary[DeclarationType].map(Json.toJson(_))
       case TransitOperationTIRCarnetNumberPage => Gen.alphaNumStr.map(JsString)
@@ -66,10 +67,14 @@ trait UserAnswersEntryGenerators {
       case NetWeightPage(_)                        => arbitrary[BigDecimal].map(Json.toJson(_))
       case AddSupplementaryUnitsYesNoPage(_)       => arbitrary[Boolean].map(JsBoolean)
       case SupplementaryUnitsPage(_)               => arbitrary[BigDecimal].map(Json.toJson(_))
+      case AddDocumentsYesNoPage(_)                => arbitrary[Boolean].map(JsBoolean)
+      case AddAdditionalReferenceYesNoPage(_)      => arbitrary[Boolean].map(JsBoolean)
     }
     pf orElse
       generateDangerousGoodsAnswer orElse
-      generatePackagesAnswer
+      generatePackageAnswer orElse
+      generateDocumentsAnswer orElse
+      generateAdditionalReferenceAnswer
   }
 
   private def generateDangerousGoodsAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
@@ -79,13 +84,37 @@ trait UserAnswersEntryGenerators {
     }
   }
 
-  private def generatePackagesAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+  private def generatePackageAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.item.packages.index._
     {
       case PackageTypePage(_, _)          => arbitrary[PackageType].map(Json.toJson(_))
       case NumberOfPackagesPage(_, _)     => Gen.posNum[Int].map(Json.toJson(_))
       case AddShippingMarkYesNoPage(_, _) => arbitrary[Boolean].map(JsBoolean)
       case ShippingMarkPage(_, _)         => Gen.alphaNumStr.map(JsString)
+    }
+  }
+
+  private def generateDocumentsAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+    import pages.item.documents._
+    val pf: PartialFunction[Gettable[_], Gen[JsValue]] = {
+      case DocumentsInProgressPage(_) => arbitrary[Boolean].map(JsBoolean)
+    }
+    pf orElse generateDocumentAnswer
+  }
+
+  private def generateDocumentAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+    import pages.item.documents.index._
+    {
+      case DocumentPage(_, _) => arbitrary[Document].map(Json.toJson(_))
+    }
+  }
+
+  private def generateAdditionalReferenceAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+    import pages.item.additionalReference.index._
+    {
+      case AdditionalReferencePage(_, _)               => arbitrary[AdditionalReference].map(Json.toJson(_))
+      case AddAdditionalReferenceNumberYesNoPage(_, _) => arbitrary[Boolean].map(JsBoolean)
+      case AdditionalReferenceNumberPage(_, _)         => Gen.alphaNumStr.map(JsString)
     }
   }
 

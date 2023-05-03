@@ -28,8 +28,6 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
 
   private val typeGen = Gen.oneOf("Transport", "Support", "Previous")
 
-  private val i = arbitrary[Int].sample.value
-
   "must deserialise from mongo" - {
 
     val referenceNumber = "85968459869045"
@@ -53,14 +51,13 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
           |""".stripMargin)
 
       val expectedResult = Document(
-        index = i,
         `type` = "Transport",
         code = code,
         description = Some(description),
         referenceNumber = referenceNumber
       )
 
-      val result = json.as[Document](Document.reads(i))
+      val result = json.as[Document](Document.reads)
 
       result mustBe expectedResult
     }
@@ -86,14 +83,13 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
           |""".stripMargin)
 
       val expectedResult = Document(
-        index = i,
         `type` = "Support",
         code = code,
         description = Some(description),
         referenceNumber = referenceNumber
       )
 
-      val result = json.as[Document](Document.reads(i))
+      val result = json.as[Document](Document.reads)
 
       result mustBe expectedResult
     }
@@ -132,14 +128,13 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
           |""".stripMargin)
 
       val expectedResult = Document(
-        index = i,
         `type` = "Previous",
         code = code,
         description = Some(description),
         referenceNumber = referenceNumber
       )
 
-      val result = json.as[Document](Document.reads(i))
+      val result = json.as[Document](Document.reads)
 
       result mustBe expectedResult
     }
@@ -166,14 +161,13 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
           |""".stripMargin)
 
       val expectedResult = Document(
-        index = i,
         `type` = "Previous",
         code = code,
         description = Some(description),
         referenceNumber = referenceNumber
       )
 
-      val result = json.as[Document](Document.reads(i))
+      val result = json.as[Document](Document.reads)
 
       result mustBe expectedResult
     }
@@ -184,7 +178,6 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
       forAll(typeGen, nonEmptyString, nonEmptyString, nonEmptyString) {
         (`type`, code, description, referenceNumber) =>
           val document = Document(
-            index = i,
             `type` = `type`,
             code = code,
             description = Some(description),
@@ -199,7 +192,6 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
       forAll(typeGen, nonEmptyString, nonEmptyString) {
         (`type`, code, referenceNumber) =>
           val document = Document(
-            index = i,
             `type` = `type`,
             code = code,
             description = None,
@@ -212,10 +204,10 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
   }
 
   "must convert to select item" in {
-    forAll(arbitrary[Int], typeGen, nonEmptyString, Gen.option(nonEmptyString), nonEmptyString, arbitrary[Boolean]) {
-      (index, `type`, code, description, referenceNumber, selected) =>
-        val document = Document(index, `type`, code, description, referenceNumber)
-        document.toSelectItem(selected) mustBe SelectItem(Some(index.toString), document.toString, selected)
+    forAll(typeGen, nonEmptyString, Gen.option(nonEmptyString), nonEmptyString, arbitrary[Boolean]) {
+      (`type`, code, description, referenceNumber, selected) =>
+        val document = Document(`type`, code, description, referenceNumber)
+        document.toSelectItem(selected) mustBe SelectItem(Some(document.toString), document.toString, selected)
     }
   }
 }

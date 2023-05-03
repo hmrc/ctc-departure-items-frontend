@@ -32,6 +32,8 @@ item.dangerousGoods.caption = Item {0} - Dangerous goods
 item.measurement.caption = Item {0} - Measurement
 item.packages.caption = Item {0} - Packages
 item.documents.caption = Item {0} - Documents
+item.additionalReference.caption = Item {0} - Additional reference
+item.additionalInformation.caption = Item {0} - Additional information
 
 item.description.title = Enter a description of item {0}
 item.description.heading = Enter a description of item {0}
@@ -164,6 +166,8 @@ item.index.checkYourAnswers.dangerousGoods.label = Dangerous goods {0}
 item.index.checkYourAnswers.dangerousGoods.change.hidden = dangerous goods {0}
 item.index.checkYourAnswers.package.label = Package {0}
 item.index.checkYourAnswers.package.change.hidden = package {0}
+item.index.checkYourAnswers.document.label = Document {0}
+item.index.checkYourAnswers.document.change.hidden = document {0}
 
 item.addItemNetWeightYesNo.title = Do you want to add the item’s net weight?
 item.addItemNetWeightYesNo.heading = Do you want to add the item’s net weight?
@@ -181,6 +185,7 @@ item.netWeight.error.invalidCharacters = The net weight must only include number
 item.netWeight.error.required = Enter the item’s net weight
 item.netWeight.error.invalidFormat = The net weight must only include 6 decimal places or less
 item.netWeight.error.invalidValue = The net weight must be 16 characters or less
+item.netWeight.error.maximum = The net weight must be less than or equal to the gross weight
 
 item.grossWeight.title = What is the item’s gross weight?
 item.grossWeight.heading = What is the item’s gross weight?
@@ -261,8 +266,75 @@ item.packages.addAnotherPackage.maxLimit.label = You cannot add any more types o
 
 item.documents.index.document.title = Which document do you want to attach?
 item.documents.index.document.heading = Which document do you want to attach?
+item.documents.index.document.paragraph = You can only select a document if you have added it in your Documents section.
+item.documents.index.document.link = Go to your Documents section to add another document
 item.documents.index.document.placeholder = Select a document
 item.documents.index.document.error.required = Select which document you want to attach
+
+
+item.addDocumentsYesNo.title = Do you want to attach any documents to this item?
+item.addDocumentsYesNo.heading = Do you want to attach any documents to this item?
+item.addDocumentsYesNo.checkYourAnswersLabel = Do you want to attach any documents to this item?
+item.addDocumentsYesNo.change.hidden = if you want to attach any documents to this item
+item.addDocumentsYesNo.error.required = Select yes if you want to attach any documents to this item
+
+item.documents.index.removeDocument.title = Are you sure you want to remove the {0} from this item?
+item.documents.index.removeDocument.heading = Are you sure you want to remove the {0} from this item?
+item.documents.index.removeDocument.error.required = Select yes if you want to remove the {0} from this item
+
+item.addAdditionalReferenceYesNo.title = Do you want to add an additional reference for this item?
+item.addAdditionalReferenceYesNo.heading = Do you want to add an additional reference for this item?
+item.addAdditionalReferenceYesNo.checkYourAnswersLabel = Do you want to add an additional reference for this item?
+item.addAdditionalReferenceYesNo.error.required = Select yes if you want to add an additional reference for this item
+
+item.additionalReference.index.additionalReference.title = What type of additional reference do you want to add?
+item.additionalReference.index.additionalReference.heading = What type of additional reference do you want to add?
+item.additionalReference.index.additionalReference.placeholder = Select an additional reference
+item.additionalReference.index.additionalReference.change.hidden = What type of additional reference do you want to add?
+item.additionalReference.index.additionalReference.checkYourAnswersLabel = What type of additional reference do you want to add?
+item.additionalReference.index.additionalReference.error.required = Select the type of additional reference
+
+item.documents.addAnotherDocument.singular.title = You have attached 1 document to this item
+item.documents.addAnotherDocument.singular.heading = You have attached 1 document to this item
+item.documents.addAnotherDocument.plural.title = You have attached {0} documents to this item
+item.documents.addAnotherDocument.plural.heading = You have attached {0} documents to this item
+item.documents.addAnotherDocument.error.required = Select yes if you want to attach another document
+item.documents.addAnotherDocument.label = Do you want to attach another document?
+item.documents.addAnotherDocument.maxLimit.label = You cannot attach any more documents. To attach another, you need to remove one first.
+item.documents.addAnotherDocument.paragraph = You can only attach another document if you have added it in your Documents section.
+item.documents.addAnotherDocument.link = Go to your Documents section to add another document
+
+item.additionalReference.index.addAdditionalReferenceNumberYesNo.title = Do you want to add an additional reference number?
+item.additionalReference.index.addAdditionalReferenceNumberYesNo.heading = Do you want to add an additional reference number?
+item.additionalReference.index.addAdditionalReferenceNumberYesNo.checkYourAnswersLabel = Do you want to add an additional reference number?
+item.additionalReference.index.addAdditionalReferenceNumberYesNo.error.required = Select yes if you want to add an additional reference number
+
+item.additionalReference.index.additionalReferenceNumber.title = Enter the additional reference number
+item.additionalReference.index.additionalReferenceNumber.heading = Enter the additional reference number
+item.additionalReference.index.additionalReferenceNumber.checkYourAnswersLabel = Additional reference {0}
+item.additionalReference.index.additionalReferenceNumber.change.hidden = additional reference {0} - {1}
+item.additionalReference.index.additionalReferenceNumber.error.required = Enter the additional reference number
+item.additionalReference.index.additionalReferenceNumber.error.length = The additional reference number must be 70 characters or less
+item.additionalReference.index.additionalReferenceNumber.error.invalidCharacters = The additional reference number must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
+
+item.additionalReference.addAnotherAdditionalReference.singular.title = You have added 1 additional reference
+item.additionalReference.addAnotherAdditionalReference.singular.heading = You have added 1 additional reference
+item.additionalReference.addAnotherAdditionalReference.plural.title = You have added {0} additional references
+item.additionalReference.addAnotherAdditionalReference.plural.heading = You have added {0} additional references
+item.additionalReference.addAnotherAdditionalReference.error.required = Select yes if you want to add another additional reference
+item.additionalReference.addAnotherAdditionalReference.label = Do you want to add another additional reference?
+item.additionalReference.addAnotherAdditionalReference.maxLimit.label = You cannot add any more additional references. To add another, you need to remove one first.
+
+item.additionalReference.index.removeAdditionalReference.title = Are you sure you want to remove additional reference {0}?
+item.additionalReference.index.removeAdditionalReference.heading = Are you sure you want to remove additional reference {0}?
+item.additionalReference.index.removeAdditionalReference.error.required = Select yes if you want to remove additional reference {0}
+
+item.addAdditionalInformationYesNo.title = Do you want to add any additional information for this item?
+item.addAdditionalInformationYesNo.heading = Do you want to add any additional information for this item?
+item.addAdditionalInformationYesNo.paragraph = This can be any other information you want to declare, such as a contact, any safety risks or further descriptions.
+item.addAdditionalInformationYesNo.checkYourAnswersLabel = Do you want to add any additional information for this item?
+item.addAdditionalInformationYesNo.error.required = Select yes if you want to add any additional information for this item
+
 
 transport.identificationNumber.title = What is the departure means’ identification number
 transport.identificationNumber.heading = What is the departure means’ identification number

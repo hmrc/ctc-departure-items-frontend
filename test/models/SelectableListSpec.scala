@@ -64,37 +64,77 @@ class SelectableListSpec extends SpecBase {
            |]
            |""".stripMargin)
 
-      val result = json.as[SelectableList[Document]]
+      val result = json.as[SelectableList[Document]](SelectableList.documentsReads)
 
       result mustBe SelectableList(
         Seq(
           Document(
-            index = 0,
             `type` = "Support",
             code = "1",
             description = None,
             referenceNumber = "RefNo1"
           ),
           Document(
-            index = 1,
             `type` = "Transport",
             code = "2",
             description = None,
             referenceNumber = "RefNo2"
           ),
           Document(
-            index = 2,
             `type` = "Previous",
             code = "3",
             description = None,
             referenceNumber = "RefNo3"
           ),
           Document(
-            index = 3,
             `type` = "Previous",
             code = "4",
             description = None,
             referenceNumber = "RefNo4"
+          )
+        )
+      )
+    }
+  }
+
+  "itemDocumentsReads" - {
+    "must read JsArray as list of documents" in {
+      val json = Json.parse(s"""
+           |[
+           |  {
+           |    "document" : {
+           |      "type" : "Type 1",
+           |      "code" : "Code 1",
+           |      "description" : "Description 1",
+           |      "referenceNumber" : "Ref no. 1"
+           |    }
+           |  },
+           |  {
+           |    "document" : {
+           |      "type" : "Type 2",
+           |      "code" : "Code 2",
+           |      "description" : "Description 2",
+           |      "referenceNumber" : "Ref no. 2"
+           |    }
+           |  }
+           |]
+           |""".stripMargin)
+
+      val result = json.as[SelectableList[Document]](SelectableList.itemDocumentsReads)
+
+      result mustBe SelectableList(
+        Seq(
+          Document(
+            `type` = "Type 1",
+            code = "Code 1",
+            description = Some("Description 1"),
+            referenceNumber = "Ref no. 1"
+          ),
+          Document(
+            `type` = "Type 2",
+            code = "Code 2",
+            description = Some("Description 2"),
+            referenceNumber = "Ref no. 2"
           )
         )
       )

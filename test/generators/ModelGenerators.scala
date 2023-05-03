@@ -16,6 +16,7 @@
 
 package generators
 
+import config.Constants._
 import models.AddressLine.{Country => _, _}
 import models._
 import models.reference._
@@ -62,12 +63,11 @@ trait ModelGenerators {
   implicit lazy val arbitraryDocument: Arbitrary[Document] =
     Arbitrary {
       for {
-        index           <- positiveInts
         documentType    <- nonEmptyString
         code            <- nonEmptyString
         description     <- Gen.option(nonEmptyString)
         referenceNumber <- nonEmptyString
-      } yield Document(index, documentType, code, description, referenceNumber)
+      } yield Document(documentType, code, description, referenceNumber)
     }
 
   implicit lazy val arbitraryLocalReferenceNumber: Arbitrary[LocalReferenceNumber] =
@@ -147,6 +147,30 @@ trait ModelGenerators {
   lazy val arbitraryUnpackedPackageType: Arbitrary[PackageType] = arbitraryPackageType(PackingType.Unpacked)
   lazy val arbitraryBulkPackageType: Arbitrary[PackageType]     = arbitraryPackageType(PackingType.Bulk)
   lazy val arbitraryOtherPackageType: Arbitrary[PackageType]    = arbitraryPackageType(PackingType.Other)
+
+  implicit lazy val arbitraryAdditionalReference: Arbitrary[AdditionalReference] =
+    Arbitrary {
+      for {
+        documentType <- nonEmptyString
+        description  <- nonEmptyString
+      } yield AdditionalReference(documentType, description)
+    }
+
+  val arbitraryC651OrC658AdditionalReference: Arbitrary[AdditionalReference] =
+    Arbitrary {
+      for {
+        documentType <- Gen.oneOf(C651, C658)
+        description  <- nonEmptyString
+      } yield AdditionalReference(documentType, description)
+    }
+
+  val arbitraryNonC651OrC658AdditionalReference: Arbitrary[AdditionalReference] =
+    Arbitrary {
+      for {
+        documentType <- nonEmptyString
+        description  <- nonEmptyString
+      } yield AdditionalReference(documentType, description)
+    }
 
   lazy val arbitraryIncompleteTaskStatus: Arbitrary[TaskStatus] = Arbitrary {
     Gen.oneOf(TaskStatus.InProgress, TaskStatus.NotStarted, TaskStatus.CannotStartYet)

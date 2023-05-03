@@ -71,6 +71,20 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       |]
       |""".stripMargin
 
+  private val additionalReferenceJson: String =
+    """
+      |[
+      | {
+      |    "documentType": "documentType1",
+      |    "description": "desc1"
+      |  },
+      |  {
+      |    "documentType": "documentType2",
+      |    "description": "desc2"
+      |  }
+      |]
+      |""".stripMargin
+
   "Reference Data" - {
 
     "getCountries" - {
@@ -119,6 +133,23 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       "must return an exception when an error response is returned" in {
 
         checkErrorResponse(s"/$baseUrl/kinds-of-package", connector.getPackageTypes())
+      }
+
+    }
+
+    "getAdditionalReferences" - {
+      "must return Seq of AdditionalReference when successful" in {
+        server.stubFor(
+          get(urlEqualTo(s"/$baseUrl/additional-references"))
+            .willReturn(okJson(additionalReferenceJson))
+        )
+
+        val expectedResult: Seq[AdditionalReference] = Seq(
+          AdditionalReference("documentType1", "desc1"),
+          AdditionalReference("documentType2", "desc2")
+        )
+
+        connector.getAdditionalReferences().futureValue mustEqual expectedResult
       }
 
     }

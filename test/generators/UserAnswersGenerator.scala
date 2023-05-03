@@ -17,7 +17,9 @@
 package generators
 
 import models.journeyDomain.item.ItemDomain
+import models.journeyDomain.item.additionalReferences.AdditionalReferenceDomain
 import models.journeyDomain.item.dangerousGoods.DangerousGoodsDomain
+import models.journeyDomain.item.documents.DocumentDomain
 import models.journeyDomain.item.packages.PackageDomain
 import models.journeyDomain.{ItemsDomain, ReaderError, UserAnswersReader}
 import models.{EoriNumber, Index, LocalReferenceNumber, RichJsObject, UserAnswers}
@@ -64,9 +66,15 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators {
   def arbitraryItemAnswers(userAnswers: UserAnswers, index: Index): Gen[UserAnswers] =
     buildUserAnswers[ItemDomain](userAnswers)(ItemDomain.userAnswersReader(index))
 
-  def arbitraryDangerousGoodsAnswers(userAnswers: UserAnswers, itemIndex: Index, dangerousGoods: Index): Gen[UserAnswers] =
-    buildUserAnswers[DangerousGoodsDomain](userAnswers)(DangerousGoodsDomain.userAnswersReader(itemIndex, dangerousGoods))
+  def arbitraryDangerousGoodsAnswers(userAnswers: UserAnswers, itemIndex: Index, dangerousGoodsIndex: Index): Gen[UserAnswers] =
+    buildUserAnswers[DangerousGoodsDomain](userAnswers)(DangerousGoodsDomain.userAnswersReader(itemIndex, dangerousGoodsIndex))
 
   def arbitraryPackageAnswers(userAnswers: UserAnswers, itemIndex: Index, packageIndex: Index): Gen[UserAnswers] =
     buildUserAnswers[PackageDomain](userAnswers)(PackageDomain.userAnswersReader(itemIndex, packageIndex))
+
+  def arbitraryDocumentAnswers(userAnswers: UserAnswers, itemIndex: Index, documentIndex: Index): Gen[UserAnswers] =
+    buildUserAnswers[DocumentDomain](userAnswers)(DocumentDomain.userAnswersReader(itemIndex, documentIndex))
+
+  def arbitraryAdditionalReferenceAnswers(userAnswers: UserAnswers, itemIndex: Index, additionalReferenceIndex: Index): Gen[UserAnswers] =
+    buildUserAnswers[AdditionalReferenceDomain](userAnswers)(AdditionalReferenceDomain.userAnswersReader(itemIndex, additionalReferenceIndex))
 }
