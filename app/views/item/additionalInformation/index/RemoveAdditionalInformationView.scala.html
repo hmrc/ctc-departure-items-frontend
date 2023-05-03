@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.item.additionalReference.index.routes
+@import controllers.item.additionalInformation.index.routes
 @import models.LocalReferenceNumber
 @import viewmodels.components.InputYesNoViewModel._
 @import views.html.components.{Button, ErrorSummary, InputYesNo, InsetText}
@@ -31,19 +31,19 @@
 @(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, additionalInformationIndex: Index, additionalInformationType: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("item.additionalInformation.index.removeAdditionalInformation.title", additionalInformationIndex.display),
+    title = messages("item.additionalInformation.index.removeAdditionalInformation.title"),
     showBackLink = true,
     lrn = lrn
 ) {
 
-    @formHelper(action = routes.RemoveAdditionalReferenceController.onSubmit(lrn, mode, itemIndex, additionalInformationIndex), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.RemoveAdditionalInformationController.onSubmit(lrn, mode, itemIndex, additionalInformationIndex), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
         @inputYesNo(
             field = form("value"),
             yesNoType = YesNoWithAdditionalHtml(
-                heading = messages("item.additionalInformation.index.removeAdditionalInformation.heading", additionalInformationIndex.display),
+                heading = messages("item.additionalInformation.index.removeAdditionalInformation.heading"),
                 caption = Some(messages("item.additionalInformation.caption", itemIndex.display)),
                 additionalHtml = insetText(additionalInformationType)
             )

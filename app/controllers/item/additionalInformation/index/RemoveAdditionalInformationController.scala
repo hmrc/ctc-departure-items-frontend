@@ -50,7 +50,7 @@ class RemoveAdditionalInformationController @Inject() (
       .andThen(getMandatoryPage(AdditionalInformationTypePage(itemIndex, additionalInformationIndex))) {
         implicit request =>
           val additionalInformationType = request.arg.toString
-          val form                      = formProvider("item.additionalInformation.index.removeAdditionalInformation", additionalInformationIndex.display, additionalInformationType)
+          val form                      = formProvider("item.additionalInformation.index.removeAdditionalInformation")
           Ok(view(form, lrn, mode, itemIndex, additionalInformationIndex, additionalInformationType))
       }
 
@@ -62,7 +62,7 @@ class RemoveAdditionalInformationController @Inject() (
         implicit request =>
           lazy val redirect             = Call(GET, "#")
           val additionalInformationType = request.arg.toString
-          val form                      = formProvider("item.additionalInformation.index.removeAdditionalInformation", additionalInformationIndex.display, additionalInformationType)
+          val form                      = formProvider("item.additionalInformation.index.removeAdditionalInformation")
           form
             .bindFromRequest()
             .fold(

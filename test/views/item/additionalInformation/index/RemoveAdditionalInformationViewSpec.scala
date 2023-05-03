@@ -34,17 +34,17 @@ class RemoveAdditionalInformationViewSpec extends YesNoViewBehaviours with Gener
 
   override val prefix: String = "item.additionalInformation.index.removeAdditionalInformation"
 
-  behave like pageWithTitle(additionalInformationIndex.display)
+  behave like pageWithTitle()
 
   behave like pageWithBackLink()
 
   behave like pageWithSectionCaption(s"Item ${itemIndex.display} - Additional information")
 
-  behave like pageWithHeading(additionalInformationIndex.display)
+  behave like pageWithHeading()
 
   behave like pageWithInsetText(additionalInformationType.toString)
 
-  behave like pageWithRadioItems(args = Seq(additionalInformationIndex.display))
+  behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Save and continue")
 }

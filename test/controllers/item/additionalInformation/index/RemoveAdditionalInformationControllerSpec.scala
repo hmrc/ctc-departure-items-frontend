@@ -34,7 +34,7 @@ class RemoveAdditionalInformationControllerSpec extends SpecBase with AppWithDef
 
   private val additionalInformationType = arbitraryAdditionalInformation.arbitrary.sample.get
   private val formProvider              = new YesNoFormProvider()
-  private val form                      = formProvider("item.additionalInformation.index.removeAdditionalInformation", additionalInformationType.toString)
+  private val form                      = formProvider("item.additionalInformation.index.removeAdditionalInformation")
   private val mode                      = NormalMode
 
   private lazy val removeAdditionalInformationRoute =
