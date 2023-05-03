@@ -50,7 +50,7 @@ class GrossWeightPageSpec extends PageBehaviours {
       }
 
       "when value has not changed" - {
-        "must clean up net weight page" in {
+        "must not clean up net weight page" in {
           forAll(arbitrary[BigDecimal]) {
             value =>
               forAll(arbitrary[BigDecimal].retryUntil(_ <= value)) {

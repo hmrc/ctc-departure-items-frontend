@@ -30,20 +30,19 @@
 @(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("item.addAdditionalReferenceYesNo.title"),
+    title = messages("item.addAdditionalInformationYesNo.title"),
     showBackLink = true,
     lrn = lrn
 ) {
 
-    @formHelper(action = routes.AddAdditionalReferenceYesNoController.onSubmit(lrn, mode, itemIndex), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.AddAdditionalInformationYesNoController.onSubmit(lrn, mode, itemIndex), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
         @inputYesNo(
             field = form("value"),
             yesNoType = OrdinaryYesNo(
-                heading = messages("item.addAdditionalReferenceYesNo.heading"),
-                caption = Some(messages("item.additionalReference.caption", itemIndex.display)),
+                heading = messages("item.addAdditionalInformationYesNo.heading")
             )
         )
 
