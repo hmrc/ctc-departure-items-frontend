@@ -31,4 +31,6 @@ case class AddAdditionalInformationYesNoPage(itemIndex: Index) extends QuestionP
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.AddAdditionalInformationYesNoController.onPageLoad(userAnswers.lrn, mode, itemIndex))
+
+  // TODO: Add clean up logic for AdditionalInformationSection
 }

@@ -33,7 +33,11 @@ class AddAdditionalInformationYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithBackLink()
 
+  behave like pageWithSectionCaption(s"Item ${itemIndex.display} - Additional information")
+
   behave like pageWithHeading()
+
+  behave like pageWithContent("p", "This can be any other information you want to declare, such as a contact, any safety risks or further descriptions.")
 
   behave like pageWithRadioItems()
 

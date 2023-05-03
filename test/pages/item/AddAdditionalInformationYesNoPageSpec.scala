@@ -27,5 +27,7 @@ class AddAdditionalInformationYesNoPageSpec extends PageBehaviours {
     beSettable[Boolean](AddAdditionalInformationYesNoPage(itemIndex))
 
     beRemovable[Boolean](AddAdditionalInformationYesNoPage(itemIndex))
+
+    // TODO: Add clean up logic test
   }
 }
