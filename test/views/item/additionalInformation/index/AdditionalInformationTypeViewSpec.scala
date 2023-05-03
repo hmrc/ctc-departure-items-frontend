@@ -44,7 +44,7 @@ class AdditionalInformationTypeViewSpec extends InputSelectViewBehaviours[Additi
 
   behave like pageWithSelect()
 
-  behave like pageWithHint("What type of additional information do you want to add hint")
+  behave like pageWithoutHint()
 
   behave like pageWithSubmitButton("Save and continue")
 }

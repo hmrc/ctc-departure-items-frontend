@@ -46,9 +46,9 @@
         @inputSelect(
             field = form("value"),
             selectType = OrdinarySelect(
-                heading = messages("item.additionalInformation.index.additionalInformationType.heading")
+                heading = messages("item.additionalInformation.index.additionalInformationType.heading"),
+                caption = Some(messages("item.additionalInformation.caption", itemIndex.display))
             ),
-            hint = Some(messages("item.additionalInformation.index.additionalInformationType.hint")),
             selectItems = additionalInformationTypes.toSelectItems(form.value),
             placeholder = messages("item.additionalInformation.index.additionalInformationType.placeholder")
         )
