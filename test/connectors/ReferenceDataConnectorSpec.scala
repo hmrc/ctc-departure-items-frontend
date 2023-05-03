@@ -85,6 +85,20 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       |]
       |""".stripMargin
 
+  private val additionalInformationJson: String =
+    """
+      |[
+      | {
+      |    "code": "additionalInfoCode1",
+      |    "description": "additionalInfoDesc1"
+      |  },
+      |  {
+      |    "code": "additionalInfoCode2",
+      |    "description": "additionalInfoDesc2"
+      |  }
+      |]
+      |""".stripMargin
+
   "Reference Data" - {
 
     "getCountries" - {
@@ -150,6 +164,29 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         )
 
         connector.getAdditionalReferences().futureValue mustEqual expectedResult
+      }
+
+    }
+
+    "getAdditionalInformationTypes" - {
+
+      "must return list of additional information types when successful" in {
+        server.stubFor(
+          get(urlEqualTo(s"/$baseUrl/additional-information"))
+            .willReturn(okJson(additionalInformationJson))
+        )
+
+        val expectResult = Seq(
+          AdditionalInformation("additionalInfoCode1", "additionalInfoDesc1"),
+          AdditionalInformation("additionalInfoCode2", "additionalInfoDesc2")
+        )
+
+        connector.getAdditionlInformationTypes().futureValue mustEqual expectResult
+      }
+
+      "must return an exception when an error response is returned" in {
+
+        checkErrorResponse(s"/$baseUrl/additional-information", connector.getAdditionlInformationTypes())
       }
 
     }

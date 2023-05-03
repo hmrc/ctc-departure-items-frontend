@@ -334,3 +334,10 @@ item.addAdditionalInformationYesNo.heading = Do you want to add any additional i
 item.addAdditionalInformationYesNo.paragraph = This can be any other information you want to declare, such as a contact, any safety risks or further descriptions.
 item.addAdditionalInformationYesNo.checkYourAnswersLabel = Do you want to add any additional information for this item?
 item.addAdditionalInformationYesNo.error.required = Select yes if you want to add any additional information for this item
+
+item.additionalInformation.index.additionalInformationType.title = What type of additional information do you want to add?
+item.additionalInformation.index.additionalInformationType.heading = What type of additional information do you want to add?
+item.additionalInformation.index.additionalInformationType.placeholder = Select an additional information type
+item.additionalInformation.index.additionalInformationType.change.hidden = What type of additional information do you want to add?
+item.additionalInformation.index.additionalInformationType.checkYourAnswersLabel = What type of additional information do you want to add?
+item.additionalInformation.index.additionalInformationType.error.required = Select the type of additional information
