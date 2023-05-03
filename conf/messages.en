@@ -329,6 +329,12 @@ item.additionalReference.index.removeAdditionalReference.title = Are you sure yo
 item.additionalReference.index.removeAdditionalReference.heading = Are you sure you want to remove additional reference {0}?
 item.additionalReference.index.removeAdditionalReference.error.required = Select yes if you want to remove additional reference {0}
 
+item.addAdditionalInformationYesNo.title = Do you want to add any additional information for this item?
+item.addAdditionalInformationYesNo.heading = Do you want to add any additional information for this item?
+item.addAdditionalInformationYesNo.paragraph = This can be any other information you want to declare, such as a contact, any safety risks or further descriptions.
+item.addAdditionalInformationYesNo.checkYourAnswersLabel = Do you want to add any additional information for this item?
+item.addAdditionalInformationYesNo.error.required = Select yes if you want to add any additional information for this item
+
 item.additionalInformation.index.additionalInformationType.title = What type of additional information do you want to add?
 item.additionalInformation.index.additionalInformationType.heading = What type of additional information do you want to add?
 item.additionalInformation.index.additionalInformationType.placeholder = Select an additional information type

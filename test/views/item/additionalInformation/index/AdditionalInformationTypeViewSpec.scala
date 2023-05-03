@@ -40,6 +40,8 @@ class AdditionalInformationTypeViewSpec extends InputSelectViewBehaviours[Additi
 
   behave like pageWithBackLink()
 
+  behave like pageWithSectionCaption(s"Item ${itemIndex.display} - Additional information")
+
   behave like pageWithHeading()
 
   behave like pageWithSelect()
