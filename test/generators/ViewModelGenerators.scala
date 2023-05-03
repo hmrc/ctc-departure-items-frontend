@@ -24,12 +24,12 @@ import play.api.mvc.Call
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-import viewmodels.item.additionalReference.AddAnotherAdditionalReferenceViewModel
+import viewmodels.item.additionalReference.{AddAnotherAdditionalReferenceViewModel, AdditionalReferenceNumberViewModel}
 import viewmodels.item.dangerousGoods.AddAnotherDangerousGoodsViewModel
 import viewmodels.item.documents.AddAnotherDocumentViewModel
 import viewmodels.item.packages.AddAnotherPackageViewModel
-import viewmodels.{Link, ListItem}
 import viewmodels.sections.Section
+import viewmodels.{Link, ListItem}
 
 trait ViewModelGenerators {
   self: Generators =>
@@ -202,5 +202,12 @@ trait ViewModelGenerators {
       listItems    <- arbitrary[Seq[ListItem]]
       onSubmitCall <- arbitrary[Call]
     } yield AddAnotherAdditionalReferenceViewModel(listItems, onSubmitCall)
+  }
+
+  implicit lazy val arbitraryAdditionalReferenceNumberViewModel: Arbitrary[AdditionalReferenceNumberViewModel] = Arbitrary {
+    for {
+      otherAdditionalReferenceNumbers <- listWithMaxLength[String]()
+      isReferenceNumberRequired       <- arbitrary[Boolean]
+    } yield AdditionalReferenceNumberViewModel(otherAdditionalReferenceNumbers, isReferenceNumberRequired)
   }
 }

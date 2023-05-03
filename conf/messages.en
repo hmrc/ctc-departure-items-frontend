@@ -311,11 +311,13 @@ item.additionalReference.index.addAdditionalReferenceNumberYesNo.error.required 
 
 item.additionalReference.index.additionalReferenceNumber.title = Enter the additional reference number
 item.additionalReference.index.additionalReferenceNumber.heading = Enter the additional reference number
+item.additionalReference.index.additionalReferenceNumber.paragraph = You need to enter a reference number as you have already added this type of additional reference.
 item.additionalReference.index.additionalReferenceNumber.checkYourAnswersLabel = Additional reference {0}
 item.additionalReference.index.additionalReferenceNumber.change.hidden = additional reference {0} - {1}
 item.additionalReference.index.additionalReferenceNumber.error.required = Enter the additional reference number
 item.additionalReference.index.additionalReferenceNumber.error.length = The additional reference number must be 70 characters or less
 item.additionalReference.index.additionalReferenceNumber.error.invalidCharacters = The additional reference number must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
+item.additionalReference.index.additionalReferenceNumber.error.unique = The additional reference number must be unique
 
 item.additionalReference.addAnotherAdditionalReference.singular.title = You have added 1 additional reference
 item.additionalReference.addAnotherAdditionalReference.singular.heading = You have added 1 additional reference

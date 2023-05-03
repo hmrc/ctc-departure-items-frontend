@@ -22,6 +22,15 @@ sealed trait InputCharacterCountViewModel
 
 object InputCharacterCountViewModel {
 
+  def apply(
+    heading: String,
+    caption: Option[String],
+    additionalHtml: Option[Html]
+  ): InputCharacterCountViewModel = additionalHtml match {
+    case Some(value) => InputCharacterCountWithAdditionalHtml(heading, caption, value)
+    case None        => OrdinaryInputCharacterCount(heading, caption)
+  }
+
   case class OrdinaryInputCharacterCount(
     heading: String,
     caption: Option[String] = None
