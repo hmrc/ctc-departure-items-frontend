@@ -38,8 +38,10 @@ import scala.concurrent.Future
 
 class AdditionalReferenceNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
+  private val viewModel = arbitrary[AdditionalReferenceNumberViewModel].sample.value
+
   private val formProvider                        = new AdditionalReferenceNumberFormProvider()
-  private val form                                = formProvider("item.additionalReference.index.additionalReferenceNumber")
+  private val form                                = formProvider("item.additionalReference.index.additionalReferenceNumber", viewModel.otherAdditionalReferenceNumbers)
   private val mode                                = NormalMode
   private lazy val additionalReferenceNumberRoute = routes.AdditionalReferenceNumberController.onPageLoad(lrn, mode, itemIndex, additionalReferenceIndex).url
 
@@ -50,8 +52,6 @@ class AdditionalReferenceNumberControllerSpec extends SpecBase with AppWithDefau
       .guiceApplicationBuilder()
       .overrides(bind(classOf[AdditionalReferenceNavigatorProvider]).toInstance(fakeAdditionalReferenceNavigatorProvider))
       .overrides(bind(classOf[AdditionalReferenceNumberViewModelProvider]).toInstance(mockViewModelProvider))
-
-  private val viewModel = arbitrary[AdditionalReferenceNumberViewModel].sample.value
 
   private val additionalReference = arbitrary[AdditionalReference].sample.value
 

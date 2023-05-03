@@ -22,6 +22,7 @@ import forms.item.additionalReference.AdditionalReferenceNumberFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{AdditionalReferenceNavigatorProvider, UserAnswersNavigator}
 import pages.item.additionalReference.index.{AdditionalReferenceNumberPage, AdditionalReferencePage}
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -46,7 +47,8 @@ class AdditionalReferenceNumberController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("item.additionalReference.index.additionalReferenceNumber")
+  private def form(otherAdditionalReferenceNumbers: Seq[String]): Form[String] =
+    formProvider("item.additionalReference.index.additionalReferenceNumber", otherAdditionalReferenceNumbers)
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, additionalReferenceIndex: Index): Action[AnyContent] = actions
     .requireData(lrn)
@@ -54,8 +56,8 @@ class AdditionalReferenceNumberController @Inject() (
       implicit request =>
         val viewModel = viewModelProvider.apply(request.userAnswers, itemIndex, request.arg)
         val preparedForm = request.userAnswers.get(AdditionalReferenceNumberPage(itemIndex, additionalReferenceIndex)) match {
-          case None        => form
-          case Some(value) => form.fill(value)
+          case None        => form(viewModel.otherAdditionalReferenceNumbers)
+          case Some(value) => form(viewModel.otherAdditionalReferenceNumbers).fill(value)
         }
         Ok(view(preparedForm, lrn, mode, itemIndex, additionalReferenceIndex, viewModel.isReferenceNumberRequired))
     }
@@ -66,7 +68,7 @@ class AdditionalReferenceNumberController @Inject() (
     .async {
       implicit request =>
         val viewModel = viewModelProvider.apply(request.userAnswers, itemIndex, request.arg)
-        form
+        form(viewModel.otherAdditionalReferenceNumbers)
           .bindFromRequest()
           .fold(
             formWithErrors =>

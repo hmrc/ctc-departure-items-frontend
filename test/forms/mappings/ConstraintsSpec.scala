@@ -16,14 +16,14 @@
 
 package forms.mappings
 
-import java.time.LocalDate
-
 import generators.Generators
 import org.scalacheck.Gen
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.data.validation.{Invalid, Valid}
+
+import java.time.LocalDate
 
 class ConstraintsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with Generators with Constraints {
 
@@ -181,6 +181,24 @@ class ConstraintsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
           val result = minDate(min, "error.past", "foo")(date)
           result mustEqual Invalid("error.past", "foo")
       }
+    }
+  }
+
+  "notInList" - {
+    "must return Valid for a value not in the list" in {
+
+      val values = Seq("foo", "bar")
+
+      val result = notInList(values, "error.unique")("baz")
+      result mustEqual Valid
+    }
+
+    "must return Invalid for a value in the list" in {
+
+      val values = Seq("foo", "bar")
+
+      val result = notInList(values, "error.unique")("foo")
+      result mustEqual Invalid("error.unique")
     }
   }
 }

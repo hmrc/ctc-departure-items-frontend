@@ -33,7 +33,7 @@ class AdditionalReferenceNumberViewSpec extends CharacterCountViewBehaviours wit
 
   private val viewModel = arbitrary[AdditionalReferenceNumberViewModel].sample.value
 
-  override def form: Form[String] = new AdditionalReferenceNumberFormProvider()(prefix)
+  override def form: Form[String] = new AdditionalReferenceNumberFormProvider()(prefix, viewModel.otherAdditionalReferenceNumbers)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
     injector
