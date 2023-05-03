@@ -1,9 +1,25 @@
+/*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package controllers.transport
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.IdentificationNumber
 import models.NormalMode
-import navigation.PreTaskListDetailsNavigatorProvider
+import navigation.ItemNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.transport.IdentificationNumberPage
@@ -25,7 +41,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[PreTaskListDetailsNavigatorProvider]).toInstance(fakePreTaskListDetailsNavigatorProvider))
+      .overrides(bind(classOf[ItemNavigatorProvider]).toInstance(fakeItemNavigatorProvider))
 
   "IdentificationNumber Controller" - {
 
@@ -47,14 +63,14 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(IdentificationNumberPage, "test string")
+      val userAnswers = emptyUserAnswers.setValue(IdentificationNumberPage, "teststring")
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, identificationNumberRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> "test string"))
+      val filledForm = form.bind(Map("value" -> "teststring"))
 
       val view = injector.instanceOf[IdentificationNumberView]
 
@@ -71,7 +87,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
       val request = FakeRequest(POST, identificationNumberRoute)
-        .withFormUrlEncodedBody(("value", "test string"))
+        .withFormUrlEncodedBody(("value", "teststring"))
 
       val result = route(app, request).value
 

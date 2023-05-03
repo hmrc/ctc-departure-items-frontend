@@ -271,4 +271,4 @@ transport.identificationNumber.hint = This can be up to 35 characters long and i
 transport.identificationNumber.checkYourAnswersLabel = Departure means’ identification number
 transport.identificationNumber.error.required = Enter the departure means’ identification number
 transport.identificationNumber.error.length = The departure means’ identification number must be 35 characters or less
-transport.identificationNumber.error.invalid = The departure means identification number must only include letters a to z and numbers 0 to 9
+transport.identificationNumber.error.invalidCharacters = The departure means identification number must only include letters a to z and numbers 0 to 9

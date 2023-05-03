@@ -27,8 +27,6 @@ class IdentificationNumber @Inject() extends Mappings {
   def apply(prefix: String): Form[String] =
     Form(
       "value" -> text(s"$prefix.error.required")
-        .verifying(forms.StopOnFirstFail[String](
-          regexp(alphaNumericRegex, s"$prefix.error.invalidCharacters"),
-          maxLength(35, s"$prefix.error.length")))
+        .verifying(forms.StopOnFirstFail[String](regexp(alphaNumericRegex, s"$prefix.error.invalidCharacters"), maxLength(35, s"$prefix.error.length")))
     )
 }

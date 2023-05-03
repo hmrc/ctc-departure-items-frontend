@@ -17,15 +17,15 @@
 package pages.transport
 
 import controllers.transport.routes
-import models.{Mode, UserAnswers}
+import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.PreTaskListSection
+import pages.sections.{ItemSection, ItemsSection, PreTaskListSection}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case object IdentificationNumberPage extends QuestionPage[String] {
 
-  override def path: JsPath = PreTaskListSection.path \ toString
+  override def path: JsPath = ItemSection(Index(0)).path \ toString
 
   override def toString: String = "identificationNumber"
 
