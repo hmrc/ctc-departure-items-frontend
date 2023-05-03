@@ -19,17 +19,15 @@ package controllers.item.additionalInformation.index
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
-import models.requests.SpecificDataRequestProvider1
 import models.{Index, LocalReferenceNumber, Mode}
-import pages.item.additionalReference.index.AdditionalReferencePage
+import pages.item.additionalInformation.index.AdditionalInformationTypePage
 import pages.sections.additionalInformation.AdditionalInformationSection
-import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.http.HttpVerbs.GET
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.item.additionalReference.index.RemoveAdditionalReferenceView
+import views.html.item.additionalInformation.index.RemoveAdditionalInformationView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -41,7 +39,7 @@ class RemoveAdditionalInformationController @Inject() (
   getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: RemoveAdditionalReferenceView
+  view: RemoveAdditionalInformationView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -49,24 +47,27 @@ class RemoveAdditionalInformationController @Inject() (
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, additionalInformationIndex: Index): Action[AnyContent] =
     actions
       .requireData(lrn)
-      .andThen(getMandatoryPage(AdditionalReferencePage(itemIndex, additionalInformationIndex))) {
+      .andThen(getMandatoryPage(AdditionalInformationTypePage(itemIndex, additionalInformationIndex))) {
         implicit request =>
-          val form =     formProvider("item.additionalInformation.index.removeAdditionalInformation", additionalInformationIndex.display, request.arg)
-          Ok(view(form, lrn, mode, itemIndex, additionalInformationIndex, request.arg))
+          val additionalInformationType = request.arg.toString
+          val form                      = formProvider("item.additionalInformation.index.removeAdditionalInformation", additionalInformationIndex.display, additionalInformationType)
+          Ok(view(form, lrn, mode, itemIndex, additionalInformationIndex, additionalInformationType))
       }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, additionalInformationIndex: Index): Action[AnyContent] =
     actions
       .requireData(lrn)
-      .andThen(getMandatoryPage(AdditionalReferencePage(itemIndex, additionalInformationIndex)))
+      .andThen(getMandatoryPage(AdditionalInformationTypePage(itemIndex, additionalInformationIndex)))
       .async {
         implicit request =>
-          lazy val redirect = Call(GET, "#")
-          val form =     formProvider("item.additionalInformation.index.removeAdditionalInformation", additionalInformationIndex.display, request.arg)
+          lazy val redirect             = Call(GET, "#")
+          val additionalInformationType = request.arg.toString
+          val form                      = formProvider("item.additionalInformation.index.removeAdditionalInformation", additionalInformationIndex.display, additionalInformationType)
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex, additionalInformationIndex))),
+              formWithErrors =>
+                Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex, additionalInformationIndex, additionalInformationType))),
               {
                 case true =>
                   AdditionalInformationSection(itemIndex, additionalInformationIndex)

@@ -17,17 +17,18 @@
 @import controllers.item.additionalReference.index.routes
 @import models.LocalReferenceNumber
 @import viewmodels.components.InputYesNoViewModel._
-@import views.html.components.{Button, ErrorSummary, InputYesNo}
+@import views.html.components.{Button, ErrorSummary, InputYesNo, InsetText}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     inputYesNo: InputYesNo,
+    insetText: InsetText,
     errorSummary: ErrorSummary,
-    button: Button
+    button: Button,
 )
 
-@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, additionalInformationIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, additionalInformationIndex: Index, additionalInformationType: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("item.additionalInformation.index.removeAdditionalInformation.title", additionalInformationIndex.display),
@@ -41,9 +42,10 @@
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = OrdinaryYesNo(
+            yesNoType = YesNoWithAdditionalHtml(
                 heading = messages("item.additionalInformation.index.removeAdditionalInformation.heading", additionalInformationIndex.display),
-                caption = Some(messages("item.additionalInformation.caption", itemIndex.display))
+                caption = Some(messages("item.additionalInformation.caption", itemIndex.display)),
+                additionalHtml = insetText(additionalInformationType)
             )
         )
 
