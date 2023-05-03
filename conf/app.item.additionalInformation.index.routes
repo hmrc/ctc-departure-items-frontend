@@ -1,0 +1,5 @@
+
+GET        /:lrn/item/additionalInformation/index/what-type-of-additional-information-do-you-want-to-add                        controllers.item.additionalInformation.index.AdditionalInformationTypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/item/additionalInformation/index/what-type-of-additional-information-do-you-want-to-add                        controllers.item.additionalInformation.index.AdditionalInformationTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/item/additionalInformation/index/change-what-type-of-additional-information-do-you-want-to-add                 controllers.item.additionalInformation.index.AdditionalInformationTypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/item/additionalInformation/index/change-what-type-of-additional-information-do-you-want-to-add                 controllers.item.additionalInformation.index.AdditionalInformationTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
