@@ -23,10 +23,10 @@ class AdditionalInformationTypePageSpec extends PageBehaviours {
 
   "AdditionalInformationTypePage" - {
 
-    beRetrievable[AdditionalInformation](AdditionalInformationTypePage)
+    beRetrievable[AdditionalInformation](AdditionalInformationTypePage(itemIndex, additionalInformationIndex))
 
-    beSettable[AdditionalInformation](AdditionalInformationTypePage)
+    beSettable[AdditionalInformation](AdditionalInformationTypePage(itemIndex, additionalInformationIndex))
 
-    beRemovable[AdditionalInformation](AdditionalInformationTypePage)
+    beRemovable[AdditionalInformation](AdditionalInformationTypePage(itemIndex, additionalInformationIndex))
   }
 }

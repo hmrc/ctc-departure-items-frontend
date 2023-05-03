@@ -176,4 +176,12 @@ trait ModelGenerators {
     Gen.oneOf(TaskStatus.InProgress, TaskStatus.NotStarted, TaskStatus.CannotStartYet)
   }
 
+  implicit lazy val arbitraryAdditionalInformation: Arbitrary[AdditionalInformation] =
+    Arbitrary {
+      for {
+        code        <- nonEmptyString
+        description <- nonEmptyString
+      } yield AdditionalInformation(code, description)
+    }
+
 }

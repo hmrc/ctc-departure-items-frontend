@@ -44,7 +44,7 @@ class AdditionalInformationTypeControllerSpec extends SpecBase with AppWithDefau
   private val mode         = NormalMode
 
   private val mockAdditionalInformationService: AdditionalInformationService = mock[AdditionalInformationService]
-  private lazy val additionalInformationTypeRoute                            = routes.AdditionalInformationTypeController.onPageLoad(lrn, mode).url
+  private lazy val additionalInformationTypeRoute                            = routes.AdditionalInformationTypeController.onPageLoad(lrn, mode, itemIndex, additionalInformationIndex).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -56,7 +56,7 @@ class AdditionalInformationTypeControllerSpec extends SpecBase with AppWithDefau
 
     "must return OK and the correct view for a GET" in {
 
-      when(mockAdditionalInformationService.getAdditionalInformationTypes(any())).thenReturn(Future.successful(additionalInformationList))
+      when(mockAdditionalInformationService.getAdditionalInformationTypes()(any())).thenReturn(Future.successful(additionalInformationList))
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, additionalInformationTypeRoute)
@@ -68,13 +68,13 @@ class AdditionalInformationTypeControllerSpec extends SpecBase with AppWithDefau
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, additionalInformationList.values, mode)(request, messages).toString
+        view(form, lrn, additionalInformationList.values, mode, itemIndex, additionalInformationIndex)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      when(mockAdditionalInformationService.getAdditionalInformationTypes(any())).thenReturn(Future.successful(additionalInformationList))
-      val userAnswers = emptyUserAnswers.setValue(AdditionalInformationTypePage, additionalInformation1)
+      when(mockAdditionalInformationService.getAdditionalInformationTypes()(any())).thenReturn(Future.successful(additionalInformationList))
+      val userAnswers = emptyUserAnswers.setValue(AdditionalInformationTypePage(itemIndex, additionalInformationIndex), additionalInformation1)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, additionalInformationTypeRoute)
@@ -88,12 +88,12 @@ class AdditionalInformationTypeControllerSpec extends SpecBase with AppWithDefau
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, additionalInformationList.values, mode)(request, messages).toString
+        view(filledForm, lrn, additionalInformationList.values, mode, itemIndex, additionalInformationIndex)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
-      when(mockAdditionalInformationService.getAdditionalInformationTypes(any())).thenReturn(Future.successful(additionalInformationList))
+      when(mockAdditionalInformationService.getAdditionalInformationTypes()(any())).thenReturn(Future.successful(additionalInformationList))
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
@@ -110,7 +110,7 @@ class AdditionalInformationTypeControllerSpec extends SpecBase with AppWithDefau
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      when(mockAdditionalInformationService.getAdditionalInformationTypes(any())).thenReturn(Future.successful(additionalInformationList))
+      when(mockAdditionalInformationService.getAdditionalInformationTypes()(any())).thenReturn(Future.successful(additionalInformationList))
       setExistingUserAnswers(emptyUserAnswers)
 
       val request   = FakeRequest(POST, additionalInformationTypeRoute).withFormUrlEncodedBody(("value", "invalid value"))
@@ -123,7 +123,7 @@ class AdditionalInformationTypeControllerSpec extends SpecBase with AppWithDefau
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, additionalInformationList.values, mode)(request, messages).toString
+        view(boundForm, lrn, additionalInformationList.values, mode, itemIndex, additionalInformationIndex)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

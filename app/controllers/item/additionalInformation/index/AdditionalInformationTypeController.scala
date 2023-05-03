@@ -19,7 +19,7 @@ package controllers.item.additionalInformation.index
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.SelectableFormProvider
-import models.{LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
 import pages.item.additionalInformation.index.AdditionalInformationTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -47,34 +47,37 @@ class AdditionalInformationTypeController @Inject() (
 
   private val prefix: String = "item.additionalInformation.index.additionalInformationType"
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
-    implicit request =>
-      service.getAdditionalInformationTypes.map {
-        additionalInformationList =>
-          val form = formProvider(prefix, additionalInformationList)
-          val preparedForm = request.userAnswers.get(AdditionalInformationTypePage) match {
-            case None        => form
-            case Some(value) => form.fill(value)
-          }
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, additionalInformationIndex: Index): Action[AnyContent] =
+    actions.requireData(lrn).async {
+      implicit request =>
+        service.getAdditionalInformationTypes.map {
+          additionalInformationTypes =>
+            val form = formProvider(prefix, additionalInformationTypes)
+            val preparedForm = request.userAnswers.get(AdditionalInformationTypePage(itemIndex, additionalInformationIndex)) match {
+              case None        => form
+              case Some(value) => form.fill(value)
+            }
 
-          Ok(view(preparedForm, lrn, additionalInformationList.values, mode))
-      }
-  }
+            Ok(view(preparedForm, lrn, additionalInformationTypes.values, mode, itemIndex, additionalInformationIndex))
+        }
+    }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
-    implicit request =>
-      service.getAdditionalInformationTypes.flatMap {
-        additionalInformationList =>
-          val form = formProvider(prefix, additionalInformationList)
-          form
-            .bindFromRequest()
-            .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, additionalInformationList.values, mode))),
-              value => {
-                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-                AdditionalInformationTypePage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
-              }
-            )
-      }
-  }
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, additionalInformationIndex: Index): Action[AnyContent] =
+    actions.requireData(lrn).async {
+      implicit request =>
+        service.getAdditionalInformationTypes.flatMap {
+          additionalInformationTypes =>
+            val form = formProvider(prefix, additionalInformationTypes)
+            form
+              .bindFromRequest()
+              .fold(
+                formWithErrors =>
+                  Future.successful(BadRequest(view(formWithErrors, lrn, additionalInformationTypes.values, mode, itemIndex, additionalInformationIndex))),
+                value => {
+                  implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
+                  AdditionalInformationTypePage(itemIndex, additionalInformationIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+                }
+              )
+        }
+    }
 }

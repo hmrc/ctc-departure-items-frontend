@@ -30,7 +30,7 @@ class AdditionalInformationTypeViewSpec extends InputSelectViewBehaviours[Additi
   override def form: Form[AdditionalInformation] = new SelectableFormProvider()(prefix, SelectableList(values))
 
   override def applyView(form: Form[AdditionalInformation]): HtmlFormat.Appendable =
-    injector.instanceOf[AdditionalInformationTypeView].apply(form, lrn, values, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[AdditionalInformationTypeView].apply(form, lrn, values, NormalMode, itemIndex, additionalInformationIndex)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[AdditionalInformation] = arbitraryAdditionalInformation
 
@@ -45,8 +45,6 @@ class AdditionalInformationTypeViewSpec extends InputSelectViewBehaviours[Additi
   behave like pageWithSelect()
 
   behave like pageWithHint("What type of additional information do you want to add hint")
-
-  behave like pageWithContent("label", "What type of additional information do you want to add label")
 
   behave like pageWithSubmitButton("Save and continue")
 }

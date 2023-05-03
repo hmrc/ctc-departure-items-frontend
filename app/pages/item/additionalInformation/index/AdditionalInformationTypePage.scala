@@ -18,18 +18,18 @@ package pages.item.additionalInformation.index
 
 import controllers.item.additionalInformation.index.routes
 import models.reference.AdditionalInformation
-import models.{Mode, UserAnswers}
+import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.additionalInformation.AdditionalInformationSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object AdditionalInformationTypePage extends QuestionPage[AdditionalInformation] {
+case class AdditionalInformationTypePage(itemIndex: Index, additionalInformationIndex: Index) extends QuestionPage[AdditionalInformation] {
 
-  override def path: JsPath = AdditionalInformationSection.path \ toString
+  override def path: JsPath = AdditionalInformationSection(itemIndex, additionalInformationIndex).path \ toString
 
   override def toString: String = "additionalInformationType"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.AdditionalInformationTypeController.onPageLoad(userAnswers.lrn, mode))
+    Some(routes.AdditionalInformationTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, additionalInformationIndex))
 }
