@@ -346,7 +346,10 @@ item.additionalInformation.index.removeAdditionalInformation.title = Are you sur
 item.additionalInformation.index.removeAdditionalInformation.heading = Are you sure you want to remove this additional information?
 item.additionalInformation.index.removeAdditionalInformation.error.required = Select yes if you want to remove this additional information
 
-item.additionalInformation.addAnotherAdditionalInformation.title = You have added 1 additional information
-item.additionalInformation.addAnotherAdditionalInformation.heading = You have added 1 additional information
-item.additionalInformation.addAnotherAdditionalInformation.checkYourAnswersLabel = You have added 1 additional information
-item.additionalInformation.addAnotherAdditionalInformation.error.required = Select yes if You have added 1 additional information
+item.additionalInformation.addAnotherAdditionalInformation.singular.title = You have added 1 additional information
+item.additionalInformation.addAnotherAdditionalInformation.singular.heading = You have added 1 additional information
+item.additionalInformation.addAnotherAdditionalInformation.plural.title = You have added {0} additional information
+item.additionalInformation.addAnotherAdditionalInformation.plural.heading = You have added {0} additional information
+item.additionalInformation.addAnotherAdditionalInformation.error.required = Select yes if you want to add any more additional information
+item.additionalInformation.addAnotherAdditionalInformation.label = Do you want to add any more additional information?
+item.additionalInformation.addAnotherAdditionalInformation.maxLimit.label = You cannot add any more additional information. To add another, you need to remove one first.

@@ -16,26 +16,46 @@
 
 package views.item.additionalInformation
 
-import models.NormalMode
+import forms.AddAnotherFormProvider
+import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.YesNoViewBehaviours
+import viewmodels.item.additionalInformation.AddAnotherAdditionalInformationViewModel
+import views.behaviours.ListWithActionsViewBehaviours
 import views.html.item.additionalInformation.AddAnotherAdditionalInformationView
 
-class AddAnotherAdditionalInformationViewSpec extends YesNoViewBehaviours {
+class AddAnotherAdditionalInformationViewSpec extends ListWithActionsViewBehaviours {
+
+  override def maxNumber: Int = frontendAppConfig.maxAdditionalInformation
+
+  private def formProvider(viewModel: AddAnotherAdditionalInformationViewModel) =
+    new AddAnotherFormProvider()(viewModel.prefix, viewModel.allowMore)
+
+  private val viewModel            = arbitrary[AddAnotherAdditionalInformationViewModel].sample.value
+  private val notMaxedOutViewModel = viewModel.copy(listItems = listItems)
+  private val maxedOutViewModel    = viewModel.copy(listItems = maxedOutListItems)
+
+  override def form: Form[Boolean] = formProvider(notMaxedOutViewModel)
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[AddAnotherAdditionalInformationView].apply(form, lrn, NormalMode)(fakeRequest, messages)
+    injector
+      .instanceOf[AddAnotherAdditionalInformationView]
+      .apply(form, lrn, notMaxedOutViewModel, itemIndex)(fakeRequest, messages, frontendAppConfig)
+
+  override def applyMaxedOutView: HtmlFormat.Appendable =
+    injector
+      .instanceOf[AddAnotherAdditionalInformationView]
+      .apply(formProvider(maxedOutViewModel), lrn, maxedOutViewModel, itemIndex)(fakeRequest, messages, frontendAppConfig)
 
   override val prefix: String = "item.additionalInformation.addAnotherAdditionalInformation"
 
-  behave like pageWithTitle()
-
   behave like pageWithBackLink()
 
-  behave like pageWithHeading()
+  behave like pageWithSectionCaption(s"Item ${itemIndex.display} - Additional information")
 
-  behave like pageWithRadioItems()
+  behave like pageWithMoreItemsAllowed(notMaxedOutViewModel.count)()
+
+  behave like pageWithItemsMaxedOut(maxedOutViewModel.count)
 
   behave like pageWithSubmitButton("Save and continue")
 }
