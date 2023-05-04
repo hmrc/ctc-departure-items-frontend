@@ -40,6 +40,8 @@ class AdditionalReferenceNumberViewModelSpec extends SpecBase with ScalaCheckPro
                   .setValue(AdditionalReferencePage(itemIndex, Index(0)), otherAdditionalReference)
                   .setValue(AddAdditionalReferenceNumberYesNoPage(itemIndex, Index(0)), true)
                   .setValue(AdditionalReferenceNumberPage(itemIndex, Index(0)), nonEmptyString.sample.value)
+                  .setValue(AdditionalReferencePage(itemIndex, Index(1)), additionalReference)
+                  .setValue(AddAdditionalReferenceNumberYesNoPage(itemIndex, Index(1)), true)
 
                 val result = new AdditionalReferenceNumberViewModelProvider().apply(userAnswers, itemIndex, additionalReference)
 
@@ -60,6 +62,8 @@ class AdditionalReferenceNumberViewModelSpec extends SpecBase with ScalaCheckPro
                   .setValue(AdditionalReferencePage(itemIndex, Index(1)), additionalReference)
                   .setValue(AddAdditionalReferenceNumberYesNoPage(itemIndex, Index(1)), true)
                   .setValue(AdditionalReferenceNumberPage(itemIndex, Index(1)), additionalReferenceNumber)
+                  .setValue(AdditionalReferencePage(itemIndex, Index(2)), additionalReference)
+                  .setValue(AddAdditionalReferenceNumberYesNoPage(itemIndex, Index(2)), true)
 
                 val result = new AdditionalReferenceNumberViewModelProvider().apply(userAnswers, itemIndex, additionalReference)
 
@@ -74,6 +78,7 @@ class AdditionalReferenceNumberViewModelSpec extends SpecBase with ScalaCheckPro
             val userAnswers = emptyUserAnswers
               .setValue(AdditionalReferencePage(itemIndex, Index(0)), additionalReference)
               .setValue(AddAdditionalReferenceNumberYesNoPage(itemIndex, Index(0)), false)
+              .setValue(AdditionalReferencePage(itemIndex, Index(1)), additionalReference)
 
             val result = new AdditionalReferenceNumberViewModelProvider().apply(userAnswers, itemIndex, additionalReference)
 
@@ -88,6 +93,8 @@ class AdditionalReferenceNumberViewModelSpec extends SpecBase with ScalaCheckPro
               .setValue(AdditionalReferencePage(itemIndex, Index(0)), additionalReference)
               .setValue(AddAdditionalReferenceNumberYesNoPage(itemIndex, Index(0)), true)
               .setValue(AdditionalReferenceNumberPage(itemIndex, Index(0)), nonEmptyString.sample.value)
+              .setValue(AdditionalReferencePage(itemIndex, Index(1)), additionalReference)
+              .setValue(AddAdditionalReferenceNumberYesNoPage(itemIndex, Index(1)), true)
 
             val result = new AdditionalReferenceNumberViewModelProvider().apply(userAnswers, itemIndex, additionalReference)
 

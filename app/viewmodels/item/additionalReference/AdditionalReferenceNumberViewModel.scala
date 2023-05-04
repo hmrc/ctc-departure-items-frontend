@@ -17,9 +17,10 @@
 package viewmodels.item.additionalReference
 
 import models.journeyDomain.UserAnswersReader
-import models.journeyDomain.item.additionalReferences.AdditionalReferencesDomain
+import models.journeyDomain.item.additionalReferences.AdditionalReferenceDomain
 import models.reference.AdditionalReference
 import models.{Index, UserAnswers}
+import pages.sections.additionalReference.AdditionalReferencesSection
 
 import javax.inject.Inject
 
@@ -33,12 +34,16 @@ object AdditionalReferenceNumberViewModel {
   class AdditionalReferenceNumberViewModelProvider @Inject() () {
 
     def apply(userAnswers: UserAnswers, itemIndex: Index, additionalReference: AdditionalReference): AdditionalReferenceNumberViewModel = {
-      val additionalReferences = UserAnswersReader[AdditionalReferencesDomain](AdditionalReferencesDomain.userAnswersReader(itemIndex))
-        .run(userAnswers)
-        .toOption
-        .map(_.value)
-        .getOrElse(Nil)
-        .filter(_.`type` == additionalReference)
+      val numberOfAdditionalReferences = userAnswers.get(AdditionalReferencesSection(itemIndex)).map(_.value.size).getOrElse(0)
+      val additionalReferences = (0 until numberOfAdditionalReferences).foldLeft[Seq[AdditionalReferenceDomain]](Nil) {
+        (acc, i) =>
+          UserAnswersReader[AdditionalReferenceDomain](
+            AdditionalReferenceDomain.userAnswersReader(itemIndex, Index(i))
+          ).run(userAnswers).toOption match {
+            case Some(value) if value.`type` == additionalReference => acc :+ value
+            case _                                                  => acc
+          }
+      }
 
       AdditionalReferenceNumberViewModel(
         otherAdditionalReferenceNumbers = additionalReferences.flatMap(_.number),
