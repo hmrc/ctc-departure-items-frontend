@@ -17,7 +17,7 @@
 package controllers.item.additionalInformation.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.AdditionalInformationFormProvider
+import forms.item.additionalInformation.AdditionalInformationFormProvider
 import models.NormalMode
 import navigation.ItemNavigatorProvider
 import org.mockito.ArgumentMatchers.any

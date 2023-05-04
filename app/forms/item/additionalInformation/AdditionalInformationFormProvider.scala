@@ -14,17 +14,25 @@
  * limitations under the License.
  */
 
-package forms
+package forms.item.additionalInformation
 
+import forms.Constants.maxAdditionalInformationLength
 import forms.mappings.Mappings
-import javax.inject.Inject
+import models.domain.StringFieldRegex.stringFieldRegex
 import play.api.data.Form
+
+import javax.inject.Inject
 
 class AdditionalInformationFormProvider @Inject() extends Mappings {
 
   def apply(prefix: String): Form[String] =
     Form(
       "value" -> text(s"$prefix.error.required")
-        .verifying(maxLength(512, s"$prefix.error.length"))
+        .verifying(
+          forms.StopOnFirstFail[String](
+            regexp(stringFieldRegex, s"$prefix.error.invalidCharacters"),
+            maxLength(maxAdditionalInformationLength, s"$prefix.error.length")
+          )
+        )
     )
 }

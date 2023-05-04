@@ -18,7 +18,7 @@ package controllers.item.additionalInformation.index
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.AdditionalInformationFormProvider
+import forms.item.additionalInformation.AdditionalInformationFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
 import pages.item.additionalInformation.index.AdditionalInformationPage
