@@ -31,7 +31,7 @@
 @(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, additionalReferenceIndex: Index, additionalReference: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("item.additionalReference.index.removeAdditionalReference.title", additionalReferenceIndex.display),
+    title = messages("item.additionalReference.index.removeAdditionalReference.title"),
     showBackLink = true,
     lrn = lrn
 ) {
@@ -43,7 +43,7 @@
         @inputYesNo(
             field = form("value"),
             yesNoType = YesNoWithAdditionalHtml(
-                heading = messages("item.additionalReference.index.removeAdditionalReference.heading", additionalReferenceIndex.display),
+                heading = messages("item.additionalReference.index.removeAdditionalReference.heading"),
                 caption = Some(messages("item.additionalReference.caption", itemIndex.display)),
                 additionalHtml = govukInsetText(InsetText(content = Text(additionalReference)))
             )

@@ -36,15 +36,15 @@ class RemoveAdditionalReferenceViewSpec extends YesNoViewBehaviours with Generat
 
   override val prefix: String = "item.additionalReference.index.removeAdditionalReference"
 
-  behave like pageWithTitle(additionalReferenceIndex.display)
+  behave like pageWithTitle()
 
   behave like pageWithBackLink()
 
   behave like pageWithSectionCaption(s"Item ${itemIndex.display} - Additional reference")
 
-  behave like pageWithHeading(additionalReferenceIndex.display)
+  behave like pageWithHeading()
 
-  behave like pageWithRadioItems(args = Seq(additionalReferenceIndex.display))
+  behave like pageWithRadioItems()
 
   behave like pageWithInsetText(additionalReference.toString)
 

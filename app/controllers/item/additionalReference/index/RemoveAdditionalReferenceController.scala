@@ -49,8 +49,7 @@ class RemoveAdditionalReferenceController @Inject() (
     with I18nSupport
     with Logging {
 
-  private def form(additionalReferenceIndex: Index): Form[Boolean] =
-    formProvider("item.additionalReference.index.removeAdditionalReference", additionalReferenceIndex.display)
+  private val form: Form[Boolean] = formProvider("item.additionalReference.index.removeAdditionalReference")
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, additionalReferenceIndex: Index): Action[AnyContent] =
     actions
@@ -60,7 +59,7 @@ class RemoveAdditionalReferenceController @Inject() (
             AdditionalReferenceDomain.userAnswersReader(itemIndex, additionalReferenceIndex)
           ).run(request.userAnswers).toOption match {
             case Some(value) =>
-              Ok(view(form(additionalReferenceIndex), lrn, mode, itemIndex, additionalReferenceIndex, value.toString))
+              Ok(view(form, lrn, mode, itemIndex, additionalReferenceIndex, value.toString))
             case None =>
               logger.warn(s"Additional reference not found at index $additionalReferenceIndex in item $itemIndex")
               Redirect(config.sessionExpiredUrl)
@@ -73,7 +72,7 @@ class RemoveAdditionalReferenceController @Inject() (
       .async {
         implicit request =>
           lazy val redirect = routes.AddAnotherAdditionalReferenceController.onPageLoad(lrn, mode, itemIndex)
-          form(additionalReferenceIndex)
+          form
             .bindFromRequest()
             .fold(
               formWithErrors =>

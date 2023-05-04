@@ -22,7 +22,7 @@ import forms.YesNoFormProvider
 import generators.Generators
 import models.journeyDomain.item.additionalReferences.AdditionalReferenceDomain
 import models.reference.AdditionalReference
-import models.{Index, NormalMode, UserAnswers}
+import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, verify}
@@ -35,10 +35,10 @@ import views.html.item.additionalReference.index.RemoveAdditionalReferenceView
 
 class RemoveAdditionalReferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val formProvider                          = new YesNoFormProvider()
-  private def form(additionalReferenceIndex: Index) = formProvider("item.additionalReference.index.removeAdditionalReference", additionalReferenceIndex.display)
-  private val mode                                  = NormalMode
-  private lazy val removeAdditionalReferenceRoute   = routes.RemoveAdditionalReferenceController.onPageLoad(lrn, mode, itemIndex, additionalReferenceIndex).url
+  private val formProvider                        = new YesNoFormProvider()
+  private val form                                = formProvider("item.additionalReference.index.removeAdditionalReference")
+  private val mode                                = NormalMode
+  private lazy val removeAdditionalReferenceRoute = routes.RemoveAdditionalReferenceController.onPageLoad(lrn, mode, itemIndex, additionalReferenceIndex).url
 
   private val `type` = arbitrary[AdditionalReference].sample.value
 
@@ -62,7 +62,7 @@ class RemoveAdditionalReferenceControllerSpec extends SpecBase with AppWithDefau
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form(additionalReferenceIndex), lrn, mode, itemIndex, additionalReferenceIndex, additionalReference.toString)(request, messages).toString
+        view(form, lrn, mode, itemIndex, additionalReferenceIndex, additionalReference.toString)(request, messages).toString
     }
 
     "must redirect to the next page" - {
@@ -107,7 +107,7 @@ class RemoveAdditionalReferenceControllerSpec extends SpecBase with AppWithDefau
       setExistingUserAnswers(baseAnswers)
 
       val request   = FakeRequest(POST, removeAdditionalReferenceRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form(additionalReferenceIndex).bind(Map("value" -> ""))
+      val boundForm = form.bind(Map("value" -> ""))
 
       val result = route(app, request).value
 
