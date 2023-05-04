@@ -341,3 +341,7 @@ item.additionalInformation.index.additionalInformationType.placeholder = Select 
 item.additionalInformation.index.additionalInformationType.change.hidden = What type of additional information do you want to add?
 item.additionalInformation.index.additionalInformationType.checkYourAnswersLabel = What type of additional information do you want to add?
 item.additionalInformation.index.additionalInformationType.error.required = Select the type of additional information
+
+item.additionalInformation.index.removeAdditionalInformation.title = Are you sure you want to remove this additional information?
+item.additionalInformation.index.removeAdditionalInformation.heading = Are you sure you want to remove this additional information?
+item.additionalInformation.index.removeAdditionalInformation.error.required = Select yes if you want to remove this additional information
