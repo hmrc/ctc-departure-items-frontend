@@ -21,9 +21,11 @@ import controllers.actions._
 import controllers.item.additionalReference.routes
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
-import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.item.additionalReferences.AdditionalReferenceDomain
+import models.reference.AdditionalReference
+import models.requests.SpecificDataRequestProvider1
 import models.{Index, LocalReferenceNumber, Mode}
+import pages.item.additionalReference.index.{AdditionalReferenceNumberPage, AdditionalReferencePage}
 import pages.sections.additionalReference.AdditionalReferenceSection
 import play.api.Logging
 import play.api.data.Form
@@ -40,6 +42,7 @@ class RemoveAdditionalReferenceController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   actions: Actions,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: RemoveAdditionalReferenceView,
@@ -49,26 +52,28 @@ class RemoveAdditionalReferenceController @Inject() (
     with I18nSupport
     with Logging {
 
+  private type Request = SpecificDataRequestProvider1[AdditionalReference]#SpecificDataRequest[_]
+
+  private def additionalReference(itemIndex: Index, additionalReferenceIndex: Index)(implicit request: Request): String =
+    AdditionalReferenceDomain.asString(
+      `type` = request.arg,
+      number = request.userAnswers.get(AdditionalReferenceNumberPage(itemIndex, additionalReferenceIndex))
+    )
+
   private val form: Form[Boolean] = formProvider("item.additionalReference.index.removeAdditionalReference")
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, additionalReferenceIndex: Index): Action[AnyContent] =
     actions
-      .requireData(lrn) {
+      .requireData(lrn)
+      .andThen(getMandatoryPage(AdditionalReferencePage(itemIndex, additionalReferenceIndex))) {
         implicit request =>
-          UserAnswersReader[AdditionalReferenceDomain](
-            AdditionalReferenceDomain.userAnswersReader(itemIndex, additionalReferenceIndex)
-          ).run(request.userAnswers).toOption match {
-            case Some(value) =>
-              Ok(view(form, lrn, mode, itemIndex, additionalReferenceIndex, value.toString))
-            case None =>
-              logger.warn(s"Additional reference not found at index $additionalReferenceIndex in item $itemIndex")
-              Redirect(config.sessionExpiredUrl)
-          }
+          Ok(view(form, lrn, mode, itemIndex, additionalReferenceIndex, additionalReference(itemIndex, additionalReferenceIndex)))
       }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, additionalReferenceIndex: Index): Action[AnyContent] =
     actions
       .requireData(lrn)
+      .andThen(getMandatoryPage(AdditionalReferencePage(itemIndex, additionalReferenceIndex)))
       .async {
         implicit request =>
           lazy val redirect = routes.AddAnotherAdditionalReferenceController.onPageLoad(lrn, mode, itemIndex)
@@ -76,15 +81,9 @@ class RemoveAdditionalReferenceController @Inject() (
             .bindFromRequest()
             .fold(
               formWithErrors =>
-                UserAnswersReader[AdditionalReferenceDomain](
-                  AdditionalReferenceDomain.userAnswersReader(itemIndex, additionalReferenceIndex)
-                ).run(request.userAnswers).toOption match {
-                  case Some(value) =>
-                    Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex, additionalReferenceIndex, value.toString)))
-                  case None =>
-                    logger.warn(s"Additional reference not found at index $additionalReferenceIndex in item $itemIndex")
-                    Future.successful(Redirect(config.sessionExpiredUrl))
-                },
+                Future.successful(
+                  BadRequest(view(formWithErrors, lrn, mode, itemIndex, additionalReferenceIndex, additionalReference(itemIndex, additionalReferenceIndex)))
+                ),
               {
                 case true =>
                   AdditionalReferenceSection(itemIndex, additionalReferenceIndex)
