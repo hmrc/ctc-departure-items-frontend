@@ -345,3 +345,8 @@ item.additionalInformation.index.additionalInformationType.error.required = Sele
 item.additionalInformation.index.removeAdditionalInformation.title = Are you sure you want to remove this additional information?
 item.additionalInformation.index.removeAdditionalInformation.heading = Are you sure you want to remove this additional information?
 item.additionalInformation.index.removeAdditionalInformation.error.required = Select yes if you want to remove this additional information
+
+item.additionalInformation.addAnotherAdditionalInformation.title = You have added 1 additional information
+item.additionalInformation.addAnotherAdditionalInformation.heading = You have added 1 additional information
+item.additionalInformation.addAnotherAdditionalInformation.checkYourAnswersLabel = You have added 1 additional information
+item.additionalInformation.addAnotherAdditionalInformation.error.required = Select yes if You have added 1 additional information

@@ -1,2 +1,7 @@
 ->         /                                                                        app.item.additionalInformation.index.Routes
 
+
+GET        /item/additionalInformation/you-have-added-1-additional-information/:lrn                        controllers.item.additionalInformation.AddAnotherAdditionalInformationController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /item/additionalInformation/you-have-added-1-additional-information/:lrn                        controllers.item.additionalInformation.AddAnotherAdditionalInformationController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /item/additionalInformation/change-you-have-added-1-additional-information/:lrn                 controllers.item.additionalInformation.AddAnotherAdditionalInformationController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /item/additionalInformation/change-you-have-added-1-additional-information/:lrn                 controllers.item.additionalInformation.AddAnotherAdditionalInformationController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
