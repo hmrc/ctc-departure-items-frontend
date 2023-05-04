@@ -16,11 +16,9 @@
 
 package viewmodels.item.additionalReference
 
-import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.item.additionalReferences.AdditionalReferenceDomain
 import models.reference.AdditionalReference
 import models.{Index, UserAnswers}
-import pages.sections.additionalReference.AdditionalReferencesSection
 
 import javax.inject.Inject
 
@@ -33,21 +31,20 @@ object AdditionalReferenceNumberViewModel {
 
   class AdditionalReferenceNumberViewModelProvider @Inject() () {
 
-    def apply(userAnswers: UserAnswers, itemIndex: Index, additionalReference: AdditionalReference): AdditionalReferenceNumberViewModel = {
-      val numberOfAdditionalReferences = userAnswers.get(AdditionalReferencesSection(itemIndex)).map(_.value.size).getOrElse(0)
-      val additionalReferences = (0 until numberOfAdditionalReferences).foldLeft[Seq[AdditionalReferenceDomain]](Nil) {
-        (acc, i) =>
-          UserAnswersReader[AdditionalReferenceDomain](
-            AdditionalReferenceDomain.userAnswersReader(itemIndex, Index(i))
-          ).run(userAnswers).toOption match {
-            case Some(value) if value.`type` == additionalReference => acc :+ value
-            case _                                                  => acc
-          }
-      }
+    def apply(
+      userAnswers: UserAnswers,
+      itemIndex: Index,
+      additionalReferenceIndex: Index,
+      additionalReference: AdditionalReference
+    ): AdditionalReferenceNumberViewModel = {
+      val otherAdditionalReferenceNumbers = AdditionalReferenceDomain
+        .otherAdditionalReferenceNumbers(itemIndex, additionalReferenceIndex, additionalReference)
+        .run(userAnswers)
+        .getOrElse(Nil)
 
       AdditionalReferenceNumberViewModel(
-        otherAdditionalReferenceNumbers = additionalReferences.flatMap(_.number),
-        isReferenceNumberRequired = additionalReferences.exists(_.number.isEmpty)
+        otherAdditionalReferenceNumbers = otherAdditionalReferenceNumbers.flatten,
+        isReferenceNumberRequired = AdditionalReferenceDomain.isReferenceNumberRequired(otherAdditionalReferenceNumbers)
       )
     }
   }

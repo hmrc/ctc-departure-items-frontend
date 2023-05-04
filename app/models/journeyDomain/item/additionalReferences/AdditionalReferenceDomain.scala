@@ -16,12 +16,14 @@
 
 package models.journeyDomain.item.additionalReferences
 
+import cats.implicits._
 import config.Constants._
 import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
-import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
+import models.journeyDomain.{EitherType, GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
 import models.reference.AdditionalReference
 import models.{Index, Mode, UserAnswers}
 import pages.item.additionalReference.index._
+import pages.sections.additionalReference.AdditionalReferencesSection
 import play.api.mvc.Call
 
 case class AdditionalReferenceDomain(
@@ -48,16 +50,50 @@ object AdditionalReferenceDomain {
     value => s" - $value"
   }
 
-  def userAnswersReader(itemIndex: Index, additionalReferenceIndex: Index): UserAnswersReader[AdditionalReferenceDomain] =
+  def userAnswersReader(itemIndex: Index, additionalReferenceIndex: Index): UserAnswersReader[AdditionalReferenceDomain] = {
+    lazy val numberReader = AdditionalReferenceNumberPage(itemIndex, additionalReferenceIndex).reader
+
     for {
-      additionalReference <- AdditionalReferencePage(itemIndex, additionalReferenceIndex).reader
+      additionalReference             <- AdditionalReferencePage(itemIndex, additionalReferenceIndex).reader
+      otherAdditionalReferenceNumbers <- otherAdditionalReferenceNumbers(itemIndex, additionalReferenceIndex, additionalReference)
       additionalReferenceNumber <- additionalReference.value match {
         case C651 | C658 =>
-          AdditionalReferenceNumberPage(itemIndex, additionalReferenceIndex).reader.map(Some(_))
+          numberReader.map(Some(_))
         case _ =>
-          AddAdditionalReferenceNumberYesNoPage(itemIndex, additionalReferenceIndex).filterOptionalDependent(identity) {
-            AdditionalReferenceNumberPage(itemIndex, additionalReferenceIndex).reader
+          if (isReferenceNumberRequired(otherAdditionalReferenceNumbers)) {
+            numberReader.map(Some(_))
+          } else {
+            AddAdditionalReferenceNumberYesNoPage(itemIndex, additionalReferenceIndex).filterOptionalDependent(identity) {
+              numberReader
+            }
           }
       }
     } yield AdditionalReferenceDomain(additionalReference, additionalReferenceNumber)(itemIndex, additionalReferenceIndex)
+  }
+
+  def otherAdditionalReferenceNumbers(
+    itemIndex: Index,
+    thisIndex: Index,
+    typeAtThisIndex: AdditionalReference
+  ): UserAnswersReader[Seq[Option[String]]] = {
+    val fn: UserAnswers => EitherType[Seq[Option[String]]] = userAnswers => {
+      val numberOfAdditionalReferences = userAnswers.get(AdditionalReferencesSection(itemIndex)).map(_.value.size).getOrElse(0)
+      val additionalReferences = (0 until numberOfAdditionalReferences)
+        .map(Index(_))
+        .filterNot(_ == thisIndex)
+        .foldLeft[Seq[Option[String]]](Nil) {
+          (acc, index) =>
+            if (userAnswers.get(AdditionalReferencePage(itemIndex, index)).contains(typeAtThisIndex)) {
+              acc :+ userAnswers.get(AdditionalReferenceNumberPage(itemIndex, index))
+            } else {
+              acc
+            }
+        }
+      Right(additionalReferences)
+    }
+    UserAnswersReader(fn)
+  }
+
+  def isReferenceNumberRequired(otherAdditionalReferenceNumbers: Seq[Option[String]]): Boolean =
+    otherAdditionalReferenceNumbers.exists(_.isEmpty)
 }

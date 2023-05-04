@@ -43,7 +43,7 @@ class AdditionalReferenceNumberViewModelSpec extends SpecBase with ScalaCheckPro
                   .setValue(AdditionalReferencePage(itemIndex, Index(1)), additionalReference)
                   .setValue(AddAdditionalReferenceNumberYesNoPage(itemIndex, Index(1)), true)
 
-                val result = new AdditionalReferenceNumberViewModelProvider().apply(userAnswers, itemIndex, additionalReference)
+                val result = new AdditionalReferenceNumberViewModelProvider().apply(userAnswers, itemIndex, Index(1), additionalReference)
 
                 result.otherAdditionalReferenceNumbers mustBe empty
             }
@@ -65,7 +65,7 @@ class AdditionalReferenceNumberViewModelSpec extends SpecBase with ScalaCheckPro
                   .setValue(AdditionalReferencePage(itemIndex, Index(2)), additionalReference)
                   .setValue(AddAdditionalReferenceNumberYesNoPage(itemIndex, Index(2)), true)
 
-                val result = new AdditionalReferenceNumberViewModelProvider().apply(userAnswers, itemIndex, additionalReference)
+                val result = new AdditionalReferenceNumberViewModelProvider().apply(userAnswers, itemIndex, Index(2), additionalReference)
 
                 result.otherAdditionalReferenceNumbers mustBe Seq(additionalReferenceNumber)
             }
@@ -80,7 +80,7 @@ class AdditionalReferenceNumberViewModelSpec extends SpecBase with ScalaCheckPro
               .setValue(AddAdditionalReferenceNumberYesNoPage(itemIndex, Index(0)), false)
               .setValue(AdditionalReferencePage(itemIndex, Index(1)), additionalReference)
 
-            val result = new AdditionalReferenceNumberViewModelProvider().apply(userAnswers, itemIndex, additionalReference)
+            val result = new AdditionalReferenceNumberViewModelProvider().apply(userAnswers, itemIndex, Index(1), additionalReference)
 
             result.isReferenceNumberRequired mustBe true
         }
@@ -96,7 +96,7 @@ class AdditionalReferenceNumberViewModelSpec extends SpecBase with ScalaCheckPro
               .setValue(AdditionalReferencePage(itemIndex, Index(1)), additionalReference)
               .setValue(AddAdditionalReferenceNumberYesNoPage(itemIndex, Index(1)), true)
 
-            val result = new AdditionalReferenceNumberViewModelProvider().apply(userAnswers, itemIndex, additionalReference)
+            val result = new AdditionalReferenceNumberViewModelProvider().apply(userAnswers, itemIndex, Index(1), additionalReference)
 
             result.isReferenceNumberRequired mustBe false
         }
