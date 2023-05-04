@@ -345,3 +345,6 @@ item.additionalInformation.index.additionalInformationType.error.required = Sele
 item.additionalInformation.index.removeAdditionalInformation.title = Are you sure you want to remove this additional information?
 item.additionalInformation.index.removeAdditionalInformation.heading = Are you sure you want to remove this additional information?
 item.additionalInformation.index.removeAdditionalInformation.error.required = Select yes if you want to remove this additional information
+
+item.addAnotherItem.title = You have added 1 item
+item.addAnotherItem.heading = You have added 1 item
