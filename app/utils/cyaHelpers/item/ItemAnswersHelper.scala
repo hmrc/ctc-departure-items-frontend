@@ -17,13 +17,15 @@
 package utils.cyaHelpers.item
 
 import config.FrontendAppConfig
+import models.journeyDomain.item.additionalReferences.AdditionalReferenceDomain
 import models.journeyDomain.item.dangerousGoods.DangerousGoodsDomain
 import models.journeyDomain.item.documents.DocumentDomain
 import models.journeyDomain.item.packages.PackageDomain
-import models.reference.{Country, PackageType}
+import models.reference.Country
 import models.{DeclarationType, Index, Mode, UserAnswers}
 import pages.item._
-import pages.item.packages.index.{AddShippingMarkYesNoPage, NumberOfPackagesPage, PackageTypePage, ShippingMarkPage}
+import pages.sections.additionalInformation.AdditionalInformationListSection
+import pages.sections.additionalReference.AdditionalReferencesSection
 import pages.sections.dangerousGoods.DangerousGoodsListSection
 import pages.sections.documents.DocumentsSection
 import pages.sections.packages.PackagesSection
@@ -134,7 +136,7 @@ class ItemAnswersHelper(
 
   def dangerousGoods(dangerousGoodsIndex: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[DangerousGoodsDomain](
     formatAnswer = formatAsText,
-    prefix = "item.index.checkYourAnswers.dangerousGoods",
+    prefix = "item.checkYourAnswers.dangerousGoods",
     id = Some(s"change-dangerous-goods-${dangerousGoodsIndex.display}"),
     args = dangerousGoodsIndex.display
   )(DangerousGoodsDomain.userAnswersReader(itemIndex, dangerousGoodsIndex))
@@ -178,44 +180,12 @@ class ItemAnswersHelper(
     args = itemIndex.display
   )
 
-  def packageType(packageIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[PackageType](
-    page = PackageTypePage(itemIndex, packageIndex),
-    formatAnswer = formatAsText,
-    prefix = "item.packages.index.packageType",
-    id = Some(s"change-type-${packageIndex.display}"),
-    args = packageIndex.display
-  )
-
-  def numberOfPackages(packageIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[Int](
-    page = NumberOfPackagesPage(itemIndex, packageIndex),
-    formatAnswer = formatAsText,
-    prefix = "item.packages.index.numberOfPackages",
-    id = Some(s"change-type-quantity-${packageIndex.display}"),
-    args = packageIndex.display
-  )
-
-  def shippingMarkYesNo(packageIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
-    page = AddShippingMarkYesNoPage(itemIndex, packageIndex),
-    formatAnswer = formatAsYesOrNo,
-    prefix = "item.packages.index.addShippingMarkYesNo",
-    id = Some(s"change-add-shipping-mark-${packageIndex.display}"),
-    args = packageIndex.display
-  )
-
-  def shippingMark(packageIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[String](
-    page = ShippingMarkPage(itemIndex, packageIndex),
-    formatAnswer = formatAsText,
-    prefix = "item.packages.index.shippingMark",
-    id = Some(s"change-shipping-mark-${packageIndex.display}"),
-    args = packageIndex.display
-  )
-
   def packages: Seq[SummaryListRow] =
     getAnswersAndBuildSectionRows(PackagesSection(itemIndex))(`package`)
 
   def `package`(packageIndex: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[PackageDomain](
     formatAnswer = formatAsText,
-    prefix = "item.index.checkYourAnswers.package",
+    prefix = "item.checkYourAnswers.package",
     id = Some(s"change-package-${packageIndex.display}"),
     args = packageIndex.display
   )(PackageDomain.userAnswersReader(itemIndex, packageIndex))
@@ -232,9 +202,43 @@ class ItemAnswersHelper(
 
   def document(documentIndex: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[DocumentDomain](
     formatAnswer = formatAsText,
-    prefix = "item.index.checkYourAnswers.document",
+    prefix = "item.checkYourAnswers.document",
     id = Some(s"change-document-${documentIndex.display}"),
     args = documentIndex.display
   )(DocumentDomain.userAnswersReader(itemIndex, documentIndex))
+
+  def additionalReferencesYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddAdditionalReferenceYesNoPage(itemIndex),
+    formatAnswer = formatAsYesOrNo,
+    prefix = "item.addAdditionalReferenceYesNo",
+    id = Some("change-add-additional-reference")
+  )
+
+  def additionalReferences: Seq[SummaryListRow] =
+    getAnswersAndBuildSectionRows(AdditionalReferencesSection(itemIndex))(additionalReference)
+
+  def additionalReference(additionalReferenceIndex: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[AdditionalReferenceDomain](
+    formatAnswer = formatAsText,
+    prefix = "item.checkYourAnswers.additionalReference",
+    id = Some(s"change-additional-reference-${additionalReferenceIndex.display}"),
+    args = additionalReferenceIndex.display
+  )(AdditionalReferenceDomain.userAnswersReader(itemIndex, additionalReferenceIndex))
+
+  def additionalInformationYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddAdditionalInformationYesNoPage(itemIndex),
+    formatAnswer = formatAsYesOrNo,
+    prefix = "item.addAdditionalInformationYesNo",
+    id = Some("change-add-additional-information")
+  )
+
+  def additionalInformationList: Seq[SummaryListRow] =
+    getAnswersAndBuildSectionRows(AdditionalInformationListSection(itemIndex))(additionalInformation)
+
+  def additionalInformation(additionalInformationIndex: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[AdditionalReferenceDomain](
+    formatAnswer = formatAsText,
+    prefix = "item.checkYourAnswers.additionalInformation",
+    id = Some(s"change-additional-information-${additionalInformationIndex.display}"),
+    args = additionalInformationIndex.display
+  )(AdditionalReferenceDomain.userAnswersReader(itemIndex, additionalInformationIndex))
 
 }
