@@ -16,7 +16,6 @@
 
 package controllers.item.additionalReference.index
 
-import config.FrontendAppConfig
 import controllers.actions._
 import controllers.item.additionalReference.routes
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
@@ -45,8 +44,7 @@ class RemoveAdditionalReferenceController @Inject() (
   getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: RemoveAdditionalReferenceView,
-  config: FrontendAppConfig
+  view: RemoveAdditionalReferenceView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
