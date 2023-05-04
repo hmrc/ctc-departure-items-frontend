@@ -16,12 +16,16 @@
 
 package controllers.item.additionalReference.index
 
+import config.FrontendAppConfig
 import controllers.actions._
 import controllers.item.additionalReference.routes
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
+import models.journeyDomain.UserAnswersReader
+import models.journeyDomain.item.additionalReferences.AdditionalReferenceDomain
 import models.{Index, LocalReferenceNumber, Mode}
 import pages.sections.additionalReference.AdditionalReferenceSection
+import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -36,13 +40,14 @@ class RemoveAdditionalReferenceController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   actions: Actions,
-  getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: RemoveAdditionalReferenceView
+  view: RemoveAdditionalReferenceView,
+  config: FrontendAppConfig
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with Logging {
 
   private def form(additionalReferenceIndex: Index): Form[Boolean] =
     formProvider("item.additionalReference.index.removeAdditionalReference", additionalReferenceIndex.display)
@@ -51,7 +56,15 @@ class RemoveAdditionalReferenceController @Inject() (
     actions
       .requireData(lrn) {
         implicit request =>
-          Ok(view(form(additionalReferenceIndex), lrn, mode, itemIndex, additionalReferenceIndex))
+          UserAnswersReader[AdditionalReferenceDomain](
+            AdditionalReferenceDomain.userAnswersReader(itemIndex, additionalReferenceIndex)
+          ).run(request.userAnswers).toOption match {
+            case Some(value) =>
+              Ok(view(form(additionalReferenceIndex), lrn, mode, itemIndex, additionalReferenceIndex, value.toString))
+            case None =>
+              logger.warn(s"Additional reference not found at index $additionalReferenceIndex in item $itemIndex")
+              Redirect(config.sessionExpiredUrl)
+          }
       }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, additionalReferenceIndex: Index): Action[AnyContent] =
@@ -63,7 +76,16 @@ class RemoveAdditionalReferenceController @Inject() (
           form(additionalReferenceIndex)
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex, additionalReferenceIndex))),
+              formWithErrors =>
+                UserAnswersReader[AdditionalReferenceDomain](
+                  AdditionalReferenceDomain.userAnswersReader(itemIndex, additionalReferenceIndex)
+                ).run(request.userAnswers).toOption match {
+                  case Some(value) =>
+                    Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex, additionalReferenceIndex, value.toString)))
+                  case None =>
+                    logger.warn(s"Additional reference not found at index $additionalReferenceIndex in item $itemIndex")
+                    Future.successful(Redirect(config.sessionExpiredUrl))
+                },
               {
                 case true =>
                   AdditionalReferenceSection(itemIndex, additionalReferenceIndex)

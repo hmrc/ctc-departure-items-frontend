@@ -16,7 +16,23 @@
 
 package generators
 
+import models.Index
+import models.journeyDomain.item.additionalReferences.AdditionalReferenceDomain
+import models.reference.AdditionalReference
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.{Arbitrary, Gen}
+
 trait DomainModelGenerators {
   self: Generators =>
+
+  implicit lazy val arbitraryAdditionalReferenceDomain: Arbitrary[AdditionalReferenceDomain] =
+    Arbitrary {
+      for {
+        additionalReferenceType  <- arbitrary[AdditionalReference]
+        number                   <- Gen.option(nonEmptyString)
+        itemIndex                <- arbitrary[Index]
+        additionalReferenceIndex <- arbitrary[Index]
+      } yield AdditionalReferenceDomain(additionalReferenceType, number)(itemIndex, additionalReferenceIndex)
+    }
 
 }

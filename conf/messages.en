@@ -327,9 +327,9 @@ item.additionalReference.addAnotherAdditionalReference.error.required = Select y
 item.additionalReference.addAnotherAdditionalReference.label = Do you want to add another additional reference?
 item.additionalReference.addAnotherAdditionalReference.maxLimit.label = You cannot add any more additional references. To add another, you need to remove one first.
 
-item.additionalReference.index.removeAdditionalReference.title = Are you sure you want to remove additional reference {0}?
-item.additionalReference.index.removeAdditionalReference.heading = Are you sure you want to remove additional reference {0}?
-item.additionalReference.index.removeAdditionalReference.error.required = Select yes if you want to remove additional reference {0}
+item.additionalReference.index.removeAdditionalReference.title = Are you sure you want to remove this additional reference?
+item.additionalReference.index.removeAdditionalReference.heading = Are you sure you want to remove this additional reference?
+item.additionalReference.index.removeAdditionalReference.error.required = Select yes if you want to remove this additional reference
 
 item.addAdditionalInformationYesNo.title = Do you want to add any additional information for this item?
 item.addAdditionalInformationYesNo.heading = Do you want to add any additional information for this item?

@@ -30,12 +30,9 @@ case class AdditionalReferenceDomain(
 )(itemIndex: Index, additionalReferenceIndex: Index)
     extends JourneyDomainModel {
 
-  def asString: String = number match {
-    case Some(value) =>
-      s"${`type`} - $value"
-    case _ =>
-      `type`.toString
-  }
+  override def toString: String = `type` + number.fold("")(
+    value => s" - $value"
+  )
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some {
     stage match {

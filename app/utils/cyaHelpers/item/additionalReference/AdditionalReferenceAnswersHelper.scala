@@ -33,7 +33,7 @@ class AdditionalReferenceAnswersHelper(userAnswers: UserAnswers, mode: Mode, ite
     buildListItems(AdditionalReferencesSection(itemIndex)) {
       additionalReferenceIndex =>
         buildListItem[AdditionalReferenceDomain](
-          nameWhenComplete = _.asString,
+          nameWhenComplete = _.toString,
           nameWhenInProgress = userAnswers.get(AdditionalReferencePage(itemIndex, additionalReferenceIndex)).map(_.toString),
           removeRoute = Some(routes.RemoveAdditionalReferenceController.onPageLoad(userAnswers.lrn, mode, itemIndex, additionalReferenceIndex))
         )(AdditionalReferenceDomain.userAnswersReader(itemIndex, additionalReferenceIndex))
