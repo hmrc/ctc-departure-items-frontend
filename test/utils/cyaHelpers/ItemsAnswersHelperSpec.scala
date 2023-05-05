@@ -18,6 +18,7 @@ package utils.cyaHelpers
 
 import base.SpecBase
 import generators.Generators
+import controllers.item.routes
 import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -59,14 +60,14 @@ class ItemsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with
                 ListItem(
                   name = s"Item 1 - $description1",
                   changeUrl = Call("GET", "#").url, // TODO replace with Item Answers route
-                  removeUrl = Some(Call("GET", "#").url) // TODO: Replace with remove item route
+                  removeUrl = Some(routes.RemoveItemController.onPageLoad(lrn, Index(0)).url)
                 )
               ),
               Right(
                 ListItem(
                   name = s"Item 2 - $description2",
                   changeUrl = Call("GET", "#").url, // TODO replace with Item Answers route
-                  removeUrl = Some(Call("GET", "#").url) // TODO: Replace with remove item route
+                  removeUrl = Some(routes.RemoveItemController.onPageLoad(lrn, Index(1)).url)
                 )
               )
             )

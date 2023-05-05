@@ -363,3 +363,7 @@ addAnotherItem.plural.heading = You have added {0} items
 addAnotherItem.label = Do you want to add another item?
 addAnotherItem.error.required = Select yes if you want to add another item
 addAnotherItem.maxLimit.label = You cannot add any more items. To add another, you need to remove one first.
+
+item.removeItem.title = Are you sure you want to remove item {0}?
+item.removeItem.heading = Are you sure you want to remove item {0}?
+item.removeItem.error.required = Select yes if you want to remove item {0}
