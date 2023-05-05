@@ -15,6 +15,7 @@
  *@
 
 @import models.LocalReferenceNumber
+@import controllers.item.routes
 @import viewmodels.sections.Section
 @import views.html.components.{AnswerSections, Button, Heading}
 
@@ -36,10 +37,14 @@
 
     @heading(
         heading = messages("item.checkYourAnswers.heading"),
-        caption = Some(messages("item.caption", itemIndex))
+        caption = Some(messages("item.caption", itemIndex.display))
     )
 
     @answerSections(sections)
+
+    @formHelper(action = routes.CheckYourAnswersController.onSubmit(lrn, itemIndex), Symbol("autoComplete") -> "off") {
+        @button(attributes = Map("id" -> "submit"))
+    }
 
 
 }

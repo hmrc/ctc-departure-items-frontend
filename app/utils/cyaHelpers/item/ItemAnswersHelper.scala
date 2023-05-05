@@ -268,7 +268,8 @@ class ItemAnswersHelper(
     page = AddAdditionalInformationYesNoPage(itemIndex),
     formatAnswer = formatAsYesOrNo,
     prefix = "item.addAdditionalInformationYesNo",
-    id = Some("change-add-additional-information")
+    id = Some(s"change-add-additional-information-${itemIndex.display}"),
+    args = itemIndex.display
   )
 
   def additionalInformationList: Seq[SummaryListRow] =

@@ -20,16 +20,18 @@ import base.SpecBase
 import controllers.item.dangerousGoods.index.routes.UNNumberController
 import controllers.item.documents.index.routes.DocumentController
 import controllers.item.packages.index.routes.PackageTypeController
-import controllers.item.additionalReference.index.routes.AdditionalReferenceController
+import controllers.item.additionalReference.index.routes._
+import controllers.item.additionalInformation.index.routes._
 import controllers.item.routes._
 import generators.Generators
-import models.reference.{AdditionalReference, Country, PackageType}
+import models.reference.{AdditionalInformation, AdditionalReference, Country, PackageType}
 import models.{DeclarationType, Document, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.item._
-import pages.item.additionalReference.index.AdditionalReferencePage
+import pages.item.additionalInformation.index.{AdditionalInformationPage, AdditionalInformationTypePage}
+import pages.item.additionalReference.index.{AdditionalReferenceNumberPage, AdditionalReferencePage}
 import pages.item.dangerousGoods.index.UNNumberPage
 import pages.item.documents.index.DocumentPage
 import pages.item.packages.index.{AddShippingMarkYesNoPage, NumberOfPackagesPage, PackageTypePage, ShippingMarkPage}
@@ -925,12 +927,13 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
       "must return Some(Row)" - {
         "when additionalReference is defined" in {
-          forAll(arbitrary[Mode], arbitrary[AdditionalReference]) {
-            (mode, additionalReference) =>
-              val userAnswers = emptyUserAnswers.setValue(AdditionalReferencePage(itemIndex, additionalReferenceIndex), additionalReference)
-              val helper      = new ItemAnswersHelper(userAnswers, mode, itemIndex)
-              val result      = helper.additionalReference(additionalReferenceIndex).get
-              println(result)
+          forAll(arbitrary[Mode], arbitrary[AdditionalReference], nonEmptyString) {
+            (mode, additionalReference, additionalReferenceNumber) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AdditionalReferencePage(itemIndex, additionalReferenceIndex), additionalReference)
+                .setValue(AdditionalReferenceNumberPage(itemIndex, additionalReferenceIndex), additionalReferenceNumber)
+              val helper = new ItemAnswersHelper(userAnswers, mode, itemIndex)
+              val result = helper.additionalReference(additionalReferenceIndex).get
 
               result.key.value mustBe "Additional reference 1"
               result.value.value mustBe additionalReference.toString
@@ -945,5 +948,79 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         }
       }
     }
+
+    "additionalInformationYesNo" - {
+      "must return None" - {
+        "when AddAdditionalInformationYesNo is undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+              val result = helper.additionalInformationYesNo
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when addAdditionalInformationYesNo is defined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val answers = emptyUserAnswers
+                .setValue(AddAdditionalInformationYesNoPage(itemIndex), true)
+
+              val helper = new ItemAnswersHelper(answers, mode, index)
+              val result = helper.additionalInformationYesNo.get
+
+              result.key.value mustBe "Do you want to add any additional information for this item?"
+              result.value.value mustBe "Yes"
+
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe AddAdditionalInformationYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
+              action.visuallyHiddenText.get mustBe "if you want to add any additional information for item 1"
+              action.id mustBe "change-add-additional-information-1"
+          }
+        }
+      }
+    }
+
+    "additionalInformation" - {
+      "must return None" - {
+        "when additionalInformation is undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+              val result = helper.additionalInformation(additionalInformationIndex)
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when additionalInformation is defined" in {
+          forAll(arbitrary[Mode], nonEmptyString, arbitrary[AdditionalInformation]) {
+            (mode, additionalInformation, additionalInformationType) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AdditionalInformationPage(itemIndex, additionalInformationIndex), additionalInformation)
+                .setValue(AdditionalInformationTypePage(itemIndex, additionalInformationIndex), additionalInformationType)
+              val helper = new ItemAnswersHelper(userAnswers, mode, itemIndex)
+              val result = helper.additionalInformation(additionalInformationIndex).get
+
+              result.key.value mustBe "Additional information 1"
+              result.value.value mustBe additionalInformation
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe AdditionalInformationController.onPageLoad(userAnswers.lrn, mode, itemIndex, additionalInformationIndex).url
+              action.visuallyHiddenText.get mustBe "additional information 1"
+              action.id mustBe "change-additional-information-1"
+          }
+        }
+      }
+    }
+
   }
 }
