@@ -16,7 +16,7 @@
 
 package generators
 
-import models.reference.{AdditionalReference, Country, PackageType}
+import models.reference.{AdditionalInformation, AdditionalReference, Country, PackageType}
 import models.{DeclarationType, Document}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -69,12 +69,14 @@ trait UserAnswersEntryGenerators {
       case SupplementaryUnitsPage(_)               => arbitrary[BigDecimal].map(Json.toJson(_))
       case AddDocumentsYesNoPage(_)                => arbitrary[Boolean].map(JsBoolean)
       case AddAdditionalReferenceYesNoPage(_)      => arbitrary[Boolean].map(JsBoolean)
+      case AddAdditionalInformationYesNoPage(_)    => arbitrary[Boolean].map(JsBoolean)
     }
     pf orElse
       generateDangerousGoodsAnswer orElse
       generatePackageAnswer orElse
       generateDocumentsAnswer orElse
-      generateAdditionalReferenceAnswer
+      generateAdditionalReferenceAnswer orElse
+      generateAdditionalInformationAnswer
   }
 
   private def generateDangerousGoodsAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
@@ -115,6 +117,14 @@ trait UserAnswersEntryGenerators {
       case AdditionalReferencePage(_, _)               => arbitrary[AdditionalReference].map(Json.toJson(_))
       case AddAdditionalReferenceNumberYesNoPage(_, _) => arbitrary[Boolean].map(JsBoolean)
       case AdditionalReferenceNumberPage(_, _)         => Gen.alphaNumStr.map(JsString)
+    }
+  }
+
+  private def generateAdditionalInformationAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+    import pages.item.additionalInformation.index._
+    {
+      case AdditionalInformationTypePage(_, _) => arbitrary[AdditionalInformation].map(Json.toJson(_))
+      case AdditionalInformationPage(_, _)     => Gen.alphaNumStr.map(JsString)
     }
   }
 
