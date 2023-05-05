@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package viewmodels
+package viewmodels.item
 
 import config.FrontendAppConfig
 import models.{CheckMode, Index, UserAnswers}
@@ -84,7 +84,7 @@ object ItemAnswersViewModel {
 
       val additionalReferencesSection = Section(
         sectionTitle = messages("item.checkYourAnswers.additionalReferences"),
-        rows = helper.additionalReferencesYesNo.toList ++ helper.additionalReferences
+        rows = helper.additionalReferenceYesNo.toList ++ helper.additionalReferences
       )
 
       val additionalInformationSection = Section(
