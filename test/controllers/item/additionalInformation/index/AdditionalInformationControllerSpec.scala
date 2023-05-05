@@ -19,7 +19,7 @@ package controllers.item.additionalInformation.index
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.item.additionalInformation.AdditionalInformationFormProvider
 import models.NormalMode
-import navigation.ItemNavigatorProvider
+import navigation.AdditionalInformationNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.item.additionalInformation.index.AdditionalInformationPage
@@ -41,7 +41,7 @@ class AdditionalInformationControllerSpec extends SpecBase with AppWithDefaultMo
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[ItemNavigatorProvider]).toInstance(fakeItemNavigatorProvider))
+      .overrides(bind(classOf[AdditionalInformationNavigatorProvider]).toInstance(fakeAdditionalInformationNavigatorProvider))
 
   "AdditionalInformation Controller" - {
 

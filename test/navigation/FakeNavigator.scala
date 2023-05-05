@@ -51,3 +51,9 @@ class FakeAdditionalReferenceNavigator(desiredRoute: Call, mode: Mode, itemIndex
     extends AdditionalReferenceNavigator(mode, itemIndex, additionalReferenceIndex) {
   override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }
+
+class FakeAdditionalInformationNavigator(desiredRoute: Call, mode: Mode, itemIndex: Index, additionalInformationIndex: Index)(implicit
+  config: FrontendAppConfig
+) extends AdditionalInformationNavigator(mode, itemIndex, additionalInformationIndex) {
+  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
+}
