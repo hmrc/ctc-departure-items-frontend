@@ -19,15 +19,18 @@ package models.journeyDomain.item
 import cats.implicits._
 import config.Constants.GB
 import models.DeclarationType._
+import models.journeyDomain.item.additionalInformation.AdditionalInformationListDomain
 import models.journeyDomain.item.additionalReferences.AdditionalReferencesDomain
 import models.journeyDomain.item.dangerousGoods.DangerousGoodsListDomain
 import models.journeyDomain.item.documents.DocumentsDomain
 import models.journeyDomain.item.packages.PackagesDomain
-import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
+import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
 import models.reference.Country
-import models.{DeclarationType, Index}
+import models.{DeclarationType, Index, Mode, UserAnswers}
 import pages.external._
 import pages.item._
+import play.api.i18n.Messages
+import play.api.mvc.Call
 
 import scala.language.implicitConversions
 
@@ -46,9 +49,17 @@ case class ItemDomain(
   supplementaryUnits: Option[BigDecimal],
   packages: PackagesDomain,
   documents: Option[DocumentsDomain],
-  additionalReferences: Option[AdditionalReferencesDomain]
+  additionalReferences: Option[AdditionalReferencesDomain],
+  additionalInformation: Option[AdditionalInformationListDomain]
 )(index: Index)
-    extends JourneyDomainModel
+    extends JourneyDomainModel {
+
+  def label(implicit messages: Messages): String = messages("item.label", index.display, itemDescription)
+
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some(
+    Call("GET", "#")
+  )
+}
 
 object ItemDomain {
 
@@ -68,7 +79,8 @@ object ItemDomain {
       supplementaryUnitsReader(itemIndex),
       packagesReader(itemIndex),
       documentsReader(itemIndex),
-      additionalReferencesReader(itemIndex)
+      additionalReferencesReader(itemIndex),
+      additionalInformationListReader(itemIndex)
     ).tupled.map((ItemDomain.apply _).tupled).map(_(itemIndex))
 
   def declarationTypeReader(itemIndex: Index): UserAnswersReader[Option[DeclarationType]] =
@@ -162,4 +174,8 @@ object ItemDomain {
   def additionalReferencesReader(itemIndex: Index): UserAnswersReader[Option[AdditionalReferencesDomain]] =
     AddAdditionalReferenceYesNoPage(itemIndex)
       .filterOptionalDependent(identity)(AdditionalReferencesDomain.userAnswersReader(itemIndex))
+
+  def additionalInformationListReader(itemIndex: Index): UserAnswersReader[Option[AdditionalInformationListDomain]] =
+    AddAdditionalInformationYesNoPage(itemIndex)
+      .filterOptionalDependent(identity)(AdditionalInformationListDomain.userAnswersReader(itemIndex))
 }

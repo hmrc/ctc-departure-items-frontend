@@ -42,6 +42,11 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http.GET[Seq[AdditionalReference]](serviceUrl, headers = version2Header)
   }
 
+  def getAdditionlInformationTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[AdditionalInformation]] = {
+    val serviceUrl = s"${config.referenceDataUrl}/additional-information"
+    http.GET[Seq[AdditionalInformation]](serviceUrl, headers = version2Header)
+  }
+
   private def version2Header: Seq[(String, String)] = Seq(
     HeaderNames.Accept -> "application/vnd.hmrc.2.0+json"
   )
