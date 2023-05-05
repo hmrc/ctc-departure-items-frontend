@@ -27,6 +27,9 @@ date.year.capitalized = Year
 date.hour.capitalized = Hour
 date.minute.capitalized = Minute
 
+items.caption = Items
+
+item.label = Item {0} - {1}
 item.caption = Item {0}
 item.dangerousGoods.caption = Item {0} - Dangerous goods
 item.measurement.caption = Item {0} - Measurement
@@ -352,3 +355,11 @@ item.additionalInformation.index.additionalInformation.checkYourAnswersLabel = A
 item.additionalInformation.index.additionalInformation.error.required = Enter the additional information
 item.additionalInformation.index.additionalInformation.error.invalidCharacters = The additional information must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
 item.additionalInformation.index.additionalInformation.error.length = The additional information must be 512 characters or less
+
+addAnotherItem.singular.title = You have added 1 item
+addAnotherItem.plural.title = You have added {0} items
+addAnotherItem.singular.heading = You have added 1 item
+addAnotherItem.plural.heading = You have added {0} items
+addAnotherItem.label = Do you want to add another item?
+addAnotherItem.error.required = Select yes if you want to add another item
+addAnotherItem.maxLimit.label = You cannot add any more items. To add another, you need to remove one first.

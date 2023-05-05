@@ -6,3 +6,6 @@
 GET        /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
 
 GET        /:lrn                                        controllers.RedirectController.redirect(lrn: LocalReferenceNumber)
+
+GET        /add-another/:lrn                            controllers.AddAnotherItemController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /add-another/:lrn                            controllers.AddAnotherItemController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
