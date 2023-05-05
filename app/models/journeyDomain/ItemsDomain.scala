@@ -23,7 +23,9 @@ import play.api.mvc.Call
 
 case class ItemsDomain(item: Seq[ItemDomain]) extends JourneyDomainModel {
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = ???
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some(
+    controllers.routes.AddAnotherItemController.onPageLoad(userAnswers.lrn)
+  )
 }
 
 object ItemsDomain {

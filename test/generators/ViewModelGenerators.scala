@@ -29,7 +29,7 @@ import viewmodels.item.dangerousGoods.AddAnotherDangerousGoodsViewModel
 import viewmodels.item.documents.AddAnotherDocumentViewModel
 import viewmodels.item.packages.AddAnotherPackageViewModel
 import viewmodels.sections.Section
-import viewmodels.{Link, ListItem}
+import viewmodels.{AddAnotherItemViewModel, Link, ListItem}
 
 trait ViewModelGenerators {
   self: Generators =>
@@ -209,5 +209,12 @@ trait ViewModelGenerators {
       otherAdditionalReferenceNumbers <- listWithMaxLength[String]()
       isReferenceNumberRequired       <- arbitrary[Boolean]
     } yield AdditionalReferenceNumberViewModel(otherAdditionalReferenceNumbers, isReferenceNumberRequired)
+  }
+
+  implicit lazy val arbitraryAddAnotherItemViewModel: Arbitrary[AddAnotherItemViewModel] = Arbitrary {
+    for {
+      listItems    <- arbitrary[Seq[ListItem]]
+      onSubmitCall <- arbitrary[Call]
+    } yield AddAnotherItemViewModel(listItems, onSubmitCall)
   }
 }
