@@ -58,14 +58,14 @@ class ItemsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with
               Right(
                 ListItem(
                   name = s"Item 1 - $description1",
-                  changeUrl = Call("GET", "#").url,
+                  changeUrl = Call("GET", "#").url, // TODO replace with Item Answers route
                   removeUrl = Some(Call("GET", "#").url) // TODO: Replace with remove item route
                 )
               ),
               Right(
                 ListItem(
                   name = s"Item 2 - $description2",
-                  changeUrl = Call("GET", "#").url,
+                  changeUrl = Call("GET", "#").url, // TODO replace with Item Answers route
                   removeUrl = Some(Call("GET", "#").url) // TODO: Replace with remove item route
                 )
               )
