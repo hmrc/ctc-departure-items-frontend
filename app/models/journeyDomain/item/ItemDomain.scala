@@ -23,11 +23,13 @@ import models.journeyDomain.item.additionalReferences.AdditionalReferencesDomain
 import models.journeyDomain.item.dangerousGoods.DangerousGoodsListDomain
 import models.journeyDomain.item.documents.DocumentsDomain
 import models.journeyDomain.item.packages.PackagesDomain
-import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, UserAnswersReader}
+import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
 import models.reference.Country
-import models.{DeclarationType, Index}
+import models.{DeclarationType, Index, Mode, UserAnswers}
 import pages.external._
 import pages.item._
+import play.api.i18n.Messages
+import play.api.mvc.Call
 
 import scala.language.implicitConversions
 
@@ -48,7 +50,14 @@ case class ItemDomain(
   documents: Option[DocumentsDomain],
   additionalReferences: Option[AdditionalReferencesDomain]
 )(index: Index)
-    extends JourneyDomainModel
+    extends JourneyDomainModel {
+
+  def label(implicit messages: Messages): String = messages("item.label", index.display, itemDescription)
+
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some(
+    Call("GET", "#")
+  )
+}
 
 object ItemDomain {
 
