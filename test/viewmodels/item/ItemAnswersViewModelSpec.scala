@@ -18,23 +18,15 @@ package viewmodels.item
 
 import base.SpecBase
 import generators.Generators
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito.{verify, when}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import viewmodels.ItemAnswersViewModel
-import viewmodels.ItemAnswersViewModel.ItemAnswersViewModelProvider
+import ItemAnswersViewModel.ItemAnswersViewModelProvider
 
 class ItemAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
-
-  private val mockItemAnswersViewModelProvider = mock[ItemAnswersViewModelProvider]
 
   "apply" - {
     "must return all sections" in {
       forAll(arbitraryItemAnswers(emptyUserAnswers, itemIndex)) {
         answers =>
-          when(mockItemAnswersViewModelProvider.apply(any(), any())(any(), any()))
-            .thenReturn(ItemAnswersViewModel(Nil))
-
           val viewModelProvider = new ItemAnswersViewModelProvider()
           val sections          = viewModelProvider.apply(answers, itemIndex).sections
 
@@ -62,7 +54,6 @@ class ItemAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks wi
           sections(6: Int).sectionTitle.get mustBe "Additional information"
           sections(6: Int).addAnotherLink must not be defined
 
-          verify(mockItemAnswersViewModelProvider).apply(eqTo(answers), eqTo(itemIndex))(any(), any())
       }
     }
   }
