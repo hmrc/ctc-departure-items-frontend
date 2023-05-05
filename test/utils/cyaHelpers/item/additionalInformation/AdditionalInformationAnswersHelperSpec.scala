@@ -54,20 +54,22 @@ class AdditionalInformationAnswersHelperSpec extends SpecBase with ScalaCheckPro
             val userAnswers = emptyUserAnswers
               .setValue(AddAdditionalInformationYesNoPage(itemIndex), true)
               .setValue(AdditionalInformationTypePage(itemIndex, Index(0)), additionalInformationType30600)
-              .setValue(AdditionalInformationTypePage(itemIndex, Index(1)), additionalInformationTypeNon30600) //TODO Add value for text page when built
+              .setValue(AdditionalInformationPage(itemIndex, Index(0)), additionalInformation)
+              .setValue(AdditionalInformationTypePage(itemIndex, Index(1)), additionalInformationTypeNon30600)
+              .setValue(AdditionalInformationPage(itemIndex, Index(1)), additionalInformation)
 
             val helper = new AdditionalInformationAnswersHelper(userAnswers, mode, itemIndex)
             helper.listItems mustBe Seq(
               Right(
                 ListItem(
-                  name = additionalInformationType30600.toString,
+                  name = s"${additionalInformationType30600.toString} - $additionalInformation",
                   changeUrl = routes.AdditionalInformationTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url,
                   removeUrl = Some(routes.RemoveAdditionalInformationController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url)
                 )
               ),
               Right(
                 ListItem(
-                  name = additionalInformationTypeNon30600.toString,
+                  name = s"${additionalInformationTypeNon30600.toString} - $additionalInformation",
                   changeUrl = routes.AdditionalInformationTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url,
                   removeUrl = Some(routes.RemoveAdditionalInformationController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url)
                 )
