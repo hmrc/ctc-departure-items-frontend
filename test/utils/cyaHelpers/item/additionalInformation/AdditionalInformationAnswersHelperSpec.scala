@@ -21,9 +21,10 @@ import controllers.item.additionalInformation.index.routes
 import generators.Generators
 import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.item.AddAdditionalInformationYesNoPage
-import pages.item.additionalInformation.index.AdditionalInformationTypePage
+import pages.item.additionalInformation.index.{AdditionalInformationPage, AdditionalInformationTypePage}
 import viewmodels.ListItem
 
 class AdditionalInformationAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -45,8 +46,8 @@ class AdditionalInformationAnswersHelperSpec extends SpecBase with ScalaCheckPro
       }
 
       "when user answers populated with complete additional information entries" in {
-        forAll(arbitrary[Mode]) {
-          mode =>
+        forAll(arbitrary[Mode], Gen.alphaNumStr) {
+          (mode, additionalInformation) =>
             val additionalInformationType30600    = arbitraryAdditionalInformation30600.arbitrary.sample.value
             val additionalInformationTypeNon30600 = arbitraryAdditionalInformationNon30600.arbitrary.sample.value
 

@@ -37,6 +37,7 @@ class Module extends AbstractModule {
     bind(classOf[PackageNavigatorProvider]).to(classOf[PackageNavigatorProviderImpl])
     bind(classOf[DocumentNavigatorProvider]).to(classOf[DocumentNavigatorProviderImpl])
     bind(classOf[AdditionalReferenceNavigatorProvider]).to(classOf[AdditionalReferenceNavigatorProviderImpl])
+    bind(classOf[AdditionalInformationNavigatorProvider]).to(classOf[AdditionalInformationNavigatorProviderImpl])
 
     // For session based storage instead of cred based, change to SessionIdentifierAction
     bind(classOf[IdentifierAction]).to(classOf[IdentifierActionImpl]).asEagerSingleton()

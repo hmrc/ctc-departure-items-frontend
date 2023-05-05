@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package models.journeyDomain.item.additionalInformationDomain
+package models.journeyDomain.item.additionalInformation
 
+import cats.implicits._
+import controllers.item.additionalInformation.index.routes._
 import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
 import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
 import models.reference.AdditionalInformation
 import models.{Index, Mode, UserAnswers}
-import pages.item.additionalInformation.index.AdditionalInformationTypePage
+import pages.item.additionalInformation.index._
 import play.api.mvc.Call
 
 case class AdditionalInformationDomain(
-  `type`: AdditionalInformation
+  `type`: AdditionalInformation,
+  value: String
 )(itemIndex: Index, additionalInformationIndex: Index)
     extends JourneyDomainModel {
 
@@ -33,8 +36,7 @@ case class AdditionalInformationDomain(
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some {
     stage match {
       case AccessingJourney =>
-        controllers.item.additionalInformation.index.routes.AdditionalInformationTypeController
-          .onPageLoad(userAnswers.lrn, mode, itemIndex, additionalInformationIndex)
+        AdditionalInformationTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, additionalInformationIndex)
       case CompletingJourney =>
         controllers.item.additionalInformation.routes.AddAnotherAdditionalInformationController.onPageLoad(userAnswers.lrn, mode, itemIndex)
     }
@@ -43,6 +45,8 @@ case class AdditionalInformationDomain(
 
 object AdditionalInformationDomain {
 
-  implicit def userAnswersReader(itemIndex: Index, additionalInformationIndex: Index): UserAnswersReader[AdditionalInformationDomain] =
-    AdditionalInformationTypePage(itemIndex, additionalInformationIndex).reader.map(AdditionalInformationDomain(_)(itemIndex, additionalInformationIndex))
+  def userAnswersReader(itemIndex: Index, additionalInformationIndex: Index): UserAnswersReader[AdditionalInformationDomain] = (
+    AdditionalInformationTypePage(itemIndex, additionalInformationIndex).reader,
+    AdditionalInformationPage(itemIndex, additionalInformationIndex).reader
+  ).tupled.map((AdditionalInformationDomain.apply _).tupled).map(_(itemIndex, additionalInformationIndex))
 }

@@ -20,18 +20,20 @@ import base.SpecBase
 import config.Constants.GB
 import generators.Generators
 import models.DeclarationType._
+import models.journeyDomain.item.additionalInformation.{AdditionalInformationDomain, AdditionalInformationListDomain}
 import models.journeyDomain.item.additionalReferences.{AdditionalReferenceDomain, AdditionalReferencesDomain}
 import models.journeyDomain.item.dangerousGoods.{DangerousGoodsDomain, DangerousGoodsListDomain}
 import models.journeyDomain.item.documents.{DocumentDomain, DocumentsDomain}
 import models.journeyDomain.item.packages.{PackageDomain, PackagesDomain}
 import models.journeyDomain.{EitherType, UserAnswersReader}
-import models.reference.{AdditionalReference, Country, PackageType}
+import models.reference.{AdditionalInformation, AdditionalReference, Country, PackageType}
 import models.{DeclarationType, Document, Index}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.external._
 import pages.item._
+import pages.item.additionalInformation.index._
 import pages.item.additionalReference.index._
 import pages.item.dangerousGoods.index.UNNumberPage
 import pages.item.documents.index.DocumentPage
@@ -1000,6 +1002,57 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
           ).run(emptyUserAnswers)
 
           result.left.value.page mustBe AddAdditionalReferenceYesNoPage(itemIndex)
+        }
+      }
+    }
+
+    "additionalInformationListReader" - {
+      "can be read from user answers" - {
+        "when additional information added" in {
+          forAll(arbitrary[AdditionalInformation], nonEmptyString) {
+            (`type`, value) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AddAdditionalInformationYesNoPage(itemIndex), true)
+                .setValue(AdditionalInformationTypePage(itemIndex, additionalInformationIndex), `type`)
+                .setValue(AdditionalInformationPage(itemIndex, additionalInformationIndex), value)
+
+              val expectedResult = Some(
+                AdditionalInformationListDomain(
+                  Seq(
+                    AdditionalInformationDomain(`type`, value)(itemIndex, additionalInformationIndex)
+                  )
+                )
+              )
+
+              val result: EitherType[Option[AdditionalInformationListDomain]] = ItemDomain
+                .additionalInformationListReader(itemIndex)
+                .run(userAnswers)
+
+              result.value mustBe expectedResult
+          }
+        }
+
+        "when additional information not added" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(AddAdditionalInformationYesNoPage(itemIndex), false)
+
+          val expectedResult = None
+
+          val result: EitherType[Option[AdditionalInformationListDomain]] = ItemDomain
+            .additionalInformationListReader(itemIndex)
+            .run(userAnswers)
+
+          result.value mustBe expectedResult
+        }
+      }
+
+      "can not be read from user answers" - {
+        "when add additional information yes/no is unanswered" in {
+          val result: EitherType[Option[AdditionalInformationListDomain]] = ItemDomain
+            .additionalInformationListReader(itemIndex)
+            .run(emptyUserAnswers)
+
+          result.left.value.page mustBe AddAdditionalInformationYesNoPage(itemIndex)
         }
       }
     }

@@ -18,7 +18,7 @@ package utils.cyaHelpers.item.additionalInformation
 
 import config.FrontendAppConfig
 import controllers.item.additionalInformation.index.routes
-import models.journeyDomain.item.additionalInformationDomain.AdditionalInformationDomain
+import models.journeyDomain.item.additionalInformation.AdditionalInformationDomain
 import models.{Index, Mode, UserAnswers}
 import pages.item.additionalInformation.index.AdditionalInformationTypePage
 import pages.sections.additionalInformation.AdditionalInformationListSection

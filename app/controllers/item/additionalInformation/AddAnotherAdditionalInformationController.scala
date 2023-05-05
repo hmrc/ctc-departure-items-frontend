@@ -18,7 +18,7 @@ package controllers.item.additionalInformation
 
 import config.FrontendAppConfig
 import controllers.actions._
-import forms.{AddAnotherFormProvider, YesNoFormProvider}
+import forms.AddAnotherFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.ItemNavigatorProvider
 import play.api.data.Form

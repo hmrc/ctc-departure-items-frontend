@@ -69,6 +69,7 @@ trait UserAnswersEntryGenerators {
       case SupplementaryUnitsPage(_)               => arbitrary[BigDecimal].map(Json.toJson(_))
       case AddDocumentsYesNoPage(_)                => arbitrary[Boolean].map(JsBoolean)
       case AddAdditionalReferenceYesNoPage(_)      => arbitrary[Boolean].map(JsBoolean)
+      case AddAdditionalInformationYesNoPage(_)    => arbitrary[Boolean].map(JsBoolean)
     }
     pf orElse
       generateDangerousGoodsAnswer orElse
@@ -123,6 +124,7 @@ trait UserAnswersEntryGenerators {
     import pages.item.additionalInformation.index._
     {
       case AdditionalInformationTypePage(_, _) => arbitrary[AdditionalInformation].map(Json.toJson(_))
+      case AdditionalInformationPage(_, _)     => Gen.alphaNumStr.map(JsString)
     }
   }
 
