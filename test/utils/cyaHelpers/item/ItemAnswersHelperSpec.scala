@@ -31,7 +31,7 @@ import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.item._
 import pages.item.additionalInformation.index.{AdditionalInformationPage, AdditionalInformationTypePage}
-import pages.item.additionalReference.index.{AdditionalReferenceNumberPage, AdditionalReferencePage}
+import pages.item.additionalReference.index.{AddAdditionalReferenceNumberYesNoPage, AdditionalReferenceNumberPage, AdditionalReferencePage}
 import pages.item.dangerousGoods.index.UNNumberPage
 import pages.item.documents.index.DocumentPage
 import pages.item.packages.index.{AddShippingMarkYesNoPage, NumberOfPackagesPage, PackageTypePage, ShippingMarkPage}
@@ -931,12 +931,13 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
             (mode, additionalReference, additionalReferenceNumber) =>
               val userAnswers = emptyUserAnswers
                 .setValue(AdditionalReferencePage(itemIndex, additionalReferenceIndex), additionalReference)
+                .setValue(AddAdditionalReferenceNumberYesNoPage(itemIndex, additionalReferenceIndex), true)
                 .setValue(AdditionalReferenceNumberPage(itemIndex, additionalReferenceIndex), additionalReferenceNumber)
               val helper = new ItemAnswersHelper(userAnswers, mode, itemIndex)
               val result = helper.additionalReference(additionalReferenceIndex).get
 
               result.key.value mustBe "Additional reference 1"
-              result.value.value mustBe additionalReference.toString
+              result.value.value mustBe s"$additionalReference - $additionalReferenceNumber"
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
@@ -1003,18 +1004,18 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
           forAll(arbitrary[Mode], nonEmptyString, arbitrary[AdditionalInformation]) {
             (mode, additionalInformation, additionalInformationType) =>
               val userAnswers = emptyUserAnswers
-                .setValue(AdditionalInformationPage(itemIndex, additionalInformationIndex), additionalInformation)
                 .setValue(AdditionalInformationTypePage(itemIndex, additionalInformationIndex), additionalInformationType)
+                .setValue(AdditionalInformationPage(itemIndex, additionalInformationIndex), additionalInformation)
               val helper = new ItemAnswersHelper(userAnswers, mode, itemIndex)
               val result = helper.additionalInformation(additionalInformationIndex).get
 
               result.key.value mustBe "Additional information 1"
-              result.value.value mustBe additionalInformation
+              result.value.value mustBe s"$additionalInformationType - $additionalInformation"
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
               action.content.value mustBe "Change"
-              action.href mustBe AdditionalInformationController.onPageLoad(userAnswers.lrn, mode, itemIndex, additionalInformationIndex).url
+              action.href mustBe AdditionalInformationTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, additionalInformationIndex).url
               action.visuallyHiddenText.get mustBe "additional information 1"
               action.id mustBe "change-additional-information-1"
           }

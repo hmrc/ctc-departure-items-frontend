@@ -17,6 +17,7 @@
 package utils.cyaHelpers.item
 
 import config.FrontendAppConfig
+import models.journeyDomain.item.additionalInformation.AdditionalInformationDomain
 import models.journeyDomain.item.additionalReferences.AdditionalReferenceDomain
 import models.journeyDomain.item.dangerousGoods.DangerousGoodsDomain
 import models.journeyDomain.item.documents.DocumentDomain
@@ -261,7 +262,6 @@ class ItemAnswersHelper(
           args = additionalReferenceIndex.display,
           additionalReference
         )(AdditionalReferenceDomain.userAnswersReader(itemIndex, additionalReferenceIndex))
-
     }
 
   def additionalInformationYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
@@ -275,11 +275,11 @@ class ItemAnswersHelper(
   def additionalInformationList: Seq[SummaryListRow] =
     getAnswersAndBuildSectionRows(AdditionalInformationListSection(itemIndex))(additionalInformation)
 
-  def additionalInformation(additionalInformationIndex: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[AdditionalReferenceDomain](
+  def additionalInformation(additionalInformationIndex: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[AdditionalInformationDomain](
     formatAnswer = formatAsText,
     prefix = "item.checkYourAnswers.additionalInformation",
     id = Some(s"change-additional-information-${additionalInformationIndex.display}"),
     args = additionalInformationIndex.display
-  )(AdditionalReferenceDomain.userAnswersReader(itemIndex, additionalInformationIndex))
+  )(AdditionalInformationDomain.userAnswersReader(itemIndex, additionalInformationIndex))
 
 }
