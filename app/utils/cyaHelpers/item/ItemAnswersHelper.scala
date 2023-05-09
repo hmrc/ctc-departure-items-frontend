@@ -25,10 +25,6 @@ import models.journeyDomain.item.packages.PackageDomain
 import models.reference.Country
 import models.{DeclarationType, Index, Mode, UserAnswers}
 import pages.item._
-import pages.item.additionalReference.index.AdditionalReferencePage
-import pages.item.dangerousGoods.index.UNNumberPage
-import pages.item.documents.index.DocumentPage
-import pages.item.packages.index.{NumberOfPackagesPage, PackageTypePage}
 import pages.sections.additionalInformation.AdditionalInformationListSection
 import pages.sections.additionalReference.AdditionalReferencesSection
 import pages.sections.dangerousGoods.DangerousGoodsListSection
@@ -153,16 +149,12 @@ class ItemAnswersHelper(
     getAnswersAndBuildSectionRows(DangerousGoodsListSection(itemIndex))(dangerousGoods)
 
   def dangerousGoods(dangerousGoodsIndex: Index): Option[SummaryListRow] =
-    userAnswers.get(UNNumberPage(itemIndex, dangerousGoodsIndex)).flatMap {
-      unNumber =>
-        getAnswerAndBuildSectionRow[DangerousGoodsDomain](
-          formatAnswer = formatAsText,
-          prefix = "item.checkYourAnswers.dangerousGoods",
-          id = Some(s"change-dangerous-goods-${dangerousGoodsIndex.display}"),
-          args = dangerousGoodsIndex.display,
-          unNumber
-        )(DangerousGoodsDomain.userAnswersReader(itemIndex, dangerousGoodsIndex))
-    }
+    getAnswerAndBuildSectionRow[DangerousGoodsDomain](
+      formatAnswer = formatAsText,
+      prefix = "item.checkYourAnswers.dangerousGoods",
+      id = Some(s"change-dangerous-goods-${dangerousGoodsIndex.display}"),
+      args = dangerousGoodsIndex.display
+    )(DangerousGoodsDomain.userAnswersReader(itemIndex, dangerousGoodsIndex))
 
   def grossWeight: Option[SummaryListRow] = getAnswerAndBuildRow[BigDecimal](
     page = GrossWeightPage(itemIndex),
@@ -207,17 +199,13 @@ class ItemAnswersHelper(
   def packages: Seq[SummaryListRow] =
     getAnswersAndBuildSectionRows(PackagesSection(itemIndex))(`package`)
 
-  def `package`(packageIndex: Index): Option[SummaryListRow] = {
-    val numberOfPackages = userAnswers.get(NumberOfPackagesPage(itemIndex, packageIndex)).getOrElse(1)
-    val packageType      = userAnswers.get(PackageTypePage(itemIndex, packageIndex)).map(_.toString).getOrElse("")
+  def `package`(packageIndex: Index): Option[SummaryListRow] =
     getAnswerAndBuildSectionRow[PackageDomain](
       formatAnswer = formatAsText,
       prefix = "item.checkYourAnswers.package",
       id = Some(s"change-package-${packageIndex.display}"),
-      args = numberOfPackages,
-      packageType
+      args = packageIndex.display
     )(PackageDomain.userAnswersReader(itemIndex, packageIndex))
-  }
 
   def documentsYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = AddDocumentsYesNoPage(itemIndex),
@@ -231,15 +219,12 @@ class ItemAnswersHelper(
     getAnswersAndBuildSectionRows(DocumentsSection(itemIndex))(document)
 
   def document(documentIndex: Index): Option[SummaryListRow] =
-    userAnswers.get(DocumentPage(itemIndex, documentIndex)).flatMap {
-      document =>
-        getAnswerAndBuildSectionRow[DocumentDomain](
-          formatAnswer = formatAsText,
-          prefix = "item.checkYourAnswers.document",
-          id = Some(s"change-document-${documentIndex.display}"),
-          args = document
-        )(DocumentDomain.userAnswersReader(itemIndex, documentIndex))
-    }
+    getAnswerAndBuildSectionRow[DocumentDomain](
+      formatAnswer = formatAsText,
+      prefix = "item.checkYourAnswers.document",
+      id = Some(s"change-document-${documentIndex.display}"),
+      args = documentIndex.display
+    )(DocumentDomain.userAnswersReader(itemIndex, documentIndex))
 
   def additionalReferenceYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = AddAdditionalReferenceYesNoPage(itemIndex),
@@ -253,16 +238,12 @@ class ItemAnswersHelper(
     getAnswersAndBuildSectionRows(AdditionalReferencesSection(itemIndex))(additionalReference)
 
   def additionalReference(additionalReferenceIndex: Index): Option[SummaryListRow] =
-    userAnswers.get(AdditionalReferencePage(itemIndex, additionalReferenceIndex)).flatMap {
-      additionalReference =>
-        getAnswerAndBuildSectionRow[AdditionalReferenceDomain](
-          formatAnswer = formatAsText,
-          prefix = "item.checkYourAnswers.additionalReference",
-          id = Some(s"change-additional-reference-${additionalReferenceIndex.display}"),
-          args = additionalReferenceIndex.display,
-          additionalReference
-        )(AdditionalReferenceDomain.userAnswersReader(itemIndex, additionalReferenceIndex))
-    }
+    getAnswerAndBuildSectionRow[AdditionalReferenceDomain](
+      formatAnswer = formatAsText,
+      prefix = "item.checkYourAnswers.additionalReference",
+      id = Some(s"change-additional-reference-${additionalReferenceIndex.display}"),
+      args = additionalReferenceIndex.display
+    )(AdditionalReferenceDomain.userAnswersReader(itemIndex, additionalReferenceIndex))
 
   def additionalInformationYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = AddAdditionalInformationYesNoPage(itemIndex),

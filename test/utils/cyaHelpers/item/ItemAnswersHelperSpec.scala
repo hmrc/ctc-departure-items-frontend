@@ -547,7 +547,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               val action = actions.head
               action.content.value mustBe "Change"
               action.href mustBe UNNumberController.onPageLoad(userAnswers.lrn, mode, itemIndex, dangerousGoodsIndex).url
-              action.visuallyHiddenText.get mustBe s"UN number 1 - $unNumber"
+              action.visuallyHiddenText.get mustBe s"UN number 1"
               action.id mustBe "change-dangerous-goods-1"
           }
         }
@@ -771,7 +771,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               val action = actions.head
               action.content.value mustBe "Change"
               action.href mustBe PackageTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, packageIndex).url
-              action.visuallyHiddenText.get mustBe s"1 ${packageType.toString}"
+              action.visuallyHiddenText.get mustBe s"package 1"
               action.id mustBe "change-package-1"
           }
         }
@@ -798,7 +798,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               val action = actions.head
               action.content.value mustBe "Change"
               action.href mustBe PackageTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, packageIndex).url
-              action.visuallyHiddenText.get mustBe s"$quantityString ${packageType.toString}"
+              action.visuallyHiddenText.get mustBe "package 1"
               action.id mustBe "change-package-1"
           }
         }
@@ -862,14 +862,14 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               val helper      = new ItemAnswersHelper(userAnswers, mode, itemIndex)
               val result      = helper.document(documentIndex).get
 
-              result.key.value mustBe document.toString
+              result.key.value mustBe "Document 1"
               result.value.value mustBe document.toString
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
               action.content.value mustBe "Change"
               action.href mustBe DocumentController.onPageLoad(userAnswers.lrn, mode, itemIndex, documentIndex).url
-              action.visuallyHiddenText.get mustBe document.toString
+              action.visuallyHiddenText.get mustBe "document 1"
               action.id mustBe "change-document-1"
           }
         }
@@ -943,7 +943,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               val action = actions.head
               action.content.value mustBe "Change"
               action.href mustBe AdditionalReferenceController.onPageLoad(userAnswers.lrn, mode, itemIndex, additionalReferenceIndex).url
-              action.visuallyHiddenText.get mustBe s"additional reference 1 - $additionalReference"
+              action.visuallyHiddenText.get mustBe s"additional reference 1"
               action.id mustBe "change-additional-reference-1"
           }
         }
