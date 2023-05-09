@@ -164,13 +164,7 @@ trait ModelGenerators {
       } yield AdditionalReference(documentType, description)
     }
 
-  val arbitraryNonC651OrC658AdditionalReference: Arbitrary[AdditionalReference] =
-    Arbitrary {
-      for {
-        documentType <- nonEmptyString
-        description  <- nonEmptyString
-      } yield AdditionalReference(documentType, description)
-    }
+  val arbitraryNonC651OrC658AdditionalReference: Arbitrary[AdditionalReference] = arbitraryAdditionalReference
 
   implicit lazy val arbitraryAdditionalInformation: Arbitrary[AdditionalInformation] =
     Arbitrary {

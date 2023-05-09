@@ -18,20 +18,27 @@ package views.item.additionalReference.index
 
 import forms.Constants.maxAdditionalReferenceNumLength
 import forms.item.additionalReference.AdditionalReferenceNumberFormProvider
+import generators.Generators
 import models.NormalMode
+import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
+import viewmodels.item.additionalReference.AdditionalReferenceNumberViewModel
 import views.behaviours.CharacterCountViewBehaviours
 import views.html.item.additionalReference.index.AdditionalReferenceNumberView
 
-class AdditionalReferenceNumberViewSpec extends CharacterCountViewBehaviours {
+class AdditionalReferenceNumberViewSpec extends CharacterCountViewBehaviours with Generators {
 
   override val prefix: String = "item.additionalReference.index.additionalReferenceNumber"
 
-  override def form: Form[String] = new AdditionalReferenceNumberFormProvider()(prefix)
+  private val viewModel = arbitrary[AdditionalReferenceNumberViewModel].sample.value
+
+  override def form: Form[String] = new AdditionalReferenceNumberFormProvider()(prefix, viewModel.otherAdditionalReferenceNumbers)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[AdditionalReferenceNumberView].apply(form, lrn, NormalMode, itemIndex, additionalReferenceIndex)(fakeRequest, messages)
+    injector
+      .instanceOf[AdditionalReferenceNumberView]
+      .apply(form, lrn, NormalMode, itemIndex, additionalReferenceIndex, viewModel.isReferenceNumberRequired)(fakeRequest, messages)
 
   behave like pageWithTitle()
 
@@ -46,4 +53,38 @@ class AdditionalReferenceNumberViewSpec extends CharacterCountViewBehaviours {
   behave like pageWithCharacterCount(maxAdditionalReferenceNumLength)
 
   behave like pageWithSubmitButton("Save and continue")
+
+  private val content = "You need to enter a reference number as you have already added this type of additional reference."
+
+  "when reference number required" - {
+    "must render paragraph" - {
+      val view = injector
+        .instanceOf[AdditionalReferenceNumberView]
+        .apply(form, lrn, NormalMode, itemIndex, additionalReferenceIndex, isRequired = true)(fakeRequest, messages)
+
+      val doc = parseView(view)
+
+      behave like pageWithContent(
+        doc = doc,
+        tag = "p",
+        expectedText = content
+      )
+    }
+  }
+
+  "when reference number not required" - {
+    "must not render paragraph" - {
+      val view = injector
+        .instanceOf[AdditionalReferenceNumberView]
+        .apply(form, lrn, NormalMode, itemIndex, additionalReferenceIndex, isRequired = false)(fakeRequest, messages)
+
+      val doc = parseView(view)
+
+      behave like pageWithoutContent(
+        doc = doc,
+        tag = "p",
+        expectedText = content
+      )
+    }
+  }
 }

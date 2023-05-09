@@ -17,8 +17,7 @@
 @import controllers.item.additionalReference.index.routes
 @import forms.Constants.maxAdditionalReferenceNumLength
 @import models.LocalReferenceNumber
-@import viewmodels.components.InputTextViewModel._
-@import viewmodels.components.InputCharacterCountViewModel._
+@import viewmodels.components.InputCharacterCountViewModel
 @import views.html.components.{Button, ErrorSummary, InputCharacterCount}
 
 @this(
@@ -29,7 +28,7 @@
     button: Button
 )
 
-@(form: Form[String], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, additionalReferenceIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[String], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, additionalReferenceIndex: Index, isRequired: Boolean)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("item.additionalReference.index.additionalReferenceNumber.title"),
@@ -43,9 +42,10 @@
 
         @inputCharacterCount(
             field = form("value"),
-            inputCharacterCountType = OrdinaryInputCharacterCount(
+            inputCharacterCountType = InputCharacterCountViewModel(
                 heading = messages("item.additionalReference.index.additionalReferenceNumber.heading"),
-                caption = Some(messages("item.additionalReference.caption", itemIndex.display))
+                caption = Some(messages("item.additionalReference.caption", itemIndex.display)),
+                additionalHtml = if (isRequired) Some(messages("item.additionalReference.index.additionalReferenceNumber.paragraph").toParagraph) else None
             ),
             label = messages("item.additionalReference.index.additionalReferenceNumber.heading", itemIndex.display),
             maxLength = maxAdditionalReferenceNumLength,

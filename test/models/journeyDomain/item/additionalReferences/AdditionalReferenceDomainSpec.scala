@@ -18,6 +18,7 @@ package models.journeyDomain.item.additionalReferences
 
 import base.SpecBase
 import generators.Generators
+import models.Index
 import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.reference.AdditionalReference
 import org.scalacheck.Arbitrary.arbitrary
@@ -105,6 +106,24 @@ class AdditionalReferenceDomainSpec extends SpecBase with ScalaCheckPropertyChec
               ).run(userAnswers)
 
               result.left.value.page mustBe AdditionalReferenceNumberPage(itemIndex, additionalReferenceIndex)
+          }
+        }
+      }
+
+      "when reference type already added without a reference number" - {
+        "and additional reference number unanswered" in {
+          forAll(arbitrary[AdditionalReference]) {
+            `type` =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AdditionalReferencePage(itemIndex, Index(0)), `type`)
+                .setValue(AddAdditionalReferenceNumberYesNoPage(itemIndex, Index(0)), false)
+                .setValue(AdditionalReferencePage(itemIndex, Index(1)), `type`)
+
+              val result: EitherType[AdditionalReferenceDomain] = UserAnswersReader[AdditionalReferenceDomain](
+                AdditionalReferenceDomain.userAnswersReader(itemIndex, Index(1))
+              ).run(userAnswers)
+
+              result.left.value.page mustBe AdditionalReferenceNumberPage(itemIndex, Index(1))
           }
         }
       }
