@@ -45,7 +45,7 @@ class ItemAnswersHelper(
     page = DescriptionPage(itemIndex),
     formatAnswer = formatAsText,
     prefix = "item.description",
-    id = Some(s"change-description-${itemIndex.display}"),
+    id = Some(s"change-description"),
     args = itemIndex.display
   )
 
@@ -53,7 +53,7 @@ class ItemAnswersHelper(
     page = DeclarationTypePage(itemIndex),
     formatAnswer = formatEnumAsText(DeclarationType.messageKeyPrefix),
     prefix = "item.declarationType",
-    id = Some(s"change-declaration-type-${itemIndex.display}"),
+    id = Some(s"change-declaration-type"),
     args = itemIndex.display
   )
 
@@ -61,7 +61,7 @@ class ItemAnswersHelper(
     page = CountryOfDispatchPage(itemIndex),
     formatAnswer = formatAsCountry,
     prefix = "item.countryOfDispatch",
-    id = Some(s"change-country-of-dispatch-${itemIndex.display}"),
+    id = Some(s"change-country-of-dispatch"),
     args = itemIndex.display
   )
 
@@ -69,7 +69,7 @@ class ItemAnswersHelper(
     page = CountryOfDestinationPage(itemIndex),
     formatAnswer = formatAsCountry,
     prefix = "item.countryOfDestination",
-    id = Some(s"change-country-of-destination-${itemIndex.display}"),
+    id = Some(s"change-country-of-destination"),
     args = itemIndex.display
   )
 
@@ -77,7 +77,7 @@ class ItemAnswersHelper(
     page = AddUCRYesNoPage(itemIndex),
     formatAnswer = formatAsYesOrNo,
     prefix = "item.addUCRYesNo",
-    id = Some(s"change-add-ucr-${itemIndex.display}"),
+    id = Some(s"change-add-ucr"),
     args = itemIndex.display
   )
 
@@ -85,7 +85,7 @@ class ItemAnswersHelper(
     page = UniqueConsignmentReferencePage(itemIndex),
     formatAnswer = formatAsText,
     prefix = "item.uniqueConsignmentReference",
-    id = Some(s"change-ucr-${itemIndex.display}"),
+    id = Some(s"change-ucr"),
     args = itemIndex.display
   )
 
@@ -93,7 +93,7 @@ class ItemAnswersHelper(
     page = AddCUSCodeYesNoPage(itemIndex),
     formatAnswer = formatAsYesOrNo,
     prefix = "item.addCUSCodeYesNo",
-    id = Some(s"change-add-cus-code-${itemIndex.display}"),
+    id = Some(s"change-add-cus-code"),
     args = itemIndex.display
   )
 
@@ -101,7 +101,7 @@ class ItemAnswersHelper(
     page = CustomsUnionAndStatisticsCodePage(itemIndex),
     formatAnswer = formatAsText,
     prefix = "item.customsUnionAndStatisticsCode",
-    id = Some(s"change-cus-code-${itemIndex.display}"),
+    id = Some(s"change-cus-code"),
     args = itemIndex.display
   )
 
@@ -109,7 +109,7 @@ class ItemAnswersHelper(
     page = AddCommodityCodeYesNoPage(itemIndex),
     formatAnswer = formatAsYesOrNo,
     prefix = "item.addCommodityCodeYesNo",
-    id = Some(s"change-add-commodity-code-${itemIndex.display}"),
+    id = Some(s"change-add-commodity-code"),
     args = itemIndex.display
   )
 
@@ -117,7 +117,7 @@ class ItemAnswersHelper(
     page = CommodityCodePage(itemIndex),
     formatAnswer = formatAsText,
     prefix = "item.commodityCode",
-    id = Some(s"change-commodity-code-${itemIndex.display}"),
+    id = Some(s"change-commodity-code"),
     args = itemIndex.display
   )
 
@@ -125,7 +125,7 @@ class ItemAnswersHelper(
     page = AddCombinedNomenclatureCodeYesNoPage(itemIndex),
     formatAnswer = formatAsYesOrNo,
     prefix = "item.addCombinedNomenclatureCodeYesNo",
-    id = Some(s"change-add-combined-nomenclature-code-${itemIndex.display}"),
+    id = Some(s"change-add-combined-nomenclature-code"),
     args = itemIndex.display
   )
 
@@ -133,7 +133,7 @@ class ItemAnswersHelper(
     page = CombinedNomenclatureCodePage(itemIndex),
     formatAnswer = formatAsText,
     prefix = "item.combinedNomenclatureCode",
-    id = Some(s"change-combined-nomenclature-code-${itemIndex.display}"),
+    id = Some(s"change-combined-nomenclature-code"),
     args = itemIndex.display
   )
 
@@ -141,7 +141,7 @@ class ItemAnswersHelper(
     page = AddDangerousGoodsYesNoPage(itemIndex),
     formatAnswer = formatAsYesOrNo,
     prefix = "item.addDangerousGoodsYesNo",
-    id = Some(s"change-add-dangerous-goods-${itemIndex.display}"),
+    id = Some(s"change-add-dangerous-goods"),
     args = itemIndex.display
   )
 
@@ -160,7 +160,7 @@ class ItemAnswersHelper(
     page = GrossWeightPage(itemIndex),
     formatAnswer = formatAsText,
     prefix = "item.grossWeight",
-    id = Some(s"change-gross-weight-${itemIndex.display}"),
+    id = Some(s"change-gross-weight"),
     args = itemIndex.display
   )
 
@@ -168,7 +168,7 @@ class ItemAnswersHelper(
     page = AddItemNetWeightYesNoPage(itemIndex),
     formatAnswer = formatAsYesOrNo,
     prefix = "item.addItemNetWeightYesNo",
-    id = Some(s"change-add-item-net-weight-${itemIndex.display}"),
+    id = Some(s"change-add-item-net-weight"),
     args = itemIndex.display
   )
 
@@ -176,7 +176,7 @@ class ItemAnswersHelper(
     page = NetWeightPage(itemIndex),
     formatAnswer = formatAsText,
     prefix = "item.netWeight",
-    id = Some(s"change-net-weight-${itemIndex.display}"),
+    id = Some(s"change-net-weight"),
     args = itemIndex.display
   )
 
@@ -184,7 +184,7 @@ class ItemAnswersHelper(
     page = AddSupplementaryUnitsYesNoPage(itemIndex),
     formatAnswer = formatAsYesOrNo,
     prefix = "item.addSupplementaryUnitsYesNo",
-    id = Some(s"change-add-supplementary-units-${itemIndex.display}"),
+    id = Some(s"change-add-supplementary-units"),
     args = itemIndex.display
   )
 
@@ -192,7 +192,7 @@ class ItemAnswersHelper(
     page = SupplementaryUnitsPage(itemIndex),
     formatAnswer = formatAsText,
     prefix = "item.supplementaryUnits",
-    id = Some(s"change-supplementary-units-${itemIndex.display}"),
+    id = Some(s"change-supplementary-units"),
     args = itemIndex.display
   )
 
@@ -211,7 +211,7 @@ class ItemAnswersHelper(
     page = AddDocumentsYesNoPage(itemIndex),
     formatAnswer = formatAsYesOrNo,
     prefix = "item.addDocumentsYesNo",
-    id = Some(s"change-add-documents-${itemIndex.display}"),
+    id = Some(s"change-add-documents"),
     args = itemIndex.display
   )
 
@@ -230,7 +230,7 @@ class ItemAnswersHelper(
     page = AddAdditionalReferenceYesNoPage(itemIndex),
     formatAnswer = formatAsYesOrNo,
     prefix = "item.addAdditionalReferenceYesNo",
-    id = Some(s"change-add-additional-reference-${itemIndex.display}"),
+    id = Some(s"change-add-additional-reference"),
     args = itemIndex.display
   )
 
@@ -249,7 +249,7 @@ class ItemAnswersHelper(
     page = AddAdditionalInformationYesNoPage(itemIndex),
     formatAnswer = formatAsYesOrNo,
     prefix = "item.addAdditionalInformationYesNo",
-    id = Some(s"change-add-additional-information-${itemIndex.display}"),
+    id = Some(s"change-add-additional-information"),
     args = itemIndex.display
   )
 

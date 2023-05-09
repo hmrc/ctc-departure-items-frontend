@@ -70,7 +70,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               action.content.value mustBe "Change"
               action.href mustBe DescriptionController.onPageLoad(answers.lrn, mode, itemIndex).url
               action.visuallyHiddenText.get mustBe "description for item 1"
-              action.id mustBe "change-description-1"
+              action.id mustBe "change-description"
           }
         }
       }
@@ -109,7 +109,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               action.content.value mustBe "Change"
               action.href mustBe DeclarationTypeController.onPageLoad(answers.lrn, mode, itemIndex).url
               action.visuallyHiddenText.get mustBe "declaration type for item 1"
-              action.id mustBe "change-declaration-type-1"
+              action.id mustBe "change-declaration-type"
           }
         }
       }
@@ -145,7 +145,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               action.content.value mustBe "Change"
               action.href mustBe CountryOfDispatchController.onPageLoad(answers.lrn, mode, itemIndex).url
               action.visuallyHiddenText.get mustBe "country of dispatch for item 1"
-              action.id mustBe "change-country-of-dispatch-1"
+              action.id mustBe "change-country-of-dispatch"
           }
         }
       }
@@ -181,7 +181,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               action.content.value mustBe "Change"
               action.href mustBe CountryOfDestinationController.onPageLoad(answers.lrn, mode, itemIndex).url
               action.visuallyHiddenText.get mustBe "country of destination for item 1"
-              action.id mustBe "change-country-of-destination-1"
+              action.id mustBe "change-country-of-destination"
           }
         }
       }
@@ -218,7 +218,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               action.content.value mustBe "Change"
               action.href mustBe AddUCRYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
               action.visuallyHiddenText.get mustBe "if you want to add a Unique Consignment Reference (UCR) for item 1"
-              action.id mustBe "change-add-ucr-1"
+              action.id mustBe "change-add-ucr"
           }
         }
       }
@@ -255,7 +255,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               action.content.value mustBe "Change"
               action.href mustBe UniqueConsignmentReferenceController.onPageLoad(answers.lrn, mode, itemIndex).url
               action.visuallyHiddenText.get mustBe "Unique Consignment Reference (UCR) for item 1"
-              action.id mustBe "change-ucr-1"
+              action.id mustBe "change-ucr"
           }
         }
       }
@@ -292,7 +292,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               action.content.value mustBe "Change"
               action.href mustBe AddCUSCodeYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
               action.visuallyHiddenText.get mustBe "if you want to declare a Customs Union and Statistics (CUS) code for item 1"
-              action.id mustBe "change-add-cus-code-1"
+              action.id mustBe "change-add-cus-code"
           }
         }
       }
@@ -329,7 +329,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               action.content.value mustBe "Change"
               action.href mustBe CustomsUnionAndStatisticsCodeController.onPageLoad(answers.lrn, mode, itemIndex).url
               action.visuallyHiddenText.get mustBe "Customs Union and Statistics (CUS) code for item 1"
-              action.id mustBe "change-cus-code-1"
+              action.id mustBe "change-cus-code"
           }
         }
       }
@@ -366,7 +366,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               action.content.value mustBe "Change"
               action.href mustBe AddCommodityCodeYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
               action.visuallyHiddenText.get mustBe "if you want to add a commodity code for item 1"
-              action.id mustBe "change-add-commodity-code-1"
+              action.id mustBe "change-add-commodity-code"
           }
         }
       }
@@ -403,7 +403,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               action.content.value mustBe "Change"
               action.href mustBe CommodityCodeController.onPageLoad(answers.lrn, mode, itemIndex).url
               action.visuallyHiddenText.get mustBe "commodity code for item 1"
-              action.id mustBe "change-commodity-code-1"
+              action.id mustBe "change-commodity-code"
           }
         }
       }
@@ -440,7 +440,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               action.content.value mustBe "Change"
               action.href mustBe AddCombinedNomenclatureCodeYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
               action.visuallyHiddenText.get mustBe "if you want to add a combined nomenclature code for item 1"
-              action.id mustBe "change-add-combined-nomenclature-code-1"
+              action.id mustBe "change-add-combined-nomenclature-code"
           }
         }
       }
@@ -477,7 +477,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               action.content.value mustBe "Change"
               action.href mustBe CombinedNomenclatureCodeController.onPageLoad(answers.lrn, mode, itemIndex).url
               action.visuallyHiddenText.get mustBe "combined nomenclature code for item 1"
-              action.id mustBe "change-combined-nomenclature-code-1"
+              action.id mustBe "change-combined-nomenclature-code"
           }
         }
       }
@@ -514,7 +514,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               action.content.value mustBe "Change"
               action.href mustBe AddDangerousGoodsYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
               action.visuallyHiddenText.get mustBe "if the item 1 contains any dangerous goods"
-              action.id mustBe "change-add-dangerous-goods-1"
+              action.id mustBe "change-add-dangerous-goods"
           }
         }
       }
@@ -585,7 +585,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               action.content.value mustBe "Change"
               action.href mustBe GrossWeightController.onPageLoad(answers.lrn, mode, itemIndex).url
               action.visuallyHiddenText.get mustBe s"gross weight of item 1"
-              action.id mustBe "change-gross-weight-1"
+              action.id mustBe "change-gross-weight"
           }
         }
       }
@@ -622,7 +622,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               action.content.value mustBe "Change"
               action.href mustBe AddItemNetWeightYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
               action.visuallyHiddenText.get mustBe "if you want to add the net weight of item 1"
-              action.id mustBe "change-add-item-net-weight-1"
+              action.id mustBe "change-add-item-net-weight"
           }
         }
       }
@@ -659,7 +659,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               action.content.value mustBe "Change"
               action.href mustBe NetWeightController.onPageLoad(answers.lrn, mode, itemIndex).url
               action.visuallyHiddenText.get mustBe s"net weight of item 1"
-              action.id mustBe "change-net-weight-1"
+              action.id mustBe "change-net-weight"
           }
         }
       }
@@ -696,7 +696,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               action.content.value mustBe "Change"
               action.href mustBe AddSupplementaryUnitsYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
               action.visuallyHiddenText.get mustBe "if you want to add supplementary units for item 1"
-              action.id mustBe "change-add-supplementary-units-1"
+              action.id mustBe "change-add-supplementary-units"
           }
         }
       }
@@ -733,7 +733,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               action.content.value mustBe "Change"
               action.href mustBe SupplementaryUnitsController.onPageLoad(answers.lrn, mode, itemIndex).url
               action.visuallyHiddenText.get mustBe s"number of supplementary units for item 1"
-              action.id mustBe "change-supplementary-units-1"
+              action.id mustBe "change-supplementary-units"
           }
         }
       }
@@ -836,7 +836,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               action.content.value mustBe "Change"
               action.href mustBe AddDocumentsYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
               action.visuallyHiddenText.get mustBe "if you want to add any documents for item 1"
-              action.id mustBe "change-add-documents-1"
+              action.id mustBe "change-add-documents"
           }
         }
       }
@@ -907,7 +907,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               action.content.value mustBe "Change"
               action.href mustBe AddAdditionalReferenceYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
               action.visuallyHiddenText.get mustBe "if you want to add an additional reference for item 1"
-              action.id mustBe "change-add-additional-reference-1"
+              action.id mustBe "change-add-additional-reference"
           }
         }
       }
@@ -981,7 +981,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               action.content.value mustBe "Change"
               action.href mustBe AddAdditionalInformationYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
               action.visuallyHiddenText.get mustBe "if you want to add any additional information for item 1"
-              action.id mustBe "change-add-additional-information-1"
+              action.id mustBe "change-add-additional-information"
           }
         }
       }
