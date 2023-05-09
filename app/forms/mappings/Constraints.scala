@@ -16,9 +16,9 @@
 
 package forms.mappings
 
-import java.time.LocalDate
 import play.api.data.validation.{Constraint, Invalid, Valid}
 
+import java.time.LocalDate
 import scala.util.matching.Regex
 
 trait Constraints {
@@ -118,5 +118,13 @@ trait Constraints {
         Valid
       case _ =>
         Invalid(errorKey, args: _*)
+    }
+
+  protected def notInList[A](list: Seq[A], errorKey: String): Constraint[A] =
+    Constraint {
+      case value if !list.contains(value) =>
+        Valid
+      case _ =>
+        Invalid(errorKey)
     }
 }

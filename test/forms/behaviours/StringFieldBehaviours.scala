@@ -80,4 +80,25 @@ trait StringFieldBehaviours extends FieldBehaviours {
       result.errors mustEqual Seq(requiredError)
     }
   }
+
+  def fieldThatBindsUniqueData(form: Form[_], fieldName: String, values: Seq[String], uniqueError: FormError): Unit = {
+
+    "bind unique data" in {
+
+      forAll(nonEmptyString.retryUntil(!values.contains(_))) {
+        value =>
+          val result = form.bind(Map(fieldName -> value)).apply(fieldName)
+          result.value.value mustBe value
+      }
+    }
+
+    "not bind non-unique data" in {
+
+      forAll(Gen.oneOf(values)) {
+        value =>
+          val result = form.bind(Map(fieldName -> value)).apply(fieldName)
+          result.errors mustEqual Seq(uniqueError)
+      }
+    }
+  }
 }

@@ -21,11 +21,13 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.item.additionalReference.AdditionalReferenceNumberFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{AdditionalReferenceNavigatorProvider, UserAnswersNavigator}
-import pages.item.additionalReference.index.AdditionalReferenceNumberPage
+import pages.item.additionalReference.index.{AdditionalReferenceNumberPage, AdditionalReferencePage}
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.item.additionalReference.AdditionalReferenceNumberViewModel.AdditionalReferenceNumberViewModelProvider
 import views.html.item.additionalReference.index.AdditionalReferenceNumberView
 
 import javax.inject.Inject
@@ -37,33 +39,44 @@ class AdditionalReferenceNumberController @Inject() (
   navigatorProvider: AdditionalReferenceNavigatorProvider,
   formProvider: AdditionalReferenceNumberFormProvider,
   actions: Actions,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: AdditionalReferenceNumberView
+  view: AdditionalReferenceNumberView,
+  viewModelProvider: AdditionalReferenceNumberViewModelProvider
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("item.additionalReference.index.additionalReferenceNumber")
+  private def form(otherAdditionalReferenceNumbers: Seq[String]): Form[String] =
+    formProvider("item.additionalReference.index.additionalReferenceNumber", otherAdditionalReferenceNumbers)
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, additionalReferenceIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(AdditionalReferenceNumberPage(itemIndex, additionalReferenceIndex)) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
-      Ok(view(preparedForm, lrn, mode, itemIndex, additionalReferenceIndex))
-  }
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, additionalReferenceIndex: Index): Action[AnyContent] = actions
+    .requireData(lrn)
+    .andThen(getMandatoryPage(AdditionalReferencePage(itemIndex, additionalReferenceIndex))) {
+      implicit request =>
+        val viewModel = viewModelProvider.apply(request.userAnswers, itemIndex, additionalReferenceIndex, request.arg)
+        val preparedForm = request.userAnswers.get(AdditionalReferenceNumberPage(itemIndex, additionalReferenceIndex)) match {
+          case None        => form(viewModel.otherAdditionalReferenceNumbers)
+          case Some(value) => form(viewModel.otherAdditionalReferenceNumbers).fill(value)
+        }
+        Ok(view(preparedForm, lrn, mode, itemIndex, additionalReferenceIndex, viewModel.isReferenceNumberRequired))
+    }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, additionalReferenceIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
-    implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex, additionalReferenceIndex))),
-          value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex, additionalReferenceIndex)
-            AdditionalReferenceNumberPage(itemIndex, additionalReferenceIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
-          }
-        )
-  }
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, additionalReferenceIndex: Index): Action[AnyContent] = actions
+    .requireData(lrn)
+    .andThen(getMandatoryPage(AdditionalReferencePage(itemIndex, additionalReferenceIndex)))
+    .async {
+      implicit request =>
+        val viewModel = viewModelProvider.apply(request.userAnswers, itemIndex, additionalReferenceIndex, request.arg)
+        form(viewModel.otherAdditionalReferenceNumbers)
+          .bindFromRequest()
+          .fold(
+            formWithErrors =>
+              Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex, additionalReferenceIndex, viewModel.isReferenceNumberRequired))),
+            value => {
+              implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex, additionalReferenceIndex)
+              AdditionalReferenceNumberPage(itemIndex, additionalReferenceIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+            }
+          )
+    }
 }

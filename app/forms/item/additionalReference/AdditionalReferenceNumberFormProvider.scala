@@ -25,13 +25,14 @@ import javax.inject.Inject
 
 class AdditionalReferenceNumberFormProvider @Inject() extends Mappings {
 
-  def apply(prefix: String): Form[String] =
+  def apply(prefix: String, otherAdditionalReferenceNumbers: Seq[String]): Form[String] =
     Form(
       "value" -> text(s"$prefix.error.required")
         .verifying(
           forms.StopOnFirstFail[String](
             regexp(stringFieldRegex, s"$prefix.error.invalidCharacters"),
-            maxLength(maxAdditionalReferenceNumLength, s"$prefix.error.length")
+            maxLength(maxAdditionalReferenceNumLength, s"$prefix.error.length"),
+            notInList(otherAdditionalReferenceNumbers, s"$prefix.error.unique")
           )
         )
     )

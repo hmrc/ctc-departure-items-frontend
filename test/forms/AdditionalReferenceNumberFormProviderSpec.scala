@@ -20,7 +20,7 @@ import forms.Constants.maxAdditionalReferenceNumLength
 import forms.behaviours.StringFieldBehaviours
 import forms.item.additionalReference.AdditionalReferenceNumberFormProvider
 import models.domain.StringFieldRegex.stringFieldRegex
-import org.scalacheck.Gen
+import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.FormError
 
 class AdditionalReferenceNumberFormProviderSpec extends StringFieldBehaviours {
@@ -29,8 +29,11 @@ class AdditionalReferenceNumberFormProviderSpec extends StringFieldBehaviours {
   private val requiredKey = s"$prefix.error.required"
   private val invalidKey  = s"$prefix.error.invalidCharacters"
   private val lengthKey   = s"$prefix.error.length"
+  private val uniqueKey   = s"$prefix.error.unique"
 
-  val form = new AdditionalReferenceNumberFormProvider()(prefix)
+  private val values = listWithMaxLength[String]()(Arbitrary(nonEmptyString)).sample.value
+
+  val form = new AdditionalReferenceNumberFormProvider()(prefix, values)
 
   ".value" - {
 
@@ -60,6 +63,13 @@ class AdditionalReferenceNumberFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       error = FormError(fieldName, invalidKey, Seq(stringFieldRegex.regex)),
       maxAdditionalReferenceNumLength
+    )
+
+    behave like fieldThatBindsUniqueData(
+      form = form,
+      fieldName = fieldName,
+      uniqueError = FormError(fieldName, uniqueKey),
+      values = values
     )
   }
 }
