@@ -17,7 +17,7 @@
 package viewmodels
 
 import config.FrontendAppConfig
-import models.{Mode, NormalMode, UserAnswers}
+import models.UserAnswers
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import utils.cyaHelpers.ItemsAnswersHelper
@@ -42,7 +42,7 @@ object AddAnotherItemViewModel {
       messages: Messages,
       config: FrontendAppConfig
     ): AddAnotherItemViewModel = {
-      val helper = new ItemsAnswersHelper(userAnswers, NormalMode)
+      val helper = new ItemsAnswersHelper(userAnswers)
 
       val listItems = helper.listItems.collect {
         case Left(value)  => value

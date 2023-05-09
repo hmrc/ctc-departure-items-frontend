@@ -19,7 +19,7 @@ package controllers.item
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
-import models.{Index, LocalReferenceNumber, NormalMode}
+import models.{Index, LocalReferenceNumber}
 import pages.sections.ItemSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -41,8 +41,6 @@ class RemoveItemController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
-
-  private val mode = NormalMode
 
   private def form(itemIndex: Index): Form[Boolean] = formProvider("item.removeItem", itemIndex.display)
 

@@ -24,7 +24,7 @@ import controllers.item.routes._
 import forms.Constants.maxNumberOfPackages
 import generators.Generators
 import models.reference.{Country, PackageType}
-import models.{DeclarationType, Document, Mode}
+import models.{CheckMode, DeclarationType, Document, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -34,28 +34,28 @@ import pages.item.documents.index.DocumentPage
 import pages.item.packages.index.{AddShippingMarkYesNoPage, NumberOfPackagesPage, PackageTypePage, ShippingMarkPage}
 
 class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+
+  private val mode: Mode = CheckMode
+
   "ItemAnswersHelper" - {
 
     "itemDescription" - {
       "must return None" - {
         "when DescriptionPage is undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
-              val result = helper.itemDescription
-              result mustBe None
-          }
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+          val result = helper.itemDescription
+          result mustBe None
         }
       }
 
       "must return Some(Row)" - {
         "when DescriptionPage is defined" in {
-          forAll(arbitrary[Mode], nonEmptyString) {
-            (mode, description) =>
+          forAll(nonEmptyString) {
+            description =>
               val answers = emptyUserAnswers
                 .setValue(DescriptionPage(itemIndex), description)
 
-              val helper = new ItemAnswersHelper(answers, mode, itemIndex)
+              val helper = new ItemAnswersHelper(answers, itemIndex)
               val result = helper.itemDescription.get
 
               result.key.value mustBe "Item description"
@@ -76,24 +76,21 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "declarationType" - {
       "must return None" - {
         "when DeclarationTypePage is undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
-              val result = helper.declarationType
-              result mustBe None
-          }
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+          val result = helper.declarationType
+          result mustBe None
         }
       }
 
       "must return Some(Row)" - {
         "when DeclarationTypePage is defined" in {
           val userAnswers = emptyUserAnswers
-          forAll(arbitrary[Mode], Gen.oneOf(DeclarationType.itemValues)) {
-            (mode, declarationType) =>
+          forAll(Gen.oneOf(DeclarationType.itemValues)) {
+            declarationType =>
               val answers = userAnswers
                 .setValue(DeclarationTypePage(itemIndex), declarationType)
 
-              val helper = new ItemAnswersHelper(answers, mode, itemIndex)
+              val helper = new ItemAnswersHelper(answers, itemIndex)
               val result = helper.declarationType.get
 
               result.key.value mustBe "Item declaration type"
@@ -115,22 +112,19 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "countryOfDispatch" - {
       "must return None" - {
         "when CountryOfDispatchPage is undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
-              val result = helper.countryOfDispatch
-              result mustBe None
-          }
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+          val result = helper.countryOfDispatch
+          result mustBe None
         }
       }
 
       "must return Some(Row)" - {
         "when CountryOfDispatchPage is defined" in {
-          forAll(arbitrary[Mode], arbitrary[Country]) {
-            (mode, country) =>
+          forAll(arbitrary[Country]) {
+            country =>
               val answers = emptyUserAnswers
                 .setValue(CountryOfDispatchPage(itemIndex), country)
-              val helper = new ItemAnswersHelper(answers, mode, itemIndex)
+              val helper = new ItemAnswersHelper(answers, itemIndex)
               val result = helper.countryOfDispatch.get
 
               result.key.value mustBe "Country of dispatch"
@@ -151,22 +145,19 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "countryOfDestination" - {
       "must return None" - {
         "when CountryOfDestinationPage is undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
-              val result = helper.countryOfDestination
-              result mustBe None
-          }
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+          val result = helper.countryOfDestination
+          result mustBe None
         }
       }
 
       "must return Some(Row)" - {
         "when CountryOfDestinationPage is defined" in {
-          forAll(arbitrary[Mode], arbitrary[Country]) {
-            (mode, country) =>
+          forAll(arbitrary[Country]) {
+            country =>
               val answers = emptyUserAnswers
                 .setValue(CountryOfDestinationPage(itemIndex), country)
-              val helper = new ItemAnswersHelper(answers, mode, itemIndex)
+              val helper = new ItemAnswersHelper(answers, itemIndex)
               val result = helper.countryOfDestination.get
 
               result.key.value mustBe "Country of destination"
@@ -187,36 +178,30 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "ucrYesNo" - {
       "must return None" - {
         "when AddUCRYesNoPage is undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
-              val result = helper.ucrYesNo
-              result mustBe None
-          }
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+          val result = helper.ucrYesNo
+          result mustBe None
         }
       }
 
       "must return Some(Row)" - {
         "when AddUCRYesNoPage is defined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val answers = emptyUserAnswers
-                .setValue(AddUCRYesNoPage(itemIndex), true)
+          val answers = emptyUserAnswers
+            .setValue(AddUCRYesNoPage(itemIndex), true)
 
-              val helper = new ItemAnswersHelper(answers, mode, index)
-              val result = helper.ucrYesNo.get
+          val helper = new ItemAnswersHelper(answers, index)
+          val result = helper.ucrYesNo.get
 
-              result.key.value mustBe "Do you want to add a Unique Consignment Reference (UCR)?"
-              result.value.value mustBe "Yes"
+          result.key.value mustBe "Do you want to add a Unique Consignment Reference (UCR)?"
+          result.value.value mustBe "Yes"
 
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe AddUCRYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
-              action.visuallyHiddenText.get mustBe "if you want to add a Unique Consignment Reference (UCR)"
-              action.id mustBe "change-add-ucr"
-          }
+          val actions = result.actions.get.items
+          actions.size mustBe 1
+          val action = actions.head
+          action.content.value mustBe "Change"
+          action.href mustBe AddUCRYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
+          action.visuallyHiddenText.get mustBe "if you want to add a Unique Consignment Reference (UCR)"
+          action.id mustBe "change-add-ucr"
         }
       }
     }
@@ -224,23 +209,20 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "uniqueConsignmentReference" - {
       "must return None" - {
         "when UniqueConsignmentReferencePage is undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
-              val result = helper.uniqueConsignmentReference
-              result mustBe None
-          }
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+          val result = helper.uniqueConsignmentReference
+          result mustBe None
         }
       }
 
       "must return Some(Row)" - {
         "when UniqueConsignmentReferencePage is defined" in {
-          forAll(arbitrary[Mode], nonEmptyString) {
-            (mode, ucr) =>
+          forAll(nonEmptyString) {
+            ucr =>
               val answers = emptyUserAnswers
                 .setValue(UniqueConsignmentReferencePage(itemIndex), ucr)
 
-              val helper = new ItemAnswersHelper(answers, mode, itemIndex)
+              val helper = new ItemAnswersHelper(answers, itemIndex)
               val result = helper.uniqueConsignmentReference.get
 
               result.key.value mustBe "Unique Consignment Reference (UCR)"
@@ -261,36 +243,30 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "cusCodeYesNo" - {
       "must return None" - {
         "when AddCUSCodeYesNoPage is undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
-              val result = helper.cusCodeYesNo
-              result mustBe None
-          }
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+          val result = helper.cusCodeYesNo
+          result mustBe None
         }
       }
 
       "must return Some(Row)" - {
         "when AddCUSCodeYesNoPage is defined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val answers = emptyUserAnswers
-                .setValue(AddCUSCodeYesNoPage(itemIndex), true)
+          val answers = emptyUserAnswers
+            .setValue(AddCUSCodeYesNoPage(itemIndex), true)
 
-              val helper = new ItemAnswersHelper(answers, mode, index)
-              val result = helper.cusCodeYesNo.get
+          val helper = new ItemAnswersHelper(answers, index)
+          val result = helper.cusCodeYesNo.get
 
-              result.key.value mustBe "Do you want to add a Customs Union and Statistics (CUS) code?"
-              result.value.value mustBe "Yes"
+          result.key.value mustBe "Do you want to add a Customs Union and Statistics (CUS) code?"
+          result.value.value mustBe "Yes"
 
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe AddCUSCodeYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
-              action.visuallyHiddenText.get mustBe "if you want to add a Customs Union and Statistics (CUS) code"
-              action.id mustBe "change-add-cus-code"
-          }
+          val actions = result.actions.get.items
+          actions.size mustBe 1
+          val action = actions.head
+          action.content.value mustBe "Change"
+          action.href mustBe AddCUSCodeYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
+          action.visuallyHiddenText.get mustBe "if you want to add a Customs Union and Statistics (CUS) code"
+          action.id mustBe "change-add-cus-code"
         }
       }
     }
@@ -298,23 +274,20 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "customsUnionAndStatisticsCode" - {
       "must return None" - {
         "when CustomsUnionAndStatisticsCodePage is undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
-              val result = helper.customsUnionAndStatisticsCode
-              result mustBe None
-          }
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+          val result = helper.customsUnionAndStatisticsCode
+          result mustBe None
         }
       }
 
       "must return Some(Row)" - {
         "when CustomsUnionAndStatisticsCodePage is defined" in {
-          forAll(arbitrary[Mode], nonEmptyString) {
-            (mode, cusCode) =>
+          forAll(nonEmptyString) {
+            cusCode =>
               val answers = emptyUserAnswers
                 .setValue(CustomsUnionAndStatisticsCodePage(itemIndex), cusCode)
 
-              val helper = new ItemAnswersHelper(answers, mode, itemIndex)
+              val helper = new ItemAnswersHelper(answers, itemIndex)
               val result = helper.customsUnionAndStatisticsCode.get
 
               result.key.value mustBe "Customs Union and Statistics (CUS) code"
@@ -335,36 +308,30 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "commodityCodeYesNo" - {
       "must return None" - {
         "when AddCommodityCodeYesNoPage is undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
-              val result = helper.commodityCodeYesNo
-              result mustBe None
-          }
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+          val result = helper.commodityCodeYesNo
+          result mustBe None
         }
       }
 
       "must return Some(Row)" - {
         "when AddCommodityCodeYesNoPage is defined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val answers = emptyUserAnswers
-                .setValue(AddCommodityCodeYesNoPage(itemIndex), true)
+          val answers = emptyUserAnswers
+            .setValue(AddCommodityCodeYesNoPage(itemIndex), true)
 
-              val helper = new ItemAnswersHelper(answers, mode, index)
-              val result = helper.commodityCodeYesNo.get
+          val helper = new ItemAnswersHelper(answers, index)
+          val result = helper.commodityCodeYesNo.get
 
-              result.key.value mustBe "Do you want to add a commodity code?"
-              result.value.value mustBe "Yes"
+          result.key.value mustBe "Do you want to add a commodity code?"
+          result.value.value mustBe "Yes"
 
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe AddCommodityCodeYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
-              action.visuallyHiddenText.get mustBe "if you want to add a commodity code"
-              action.id mustBe "change-add-commodity-code"
-          }
+          val actions = result.actions.get.items
+          actions.size mustBe 1
+          val action = actions.head
+          action.content.value mustBe "Change"
+          action.href mustBe AddCommodityCodeYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
+          action.visuallyHiddenText.get mustBe "if you want to add a commodity code"
+          action.id mustBe "change-add-commodity-code"
         }
       }
     }
@@ -372,23 +339,20 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "commodityCode" - {
       "must return None" - {
         "when CommodityCodePage is undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
-              val result = helper.commodityCode
-              result mustBe None
-          }
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+          val result = helper.commodityCode
+          result mustBe None
         }
       }
 
       "must return Some(Row)" - {
         "when CommodityCodePage is defined" in {
-          forAll(arbitrary[Mode], nonEmptyString) {
-            (mode, commodityCode) =>
+          forAll(nonEmptyString) {
+            commodityCode =>
               val answers = emptyUserAnswers
                 .setValue(CommodityCodePage(itemIndex), commodityCode)
 
-              val helper = new ItemAnswersHelper(answers, mode, itemIndex)
+              val helper = new ItemAnswersHelper(answers, itemIndex)
               val result = helper.commodityCode.get
 
               result.key.value mustBe "Commodity code"
@@ -409,36 +373,30 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "combinedNomenclatureCodeYesNo" - {
       "must return None" - {
         "when AddCombinedNomenclatureCodeYesNoPage is undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
-              val result = helper.combinedNomenclatureCodeYesNo
-              result mustBe None
-          }
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+          val result = helper.combinedNomenclatureCodeYesNo
+          result mustBe None
         }
       }
 
       "must return Some(Row)" - {
         "when AddCombinedNomenclatureCodeYesNoPage is defined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val answers = emptyUserAnswers
-                .setValue(AddCombinedNomenclatureCodeYesNoPage(itemIndex), true)
+          val answers = emptyUserAnswers
+            .setValue(AddCombinedNomenclatureCodeYesNoPage(itemIndex), true)
 
-              val helper = new ItemAnswersHelper(answers, mode, index)
-              val result = helper.combinedNomenclatureCodeYesNo.get
+          val helper = new ItemAnswersHelper(answers, index)
+          val result = helper.combinedNomenclatureCodeYesNo.get
 
-              result.key.value mustBe "Do you want to add a combined nomenclature code?"
-              result.value.value mustBe "Yes"
+          result.key.value mustBe "Do you want to add a combined nomenclature code?"
+          result.value.value mustBe "Yes"
 
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe AddCombinedNomenclatureCodeYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
-              action.visuallyHiddenText.get mustBe "if you want to add a combined nomenclature code"
-              action.id mustBe "change-add-combined-nomenclature-code"
-          }
+          val actions = result.actions.get.items
+          actions.size mustBe 1
+          val action = actions.head
+          action.content.value mustBe "Change"
+          action.href mustBe AddCombinedNomenclatureCodeYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
+          action.visuallyHiddenText.get mustBe "if you want to add a combined nomenclature code"
+          action.id mustBe "change-add-combined-nomenclature-code"
         }
       }
     }
@@ -446,23 +404,20 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "combinedNomenclatureCode" - {
       "must return None" - {
         "when CombinedNomenclatureCodePage is undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
-              val result = helper.combinedNomenclatureCode
-              result mustBe None
-          }
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+          val result = helper.combinedNomenclatureCode
+          result mustBe None
         }
       }
 
       "must return Some(Row)" - {
         "when CombinedNomenclatureCodePage is defined" in {
-          forAll(arbitrary[Mode], nonEmptyString) {
-            (mode, combinedNomenclatureCode) =>
+          forAll(nonEmptyString) {
+            combinedNomenclatureCode =>
               val answers = emptyUserAnswers
                 .setValue(CombinedNomenclatureCodePage(itemIndex), combinedNomenclatureCode)
 
-              val helper = new ItemAnswersHelper(answers, mode, itemIndex)
+              val helper = new ItemAnswersHelper(answers, itemIndex)
               val result = helper.combinedNomenclatureCode.get
 
               result.key.value mustBe "Combined nomenclature code"
@@ -483,36 +438,30 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "dangerousGoodsYesNo" - {
       "must return None" - {
         "when AddDangerousGoodsYesNoPage is undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
-              val result = helper.dangerousGoodsYesNo
-              result mustBe None
-          }
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+          val result = helper.dangerousGoodsYesNo
+          result mustBe None
         }
       }
 
       "must return Some(Row)" - {
         "when AddDangerousGoodsYesNoPage is defined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val answers = emptyUserAnswers
-                .setValue(AddDangerousGoodsYesNoPage(itemIndex), true)
+          val answers = emptyUserAnswers
+            .setValue(AddDangerousGoodsYesNoPage(itemIndex), true)
 
-              val helper = new ItemAnswersHelper(answers, mode, index)
-              val result = helper.dangerousGoodsYesNo.get
+          val helper = new ItemAnswersHelper(answers, index)
+          val result = helper.dangerousGoodsYesNo.get
 
-              result.key.value mustBe "Does the item contain any dangerous goods?"
-              result.value.value mustBe "Yes"
+          result.key.value mustBe "Does the item contain any dangerous goods?"
+          result.value.value mustBe "Yes"
 
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe AddDangerousGoodsYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
-              action.visuallyHiddenText.get mustBe "if the item contain any dangerous goods"
-              action.id mustBe "change-add-dangerous-goods"
-          }
+          val actions = result.actions.get.items
+          actions.size mustBe 1
+          val action = actions.head
+          action.content.value mustBe "Change"
+          action.href mustBe AddDangerousGoodsYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
+          action.visuallyHiddenText.get mustBe "if the item contain any dangerous goods"
+          action.id mustBe "change-add-dangerous-goods"
         }
       }
     }
@@ -520,502 +469,448 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "dangerousGoods" - {
       "must return None" - {
         "when dangerousGoods is undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
-              val result = helper.dangerousGoods(dangerousGoodsIndex)
-              result mustBe None
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+          val result = helper.dangerousGoods(dangerousGoodsIndex)
+          result mustBe None
+        }
+
+        "must return Some(Row)" - {
+          "when dangerousGoods is defined" in {
+            forAll(nonEmptyString) {
+              unNumber =>
+                val userAnswers = emptyUserAnswers.setValue(UNNumberPage(itemIndex, dangerousGoodsIndex), unNumber)
+                val helper      = new ItemAnswersHelper(userAnswers, itemIndex)
+                val result      = helper.dangerousGoods(dangerousGoodsIndex).get
+
+                result.key.value mustBe "Dangerous goods 1"
+                result.value.value mustBe unNumber
+                val actions = result.actions.get.items
+                actions.size mustBe 1
+                val action = actions.head
+                action.content.value mustBe "Change"
+                action.href mustBe UNNumberController.onPageLoad(userAnswers.lrn, mode, itemIndex, dangerousGoodsIndex).url
+                action.visuallyHiddenText.get mustBe "dangerous goods 1"
+                action.id mustBe "change-dangerous-goods-1"
+            }
           }
         }
       }
 
-      "must return Some(Row)" - {
-        "when dangerousGoods is defined" in {
-          forAll(arbitrary[Mode], nonEmptyString) {
-            (mode, unNumber) =>
-              val userAnswers = emptyUserAnswers.setValue(UNNumberPage(itemIndex, dangerousGoodsIndex), unNumber)
-              val helper      = new ItemAnswersHelper(userAnswers, mode, itemIndex)
-              val result      = helper.dangerousGoods(dangerousGoodsIndex).get
-
-              result.key.value mustBe "Dangerous goods 1"
-              result.value.value mustBe unNumber
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe UNNumberController.onPageLoad(userAnswers.lrn, mode, itemIndex, dangerousGoodsIndex).url
-              action.visuallyHiddenText.get mustBe "dangerous goods 1"
-              action.id mustBe "change-dangerous-goods-1"
+      "grossWeight" - {
+        "must return None" - {
+          "when GrossWeightPage is undefined" in {
+            val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+            val result = helper.grossWeight
+            result mustBe None
           }
         }
-      }
-    }
 
-    "grossWeight" - {
-      "must return None" - {
-        "when GrossWeightPage is undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
-              val result = helper.grossWeight
-              result mustBe None
-          }
-        }
-      }
+        "must return Some(Row)" - {
+          "when GrossWeightPage is defined" in {
+            forAll(arbitrary[BigDecimal]) {
+              grossWeight =>
+                val answers = emptyUserAnswers
+                  .setValue(GrossWeightPage(itemIndex), grossWeight)
 
-      "must return Some(Row)" - {
-        "when GrossWeightPage is defined" in {
-          forAll(arbitrary[Mode], arbitrary[BigDecimal]) {
-            (mode, grossWeight) =>
-              val answers = emptyUserAnswers
-                .setValue(GrossWeightPage(itemIndex), grossWeight)
+                val helper = new ItemAnswersHelper(answers, itemIndex)
+                val result = helper.grossWeight.get
 
-              val helper = new ItemAnswersHelper(answers, mode, itemIndex)
-              val result = helper.grossWeight.get
+                result.key.value mustBe "Gross weight"
+                result.value.value mustBe grossWeight.toString()
 
-              result.key.value mustBe "Gross weight"
-              result.value.value mustBe grossWeight.toString()
-
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe GrossWeightController.onPageLoad(answers.lrn, mode, itemIndex).url
-              action.visuallyHiddenText.get mustBe s"gross weight of item 1"
-              action.id mustBe "change-gross-weight-1"
-          }
-        }
-      }
-    }
-
-    "itemNetWeightYesNo" - {
-      "must return None" - {
-        "when AddItemNetWeightYesNoPage is undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
-              val result = helper.itemNetWeightYesNo
-              result mustBe None
+                val actions = result.actions.get.items
+                actions.size mustBe 1
+                val action = actions.head
+                action.content.value mustBe "Change"
+                action.href mustBe GrossWeightController.onPageLoad(answers.lrn, mode, itemIndex).url
+                action.visuallyHiddenText.get mustBe s"gross weight of item 1"
+                action.id mustBe "change-gross-weight-1"
+            }
           }
         }
       }
 
-      "must return Some(Row)" - {
-        "when AddItemNetWeightYesNoPage is defined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val answers = emptyUserAnswers
-                .setValue(AddItemNetWeightYesNoPage(itemIndex), true)
-
-              val helper = new ItemAnswersHelper(answers, mode, index)
-              val result = helper.itemNetWeightYesNo.get
-
-              result.key.value mustBe "Do you want to add the item’s net weight?"
-              result.value.value mustBe "Yes"
-
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe AddItemNetWeightYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
-              action.visuallyHiddenText.get mustBe "if you want to add the item’s net weight"
-              action.id mustBe "change-add-item-net-weight"
+      "itemNetWeightYesNo" - {
+        "must return None" - {
+          "when AddItemNetWeightYesNoPage is undefined" in {
+            val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+            val result = helper.itemNetWeightYesNo
+            result mustBe None
           }
         }
-      }
-    }
 
-    "netWeight" - {
-      "must return None" - {
-        "when NetWeightPage is undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
-              val result = helper.netWeight
-              result mustBe None
+        "must return Some(Row)" - {
+          "when AddItemNetWeightYesNoPage is defined" in {
+            val answers = emptyUserAnswers
+              .setValue(AddItemNetWeightYesNoPage(itemIndex), true)
+
+            val helper = new ItemAnswersHelper(answers, index)
+            val result = helper.itemNetWeightYesNo.get
+
+            result.key.value mustBe "Do you want to add the item’s net weight?"
+            result.value.value mustBe "Yes"
+
+            val actions = result.actions.get.items
+            actions.size mustBe 1
+            val action = actions.head
+            action.content.value mustBe "Change"
+            action.href mustBe AddItemNetWeightYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
+            action.visuallyHiddenText.get mustBe "if you want to add the item’s net weight"
+            action.id mustBe "change-add-item-net-weight"
           }
         }
       }
 
-      "must return Some(Row)" - {
-        "when NetWeightPage is defined" in {
-          forAll(arbitrary[Mode], arbitrary[BigDecimal]) {
-            (mode, netWeight) =>
-              val answers = emptyUserAnswers
-                .setValue(NetWeightPage(itemIndex), netWeight)
-
-              val helper = new ItemAnswersHelper(answers, mode, itemIndex)
-              val result = helper.netWeight.get
-
-              result.key.value mustBe "Net weight"
-              result.value.value mustBe netWeight.toString()
-
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe NetWeightController.onPageLoad(answers.lrn, mode, itemIndex).url
-              action.visuallyHiddenText.get mustBe s"net weight of item 1"
-              action.id mustBe "change-net-weight-1"
+      "netWeight" - {
+        "must return None" - {
+          "when NetWeightPage is undefined" in {
+            val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+            val result = helper.netWeight
+            result mustBe None
           }
         }
-      }
-    }
 
-    "supplementaryUnitsYesNo" - {
-      "must return None" - {
-        "when AddSupplementaryUnitsYesNoPage is undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
-              val result = helper.supplementaryUnitsYesNo
-              result mustBe None
-          }
-        }
-      }
+        "must return Some(Row)" - {
+          "when NetWeightPage is defined" in {
+            forAll(arbitrary[BigDecimal]) {
+              netWeight =>
+                val answers = emptyUserAnswers
+                  .setValue(NetWeightPage(itemIndex), netWeight)
 
-      "must return Some(Row)" - {
-        "when AddSupplementaryUnitsYesNoPage is defined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val answers = emptyUserAnswers
-                .setValue(AddSupplementaryUnitsYesNoPage(itemIndex), true)
+                val helper = new ItemAnswersHelper(answers, itemIndex)
+                val result = helper.netWeight.get
 
-              val helper = new ItemAnswersHelper(answers, mode, index)
-              val result = helper.supplementaryUnitsYesNo.get
+                result.key.value mustBe "Net weight"
+                result.value.value mustBe netWeight.toString()
 
-              result.key.value mustBe "Do you want to add supplementary units?"
-              result.value.value mustBe "Yes"
-
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe AddSupplementaryUnitsYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
-              action.visuallyHiddenText.get mustBe "if you want to add supplementary units for item 1"
-              action.id mustBe "change-add-supplementary-units"
-          }
-        }
-      }
-    }
-
-    "supplementaryUnits" - {
-      "must return None" - {
-        "when SupplementaryUnitsPage is undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
-              val result = helper.supplementaryUnits
-              result mustBe None
+                val actions = result.actions.get.items
+                actions.size mustBe 1
+                val action = actions.head
+                action.content.value mustBe "Change"
+                action.href mustBe NetWeightController.onPageLoad(answers.lrn, mode, itemIndex).url
+                action.visuallyHiddenText.get mustBe s"net weight of item 1"
+                action.id mustBe "change-net-weight-1"
+            }
           }
         }
       }
 
-      "must return Some(Row)" - {
-        "when SupplementaryUnitsPage is defined" in {
-          forAll(arbitrary[Mode], arbitrary[BigDecimal]) {
-            (mode, units) =>
-              val answers = emptyUserAnswers
-                .setValue(SupplementaryUnitsPage(itemIndex), units)
-
-              val helper = new ItemAnswersHelper(answers, mode, itemIndex)
-              val result = helper.supplementaryUnits.get
-
-              result.key.value mustBe "Number of supplementary units"
-              result.value.value mustBe units.toString()
-
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe SupplementaryUnitsController.onPageLoad(answers.lrn, mode, itemIndex).url
-              action.visuallyHiddenText.get mustBe s"number of supplementary units for item 1"
-              action.id mustBe "change-supplementary-units-1"
+      "supplementaryUnitsYesNo" - {
+        "must return None" - {
+          "when AddSupplementaryUnitsYesNoPage is undefined" in {
+            val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+            val result = helper.supplementaryUnitsYesNo
+            result mustBe None
           }
         }
-      }
-    }
 
-    "package" - {
-      "must return None" - {
-        "when package is undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
-              val result = helper.`package`(packageIndex)
-              result mustBe None
+        "must return Some(Row)" - {
+          "when AddSupplementaryUnitsYesNoPage is defined" in {
+            val answers = emptyUserAnswers
+              .setValue(AddSupplementaryUnitsYesNoPage(itemIndex), true)
+
+            val helper = new ItemAnswersHelper(answers, index)
+            val result = helper.supplementaryUnitsYesNo.get
+
+            result.key.value mustBe "Do you want to add supplementary units?"
+            result.value.value mustBe "Yes"
+
+            val actions = result.actions.get.items
+            actions.size mustBe 1
+            val action = actions.head
+            action.content.value mustBe "Change"
+            action.href mustBe AddSupplementaryUnitsYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
+            action.visuallyHiddenText.get mustBe "if you want to add supplementary units for item 1"
+            action.id mustBe "change-add-supplementary-units"
           }
         }
       }
 
-      "must return Some(Row)" - {
-        "when package is defined and number of packages is undefined" in {
-          val packageType = arbitrary[PackageType](arbitraryOtherPackageType).sample.value
-
-          val initialUserAnswers = emptyUserAnswers
-            .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
-            .setValue(ShippingMarkPage(itemIndex, packageIndex), nonEmptyString.sample.value)
-
-          forAll(arbitrary[Mode], arbitraryPackageAnswers(initialUserAnswers, itemIndex, packageIndex)) {
-            (mode, userAnswers) =>
-              val helper = new ItemAnswersHelper(userAnswers, mode, itemIndex)
-              val result = helper.`package`(packageIndex).get
-
-              result.key.value mustBe "Package 1"
-              result.value.value mustBe s"1 ${packageType.toString}"
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe PackageTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, packageIndex).url
-              action.visuallyHiddenText.get mustBe "package 1"
-              action.id mustBe "change-package-1"
+      "supplementaryUnits" - {
+        "must return None" - {
+          "when SupplementaryUnitsPage is undefined" in {
+            val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+            val result = helper.supplementaryUnits
+            result mustBe None
           }
         }
 
-        "when package is defined and number of packages is defined" in {
-          val packageType = arbitrary[PackageType](arbitraryUnpackedPackageType).sample.value
-          val quantity    = Gen.posNum[Int].sample.value
-          val initialUserAnswers = emptyUserAnswers
-            .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
-            .setValue(NumberOfPackagesPage(itemIndex, packageIndex), quantity)
-            .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
-            .setValue(ShippingMarkPage(itemIndex, packageIndex), nonEmptyString.sample.value)
+        "must return Some(Row)" - {
+          "when SupplementaryUnitsPage is defined" in {
+            forAll(arbitrary[BigDecimal]) {
+              units =>
+                val answers = emptyUserAnswers
+                  .setValue(SupplementaryUnitsPage(itemIndex), units)
 
-          forAll(arbitrary[Mode], arbitraryPackageAnswers(initialUserAnswers, itemIndex, packageIndex)) {
-            (mode, userAnswers) =>
-              val helper = new ItemAnswersHelper(userAnswers, mode, itemIndex)
-              val result = helper.`package`(packageIndex).get
+                val helper = new ItemAnswersHelper(answers, itemIndex)
+                val result = helper.supplementaryUnits.get
 
-              result.key.value mustBe "Package 1"
-              val quantityString = String.format("%,d", quantity)
-              result.value.value mustBe s"$quantityString ${packageType.toString}"
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe PackageTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, packageIndex).url
-              action.visuallyHiddenText.get mustBe "package 1"
-              action.id mustBe "change-package-1"
-          }
-        }
-      }
-    }
+                result.key.value mustBe "Number of supplementary units"
+                result.value.value mustBe units.toString()
 
-    "packageType" - {
-      "must return None" - {
-        "when PackageTypePage is undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
-              val result = helper.packageType(packageIndex)
-              result mustBe None
+                val actions = result.actions.get.items
+                actions.size mustBe 1
+                val action = actions.head
+                action.content.value mustBe "Change"
+                action.href mustBe SupplementaryUnitsController.onPageLoad(answers.lrn, mode, itemIndex).url
+                action.visuallyHiddenText.get mustBe s"number of supplementary units for item 1"
+                action.id mustBe "change-supplementary-units-1"
+            }
           }
         }
       }
 
-      "must return Some(Row)" - {
-        "when PackageTypePage is defined" in {
-          forAll(arbitrary[Mode], arbitrary[PackageType]) {
-            (mode, packageType) =>
-              val answers = emptyUserAnswers
-                .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
-              val helper = new ItemAnswersHelper(answers, mode, itemIndex)
-              val result = helper.packageType(packageIndex).get
-
-              result.key.value mustBe "Package type"
-              result.value.value mustBe packageType.toString
-
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe PackageTypeController.onPageLoad(answers.lrn, mode, itemIndex, packageIndex).url
-              action.visuallyHiddenText.get mustBe "package type for package 1"
-              action.id mustBe "change-type-1"
+      "package" - {
+        "must return None" - {
+          "when package is undefined" in {
+            val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+            val result = helper.`package`(packageIndex)
+            result mustBe None
           }
         }
-      }
-    }
 
-    "numberOfPackages" - {
-      "must return None" - {
-        "when NumberOfPackagesPage is undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
-              val result = helper.numberOfPackages(packageIndex)
-              result mustBe None
+        "must return Some(Row)" - {
+          "when package is defined and number of packages is undefined" in {
+            val packageType = arbitrary[PackageType](arbitraryOtherPackageType).sample.value
+
+            val initialUserAnswers = emptyUserAnswers
+              .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+              .setValue(ShippingMarkPage(itemIndex, packageIndex), nonEmptyString.sample.value)
+
+            forAll(arbitraryPackageAnswers(initialUserAnswers, itemIndex, packageIndex)) {
+              userAnswers =>
+                val helper = new ItemAnswersHelper(userAnswers, itemIndex)
+                val result = helper.`package`(packageIndex).get
+
+                result.key.value mustBe "Package 1"
+                result.value.value mustBe s"1 ${packageType.toString}"
+                val actions = result.actions.get.items
+                actions.size mustBe 1
+                val action = actions.head
+                action.content.value mustBe "Change"
+                action.href mustBe PackageTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, packageIndex).url
+                action.visuallyHiddenText.get mustBe "package 1"
+                action.id mustBe "change-package-1"
+            }
           }
-        }
-      }
 
-      "must return Some(Row)" - {
-        "when NumberOfPackagesPage is defined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val numberOfPackages = positiveIntsMinMax(0, maxNumberOfPackages).sample.value
-              val answers = emptyUserAnswers
-                .setValue(NumberOfPackagesPage(itemIndex, packageIndex), numberOfPackages)
+          "when package is defined and number of packages is defined" in {
+            val packageType = arbitrary[PackageType](arbitraryUnpackedPackageType).sample.value
+            val quantity    = Gen.posNum[Int].sample.value
+            val initialUserAnswers = emptyUserAnswers
+              .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+              .setValue(NumberOfPackagesPage(itemIndex, packageIndex), quantity)
+              .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
+              .setValue(ShippingMarkPage(itemIndex, packageIndex), nonEmptyString.sample.value)
 
-              val helper = new ItemAnswersHelper(answers, mode, itemIndex)
-              val result = helper.numberOfPackages(packageIndex).get
+            forAll(arbitraryPackageAnswers(initialUserAnswers, itemIndex, packageIndex)) {
+              userAnswers =>
+                val helper = new ItemAnswersHelper(userAnswers, itemIndex)
+                val result = helper.`package`(packageIndex).get
 
-              result.key.value mustBe "Package quantity"
-              result.value.value mustBe numberOfPackages.toString
-
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe NumberOfPackagesController.onPageLoad(answers.lrn, mode, itemIndex, packageIndex).url
-              action.visuallyHiddenText.get mustBe "package quantity for package 1"
-              action.id mustBe "change-type-quantity-1"
-          }
-        }
-      }
-    }
-
-    "addShippingMark" - {
-      "must return None" - {
-        "when AddShippingMarkPage is undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
-              val result = helper.shippingMarkYesNo(packageIndex)
-              result mustBe None
+                result.key.value mustBe "Package 1"
+                val quantityString = String.format("%,d", quantity)
+                result.value.value mustBe s"$quantityString ${packageType.toString}"
+                val actions = result.actions.get.items
+                actions.size mustBe 1
+                val action = actions.head
+                action.content.value mustBe "Change"
+                action.href mustBe PackageTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, packageIndex).url
+                action.visuallyHiddenText.get mustBe "package 1"
+                action.id mustBe "change-package-1"
+            }
           }
         }
       }
 
-      "must return Some(Row)" - {
-        "when AddShippingMarkPage is defined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val answers = emptyUserAnswers
-                .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
-
-              val helper = new ItemAnswersHelper(answers, mode, index)
-              val result = helper.shippingMarkYesNo(packageIndex).get
-
-              result.key.value mustBe "Do you want to add a shipping mark?"
-              result.value.value mustBe "Yes"
-
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe AddShippingMarkYesNoController.onPageLoad(answers.lrn, mode, itemIndex, packageIndex).url
-              action.visuallyHiddenText.get mustBe "if you want to add a shipping mark for package 1"
-              action.id mustBe "change-add-shipping-mark-1"
+      "packageType" - {
+        "must return None" - {
+          "when PackageTypePage is undefined" in {
+            val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+            val result = helper.packageType(packageIndex)
+            result mustBe None
           }
         }
-      }
-    }
 
-    "shippingMark" - {
-      "must return None" - {
-        "when ShippingMarkPage is undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
-              val result = helper.shippingMark(packageIndex)
-              result mustBe None
+        "must return Some(Row)" - {
+          "when PackageTypePage is defined" in {
+            forAll(arbitrary[PackageType]) {
+              packageType =>
+                val answers = emptyUserAnswers
+                  .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+                val helper = new ItemAnswersHelper(answers, itemIndex)
+                val result = helper.packageType(packageIndex).get
+
+                result.key.value mustBe "Package type"
+                result.value.value mustBe packageType.toString
+
+                val actions = result.actions.get.items
+                actions.size mustBe 1
+                val action = actions.head
+                action.content.value mustBe "Change"
+                action.href mustBe PackageTypeController.onPageLoad(answers.lrn, mode, itemIndex, packageIndex).url
+                action.visuallyHiddenText.get mustBe "package type for package 1"
+                action.id mustBe "change-type-1"
+            }
           }
         }
       }
 
-      "must return Some(Row)" - {
-        "when ShippingMarkPage is defined" in {
-          forAll(arbitrary[Mode], nonEmptyString) {
-            (mode, shippingMark) =>
-              val answers = emptyUserAnswers
-                .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
-
-              val helper = new ItemAnswersHelper(answers, mode, itemIndex)
-              val result = helper.shippingMark(packageIndex).get
-
-              result.key.value mustBe "Shipping mark"
-              result.value.value mustBe shippingMark
-
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe ShippingMarkController.onPageLoad(answers.lrn, mode, itemIndex, packageIndex).url
-              action.visuallyHiddenText.get mustBe "shipping mark for package 1"
-              action.id mustBe "change-shipping-mark-1"
+      "numberOfPackages" - {
+        "must return None" - {
+          "when NumberOfPackagesPage is undefined" in {
+            val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+            val result = helper.numberOfPackages(packageIndex)
+            result mustBe None
           }
         }
-      }
-    }
 
-    "documentYesNo" - {
-      "must return None" - {
-        "when AddDocumentsYesNoPage is undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
-              val result = helper.documentsYesNo
-              result mustBe None
+        "must return Some(Row)" - {
+          "when NumberOfPackagesPage is defined" in {
+            val numberOfPackages = positiveIntsMinMax(0, maxNumberOfPackages).sample.value
+            val answers = emptyUserAnswers
+              .setValue(NumberOfPackagesPage(itemIndex, packageIndex), numberOfPackages)
+
+            val helper = new ItemAnswersHelper(answers, itemIndex)
+            val result = helper.numberOfPackages(packageIndex).get
+
+            result.key.value mustBe "Package quantity"
+            result.value.value mustBe numberOfPackages.toString
+
+            val actions = result.actions.get.items
+            actions.size mustBe 1
+            val action = actions.head
+            action.content.value mustBe "Change"
+            action.href mustBe NumberOfPackagesController.onPageLoad(answers.lrn, mode, itemIndex, packageIndex).url
+            action.visuallyHiddenText.get mustBe "package quantity for package 1"
+            action.id mustBe "change-type-quantity-1"
           }
         }
       }
 
-      "must return Some(Row)" - {
-        "when AddDocumentsYesNoPage is defined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val answers = emptyUserAnswers
-                .setValue(AddDocumentsYesNoPage(itemIndex), true)
-
-              val helper = new ItemAnswersHelper(answers, mode, index)
-              val result = helper.documentsYesNo.get
-
-              result.key.value mustBe "Do you want to attach any documents to this item?"
-              result.value.value mustBe "Yes"
-
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe AddDocumentsYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
-              action.visuallyHiddenText.get mustBe "if you want to attach any documents to this item"
-              action.id mustBe "change-add-documents"
+      "addShippingMark" - {
+        "must return None" - {
+          "when AddShippingMarkPage is undefined" in {
+            val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+            val result = helper.shippingMarkYesNo(packageIndex)
+            result mustBe None
           }
         }
-      }
-    }
 
-    "document" - {
-      "must return None" - {
-        "when document is undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
-              val result = helper.document(documentIndex)
-              result mustBe None
+        "must return Some(Row)" - {
+          "when AddShippingMarkPage is defined" in {
+            val answers = emptyUserAnswers
+              .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
+
+            val helper = new ItemAnswersHelper(answers, index)
+            val result = helper.shippingMarkYesNo(packageIndex).get
+
+            result.key.value mustBe "Do you want to add a shipping mark?"
+            result.value.value mustBe "Yes"
+
+            val actions = result.actions.get.items
+            actions.size mustBe 1
+            val action = actions.head
+            action.content.value mustBe "Change"
+            action.href mustBe AddShippingMarkYesNoController.onPageLoad(answers.lrn, mode, itemIndex, packageIndex).url
+            action.visuallyHiddenText.get mustBe "if you want to add a shipping mark for package 1"
+            action.id mustBe "change-add-shipping-mark-1"
           }
         }
       }
 
-      "must return Some(Row)" - {
-        "when document is defined" in {
-          forAll(arbitrary[Mode], arbitrary[Document]) {
-            (mode, document) =>
-              val userAnswers = emptyUserAnswers.setValue(DocumentPage(itemIndex, documentIndex), document)
-              val helper      = new ItemAnswersHelper(userAnswers, mode, itemIndex)
-              val result      = helper.document(documentIndex).get
+      "shippingMark" - {
+        "must return None" - {
+          "when ShippingMarkPage is undefined" in {
+            val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+            val result = helper.shippingMark(packageIndex)
+            result mustBe None
+          }
+        }
 
-              result.key.value mustBe "Document 1"
-              result.value.value mustBe document.toString
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe DocumentController.onPageLoad(userAnswers.lrn, mode, itemIndex, documentIndex).url
-              action.visuallyHiddenText.get mustBe "document 1"
-              action.id mustBe "change-document-1"
+        "must return Some(Row)" - {
+          "when ShippingMarkPage is defined" in {
+            forAll(nonEmptyString) {
+              shippingMark =>
+                val answers = emptyUserAnswers
+                  .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
+
+                val helper = new ItemAnswersHelper(answers, itemIndex)
+                val result = helper.shippingMark(packageIndex).get
+
+                result.key.value mustBe "Shipping mark"
+                result.value.value mustBe shippingMark
+
+                val actions = result.actions.get.items
+                actions.size mustBe 1
+                val action = actions.head
+                action.content.value mustBe "Change"
+                action.href mustBe ShippingMarkController.onPageLoad(answers.lrn, mode, itemIndex, packageIndex).url
+                action.visuallyHiddenText.get mustBe "shipping mark for package 1"
+                action.id mustBe "change-shipping-mark-1"
+            }
+          }
+        }
+      }
+
+      "documentYesNo" - {
+        "must return None" - {
+          "when AddDocumentsYesNoPage is undefined" in {
+            val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+            val result = helper.documentsYesNo
+            result mustBe None
+          }
+        }
+
+        "must return Some(Row)" - {
+          "when AddDocumentsYesNoPage is defined" in {
+            val answers = emptyUserAnswers
+              .setValue(AddDocumentsYesNoPage(itemIndex), true)
+
+            val helper = new ItemAnswersHelper(answers, index)
+            val result = helper.documentsYesNo.get
+
+            result.key.value mustBe "Do you want to attach any documents to this item?"
+            result.value.value mustBe "Yes"
+
+            val actions = result.actions.get.items
+            actions.size mustBe 1
+            val action = actions.head
+            action.content.value mustBe "Change"
+            action.href mustBe AddDocumentsYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
+            action.visuallyHiddenText.get mustBe "if you want to attach any documents to this item"
+            action.id mustBe "change-add-documents"
+          }
+        }
+      }
+
+      "document" - {
+        "must return None" - {
+          "when document is undefined" in {
+            val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+            val result = helper.document(documentIndex)
+            result mustBe None
+          }
+        }
+
+        "must return Some(Row)" - {
+          "when document is defined" in {
+            forAll(arbitrary[Document]) {
+              document =>
+                val userAnswers = emptyUserAnswers.setValue(DocumentPage(itemIndex, documentIndex), document)
+                val helper      = new ItemAnswersHelper(userAnswers, itemIndex)
+                val result      = helper.document(documentIndex).get
+
+                result.key.value mustBe "Document 1"
+                result.value.value mustBe document.toString
+                val actions = result.actions.get.items
+                actions.size mustBe 1
+                val action = actions.head
+                action.content.value mustBe "Change"
+                action.href mustBe DocumentController.onPageLoad(userAnswers.lrn, mode, itemIndex, documentIndex).url
+                action.visuallyHiddenText.get mustBe "document 1"
+                action.id mustBe "change-document-1"
+            }
           }
         }
       }

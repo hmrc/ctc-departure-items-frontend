@@ -19,17 +19,16 @@ package utils.cyaHelpers
 import config.FrontendAppConfig
 import controllers.item.routes
 import models.journeyDomain.item.ItemDomain
-import models.{Mode, UserAnswers}
+import models.{NormalMode, UserAnswers}
 import pages.item.DescriptionPage
 import pages.sections.ItemsSection
 import play.api.i18n.Messages
 import viewmodels.ListItem
 
 class ItemsAnswersHelper(
-  userAnswers: UserAnswers,
-  mode: Mode
+  userAnswers: UserAnswers
 )(implicit messages: Messages, config: FrontendAppConfig)
-    extends AnswersHelper(userAnswers, mode) {
+    extends AnswersHelper(userAnswers, NormalMode) {
 
   def listItems: Seq[Either[ListItem, ListItem]] =
     buildListItems(ItemsSection) {

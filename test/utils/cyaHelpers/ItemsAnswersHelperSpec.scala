@@ -17,10 +17,9 @@
 package utils.cyaHelpers
 
 import base.SpecBase
-import generators.Generators
 import controllers.item.routes
-import models.{Index, Mode}
-import org.scalacheck.Arbitrary.arbitrary
+import generators.Generators
+import models.Index
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.item._
 import play.api.mvc.Call
@@ -34,13 +33,11 @@ class ItemsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with
 
       "when empty user answers" - {
         "must return empty list of items" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val userAnswers = emptyUserAnswers
+          val userAnswers = emptyUserAnswers
 
-              val helper = new ItemsAnswersHelper(userAnswers, mode)
-              helper.listItems mustBe Nil
-          }
+          val helper = new ItemsAnswersHelper(userAnswers)
+          helper.listItems mustBe Nil
+
         }
       }
 
@@ -52,9 +49,9 @@ class ItemsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with
           .setValue(DescriptionPage(Index(0)), description1)
           .setValue(DescriptionPage(Index(1)), description2)
 
-        forAll(arbitrary[Mode], arbitraryItemsAnswers(initialAnswers)) {
-          (mode, userAnswers) =>
-            val helper = new ItemsAnswersHelper(userAnswers, mode)
+        forAll(arbitraryItemsAnswers(initialAnswers)) {
+          userAnswers =>
+            val helper = new ItemsAnswersHelper(userAnswers)
             helper.listItems mustBe Seq(
               Right(
                 ListItem(

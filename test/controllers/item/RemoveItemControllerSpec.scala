@@ -16,10 +16,10 @@
 
 package controllers.item
 
-import controllers.{routes => itemRoutes}
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import controllers.{routes => itemRoutes}
 import forms.YesNoFormProvider
-import models.{Index, NormalMode, UserAnswers}
+import models.{Index, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, verify}
