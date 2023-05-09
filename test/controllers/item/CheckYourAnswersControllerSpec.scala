@@ -82,8 +82,8 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
-      //TODO: Change to Add Another
-      redirectLocation(result).value mustEqual Call(GET, "#").url
+
+      redirectLocation(result).value mustEqual controllers.routes.AddAnotherItemController.onPageLoad(lrn).url
     }
   }
 }
