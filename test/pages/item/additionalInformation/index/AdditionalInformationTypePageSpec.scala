@@ -17,6 +17,7 @@
 package pages.item.additionalInformation.index
 
 import models.reference.AdditionalInformation
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class AdditionalInformationTypePageSpec extends PageBehaviours {
@@ -28,5 +29,38 @@ class AdditionalInformationTypePageSpec extends PageBehaviours {
     beSettable[AdditionalInformation](AdditionalInformationTypePage(itemIndex, additionalInformationIndex))
 
     beRemovable[AdditionalInformation](AdditionalInformationTypePage(itemIndex, additionalInformationIndex))
+
+    "when value changes" - {
+      "must clean up additional information page" in {
+        forAll(arbitrary[AdditionalInformation]) {
+          value =>
+            forAll(arbitrary[AdditionalInformation].retryUntil(_ != value), nonEmptyString) {
+              (differentValue, additionalInformation) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(AdditionalInformationTypePage(itemIndex, additionalInformationIndex), value)
+                  .setValue(AdditionalInformationPage(itemIndex, additionalInformationIndex), additionalInformation)
+
+                val result = userAnswers.setValue(AdditionalInformationTypePage(itemIndex, additionalInformationIndex), differentValue)
+
+                result.get(AdditionalInformationPage(itemIndex, additionalInformationIndex)) mustNot be(defined)
+            }
+        }
+      }
+    }
+
+    "when value has not changed" - {
+      "must not clean up additional information page" in {
+        forAll(arbitrary[AdditionalInformation], nonEmptyString) {
+          (value, additionalInformation) =>
+            val userAnswers = emptyUserAnswers
+              .setValue(AdditionalInformationTypePage(itemIndex, additionalInformationIndex), value)
+              .setValue(AdditionalInformationPage(itemIndex, additionalInformationIndex), additionalInformation)
+
+            val result = userAnswers.setValue(AdditionalInformationTypePage(itemIndex, additionalInformationIndex), value)
+
+            result.get(AdditionalInformationPage(itemIndex, additionalInformationIndex)) must be(defined)
+        }
+      }
+    }
   }
 }
