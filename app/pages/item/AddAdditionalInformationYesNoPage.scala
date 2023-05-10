@@ -20,8 +20,11 @@ import controllers.item.routes
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.ItemSection
+import pages.sections.additionalInformation.AdditionalInformationListSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+
+import scala.util.Try
 
 case class AddAdditionalInformationYesNoPage(itemIndex: Index) extends QuestionPage[Boolean] {
 
@@ -32,5 +35,9 @@ case class AddAdditionalInformationYesNoPage(itemIndex: Index) extends QuestionP
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.AddAdditionalInformationYesNoController.onPageLoad(userAnswers.lrn, mode, itemIndex))
 
-  // TODO: Add clean up logic for AdditionalInformationSection
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(false) => userAnswers.remove(AdditionalInformationListSection(itemIndex))
+      case _           => super.cleanup(value, userAnswers)
+    }
 }
