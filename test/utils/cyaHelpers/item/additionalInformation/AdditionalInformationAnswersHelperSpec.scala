@@ -77,6 +77,37 @@ class AdditionalInformationAnswersHelperSpec extends SpecBase with ScalaCheckPro
             )
         }
       }
+
+      "when user answers populated with in progress additional information entries" in {
+        forAll(arbitrary[Mode], Gen.alphaNumStr) {
+          (mode, additionalInformation) =>
+            val additionalInformationType30600    = arbitraryAdditionalInformation30600.arbitrary.sample.value
+            val additionalInformationTypeNon30600 = arbitraryAdditionalInformationNon30600.arbitrary.sample.value
+
+            val userAnswers = emptyUserAnswers
+              .setValue(AddAdditionalInformationYesNoPage(itemIndex), true)
+              .setValue(AdditionalInformationTypePage(itemIndex, Index(0)), additionalInformationType30600)
+              .setValue(AdditionalInformationTypePage(itemIndex, Index(1)), additionalInformationTypeNon30600)
+
+            val helper = new AdditionalInformationAnswersHelper(userAnswers, mode, itemIndex)
+            helper.listItems mustBe Seq(
+              Left(
+                ListItem(
+                  name = s"${additionalInformationType30600.toString}",
+                  changeUrl = routes.AdditionalInformationController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url,
+                  removeUrl = Some(routes.RemoveAdditionalInformationController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url)
+                )
+              ),
+              Left(
+                ListItem(
+                  name = s"${additionalInformationTypeNon30600.toString}",
+                  changeUrl = routes.AdditionalInformationController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url,
+                  removeUrl = Some(routes.RemoveAdditionalInformationController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url)
+                )
+              )
+            )
+        }
+      }
     }
   }
 }

@@ -33,7 +33,7 @@ class AdditionalInformationAnswersHelper(userAnswers: UserAnswers, mode: Mode, i
     buildListItems(AdditionalInformationListSection(itemIndex)) {
       additionalInformationIndex =>
         buildListItem[AdditionalInformationDomain](
-          nameWhenComplete = _.asString,
+          nameWhenComplete = _.toString,
           nameWhenInProgress = userAnswers.get(AdditionalInformationTypePage(itemIndex, additionalInformationIndex)).map(_.toString),
           removeRoute = Some(routes.RemoveAdditionalInformationController.onPageLoad(userAnswers.lrn, mode, itemIndex, additionalInformationIndex))
         )(AdditionalInformationDomain.userAnswersReader(itemIndex, additionalInformationIndex))
