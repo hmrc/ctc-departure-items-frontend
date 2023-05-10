@@ -21,7 +21,7 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.item.additionalReference.AdditionalReferenceNumberFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{AdditionalReferenceNavigatorProvider, UserAnswersNavigator}
-import pages.item.additionalReference.index.{AdditionalReferenceNumberPage, AdditionalReferencePage}
+import pages.item.additionalReference.index.{AddAdditionalReferenceNumberYesNoPage, AdditionalReferenceNumberPage, AdditionalReferencePage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -75,7 +75,12 @@ class AdditionalReferenceNumberController @Inject() (
               Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex, additionalReferenceIndex, viewModel.isReferenceNumberRequired))),
             value => {
               implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex, additionalReferenceIndex)
-              AdditionalReferenceNumberPage(itemIndex, additionalReferenceIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+              AdditionalReferenceNumberPage(itemIndex, additionalReferenceIndex)
+                .writeToUserAnswers(value)
+                .appendValue(AddAdditionalReferenceNumberYesNoPage(itemIndex, additionalReferenceIndex), true)
+                .updateTask()
+                .writeToSession()
+                .navigate()
             }
           )
     }
