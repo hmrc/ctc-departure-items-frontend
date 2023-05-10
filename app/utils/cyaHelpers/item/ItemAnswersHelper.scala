@@ -21,7 +21,7 @@ import models.journeyDomain.item.dangerousGoods.DangerousGoodsDomain
 import models.journeyDomain.item.documents.DocumentDomain
 import models.journeyDomain.item.packages.PackageDomain
 import models.reference.{Country, PackageType}
-import models.{DeclarationType, Index, Mode, UserAnswers}
+import models.{CheckMode, DeclarationType, Index, UserAnswers}
 import pages.item._
 import pages.item.packages.index.{AddShippingMarkYesNoPage, NumberOfPackagesPage, PackageTypePage, ShippingMarkPage}
 import pages.sections.dangerousGoods.DangerousGoodsListSection
@@ -33,10 +33,9 @@ import utils.cyaHelpers.AnswersHelper
 
 class ItemAnswersHelper(
   userAnswers: UserAnswers,
-  mode: Mode,
   itemIndex: Index
 )(implicit messages: Messages, config: FrontendAppConfig)
-    extends AnswersHelper(userAnswers, mode) {
+    extends AnswersHelper(userAnswers, CheckMode) {
 
   def itemDescription: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = DescriptionPage(itemIndex),

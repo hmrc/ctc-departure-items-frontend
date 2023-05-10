@@ -108,3 +108,6 @@ GET        /:itemIndex/additional-information/add/:lrn                      cont
 POST       /:itemIndex/additional-information/add/:lrn                      controllers.item.AddAdditionalInformationYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
 GET        /:itemIndex/additional-information/change-add/:lrn               controllers.item.AddAdditionalInformationYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
 POST       /:itemIndex/additional-information/change-add/:lrn               controllers.item.AddAdditionalInformationYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+
+GET        /:itemIndex/remove-item/:lrn                                     controllers.item.RemoveItemController.onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index)
+POST       /:itemIndex/remove-item/:lrn                                     controllers.item.RemoveItemController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index)

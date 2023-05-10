@@ -43,11 +43,11 @@ class RemovePackageControllerSpec extends SpecBase with AppWithDefaultMockFixtur
   private def form(packageType: PackageType): Form[Boolean] =
     formProvider("item.packages.index.removePackage", packageType)
 
-  private val mode                     = NormalMode
-  private lazy val removeDocumentRoute = routes.RemovePackageController.onPageLoad(lrn, mode, itemIndex, packageIndex).url
-  private val packageType              = arbitrary[PackageType].sample.value
+  private val mode                    = NormalMode
+  private lazy val removePackageRoute = routes.RemovePackageController.onPageLoad(lrn, mode, itemIndex, packageIndex).url
+  private val packageType             = arbitrary[PackageType].sample.value
 
-  "RemoveDocument Controller" - {
+  "RemovePackage Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -56,7 +56,7 @@ class RemovePackageControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, removeDocumentRoute)
+      val request = FakeRequest(GET, removePackageRoute)
       val result  = route(app, request).value
 
       val view = injector.instanceOf[RemovePackageView]
@@ -68,7 +68,7 @@ class RemovePackageControllerSpec extends SpecBase with AppWithDefaultMockFixtur
     }
 
     "when yes submitted" - {
-      "must redirect to add another document and remove document at specified index" in {
+      "must redirect to add another package and remove package at specified index" in {
 
         reset(mockSessionRepository)
         when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
@@ -78,7 +78,7 @@ class RemovePackageControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
         setExistingUserAnswers(userAnswers)
 
-        val request = FakeRequest(POST, removeDocumentRoute)
+        val request = FakeRequest(POST, removePackageRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(app, request).value
@@ -96,7 +96,7 @@ class RemovePackageControllerSpec extends SpecBase with AppWithDefaultMockFixtur
     }
 
     "when no submitted" - {
-      "must redirect to add another document and not remove document at specified index" in {
+      "must redirect to add another package and not remove package at specified index" in {
         reset(mockSessionRepository)
         when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
@@ -107,7 +107,7 @@ class RemovePackageControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
         setExistingUserAnswers(userAnswers)
 
-        val request = FakeRequest(POST, removeDocumentRoute)
+        val request = FakeRequest(POST, removePackageRoute)
           .withFormUrlEncodedBody(("value", "false"))
 
         val result = route(app, request).value
@@ -128,7 +128,7 @@ class RemovePackageControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
       setExistingUserAnswers(userAnswers)
 
-      val request   = FakeRequest(POST, removeDocumentRoute).withFormUrlEncodedBody(("value", ""))
+      val request   = FakeRequest(POST, removePackageRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form(packageType).bind(Map("value" -> ""))
 
       val result = route(app, request).value
@@ -145,7 +145,7 @@ class RemovePackageControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       "if no existing data found" in {
         setNoExistingUserAnswers()
 
-        val request = FakeRequest(GET, removeDocumentRoute)
+        val request = FakeRequest(GET, removePackageRoute)
 
         val result = route(app, request).value
 
@@ -154,10 +154,10 @@ class RemovePackageControllerSpec extends SpecBase with AppWithDefaultMockFixtur
         redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
       }
 
-      "if no authorisation number is found" in {
+      "if no package is found" in {
         setExistingUserAnswers(emptyUserAnswers)
 
-        val request = FakeRequest(GET, removeDocumentRoute)
+        val request = FakeRequest(GET, removePackageRoute)
 
         val result = route(app, request).value
 
@@ -172,7 +172,7 @@ class RemovePackageControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
         setNoExistingUserAnswers()
 
-        val request = FakeRequest(POST, removeDocumentRoute)
+        val request = FakeRequest(POST, removePackageRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(app, request).value
@@ -182,11 +182,11 @@ class RemovePackageControllerSpec extends SpecBase with AppWithDefaultMockFixtur
         redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
       }
 
-      "if no document is found" in {
+      "if no package is found" in {
 
         setExistingUserAnswers(emptyUserAnswers)
 
-        val request = FakeRequest(POST, removeDocumentRoute)
+        val request = FakeRequest(POST, removePackageRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(app, request).value

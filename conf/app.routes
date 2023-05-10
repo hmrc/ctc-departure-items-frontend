@@ -7,5 +7,5 @@ GET        /assets/*file                                controllers.Assets.versi
 
 GET        /:lrn                                        controllers.RedirectController.redirect(lrn: LocalReferenceNumber)
 
-GET        /add-another/:lrn                            controllers.AddAnotherItemController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /add-another/:lrn                            controllers.AddAnotherItemController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /add-another/:lrn                            controllers.AddAnotherItemController.onPageLoad(lrn: LocalReferenceNumber)
+POST       /add-another/:lrn                            controllers.AddAnotherItemController.onSubmit(lrn: LocalReferenceNumber)
