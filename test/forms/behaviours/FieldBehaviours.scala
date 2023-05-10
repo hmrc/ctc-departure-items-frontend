@@ -47,5 +47,11 @@ trait FieldBehaviours extends FormSpec with ScalaCheckPropertyChecks with Genera
       val result = form.bind(Map(fieldName -> "")).apply(fieldName)
       result.errors mustEqual Seq(requiredError)
     }
+
+    "must not bind values that trim to empty" in {
+
+      val result = form.bind(Map(fieldName -> "   ")).apply(fieldName)
+      result.errors mustEqual Seq(requiredError)
+    }
   }
 }

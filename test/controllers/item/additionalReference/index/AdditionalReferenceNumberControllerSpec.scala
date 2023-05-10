@@ -19,13 +19,14 @@ package controllers.item.additionalReference.index
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.item.additionalReference.AdditionalReferenceNumberFormProvider
 import generators.Generators
-import models.NormalMode
 import models.reference.AdditionalReference
+import models.{NormalMode, UserAnswers}
 import navigation.AdditionalReferenceNavigatorProvider
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
-import pages.item.additionalReference.index.{AdditionalReferenceNumberPage, AdditionalReferencePage}
+import pages.item.additionalReference.index.{AddAdditionalReferenceNumberYesNoPage, AdditionalReferenceNumberPage, AdditionalReferencePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -114,6 +115,11 @@ class AdditionalReferenceNumberControllerSpec extends SpecBase with AppWithDefau
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual onwardRoute.url
+
+      // ensures that additional references are still 'complete' if one without a reference number is removed
+      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+      verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
+      userAnswersCaptor.getValue.get(AddAdditionalReferenceNumberYesNoPage(itemIndex, additionalReferenceIndex)).value mustBe true
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
