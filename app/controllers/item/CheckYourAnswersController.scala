@@ -21,8 +21,7 @@ import config.FrontendAppConfig
 import controllers.actions.Actions
 import models.{Index, LocalReferenceNumber}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
-import uk.gov.hmrc.http.HttpVerbs.GET
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.item.ItemAnswersViewModel.ItemAnswersViewModelProvider
 import views.html.item.CheckYourAnswersView
@@ -45,7 +44,6 @@ class CheckYourAnswersController @Inject() (
 
   def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] = actions
     .requireData(lrn) {
-      //TODO: Add AddAnotherItemController when added
-      Redirect(Call(GET, "#"))
+      Redirect(controllers.routes.AddAnotherItemController.onPageLoad(lrn))
     }
 }

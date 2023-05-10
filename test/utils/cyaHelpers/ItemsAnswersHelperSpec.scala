@@ -22,7 +22,6 @@ import generators.Generators
 import models.Index
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.item._
-import play.api.mvc.Call
 import viewmodels.ListItem
 
 class ItemsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -56,14 +55,14 @@ class ItemsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with
               Right(
                 ListItem(
                   name = s"Item 1 - $description1",
-                  changeUrl = Call("GET", "#").url, // TODO replace with Item Answers route
+                  changeUrl = controllers.item.routes.CheckYourAnswersController.onPageLoad(lrn, Index(0)).url,
                   removeUrl = Some(routes.RemoveItemController.onPageLoad(lrn, Index(0)).url)
                 )
               ),
               Right(
                 ListItem(
                   name = s"Item 2 - $description2",
-                  changeUrl = Call("GET", "#").url, // TODO replace with Item Answers route
+                  changeUrl = controllers.item.routes.CheckYourAnswersController.onPageLoad(lrn, Index(1)).url,
                   removeUrl = Some(routes.RemoveItemController.onPageLoad(lrn, Index(1)).url)
                 )
               )

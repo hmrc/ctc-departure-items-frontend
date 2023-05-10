@@ -23,7 +23,6 @@ import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import viewmodels.item.ItemAnswersViewModel
@@ -82,8 +81,8 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
-      //TODO: Change to Add Another
-      redirectLocation(result).value mustEqual Call(GET, "#").url
+
+      redirectLocation(result).value mustEqual controllers.routes.AddAnotherItemController.onPageLoad(lrn).url
     }
   }
 }
