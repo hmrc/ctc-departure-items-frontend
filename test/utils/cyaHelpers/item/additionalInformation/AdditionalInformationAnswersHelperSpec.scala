@@ -79,8 +79,8 @@ class AdditionalInformationAnswersHelperSpec extends SpecBase with ScalaCheckPro
       }
 
       "when user answers populated with in progress additional information entries" in {
-        forAll(arbitrary[Mode], Gen.alphaNumStr) {
-          (mode, additionalInformation) =>
+        forAll(arbitrary[Mode]) {
+          mode =>
             val additionalInformationType30600    = arbitraryAdditionalInformation30600.arbitrary.sample.value
             val additionalInformationTypeNon30600 = arbitraryAdditionalInformationNon30600.arbitrary.sample.value
 
