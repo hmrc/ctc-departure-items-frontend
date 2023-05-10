@@ -23,4 +23,6 @@ object Constants {
 
   val C651 = "C651"
   val C658 = "C658"
+
+  val additionalInformationType30600 = "30600"
 }

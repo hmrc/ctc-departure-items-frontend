@@ -17,6 +17,7 @@
 package controllers.item.additionalInformation.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import controllers.item.additionalInformation.{routes => additionalInformationRoutes}
 import forms.YesNoFormProvider
 import generators.Generators
 import models.{NormalMode, UserAnswers}
@@ -25,7 +26,6 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, verify}
 import pages.item.additionalInformation.index.AdditionalInformationTypePage
 import pages.sections.additionalInformation.AdditionalInformationSection
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.item.additionalInformation.index.RemoveAdditionalInformationView
@@ -73,7 +73,7 @@ class RemoveAdditionalInformationControllerSpec extends SpecBase with AppWithDef
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual Call(GET, "#").url
+        redirectLocation(result).value mustEqual additionalInformationRoutes.AddAnotherAdditionalInformationController.onPageLoad(lrn, mode, itemIndex).url
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
@@ -92,7 +92,7 @@ class RemoveAdditionalInformationControllerSpec extends SpecBase with AppWithDef
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual Call(GET, "#").url
+        redirectLocation(result).value mustEqual additionalInformationRoutes.AddAnotherAdditionalInformationController.onPageLoad(lrn, mode, itemIndex).url
 
         verify(mockSessionRepository, never()).set(any())(any())
       }

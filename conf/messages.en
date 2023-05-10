@@ -371,6 +371,14 @@ item.additionalInformation.index.additionalInformation.error.required = Enter th
 item.additionalInformation.index.additionalInformation.error.invalidCharacters = The additional information must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
 item.additionalInformation.index.additionalInformation.error.length = The additional information must be 512 characters or less
 
+item.additionalInformation.addAnotherAdditionalInformation.singular.title = You have added 1 additional information
+item.additionalInformation.addAnotherAdditionalInformation.singular.heading = You have added 1 additional information
+item.additionalInformation.addAnotherAdditionalInformation.plural.title = You have added {0} additional information
+item.additionalInformation.addAnotherAdditionalInformation.plural.heading = You have added {0} additional information
+item.additionalInformation.addAnotherAdditionalInformation.error.required = Select yes if you want to add any more additional information
+item.additionalInformation.addAnotherAdditionalInformation.label = Do you want to add any more additional information?
+item.additionalInformation.addAnotherAdditionalInformation.maxLimit.label = You cannot add any more additional information. To add another, you need to remove one first.
+
 addAnotherItem.singular.title = You have added 1 item
 addAnotherItem.plural.title = You have added {0} items
 addAnotherItem.singular.heading = You have added 1 item

@@ -38,7 +38,7 @@ case class AdditionalInformationDomain(
       case AccessingJourney =>
         AdditionalInformationTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, additionalInformationIndex)
       case CompletingJourney =>
-        Call("GET", "#")
+        controllers.item.additionalInformation.routes.AddAnotherAdditionalInformationController.onPageLoad(userAnswers.lrn, mode, itemIndex)
     }
   }
 }
