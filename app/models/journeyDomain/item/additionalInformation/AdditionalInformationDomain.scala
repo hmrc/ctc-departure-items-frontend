@@ -31,6 +31,8 @@ case class AdditionalInformationDomain(
 )(itemIndex: Index, additionalInformationIndex: Index)
     extends JourneyDomainModel {
 
+  override def toString: String = s"${`type`} - $value"
+
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some {
     stage match {
       case AccessingJourney =>
