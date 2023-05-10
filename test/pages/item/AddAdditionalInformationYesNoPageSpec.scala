@@ -17,6 +17,8 @@
 package pages.item
 
 import pages.behaviours.PageBehaviours
+import pages.sections.additionalInformation.AdditionalInformationListSection
+import play.api.libs.json.{JsArray, Json}
 
 class AddAdditionalInformationYesNoPageSpec extends PageBehaviours {
 
@@ -28,6 +30,28 @@ class AddAdditionalInformationYesNoPageSpec extends PageBehaviours {
 
     beRemovable[Boolean](AddAdditionalInformationYesNoPage(itemIndex))
 
-    // TODO: Add clean up logic test
+    "cleanup" - {
+      "when no selected" - {
+        "must remove additional information" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(AdditionalInformationListSection(itemIndex), JsArray(Seq(Json.obj("foo" -> "bar"))))
+
+          val result = userAnswers.setValue(AddAdditionalInformationYesNoPage(itemIndex), false)
+
+          result.get(AdditionalInformationListSection(itemIndex)) must not be defined
+        }
+      }
+
+      "when yes selected" - {
+        "must do nothing" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(AdditionalInformationListSection(itemIndex), JsArray(Seq(Json.obj("foo" -> "bar"))))
+
+          val result = userAnswers.setValue(AddAdditionalInformationYesNoPage(itemIndex), true)
+
+          result.get(AdditionalInformationListSection(itemIndex)) must be(defined)
+        }
+      }
+    }
   }
 }
