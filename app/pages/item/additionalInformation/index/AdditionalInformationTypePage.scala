@@ -24,6 +24,8 @@ import pages.sections.additionalInformation.AdditionalInformationSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
+import scala.util.Try
+
 case class AdditionalInformationTypePage(itemIndex: Index, additionalInformationIndex: Index) extends QuestionPage[AdditionalInformation] {
 
   override def path: JsPath = AdditionalInformationSection(itemIndex, additionalInformationIndex).path \ toString
@@ -32,4 +34,9 @@ case class AdditionalInformationTypePage(itemIndex: Index, additionalInformation
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.AdditionalInformationTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, additionalInformationIndex))
+
+  override def cleanup(value: Option[AdditionalInformation], userAnswers: UserAnswers): Try[UserAnswers] = value match {
+    case Some(_) => userAnswers.remove(AdditionalInformationPage(itemIndex, additionalInformationIndex))
+    case None    => super.cleanup(value, userAnswers)
+  }
 }
