@@ -19,6 +19,8 @@ package models
 import base.SpecBase
 import play.api.libs.json.Json
 
+import java.util.UUID
+
 class SelectableListSpec extends SpecBase {
 
   "documentsReads" - {
@@ -31,7 +33,8 @@ class SelectableListSpec extends SpecBase {
            |  	  "code" : "1"
            |    },
            |    "details" : {
-           |      "documentReferenceNumber" : "RefNo1"
+           |      "documentReferenceNumber" : "RefNo1",
+           |      "uuid" : "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
            |    }
            |  },
            |  {
@@ -40,7 +43,8 @@ class SelectableListSpec extends SpecBase {
            |  	  "code" : "2"
            |    },
            |    "details" : {
-           |      "documentReferenceNumber" : "RefNo2"
+           |      "documentReferenceNumber" : "RefNo2",
+           |      "uuid" : "a573bfd3-6470-40c4-a290-ea2d8d43c02a"
            |    }
            |  },
            |  {
@@ -49,7 +53,8 @@ class SelectableListSpec extends SpecBase {
            |  	  "code" : "3"
            |    },
            |    "details" : {
-           |      "documentReferenceNumber" : "RefNo3"
+           |      "documentReferenceNumber" : "RefNo3",
+           |      "uuid" : "3882459f-b7bc-478d-9d24-359533aa8fe3"
            |    }
            |  },
            |  {
@@ -58,7 +63,8 @@ class SelectableListSpec extends SpecBase {
            |  	  "code" : "4"
            |    },
            |    "details" : {
-           |      "documentReferenceNumber" : "RefNo4"
+           |      "documentReferenceNumber" : "RefNo4",
+           |      "uuid" : "865e9cbe-be12-4e3e-96db-e8394c4356ec"
            |    }
            |  }
            |]
@@ -72,25 +78,29 @@ class SelectableListSpec extends SpecBase {
             `type` = "Support",
             code = "1",
             description = None,
-            referenceNumber = "RefNo1"
+            referenceNumber = "RefNo1",
+            uuid = UUID.fromString("1794d93b-17d5-44fe-a18d-aaa2059d06fe")
           ),
           Document(
             `type` = "Transport",
             code = "2",
             description = None,
-            referenceNumber = "RefNo2"
+            referenceNumber = "RefNo2",
+            uuid = UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a")
           ),
           Document(
             `type` = "Previous",
             code = "3",
             description = None,
-            referenceNumber = "RefNo3"
+            referenceNumber = "RefNo3",
+            uuid = UUID.fromString("3882459f-b7bc-478d-9d24-359533aa8fe3")
           ),
           Document(
             `type` = "Previous",
             code = "4",
             description = None,
-            referenceNumber = "RefNo4"
+            referenceNumber = "RefNo4",
+            uuid = UUID.fromString("865e9cbe-be12-4e3e-96db-e8394c4356ec")
           )
         )
       )
@@ -102,41 +112,19 @@ class SelectableListSpec extends SpecBase {
       val json = Json.parse(s"""
            |[
            |  {
-           |    "document" : {
-           |      "type" : "Type 1",
-           |      "code" : "Code 1",
-           |      "description" : "Description 1",
-           |      "referenceNumber" : "Ref no. 1"
-           |    }
+           |    "document" : "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
            |  },
            |  {
-           |    "document" : {
-           |      "type" : "Type 2",
-           |      "code" : "Code 2",
-           |      "description" : "Description 2",
-           |      "referenceNumber" : "Ref no. 2"
-           |    }
+           |    "document" : "a573bfd3-6470-40c4-a290-ea2d8d43c02a"
            |  }
            |]
            |""".stripMargin)
 
-      val result = json.as[SelectableList[Document]](SelectableList.itemDocumentsReads)
+      val result = json.as[Seq[UUID]](SelectableList.itemDocumentUuidsReads)
 
-      result mustBe SelectableList(
-        Seq(
-          Document(
-            `type` = "Type 1",
-            code = "Code 1",
-            description = Some("Description 1"),
-            referenceNumber = "Ref no. 1"
-          ),
-          Document(
-            `type` = "Type 2",
-            code = "Code 2",
-            description = Some("Description 2"),
-            referenceNumber = "Ref no. 2"
-          )
-        )
+      result mustBe Seq(
+        UUID.fromString("1794d93b-17d5-44fe-a18d-aaa2059d06fe"),
+        UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a")
       )
     }
   }

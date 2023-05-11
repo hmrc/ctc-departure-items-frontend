@@ -20,6 +20,8 @@ import base.SpecBase
 import models.{Document, SelectableList}
 import play.api.libs.json.{JsObject, Json}
 
+import java.util.UUID
+
 class DocumentsServiceSpec extends SpecBase {
 
   private val service = injector.instanceOf[DocumentsService]
@@ -41,7 +43,8 @@ class DocumentsServiceSpec extends SpecBase {
               |        "description" : "Description 1"
               |      },
               |      "details" : {
-              |        "documentReferenceNumber" : "Ref no. 1"
+              |        "documentReferenceNumber" : "Ref no. 1",
+              |        "uuid" : "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
               |      }
               |    },
               |    {
@@ -50,7 +53,8 @@ class DocumentsServiceSpec extends SpecBase {
               |        "code" : "Code 2"
               |      },
               |      "details" : {
-              |        "documentReferenceNumber" : "Ref no. 2"
+              |        "documentReferenceNumber" : "Ref no. 2",
+              |        "uuid" : "a573bfd3-6470-40c4-a290-ea2d8d43c02a"
               |      }
               |    }
               |  ],
@@ -58,12 +62,7 @@ class DocumentsServiceSpec extends SpecBase {
               |    {
               |      "documents" : [
               |        {
-              |          "document" : {
-              |            "type" : "Type 1",
-              |            "code" : "Code 1",
-              |            "description" : "Description 1",
-              |            "referenceNumber" : "Ref no. 1"
-              |          }
+              |          "document" : "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
               |        }
               |      ]
               |    }
@@ -78,7 +77,7 @@ class DocumentsServiceSpec extends SpecBase {
 
           result.value mustBe SelectableList(
             Seq(
-              Document("Type 2", "Code 2", None, "Ref no. 2")
+              Document("Type 2", "Code 2", None, "Ref no. 2", UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a"))
             )
           )
         }
@@ -95,7 +94,8 @@ class DocumentsServiceSpec extends SpecBase {
               |        "description" : "Description 1"
               |      },
               |      "details" : {
-              |        "documentReferenceNumber" : "Ref no. 1"
+              |        "documentReferenceNumber" : "Ref no. 1",
+              |        "uuid" : "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
               |      }
               |    },
               |    {
@@ -104,7 +104,8 @@ class DocumentsServiceSpec extends SpecBase {
               |        "code" : "Code 2"
               |      },
               |      "details" : {
-              |        "documentReferenceNumber" : "Ref no. 2"
+              |        "documentReferenceNumber" : "Ref no. 2",
+              |        "uuid" : "a573bfd3-6470-40c4-a290-ea2d8d43c02a"
               |      }
               |    }
               |  ]
@@ -118,8 +119,8 @@ class DocumentsServiceSpec extends SpecBase {
 
           result.value mustBe SelectableList(
             Seq(
-              Document("Type 1", "Code 1", Some("Description 1"), "Ref no. 1"),
-              Document("Type 2", "Code 2", None, "Ref no. 2")
+              Document("Type 1", "Code 1", Some("Description 1"), "Ref no. 1", UUID.fromString("1794d93b-17d5-44fe-a18d-aaa2059d06fe")),
+              Document("Type 2", "Code 2", None, "Ref no. 2", UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a"))
             )
           )
         }
@@ -150,6 +151,61 @@ class DocumentsServiceSpec extends SpecBase {
           val result = service.getDocuments(userAnswers, itemIndex)
 
           result mustBe Some(SelectableList(List()))
+        }
+      }
+    }
+
+    "getDocument" - {
+
+      val json = Json
+        .parse("""
+          |{
+          |  "documents" : [
+          |    {
+          |      "previousDocumentType" : {
+          |        "type" : "Type 1",
+          |        "code" : "Code 1",
+          |        "description" : "Description 1"
+          |      },
+          |      "details" : {
+          |        "documentReferenceNumber" : "Ref no. 1",
+          |        "uuid" : "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
+          |      }
+          |    },
+          |    {
+          |      "type" : {
+          |        "type" : "Type 2",
+          |        "code" : "Code 2"
+          |      },
+          |      "details" : {
+          |        "documentReferenceNumber" : "Ref no. 2",
+          |        "uuid" : "a573bfd3-6470-40c4-a290-ea2d8d43c02a"
+          |      }
+          |    }
+          |  ]
+          |}
+          |""".stripMargin)
+        .as[JsObject]
+
+      val userAnswers = emptyUserAnswers.copy(data = json)
+
+      "must return some document" - {
+        "when UUID found" in {
+          val uuid = UUID.fromString("1794d93b-17d5-44fe-a18d-aaa2059d06fe")
+
+          val result = service.getDocument(userAnswers, uuid)
+
+          result.value mustBe Document("Type 1", "Code 1", Some("Description 1"), "Ref no. 1", uuid)
+        }
+      }
+
+      "must return None" - {
+        "when UUID not found" in {
+          val uuid = UUID.fromString("3882459f-b7bc-478d-9d24-359533aa8fe3")
+
+          val result = service.getDocument(userAnswers, uuid)
+
+          result mustBe None
         }
       }
     }

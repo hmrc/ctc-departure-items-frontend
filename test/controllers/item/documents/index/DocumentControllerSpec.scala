@@ -80,7 +80,7 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
       when(mockDocumentsService.getDocuments(any(), any())).thenReturn(Some(documentList))
 
-      val userAnswers = emptyUserAnswers.setValue(DocumentPage(itemIndex, documentIndex), document1)
+      val userAnswers = emptyUserAnswers.setValue(DocumentPage(itemIndex, documentIndex), document1.uuid)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, documentRoute)

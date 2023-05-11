@@ -18,6 +18,8 @@ package models
 
 import play.api.libs.json.{JsArray, JsError, JsSuccess, Reads}
 
+import java.util.UUID
+
 case class SelectableList[T <: Selectable](values: Seq[T]) {
   def diff(that: SelectableList[T]): SelectableList[T] = SelectableList(this.values.diff(that.values))
 
@@ -36,15 +38,13 @@ object SelectableList {
     case _ => JsError("SelectableList::documentsReads: Failed to read documents from cache")
   }
 
-  val itemDocumentsReads: Reads[SelectableList[Document]] = Reads[SelectableList[Document]] {
+  val itemDocumentUuidsReads: Reads[Seq[UUID]] = Reads[Seq[UUID]] {
     case JsArray(values) =>
       JsSuccess(
-        SelectableList(
-          values.flatMap {
-            value => (value \ "document").validate[Document].asOpt
-          }.toSeq
-        )
+        values.flatMap {
+          value => (value \ "document").validate[UUID].asOpt
+        }.toSeq
       )
-    case _ => JsError("SelectableList::itemDocumentsReads: Failed to read documents from cache")
+    case _ => JsError("SelectableList::itemDocumentsReads: Failed to read document UUIDs from cache")
   }
 }

@@ -25,12 +25,14 @@ import models.journeyDomain.item.packages.PackageDomain
 import models.reference.Country
 import models.{CheckMode, DeclarationType, Index, UserAnswers}
 import pages.item._
+import pages.item.documents.index.DocumentPage
 import pages.sections.additionalInformation.AdditionalInformationListSection
 import pages.sections.additionalReference.AdditionalReferencesSection
 import pages.sections.dangerousGoods.DangerousGoodsListSection
 import pages.sections.documents.DocumentsSection
 import pages.sections.packages.PackagesSection
 import play.api.i18n.Messages
+import services.DocumentsService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.cyaHelpers.AnswersHelper
 
@@ -219,12 +221,16 @@ class ItemAnswersHelper(
     getAnswersAndBuildSectionRows(DocumentsSection(itemIndex))(document)
 
   def document(documentIndex: Index): Option[SummaryListRow] =
-    getAnswerAndBuildSectionRow[DocumentDomain](
-      formatAnswer = formatAsText,
-      prefix = "item.checkYourAnswers.document",
-      id = Some(s"change-document-${documentIndex.display}"),
-      args = documentIndex.display
-    )(DocumentDomain.userAnswersReader(itemIndex, documentIndex))
+    for {
+      uuid     <- userAnswers.get(DocumentPage(itemIndex, documentIndex))
+      document <- DocumentsService.getDocument(userAnswers, uuid)
+      row <- getAnswerAndBuildSectionRow[DocumentDomain](
+        formatAnswer = _ => formatAsText(document),
+        prefix = "item.checkYourAnswers.document",
+        id = Some(s"change-document-${documentIndex.display}"),
+        args = documentIndex.display
+      )(DocumentDomain.userAnswersReader(itemIndex, documentIndex))
+    } yield row
 
   def additionalReferenceYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = AddAdditionalReferenceYesNoPage(itemIndex),

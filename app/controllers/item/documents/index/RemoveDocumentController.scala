@@ -16,21 +16,24 @@
 
 package controllers.item.documents.index
 
+import config.FrontendAppConfig
 import controllers.actions._
 import controllers.item.documents.routes
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
-import models.requests.SpecificDataRequestProvider1
 import models.{Document, Index, LocalReferenceNumber, Mode}
 import pages.item.documents.index.DocumentPage
 import pages.sections.documents.DocumentSection
+import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
+import services.DocumentsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.item.documents.index.RemoveDocumentView
 
+import java.util.UUID
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -41,14 +44,13 @@ class RemoveDocumentController @Inject() (
   getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: RemoveDocumentView
+  view: RemoveDocumentView,
+  service: DocumentsService,
+  config: FrontendAppConfig
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
-
-  private type Request = SpecificDataRequestProvider1[Document]#SpecificDataRequest[_]
-
-  private def document(implicit request: Request): Document = request.arg
+    with I18nSupport
+    with Logging {
 
   private def form(document: Document): Form[Boolean] =
     formProvider("item.documents.index.removeDocument", document)
@@ -58,7 +60,10 @@ class RemoveDocumentController @Inject() (
       .requireData(lrn)
       .andThen(getMandatoryPage(DocumentPage(itemIndex, documentIndex))) {
         implicit request =>
-          Ok(view(form(document), lrn, mode, itemIndex, documentIndex, document))
+          service.getDocument(request.userAnswers, request.arg) match {
+            case Some(document) => Ok(view(form(document), lrn, mode, itemIndex, documentIndex, document))
+            case None           => handleError(request.arg)
+          }
       }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, documentIndex: Index): Action[AnyContent] =
@@ -68,20 +73,30 @@ class RemoveDocumentController @Inject() (
       .async {
         implicit request =>
           lazy val redirect = routes.AddAnotherDocumentController.onPageLoad(lrn, mode, itemIndex)
-          form(document)
-            .bindFromRequest()
-            .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex, documentIndex, document))),
-              {
-                case true =>
-                  DocumentSection(itemIndex, documentIndex)
-                    .removeFromUserAnswers()
-                    .updateTask()
-                    .writeToSession()
-                    .navigateTo(redirect)
-                case false =>
-                  Future.successful(Redirect(redirect))
-              }
-            )
+          service.getDocument(request.userAnswers, request.arg) match {
+            case Some(document) =>
+              form(document)
+                .bindFromRequest()
+                .fold(
+                  formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex, documentIndex, document))),
+                  {
+                    case true =>
+                      DocumentSection(itemIndex, documentIndex)
+                        .removeFromUserAnswers()
+                        .updateTask()
+                        .writeToSession()
+                        .navigateTo(redirect)
+                    case false =>
+                      Future.successful(Redirect(redirect))
+                  }
+                )
+            case None =>
+              Future.successful(handleError(request.arg))
+          }
       }
+
+  private def handleError(uuid: UUID): Result = {
+    logger.error(s"Failed to find document with UUID $uuid")
+    Redirect(config.technicalDifficultiesUrl)
+  }
 }

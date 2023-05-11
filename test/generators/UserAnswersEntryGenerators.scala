@@ -16,12 +16,14 @@
 
 package generators
 
+import models.DeclarationType
 import models.reference.{AdditionalInformation, AdditionalReference, Country, PackageType}
-import models.{DeclarationType, Document}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.libs.json._
 import queries.Gettable
+
+import java.util.UUID
 
 // scalastyle:off number.of.methods
 // scalastyle:off cyclomatic.complexity
@@ -107,7 +109,7 @@ trait UserAnswersEntryGenerators {
   private def generateDocumentAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.item.documents.index._
     {
-      case DocumentPage(_, _) => arbitrary[Document].map(Json.toJson(_))
+      case DocumentPage(_, _) => arbitrary[UUID].map(Json.toJson(_))
     }
   }
 

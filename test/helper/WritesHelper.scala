@@ -14,20 +14,22 @@
  * limitations under the License.
  */
 
-package pages.item.documents.index
+package helper
 
-import pages.behaviours.PageBehaviours
+import models.Document
+import play.api.libs.functional.syntax._
+import play.api.libs.json.{__, Writes}
 
 import java.util.UUID
 
-class DocumentPageSpec extends PageBehaviours {
+trait WritesHelper {
 
-  "DocumentPage" - {
+  implicit val documentsFrontendWrites: Writes[Document] = (
+    (__ \ "type" \ "type").write[String] and
+      (__ \ "type" \ "code").write[String] and
+      (__ \ "type" \ "description").writeNullable[String] and
+      (__ \ "details" \ "documentReferenceNumber").write[String] and
+      (__ \ "details" \ "uuid").write[UUID]
+  )(unlift(Document.unapply))
 
-    beRetrievable[UUID](DocumentPage(itemIndex, documentIndex))
-
-    beSettable[UUID](DocumentPage(itemIndex, documentIndex))
-
-    beRemovable[UUID](DocumentPage(itemIndex, documentIndex))
-  }
 }

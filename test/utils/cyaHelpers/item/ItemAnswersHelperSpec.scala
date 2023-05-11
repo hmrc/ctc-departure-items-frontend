@@ -24,6 +24,7 @@ import controllers.item.documents.index.routes.DocumentController
 import controllers.item.packages.index.routes.PackageTypeController
 import controllers.item.routes._
 import generators.Generators
+import helper.WritesHelper
 import models.reference.{AdditionalInformation, AdditionalReference, Country, PackageType}
 import models.{CheckMode, DeclarationType, Document, Mode}
 import org.scalacheck.Arbitrary.arbitrary
@@ -35,8 +36,10 @@ import pages.item.additionalReference.index.{AddAdditionalReferenceNumberYesNoPa
 import pages.item.dangerousGoods.index.UNNumberPage
 import pages.item.documents.index.DocumentPage
 import pages.item.packages.index.{AddShippingMarkYesNoPage, NumberOfPackagesPage, PackageTypePage, ShippingMarkPage}
+import pages.sections.external.DocumentsSection
+import play.api.libs.json.{JsArray, Json}
 
-class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class ItemAnswersHelperSpec extends SpecBase with WritesHelper with ScalaCheckPropertyChecks with Generators {
 
   private val mode: Mode = CheckMode
 
@@ -753,9 +756,12 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when document is defined" in {
           forAll(arbitrary[Document]) {
             document =>
-              val userAnswers = emptyUserAnswers.setValue(DocumentPage(itemIndex, documentIndex), document)
-              val helper      = new ItemAnswersHelper(userAnswers, itemIndex)
-              val result      = helper.document(documentIndex).get
+              val userAnswers = emptyUserAnswers
+                .setValue(DocumentsSection, JsArray(Seq(Json.toJson(document))))
+                .setValue(DocumentPage(itemIndex, documentIndex), document.uuid)
+
+              val helper = new ItemAnswersHelper(userAnswers, itemIndex)
+              val result = helper.document(documentIndex).get
 
               result.key.value mustBe "Document 1"
               result.value.value mustBe document.toString

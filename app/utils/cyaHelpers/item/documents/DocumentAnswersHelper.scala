@@ -18,11 +18,11 @@ package utils.cyaHelpers.item.documents
 
 import config.FrontendAppConfig
 import controllers.item.documents.index.routes
-import models.journeyDomain.item.documents.DocumentDomain
 import models.{Index, Mode, UserAnswers}
 import pages.item.documents.index.DocumentPage
 import pages.sections.documents.DocumentsSection
 import play.api.i18n.Messages
+import services.DocumentsService
 import utils.cyaHelpers.AnswersHelper
 import viewmodels.ListItem
 
@@ -32,11 +32,18 @@ class DocumentAnswersHelper(userAnswers: UserAnswers, mode: Mode, itemIndex: Ind
   def listItems: Seq[Either[ListItem, ListItem]] =
     buildListItems(DocumentsSection(itemIndex)) {
       documentIndex =>
-        buildListItem[DocumentDomain](
-          nameWhenComplete = _.toString,
-          nameWhenInProgress = userAnswers.get(DocumentPage(itemIndex, documentIndex)).map(_.toString),
-          removeRoute = Option(routes.RemoveDocumentController.onPageLoad(lrn, mode, itemIndex, documentIndex))
-        )(DocumentDomain.userAnswersReader(itemIndex, documentIndex))
+        val page = DocumentPage(itemIndex, documentIndex)
+        for {
+          changeUrl <- page.route(userAnswers, mode).map(_.url)
+          uuid      <- userAnswers.get(page)
+          document  <- DocumentsService.getDocument(userAnswers, uuid)
+        } yield Right(
+          ListItem(
+            name = document.toString,
+            changeUrl = changeUrl,
+            removeUrl = Option(routes.RemoveDocumentController.onPageLoad(lrn, mode, itemIndex, documentIndex).url)
+          )
+        )
     }
 
 }

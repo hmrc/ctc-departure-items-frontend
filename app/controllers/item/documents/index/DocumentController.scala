@@ -57,8 +57,12 @@ class DocumentController @Inject() (
         case Some(documentList) =>
           val form = formProvider(prefix, documentList)
           val preparedForm = request.userAnswers.get(DocumentPage(itemIndex, documentIndex)) match {
-            case None        => form
-            case Some(value) => form.fill(value)
+            case None => form
+            case Some(uuid) =>
+              documentList.values.find(_.uuid == uuid) match {
+                case None        => form
+                case Some(value) => form.fill(value)
+              }
           }
           Ok(view(preparedForm, lrn, documentList.values, mode, itemIndex, documentIndex))
         case None =>
@@ -77,7 +81,7 @@ class DocumentController @Inject() (
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, documentList.values, mode, itemIndex, documentIndex))),
               value => {
                 implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex, documentIndex)
-                DocumentPage(itemIndex, documentIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+                DocumentPage(itemIndex, documentIndex).writeToUserAnswers(value.uuid).updateTask().writeToSession().navigate()
               }
             )
         case None =>

@@ -25,6 +25,8 @@ import org.scalacheck.{Arbitrary, Gen}
 import play.api.mvc.Call
 import uk.gov.hmrc.http.HttpVerbs._
 
+import java.util.UUID
+
 trait ModelGenerators {
   self: Generators =>
 
@@ -67,7 +69,8 @@ trait ModelGenerators {
         code            <- nonEmptyString
         description     <- Gen.option(nonEmptyString)
         referenceNumber <- nonEmptyString
-      } yield Document(documentType, code, description, referenceNumber)
+        uuid            <- arbitrary[UUID]
+      } yield Document(documentType, code, description, referenceNumber, uuid)
     }
 
   implicit lazy val arbitraryLocalReferenceNumber: Arbitrary[LocalReferenceNumber] =

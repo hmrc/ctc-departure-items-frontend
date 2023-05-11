@@ -18,11 +18,12 @@ package models.journeyDomain.item.documents
 
 import base.SpecBase
 import generators.Generators
-import models.Document
 import models.journeyDomain.{EitherType, UserAnswersReader}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.item.documents.index.DocumentPage
+
+import java.util.UUID
 
 class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -30,7 +31,7 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
     "can be read from user answers" - {
       "when document is answered" in {
-        forAll(arbitrary[Document]) {
+        forAll(arbitrary[UUID]) {
           document =>
             val userAnswers = emptyUserAnswers
               .setValue(DocumentPage(itemIndex, documentIndex), document)

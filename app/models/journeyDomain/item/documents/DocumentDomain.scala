@@ -18,12 +18,14 @@ package models.journeyDomain.item.documents
 
 import models.journeyDomain.Stage._
 import models.journeyDomain._
-import models.{Document, Index, Mode, UserAnswers}
+import models.{Index, Mode, UserAnswers}
 import pages.item.documents.index.DocumentPage
 import play.api.mvc.Call
 
+import java.util.UUID
+
 case class DocumentDomain(
-  document: Document
+  document: UUID
 )(itemIndex: Index, documentIndex: Index)
     extends JourneyDomainModel {
 

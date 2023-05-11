@@ -19,11 +19,14 @@ package models
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
+import java.util.UUID
+
 case class Document(
   `type`: String,
   code: String,
   description: Option[String],
-  referenceNumber: String
+  referenceNumber: String,
+  uuid: UUID
 ) extends Selectable {
 
   override def toString: String = description match {
@@ -42,7 +45,8 @@ object Document {
       (__ \ key \ "type").read[String] and
         (__ \ key \ "code").read[String] and
         (__ \ key \ "description").readNullable[String] and
-        (__ \ "details" \ "documentReferenceNumber").read[String]
+        (__ \ "details" \ "documentReferenceNumber").read[String] and
+        (__ \ "details" \ "uuid").read[UUID]
     )(Document.apply _)
 
     readsForKey("type") orElse readsForKey("previousDocumentType")

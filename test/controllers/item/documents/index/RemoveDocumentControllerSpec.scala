@@ -16,19 +16,22 @@
 
 package controllers.item.documents.index
 
-import controllers.item.documents.{routes => documentRoutes}
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import controllers.item.documents.{routes => documentRoutes}
 import forms.YesNoFormProvider
 import generators.Generators
 import models.{Document, NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{never, verify}
+import org.mockito.Mockito.{never, reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.item.documents.index.DocumentPage
 import pages.sections.documents.DocumentSection
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.DocumentsService
 import views.html.item.documents.index.RemoveDocumentView
 
 class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
@@ -40,13 +43,26 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
   private val mode                     = NormalMode
   private lazy val removeDocumentRoute = routes.RemoveDocumentController.onPageLoad(lrn, mode, itemIndex, documentIndex).url
 
+  private val mockDocumentsService: DocumentsService = mock[DocumentsService]
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(bind(classOf[DocumentsService]).toInstance(mockDocumentsService))
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockDocumentsService)
+    when(mockDocumentsService.getDocument(any(), any())).thenReturn(Some(document))
+  }
+
+  private val baseAnswers = emptyUserAnswers.setValue(DocumentPage(itemIndex, documentIndex), document.uuid)
+
   "RemoveDocument Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      val userAnswers = emptyUserAnswers.setValue(DocumentPage(itemIndex, documentIndex), document)
-
-      setExistingUserAnswers(userAnswers)
+      setExistingUserAnswers(baseAnswers)
 
       val request = FakeRequest(GET, removeDocumentRoute)
       val result  = route(app, request).value
@@ -62,7 +78,7 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
     "must redirect to the next page" - {
       "when yes is submitted" in {
 
-        val userAnswers = emptyUserAnswers.setValue(DocumentPage(itemIndex, documentIndex), document)
+        val userAnswers = baseAnswers
 
         setExistingUserAnswers(userAnswers)
 
@@ -84,7 +100,7 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
       "when no is submitted" in {
 
-        val userAnswers = emptyUserAnswers.setValue(DocumentPage(itemIndex, documentIndex), document)
+        val userAnswers = baseAnswers
 
         setExistingUserAnswers(userAnswers)
 
@@ -104,9 +120,7 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val userAnswers = emptyUserAnswers.setValue(DocumentPage(itemIndex, documentIndex), document)
-
-      setExistingUserAnswers(userAnswers)
+      setExistingUserAnswers(baseAnswers)
 
       val request   = FakeRequest(POST, removeDocumentRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form(document).bind(Map("value" -> ""))
