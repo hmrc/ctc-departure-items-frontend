@@ -20,24 +20,48 @@ import models.{Document, Index, RichOptionalJsArray, SelectableList, UserAnswers
 import pages.item.documents.index.DocumentPage
 import pages.sections.documents.{DocumentsSection => ItemDocumentsSection}
 import pages.sections.external.DocumentsSection
+import play.api.libs.json.{JsArray, JsError, JsSuccess, Reads}
+import services.DocumentsService._
 
+import java.util.UUID
 import javax.inject.Inject
 
 class DocumentsService @Inject() () {
 
   def getDocuments(userAnswers: UserAnswers, itemIndex: Index): Option[SelectableList[Document]] =
     for {
-      documents <- userAnswers.get(DocumentsSection).validate(SelectableList.documentsReads)
-      itemDocumentUuids = userAnswers.get(ItemDocumentsSection(itemIndex)).validate(SelectableList.itemDocumentUuidsReads).getOrElse(Nil)
-      filteredDocuments = documents.values.filterNot {
-        x => itemDocumentUuids.contains(x.uuid)
+      documents <- userAnswers.get(DocumentsSection).validate[Seq[Document]]
+      itemDocumentUuids = userAnswers.get(ItemDocumentsSection(itemIndex)).validate[Seq[UUID]].getOrElse(Nil)
+      filteredDocuments = documents.filterNot {
+        document => itemDocumentUuids.contains(document.uuid)
       }
     } yield SelectableList(filteredDocuments)
 
   def getDocument(userAnswers: UserAnswers, itemIndex: Index, documentIndex: Index): Option[Document] =
     for {
       uuid      <- userAnswers.get(DocumentPage(itemIndex, documentIndex))
-      documents <- userAnswers.get(DocumentsSection).validate(SelectableList.documentsReads).map(_.values)
+      documents <- userAnswers.get(DocumentsSection).validate[Seq[Document]]
       document  <- documents.find(_.uuid == uuid)
     } yield document
+}
+
+object DocumentsService {
+
+  implicit val documentsReads: Reads[Seq[Document]] = Reads[Seq[Document]] {
+    case JsArray(values) =>
+      JsSuccess(
+        values.flatMap(_.validate[Document](Document.reads).asOpt).toSeq
+      )
+    case _ => JsError("DocumentsService::documentsReads: Failed to read documents from cache")
+  }
+
+  implicit val itemDocumentUuidsReads: Reads[Seq[UUID]] = Reads[Seq[UUID]] {
+    case JsArray(values) =>
+      JsSuccess(
+        values.flatMap {
+          value => (value \ "document").validate[UUID].asOpt
+        }.toSeq
+      )
+    case _ => JsError("DocumentsService::itemDocumentUuidsReads: Failed to read document UUIDs from cache")
+  }
 }
