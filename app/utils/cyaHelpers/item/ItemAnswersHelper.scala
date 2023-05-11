@@ -25,7 +25,6 @@ import models.journeyDomain.item.packages.PackageDomain
 import models.reference.Country
 import models.{CheckMode, DeclarationType, Index, UserAnswers}
 import pages.item._
-import pages.item.documents.index.DocumentPage
 import pages.sections.additionalInformation.AdditionalInformationListSection
 import pages.sections.additionalReference.AdditionalReferencesSection
 import pages.sections.dangerousGoods.DangerousGoodsListSection
@@ -217,20 +216,19 @@ class ItemAnswersHelper(
     args = itemIndex.display
   )
 
-  def documents: Seq[SummaryListRow] =
+  def documents(implicit documentsService: DocumentsService): Seq[SummaryListRow] =
     getAnswersAndBuildSectionRows(DocumentsSection(itemIndex))(document)
 
-  def document(documentIndex: Index): Option[SummaryListRow] =
-    for {
-      uuid     <- userAnswers.get(DocumentPage(itemIndex, documentIndex))
-      document <- DocumentsService.getDocument(userAnswers, uuid)
-      row <- getAnswerAndBuildSectionRow[DocumentDomain](
-        formatAnswer = _ => formatAsText(document),
-        prefix = "item.checkYourAnswers.document",
-        id = Some(s"change-document-${documentIndex.display}"),
-        args = documentIndex.display
-      )(DocumentDomain.userAnswersReader(itemIndex, documentIndex))
-    } yield row
+  def document(documentIndex: Index)(implicit documentsService: DocumentsService): Option[SummaryListRow] =
+    documentsService.getDocument(userAnswers, itemIndex, documentIndex).flatMap {
+      document =>
+        getAnswerAndBuildSectionRow[DocumentDomain](
+          formatAnswer = _ => formatAsText(document),
+          prefix = "item.checkYourAnswers.document",
+          id = Some(s"change-document-${documentIndex.display}"),
+          args = documentIndex.display
+        )(DocumentDomain.userAnswersReader(itemIndex, documentIndex))
+    }
 
   def additionalReferenceYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = AddAdditionalReferenceYesNoPage(itemIndex),

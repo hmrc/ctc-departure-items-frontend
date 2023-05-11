@@ -17,10 +17,10 @@
 package services
 
 import models.{Document, Index, RichOptionalJsArray, SelectableList, UserAnswers}
+import pages.item.documents.index.DocumentPage
 import pages.sections.documents.{DocumentsSection => ItemDocumentsSection}
 import pages.sections.external.DocumentsSection
 
-import java.util.UUID
 import javax.inject.Inject
 
 class DocumentsService @Inject() () {
@@ -34,14 +34,10 @@ class DocumentsService @Inject() () {
       }
     } yield SelectableList(filteredDocuments)
 
-  def getDocument(userAnswers: UserAnswers, uuid: UUID): Option[Document] =
-    DocumentsService.getDocument(userAnswers, uuid)
-}
-
-object DocumentsService {
-
-  def getDocument(userAnswers: UserAnswers, uuid: UUID): Option[Document] =
-    userAnswers.get(DocumentsSection).validate(SelectableList.documentsReads).map(_.values).flatMap {
-      _.find(_.uuid == uuid)
-    }
+  def getDocument(userAnswers: UserAnswers, itemIndex: Index, documentIndex: Index): Option[Document] =
+    for {
+      uuid      <- userAnswers.get(DocumentPage(itemIndex, documentIndex))
+      documents <- userAnswers.get(DocumentsSection).validate(SelectableList.documentsReads).map(_.values)
+      document  <- documents.find(_.uuid == uuid)
+    } yield document
 }

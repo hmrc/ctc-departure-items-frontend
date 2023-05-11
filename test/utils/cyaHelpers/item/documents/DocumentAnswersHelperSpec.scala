@@ -19,16 +19,18 @@ package utils.cyaHelpers.item.documents
 import base.SpecBase
 import controllers.item.documents.index.routes
 import generators.Generators
-import helper.WritesHelper
 import models.{Document, Index, Mode}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.item.documents.index.DocumentPage
-import pages.sections.external.DocumentsSection
-import play.api.libs.json.{JsArray, Json}
+import services.DocumentsService
 import viewmodels.ListItem
 
-class DocumentAnswersHelperSpec extends SpecBase with WritesHelper with ScalaCheckPropertyChecks with Generators {
+class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+
+  implicit private val mockDocumentsService: DocumentsService = mock[DocumentsService]
 
   "DocumentAnswersHelper" - {
 
@@ -49,8 +51,11 @@ class DocumentAnswersHelperSpec extends SpecBase with WritesHelper with ScalaChe
       "when user answers populated with complete document" in {
         forAll(arbitrary[Mode], arbitrary[Document], arbitrary[Document]) {
           (mode, document1, document2) =>
+            when(mockDocumentsService.getDocument(any(), any(), any()))
+              .thenReturn(Some(document1))
+              .thenReturn(Some(document2))
+
             val userAnswers = emptyUserAnswers
-              .setValue(DocumentsSection, JsArray(Seq(Json.toJson(document1), Json.toJson(document2))))
               .setValue(DocumentPage(itemIndex, Index(0)), document1.uuid)
               .setValue(DocumentPage(itemIndex, Index(1)), document2.uuid)
 

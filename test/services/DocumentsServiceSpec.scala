@@ -17,7 +17,7 @@
 package services
 
 import base.SpecBase
-import models.{Document, SelectableList}
+import models.{Document, Index, SelectableList}
 import play.api.libs.json.{JsObject, Json}
 
 import java.util.UUID
@@ -182,6 +182,21 @@ class DocumentsServiceSpec extends SpecBase {
           |        "uuid" : "a573bfd3-6470-40c4-a290-ea2d8d43c02a"
           |      }
           |    }
+          |  ],
+          |  "items" : [
+          |    {
+          |      "documents" : [
+          |        {
+          |          "document" : "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
+          |        },
+          |        {
+          |          "document" : "a573bfd3-6470-40c4-a290-ea2d8d43c02a"
+          |        },
+          |        {
+          |          "document" : "3882459f-b7bc-478d-9d24-359533aa8fe3"
+          |        }
+          |      ]
+          |    }
           |  ]
           |}
           |""".stripMargin)
@@ -191,19 +206,17 @@ class DocumentsServiceSpec extends SpecBase {
 
       "must return some document" - {
         "when UUID found" in {
-          val uuid = UUID.fromString("1794d93b-17d5-44fe-a18d-aaa2059d06fe")
+          val result1 = service.getDocument(userAnswers, itemIndex, Index(0))
+          val result2 = service.getDocument(userAnswers, itemIndex, Index(1))
 
-          val result = service.getDocument(userAnswers, uuid)
-
-          result.value mustBe Document("Type 1", "Code 1", Some("Description 1"), "Ref no. 1", uuid)
+          result1.value mustBe Document("Type 1", "Code 1", Some("Description 1"), "Ref no. 1", UUID.fromString("1794d93b-17d5-44fe-a18d-aaa2059d06fe"))
+          result2.value mustBe Document("Type 2", "Code 2", None, "Ref no. 2", UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a"))
         }
       }
 
       "must return None" - {
         "when UUID not found" in {
-          val uuid = UUID.fromString("3882459f-b7bc-478d-9d24-359533aa8fe3")
-
-          val result = service.getDocument(userAnswers, uuid)
+          val result = service.getDocument(userAnswers, itemIndex, Index(2))
 
           result mustBe None
         }

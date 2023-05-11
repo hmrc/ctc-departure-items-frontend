@@ -29,14 +29,13 @@ import viewmodels.ListItem
 class DocumentAnswersHelper(userAnswers: UserAnswers, mode: Mode, itemIndex: Index)(implicit messages: Messages, config: FrontendAppConfig)
     extends AnswersHelper(userAnswers, mode) {
 
-  def listItems: Seq[Either[ListItem, ListItem]] =
+  def listItems(implicit documentsService: DocumentsService): Seq[Either[ListItem, ListItem]] =
     buildListItems(DocumentsSection(itemIndex)) {
       documentIndex =>
         val page = DocumentPage(itemIndex, documentIndex)
         for {
           changeUrl <- page.route(userAnswers, mode).map(_.url)
-          uuid      <- userAnswers.get(page)
-          document  <- DocumentsService.getDocument(userAnswers, uuid)
+          document  <- documentsService.getDocument(userAnswers, itemIndex, documentIndex)
         } yield Right(
           ListItem(
             name = document.toString,

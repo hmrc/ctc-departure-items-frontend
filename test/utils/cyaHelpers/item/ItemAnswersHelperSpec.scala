@@ -24,7 +24,6 @@ import controllers.item.documents.index.routes.DocumentController
 import controllers.item.packages.index.routes.PackageTypeController
 import controllers.item.routes._
 import generators.Generators
-import helper.WritesHelper
 import models.reference.{AdditionalInformation, AdditionalReference, Country, PackageType}
 import models.{CheckMode, DeclarationType, Document, Mode}
 import org.scalacheck.Arbitrary.arbitrary
@@ -36,10 +35,9 @@ import pages.item.additionalReference.index.{AddAdditionalReferenceNumberYesNoPa
 import pages.item.dangerousGoods.index.UNNumberPage
 import pages.item.documents.index.DocumentPage
 import pages.item.packages.index.{AddShippingMarkYesNoPage, NumberOfPackagesPage, PackageTypePage, ShippingMarkPage}
-import pages.sections.external.DocumentsSection
-import play.api.libs.json.{JsArray, Json}
+import services.DocumentsService
 
-class ItemAnswersHelperSpec extends SpecBase with WritesHelper with ScalaCheckPropertyChecks with Generators {
+class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   private val mode: Mode = CheckMode
 
@@ -744,8 +742,14 @@ class ItemAnswersHelperSpec extends SpecBase with WritesHelper with ScalaCheckPr
     }
 
     "document" - {
+      import org.mockito.ArgumentMatchers.any
+      import org.mockito.Mockito.when
+
+      implicit val mockDocumentsService: DocumentsService = mock[DocumentsService]
+
       "must return None" - {
         "when document is undefined" in {
+          when(mockDocumentsService.getDocument(any(), any(), any())).thenReturn(None)
           val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
           val result = helper.document(documentIndex)
           result mustBe None
@@ -756,9 +760,8 @@ class ItemAnswersHelperSpec extends SpecBase with WritesHelper with ScalaCheckPr
         "when document is defined" in {
           forAll(arbitrary[Document]) {
             document =>
-              val userAnswers = emptyUserAnswers
-                .setValue(DocumentsSection, JsArray(Seq(Json.toJson(document))))
-                .setValue(DocumentPage(itemIndex, documentIndex), document.uuid)
+              when(mockDocumentsService.getDocument(any(), any(), any())).thenReturn(Some(document))
+              val userAnswers = emptyUserAnswers.setValue(DocumentPage(itemIndex, documentIndex), document.uuid)
 
               val helper = new ItemAnswersHelper(userAnswers, itemIndex)
               val result = helper.document(documentIndex).get

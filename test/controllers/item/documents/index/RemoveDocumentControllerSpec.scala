@@ -25,7 +25,6 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
-import pages.item.documents.index.DocumentPage
 import pages.sections.documents.DocumentSection
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -53,16 +52,14 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockDocumentsService)
-    when(mockDocumentsService.getDocument(any(), any())).thenReturn(Some(document))
+    when(mockDocumentsService.getDocument(any(), any(), any())).thenReturn(Some(document))
   }
-
-  private val baseAnswers = emptyUserAnswers.setValue(DocumentPage(itemIndex, documentIndex), document.uuid)
 
   "RemoveDocument Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      setExistingUserAnswers(baseAnswers)
+      setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, removeDocumentRoute)
       val result  = route(app, request).value
@@ -78,7 +75,7 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
     "must redirect to the next page" - {
       "when yes is submitted" in {
 
-        val userAnswers = baseAnswers
+        val userAnswers = emptyUserAnswers
 
         setExistingUserAnswers(userAnswers)
 
@@ -100,7 +97,7 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
       "when no is submitted" in {
 
-        val userAnswers = baseAnswers
+        val userAnswers = emptyUserAnswers
 
         setExistingUserAnswers(userAnswers)
 
@@ -120,7 +117,7 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      setExistingUserAnswers(baseAnswers)
+      setExistingUserAnswers(emptyUserAnswers)
 
       val request   = FakeRequest(POST, removeDocumentRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form(document).bind(Map("value" -> ""))
@@ -151,6 +148,8 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
       "if no document is found" in {
 
+        when(mockDocumentsService.getDocument(any(), any(), any())).thenReturn(None)
+
         setExistingUserAnswers(emptyUserAnswers)
 
         val request = FakeRequest(GET, removeDocumentRoute)
@@ -159,12 +158,12 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual frontendAppConfig.technicalDifficultiesUrl
       }
     }
 
     "must redirect to Session Expired for a POST" - {
-      "if no document is found" in {
+      "if no existing data is found" in {
 
         setNoExistingUserAnswers()
 
@@ -178,7 +177,9 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
         redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
       }
 
-      "if no existing data is found" in {
+      "if no document is found" in {
+
+        when(mockDocumentsService.getDocument(any(), any(), any())).thenReturn(None)
 
         setExistingUserAnswers(emptyUserAnswers)
 
@@ -189,7 +190,7 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual frontendAppConfig.technicalDifficultiesUrl
       }
     }
   }

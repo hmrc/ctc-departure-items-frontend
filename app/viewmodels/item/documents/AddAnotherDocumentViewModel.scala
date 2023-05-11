@@ -21,6 +21,7 @@ import controllers.item.documents.routes
 import models.{Document, Index, Mode, UserAnswers}
 import play.api.i18n.Messages
 import play.api.mvc.Call
+import services.DocumentsService
 import utils.cyaHelpers.item.documents.DocumentAnswersHelper
 import viewmodels.{AddAnotherViewModel, ListItem}
 
@@ -41,7 +42,7 @@ case class AddAnotherDocumentViewModel(
 
 object AddAnotherDocumentViewModel {
 
-  class AddAnotherDocumentViewModelProvider @Inject() () {
+  class AddAnotherDocumentViewModelProvider @Inject() (implicit documentsService: DocumentsService) {
 
     def apply(userAnswers: UserAnswers, mode: Mode, itemIndex: Index, documents: Seq[Document])(implicit
       messages: Messages,

@@ -19,6 +19,7 @@ package viewmodels.item
 import config.FrontendAppConfig
 import models.{Index, UserAnswers}
 import play.api.i18n.Messages
+import services.DocumentsService
 import utils.cyaHelpers.item.ItemAnswersHelper
 import viewmodels.sections.Section
 
@@ -28,10 +29,13 @@ case class ItemAnswersViewModel(sections: Seq[Section])
 
 object ItemAnswersViewModel {
 
-  def apply(userAnswers: UserAnswers, itemIndex: Index)(implicit messages: Messages, config: FrontendAppConfig): ItemAnswersViewModel =
-    new ItemAnswersViewModelProvider()(userAnswers, itemIndex)
+  def apply(
+    userAnswers: UserAnswers,
+    itemIndex: Index
+  )(implicit messages: Messages, config: FrontendAppConfig, documentsService: DocumentsService): ItemAnswersViewModel =
+    new ItemAnswersViewModelProvider().apply(userAnswers, itemIndex)
 
-  class ItemAnswersViewModelProvider @Inject() () {
+  class ItemAnswersViewModelProvider @Inject() (implicit documentsService: DocumentsService) {
 
     // scalastyle:off method.length
     def apply(userAnswers: UserAnswers, itemIndex: Index)(implicit messages: Messages, config: FrontendAppConfig): ItemAnswersViewModel = {

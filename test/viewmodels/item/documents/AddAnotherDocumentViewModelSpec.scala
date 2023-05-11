@@ -18,28 +18,29 @@ package viewmodels.item.documents
 
 import base.SpecBase
 import generators.Generators
-import helper.WritesHelper
 import models.{Document, Index, Mode}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.item.documents.index.DocumentPage
-import pages.sections.external.DocumentsSection
-import play.api.libs.json.{JsArray, Json}
+import services.DocumentsService
 import viewmodels.item.documents.AddAnotherDocumentViewModel.AddAnotherDocumentViewModelProvider
 
-class AddAnotherDocumentViewModelSpec extends SpecBase with WritesHelper with Generators with ScalaCheckPropertyChecks {
+class AddAnotherDocumentViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
+
+  implicit private val mockDocumentsService: DocumentsService = mock[DocumentsService]
 
   "must get list items" - {
 
     "when there is one document added" in {
       forAll(arbitrary[Mode], arbitrary[Document]) {
         (mode, document) =>
-          val userAnswers = emptyUserAnswers
-            .setValue(DocumentsSection, JsArray(Seq(Json.toJson(document))))
-            .setValue(DocumentPage(itemIndex, documentIndex), document.uuid)
+          when(mockDocumentsService.getDocument(any(), any(), any())).thenReturn(Some(document))
 
-          val result = new AddAnotherDocumentViewModelProvider()(userAnswers, mode, itemIndex, Nil)
+          val userAnswers = emptyUserAnswers.setValue(DocumentPage(itemIndex, documentIndex), document.uuid)
+
+          val result = new AddAnotherDocumentViewModelProvider().apply(userAnswers, mode, itemIndex, Nil)
 
           result.listItems.length mustBe 1
           result.title mustBe "You have attached 1 document to this item"
@@ -50,23 +51,20 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with WritesHelper with Ge
     }
 
     "when there are multiple documents added" in {
-      val formatter = java.text.NumberFormat.getIntegerInstance
+      forAll(arbitrary[Mode], arbitrary[Document], arbitrary[Document]) {
+        (mode, document1, document2) =>
+          when(mockDocumentsService.getDocument(any(), any(), any()))
+            .thenReturn(Some(document1))
+            .thenReturn(Some(document2))
 
-      forAll(arbitrary[Mode], Gen.choose(2, frontendAppConfig.maxDocuments)) {
-        (mode, numberOfDocuments) =>
-          val documents = (0 until numberOfDocuments).map {
-            _ => arbitrary[Document].sample.value
-          }
-          val initialAnswers = emptyUserAnswers.setValue(DocumentsSection, JsArray(documents.map(Json.toJson(_))))
-          val userAnswers = documents.zipWithIndex.foldLeft(initialAnswers) {
-            case (acc, (document, i)) =>
-              acc.setValue(DocumentPage(itemIndex, Index(i)), document.uuid)
-          }
+          val userAnswers = emptyUserAnswers
+            .setValue(DocumentPage(itemIndex, Index(0)), document1.uuid)
+            .setValue(DocumentPage(itemIndex, Index(1)), document2.uuid)
 
-          val result = new AddAnotherDocumentViewModelProvider()(userAnswers, mode, itemIndex, Nil)
-          result.listItems.length mustBe numberOfDocuments
-          result.title mustBe s"You have attached ${formatter.format(numberOfDocuments)} documents to this item"
-          result.heading mustBe s"You have attached ${formatter.format(numberOfDocuments)} documents to this item"
+          val result = new AddAnotherDocumentViewModelProvider().apply(userAnswers, mode, itemIndex, Nil)
+          result.listItems.length mustBe 2
+          result.title mustBe s"You have attached 2 documents to this item"
+          result.heading mustBe s"You have attached 2 documents to this item"
           result.legend mustBe "Do you want to attach another document?"
           result.maxLimitLabel mustBe "You cannot attach any more documents. To attach another, you need to remove one first."
       }

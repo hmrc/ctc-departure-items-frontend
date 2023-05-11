@@ -19,9 +19,12 @@ package viewmodels.item
 import base.SpecBase
 import generators.Generators
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import ItemAnswersViewModel.ItemAnswersViewModelProvider
+import services.DocumentsService
+import viewmodels.item.ItemAnswersViewModel.ItemAnswersViewModelProvider
 
 class ItemAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+
+  implicit private val documentsService: DocumentsService = injector.instanceOf[DocumentsService]
 
   "apply" - {
     "must return all sections" in {
