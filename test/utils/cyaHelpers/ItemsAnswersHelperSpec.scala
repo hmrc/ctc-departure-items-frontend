@@ -17,12 +17,11 @@
 package utils.cyaHelpers
 
 import base.SpecBase
+import controllers.item.routes
 import generators.Generators
-import models.{Index, Mode}
-import org.scalacheck.Arbitrary.arbitrary
+import models.Index
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.item._
-import play.api.mvc.Call
 import viewmodels.ListItem
 
 class ItemsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -33,13 +32,11 @@ class ItemsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with
 
       "when empty user answers" - {
         "must return empty list of items" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val userAnswers = emptyUserAnswers
+          val userAnswers = emptyUserAnswers
 
-              val helper = new ItemsAnswersHelper(userAnswers, mode)
-              helper.listItems mustBe Nil
-          }
+          val helper = new ItemsAnswersHelper(userAnswers)
+          helper.listItems mustBe Nil
+
         }
       }
 
@@ -51,22 +48,22 @@ class ItemsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with
           .setValue(DescriptionPage(Index(0)), description1)
           .setValue(DescriptionPage(Index(1)), description2)
 
-        forAll(arbitrary[Mode], arbitraryItemsAnswers(initialAnswers)) {
-          (mode, userAnswers) =>
-            val helper = new ItemsAnswersHelper(userAnswers, mode)
+        forAll(arbitraryItemsAnswers(initialAnswers)) {
+          userAnswers =>
+            val helper = new ItemsAnswersHelper(userAnswers)
             helper.listItems mustBe Seq(
               Right(
                 ListItem(
                   name = s"Item 1 - $description1",
-                  changeUrl = Call("GET", "#").url, // TODO replace with Item Answers route
-                  removeUrl = Some(Call("GET", "#").url) // TODO: Replace with remove item route
+                  changeUrl = controllers.item.routes.CheckYourAnswersController.onPageLoad(lrn, Index(0)).url,
+                  removeUrl = Some(routes.RemoveItemController.onPageLoad(lrn, Index(0)).url)
                 )
               ),
               Right(
                 ListItem(
                   name = s"Item 2 - $description2",
-                  changeUrl = Call("GET", "#").url, // TODO replace with Item Answers route
-                  removeUrl = Some(Call("GET", "#").url) // TODO: Replace with remove item route
+                  changeUrl = controllers.item.routes.CheckYourAnswersController.onPageLoad(lrn, Index(1)).url,
+                  removeUrl = Some(routes.RemoveItemController.onPageLoad(lrn, Index(1)).url)
                 )
               )
             )

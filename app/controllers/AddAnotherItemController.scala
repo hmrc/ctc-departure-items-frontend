@@ -19,7 +19,7 @@ package controllers
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.AddAnotherFormProvider
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, NormalMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -41,11 +41,13 @@ class AddAnotherItemController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
+  private val mode = NormalMode
+
   private def form(viewModel: AddAnotherItemViewModel): Form[Boolean] = formProvider(viewModel.prefix, viewModel.allowMore)
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
+  def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      val viewModel = viewModelProvider(request.userAnswers, mode)
+      val viewModel = viewModelProvider(request.userAnswers)
       viewModel.count match {
         case 0 =>
           Redirect(controllers.item.routes.DescriptionController.onPageLoad(lrn, mode, Index(0)))
@@ -54,9 +56,9 @@ class AddAnotherItemController @Inject() (
       }
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
+  def onSubmit(lrn: LocalReferenceNumber): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      val viewModel = viewModelProvider(request.userAnswers, mode)
+      val viewModel = viewModelProvider(request.userAnswers)
       form(viewModel)
         .bindFromRequest()
         .fold(

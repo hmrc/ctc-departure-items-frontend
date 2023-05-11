@@ -14,44 +14,46 @@
  * limitations under the License.
  */
 
-package viewmodels
+package viewmodels.item.additionalInformation
 
 import config.FrontendAppConfig
-import models.UserAnswers
+import controllers.item.additionalInformation.routes
+import models.{Index, Mode, UserAnswers}
 import play.api.i18n.Messages
 import play.api.mvc.Call
-import utils.cyaHelpers.ItemsAnswersHelper
+import utils.cyaHelpers.item.additionalInformation.AdditionalInformationAnswersHelper
+import viewmodels.{AddAnotherViewModel, ListItem}
 
 import javax.inject.Inject
 
-case class AddAnotherItemViewModel(
+case class AddAnotherAdditionalInformationViewModel(
   override val listItems: Seq[ListItem],
   onSubmitCall: Call
 ) extends AddAnotherViewModel {
 
-  override val prefix: String = "addAnotherItem"
+  override val prefix: String = "item.additionalInformation.addAnotherAdditionalInformation"
 
-  override def maxCount(implicit config: FrontendAppConfig): Int = config.maxItems
+  override def maxCount(implicit config: FrontendAppConfig): Int = config.maxAdditionalInformation
 }
 
-object AddAnotherItemViewModel {
+object AddAnotherAdditionalInformationViewModel {
 
-  class AddAnotherItemViewModelProvider @Inject() () {
+  class AddAnotherAdditionalInformationViewModelProvider @Inject() () {
 
-    def apply(userAnswers: UserAnswers)(implicit
+    def apply(userAnswers: UserAnswers, mode: Mode, itemIndex: Index)(implicit
       messages: Messages,
       config: FrontendAppConfig
-    ): AddAnotherItemViewModel = {
-      val helper = new ItemsAnswersHelper(userAnswers)
+    ): AddAnotherAdditionalInformationViewModel = {
+      val helper = new AdditionalInformationAnswersHelper(userAnswers, mode, itemIndex)
 
       val listItems = helper.listItems.collect {
         case Left(value)  => value
         case Right(value) => value
       }
 
-      new AddAnotherItemViewModel(
+      new AddAnotherAdditionalInformationViewModel(
         listItems,
-        onSubmitCall = controllers.routes.AddAnotherItemController.onSubmit(userAnswers.lrn)
+        onSubmitCall = routes.AddAnotherAdditionalInformationController.onSubmit(userAnswers.lrn, mode, itemIndex)
       )
     }
   }

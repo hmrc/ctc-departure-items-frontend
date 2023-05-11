@@ -166,10 +166,6 @@ trait ModelGenerators {
 
   val arbitraryNonC651OrC658AdditionalReference: Arbitrary[AdditionalReference] = arbitraryAdditionalReference
 
-  lazy val arbitraryIncompleteTaskStatus: Arbitrary[TaskStatus] = Arbitrary {
-    Gen.oneOf(TaskStatus.InProgress, TaskStatus.NotStarted, TaskStatus.CannotStartYet)
-  }
-
   implicit lazy val arbitraryAdditionalInformation: Arbitrary[AdditionalInformation] =
     Arbitrary {
       for {
@@ -177,5 +173,18 @@ trait ModelGenerators {
         description <- nonEmptyString
       } yield AdditionalInformation(code, description)
     }
+
+  val arbitraryAdditionalInformation30600: Arbitrary[AdditionalInformation] =
+    Arbitrary {
+      for {
+        description <- nonEmptyString
+      } yield AdditionalInformation(additionalInformationType30600, description)
+    }
+
+  val arbitraryAdditionalInformationNon30600: Arbitrary[AdditionalInformation] = arbitraryAdditionalInformation
+
+  lazy val arbitraryIncompleteTaskStatus: Arbitrary[TaskStatus] = Arbitrary {
+    Gen.oneOf(TaskStatus.InProgress, TaskStatus.NotStarted, TaskStatus.CannotStartYet)
+  }
 
 }

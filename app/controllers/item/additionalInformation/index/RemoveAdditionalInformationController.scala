@@ -17,15 +17,15 @@
 package controllers.item.additionalInformation.index
 
 import controllers.actions._
+import controllers.item.additionalInformation.routes
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import pages.item.additionalInformation.index.AdditionalInformationTypePage
 import pages.sections.additionalInformation.AdditionalInformationSection
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import uk.gov.hmrc.http.HttpVerbs.GET
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.item.additionalInformation.index.RemoveAdditionalInformationView
 
@@ -60,7 +60,7 @@ class RemoveAdditionalInformationController @Inject() (
       .andThen(getMandatoryPage(AdditionalInformationTypePage(itemIndex, additionalInformationIndex)))
       .async {
         implicit request =>
-          lazy val redirect             = Call(GET, "#")
+          lazy val redirect             = routes.AddAnotherAdditionalInformationController.onPageLoad(lrn, mode, itemIndex)
           val additionalInformationType = request.arg.toString
           val form                      = formProvider("item.additionalInformation.index.removeAdditionalInformation")
           form

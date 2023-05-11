@@ -31,12 +31,14 @@ case class AdditionalInformationDomain(
 )(itemIndex: Index, additionalInformationIndex: Index)
     extends JourneyDomainModel {
 
+  override def toString: String = s"${`type`} - $value"
+
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some {
     stage match {
       case AccessingJourney =>
         AdditionalInformationTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, additionalInformationIndex)
       case CompletingJourney =>
-        Call("GET", "#")
+        controllers.item.additionalInformation.routes.AddAnotherAdditionalInformationController.onPageLoad(userAnswers.lrn, mode, itemIndex)
     }
   }
 }

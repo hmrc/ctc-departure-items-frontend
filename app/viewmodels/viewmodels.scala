@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-package config
+import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
+import viewmodels.sections.Section
 
-object Constants {
-  val GB = "GB"
-  val XI = "XI"
-  val AD = "AD"
+package object viewmodels {
 
-  val C651 = "C651"
-  val C658 = "C658"
+  implicit class RichSummaryListRowOption(row: Option[SummaryListRow]) {
 
-  val additionalInformationType30600 = "30600"
+    def toSection: Section = Section(Seq(row).flatten)
+  }
+
+  implicit class RichSection(section: Section) {
+
+    def toSeq: Seq[Section] = Seq(section)
+  }
+
 }
