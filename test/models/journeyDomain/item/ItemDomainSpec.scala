@@ -27,7 +27,7 @@ import models.journeyDomain.item.documents.{DocumentDomain, DocumentsDomain}
 import models.journeyDomain.item.packages.{PackageDomain, PackagesDomain}
 import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.reference.{AdditionalInformation, AdditionalReference, Country, PackageType}
-import models.{DeclarationType, Document, Index}
+import models.{DeclarationType, Index}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -38,6 +38,8 @@ import pages.item.additionalReference.index._
 import pages.item.dangerousGoods.index.UNNumberPage
 import pages.item.documents.index.DocumentPage
 import pages.item.packages.index._
+
+import java.util.UUID
 
 class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -832,7 +834,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
       "can be read from user answers" - {
         "when T2/T2F declaration type and GB office of departure" in {
-          forAll(gbCustomsOfficeGen, genForT2OrT2F, arbitrary[Document], arbitrary[Document]) {
+          forAll(gbCustomsOfficeGen, genForT2OrT2F, arbitrary[UUID], arbitrary[UUID]) {
             (customsOfficeId, declarationType, document1, document2) =>
               val userAnswers = emptyUserAnswers
                 .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
@@ -859,7 +861,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
         "when not T2/T2F declaration type and GB office of departure" - {
           "and adding documents" in {
-            forAll(nonGgbCustomsOfficeGen, genForNonT2OrT2F, arbitrary[Document], arbitrary[Document]) {
+            forAll(nonGgbCustomsOfficeGen, genForNonT2OrT2F, arbitrary[UUID], arbitrary[UUID]) {
               (customsOfficeId, declarationType, document1, document2) =>
                 val userAnswers = emptyUserAnswers
                   .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
@@ -886,8 +888,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
           }
 
           "and not adding documents" in {
-            forAll(nonGgbCustomsOfficeGen, genForNonT2OrT2F, arbitrary[Document], arbitrary[Document]) {
-              (customsOfficeId, declarationType, document1, document2) =>
+            forAll(nonGgbCustomsOfficeGen, genForNonT2OrT2F) {
+              (customsOfficeId, declarationType) =>
                 val userAnswers = emptyUserAnswers
                   .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
                   .setValue(TransitOperationDeclarationTypePage, declarationType)

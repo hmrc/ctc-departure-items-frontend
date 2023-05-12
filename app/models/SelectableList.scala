@@ -16,35 +16,4 @@
 
 package models
 
-import play.api.libs.json.{JsArray, JsError, JsSuccess, Reads}
-
-case class SelectableList[T <: Selectable](values: Seq[T]) {
-  def diff(that: SelectableList[T]): SelectableList[T] = SelectableList(this.values.diff(that.values))
-
-  def nonEmpty: Boolean = values.nonEmpty
-}
-
-object SelectableList {
-
-  val documentsReads: Reads[SelectableList[Document]] = Reads[SelectableList[Document]] {
-    case JsArray(values) =>
-      JsSuccess(
-        SelectableList(
-          values.flatMap(_.validate[Document](Document.reads).asOpt).toSeq
-        )
-      )
-    case _ => JsError("SelectableList::documentsReads: Failed to read documents from cache")
-  }
-
-  val itemDocumentsReads: Reads[SelectableList[Document]] = Reads[SelectableList[Document]] {
-    case JsArray(values) =>
-      JsSuccess(
-        SelectableList(
-          values.flatMap {
-            value => (value \ "document").validate[Document].asOpt
-          }.toSeq
-        )
-      )
-    case _ => JsError("SelectableList::itemDocumentsReads: Failed to read documents from cache")
-  }
-}
+case class SelectableList[T <: Selectable](values: Seq[T])

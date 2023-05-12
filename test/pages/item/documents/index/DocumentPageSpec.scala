@@ -16,17 +16,18 @@
 
 package pages.item.documents.index
 
-import models.Document
 import pages.behaviours.PageBehaviours
+
+import java.util.UUID
 
 class DocumentPageSpec extends PageBehaviours {
 
   "DocumentPage" - {
 
-    beRetrievable[Document](DocumentPage(itemIndex, documentIndex))
+    beRetrievable[UUID](DocumentPage(itemIndex, documentIndex))
 
-    beSettable[Document](DocumentPage(itemIndex, documentIndex))
+    beSettable[UUID](DocumentPage(itemIndex, documentIndex))
 
-    beRemovable[Document](DocumentPage(itemIndex, documentIndex))
+    beRemovable[UUID](DocumentPage(itemIndex, documentIndex))
   }
 }

@@ -35,6 +35,7 @@ import pages.item.additionalReference.index.{AddAdditionalReferenceNumberYesNoPa
 import pages.item.dangerousGoods.index.UNNumberPage
 import pages.item.documents.index.DocumentPage
 import pages.item.packages.index.{AddShippingMarkYesNoPage, NumberOfPackagesPage, PackageTypePage, ShippingMarkPage}
+import services.DocumentsService
 
 class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -741,8 +742,14 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     }
 
     "document" - {
+      import org.mockito.ArgumentMatchers.any
+      import org.mockito.Mockito.when
+
+      implicit val mockDocumentsService: DocumentsService = mock[DocumentsService]
+
       "must return None" - {
         "when document is undefined" in {
+          when(mockDocumentsService.getDocument(any(), any(), any())).thenReturn(None)
           val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
           val result = helper.document(documentIndex)
           result mustBe None
@@ -753,9 +760,11 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when document is defined" in {
           forAll(arbitrary[Document]) {
             document =>
-              val userAnswers = emptyUserAnswers.setValue(DocumentPage(itemIndex, documentIndex), document)
-              val helper      = new ItemAnswersHelper(userAnswers, itemIndex)
-              val result      = helper.document(documentIndex).get
+              when(mockDocumentsService.getDocument(any(), any(), any())).thenReturn(Some(document))
+              val userAnswers = emptyUserAnswers.setValue(DocumentPage(itemIndex, documentIndex), document.uuid)
+
+              val helper = new ItemAnswersHelper(userAnswers, itemIndex)
+              val result = helper.document(documentIndex).get
 
               result.key.value mustBe "Document 1"
               result.value.value mustBe document.toString

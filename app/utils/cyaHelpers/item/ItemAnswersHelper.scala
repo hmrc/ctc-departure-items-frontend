@@ -31,6 +31,7 @@ import pages.sections.dangerousGoods.DangerousGoodsListSection
 import pages.sections.documents.DocumentsSection
 import pages.sections.packages.PackagesSection
 import play.api.i18n.Messages
+import services.DocumentsService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.cyaHelpers.AnswersHelper
 
@@ -215,16 +216,19 @@ class ItemAnswersHelper(
     args = itemIndex.display
   )
 
-  def documents: Seq[SummaryListRow] =
+  def documents(implicit documentsService: DocumentsService): Seq[SummaryListRow] =
     getAnswersAndBuildSectionRows(DocumentsSection(itemIndex))(document)
 
-  def document(documentIndex: Index): Option[SummaryListRow] =
-    getAnswerAndBuildSectionRow[DocumentDomain](
-      formatAnswer = formatAsText,
-      prefix = "item.checkYourAnswers.document",
-      id = Some(s"change-document-${documentIndex.display}"),
-      args = documentIndex.display
-    )(DocumentDomain.userAnswersReader(itemIndex, documentIndex))
+  def document(documentIndex: Index)(implicit documentsService: DocumentsService): Option[SummaryListRow] =
+    documentsService.getDocument(userAnswers, itemIndex, documentIndex).flatMap {
+      document =>
+        getAnswerAndBuildSectionRow[DocumentDomain](
+          formatAnswer = _ => formatAsText(document),
+          prefix = "item.checkYourAnswers.document",
+          id = Some(s"change-document-${documentIndex.display}"),
+          args = documentIndex.display
+        )(DocumentDomain.userAnswersReader(itemIndex, documentIndex))
+    }
 
   def additionalReferenceYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = AddAdditionalReferenceYesNoPage(itemIndex),

@@ -16,18 +16,19 @@
 
 package controllers.item.documents.index
 
+import config.FrontendAppConfig
 import controllers.actions._
 import controllers.item.documents.routes
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
-import models.requests.SpecificDataRequestProvider1
 import models.{Document, Index, LocalReferenceNumber, Mode}
-import pages.item.documents.index.DocumentPage
 import pages.sections.documents.DocumentSection
+import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
+import services.DocumentsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.item.documents.index.RemoveDocumentView
 
@@ -38,36 +39,32 @@ class RemoveDocumentController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   actions: Actions,
-  getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: RemoveDocumentView
+  view: RemoveDocumentView,
+  service: DocumentsService,
+  config: FrontendAppConfig
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
-    with I18nSupport {
-
-  private type Request = SpecificDataRequestProvider1[Document]#SpecificDataRequest[_]
-
-  private def document(implicit request: Request): Document = request.arg
+    with I18nSupport
+    with Logging {
 
   private def form(document: Document): Form[Boolean] =
     formProvider("item.documents.index.removeDocument", document)
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, documentIndex: Index): Action[AnyContent] =
-    actions
-      .requireData(lrn)
-      .andThen(getMandatoryPage(DocumentPage(itemIndex, documentIndex))) {
-        implicit request =>
-          Ok(view(form(document), lrn, mode, itemIndex, documentIndex, document))
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
+    implicit request =>
+      service.getDocument(request.userAnswers, itemIndex, documentIndex) match {
+        case Some(document) => Ok(view(form(document), lrn, mode, itemIndex, documentIndex, document))
+        case None           => handleError
       }
+  }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, documentIndex: Index): Action[AnyContent] =
-    actions
-      .requireData(lrn)
-      .andThen(getMandatoryPage(DocumentPage(itemIndex, documentIndex)))
-      .async {
-        implicit request =>
-          lazy val redirect = routes.AddAnotherDocumentController.onPageLoad(lrn, mode, itemIndex)
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
+    implicit request =>
+      lazy val redirect = routes.AddAnotherDocumentController.onPageLoad(lrn, mode, itemIndex)
+      service.getDocument(request.userAnswers, itemIndex, documentIndex) match {
+        case Some(document) =>
           form(document)
             .bindFromRequest()
             .fold(
@@ -83,5 +80,13 @@ class RemoveDocumentController @Inject() (
                   Future.successful(Redirect(redirect))
               }
             )
+        case None =>
+          Future.successful(handleError)
       }
+  }
+
+  private def handleError: Result = {
+    logger.error("Failed to find document")
+    Redirect(config.technicalDifficultiesUrl)
+  }
 }

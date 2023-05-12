@@ -18,22 +18,29 @@ package viewmodels.item.documents
 
 import base.SpecBase
 import generators.Generators
-import models.{Index, Mode}
+import models.{Document, Index, Mode}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.item.documents.index.DocumentPage
+import services.DocumentsService
 import viewmodels.item.documents.AddAnotherDocumentViewModel.AddAnotherDocumentViewModelProvider
 
 class AddAnotherDocumentViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
 
+  implicit private val mockDocumentsService: DocumentsService = mock[DocumentsService]
+
   "must get list items" - {
 
     "when there is one document added" in {
-      forAll(arbitrary[Mode]) {
-        mode =>
-          val userAnswers = arbitraryDocumentAnswers(emptyUserAnswers, itemIndex, documentIndex).sample.value
+      forAll(arbitrary[Mode], arbitrary[Document]) {
+        (mode, document) =>
+          when(mockDocumentsService.getDocument(any(), any(), any())).thenReturn(Some(document))
 
-          val result = new AddAnotherDocumentViewModelProvider()(userAnswers, mode, itemIndex, Nil)
+          val userAnswers = emptyUserAnswers.setValue(DocumentPage(itemIndex, documentIndex), document.uuid)
+
+          val result = new AddAnotherDocumentViewModelProvider().apply(userAnswers, mode, itemIndex, Nil)
 
           result.listItems.length mustBe 1
           result.title mustBe "You have attached 1 document to this item"
@@ -44,19 +51,20 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with Generators with Scal
     }
 
     "when there are multiple documents added" in {
-      val formatter = java.text.NumberFormat.getIntegerInstance
+      forAll(arbitrary[Mode], arbitrary[Document], arbitrary[Document]) {
+        (mode, document1, document2) =>
+          when(mockDocumentsService.getDocument(any(), any(), any()))
+            .thenReturn(Some(document1))
+            .thenReturn(Some(document2))
 
-      forAll(arbitrary[Mode], Gen.choose(2, frontendAppConfig.maxDocuments)) {
-        (mode, documents) =>
-          val userAnswers = (0 until documents).foldLeft(emptyUserAnswers) {
-            (acc, i) =>
-              arbitraryDocumentAnswers(acc, itemIndex, Index(i)).sample.value
-          }
+          val userAnswers = emptyUserAnswers
+            .setValue(DocumentPage(itemIndex, Index(0)), document1.uuid)
+            .setValue(DocumentPage(itemIndex, Index(1)), document2.uuid)
 
-          val result = new AddAnotherDocumentViewModelProvider()(userAnswers, mode, itemIndex, Nil)
-          result.listItems.length mustBe documents
-          result.title mustBe s"You have attached ${formatter.format(documents)} documents to this item"
-          result.heading mustBe s"You have attached ${formatter.format(documents)} documents to this item"
+          val result = new AddAnotherDocumentViewModelProvider().apply(userAnswers, mode, itemIndex, Nil)
+          result.listItems.length mustBe 2
+          result.title mustBe s"You have attached 2 documents to this item"
+          result.heading mustBe s"You have attached 2 documents to this item"
           result.legend mustBe "Do you want to attach another document?"
           result.maxLimitLabel mustBe "You cannot attach any more documents. To attach another, you need to remove one first."
       }
