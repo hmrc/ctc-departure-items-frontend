@@ -39,7 +39,6 @@ import viewmodels.Link
 // scalastyle:off number.of.methods
 class ItemAnswersHelper(
   userAnswers: UserAnswers,
-  mode: Mode,
   itemIndex: Index
 )(implicit messages: Messages, config: FrontendAppConfig)
     extends AnswersHelper(userAnswers, CheckMode) {
@@ -163,7 +162,7 @@ class ItemAnswersHelper(
     Link(
       id = "add-or-remove-dangerous-goods",
       text = messages("item.checkYourAnswers.dangerousGoods.addOrRemove"),
-      href = controllers.item.dangerousGoods.routes.AddAnotherDangerousGoodsController.onPageLoad(userAnswers.lrn, mode, itemIndex).url
+      href = controllers.item.dangerousGoods.routes.AddAnotherDangerousGoodsController.onPageLoad(userAnswers.lrn, CheckMode, itemIndex).url
     )
   }
 
@@ -221,8 +220,8 @@ class ItemAnswersHelper(
   def addOrRemovePackages: Option[Link] = buildLink(PackagesSection(itemIndex)) {
     Link(
       id = "add-or-remove-packages",
-      text = messages("item.checkYourAnswers.package.addOrRemove"),
-      href = controllers.item.packages.routes.AddAnotherPackageController.onPageLoad(userAnswers.lrn, mode, itemIndex).url
+      text = messages("item.checkYourAnswers.packages.addOrRemove"),
+      href = controllers.item.packages.routes.AddAnotherPackageController.onPageLoad(userAnswers.lrn, CheckMode, itemIndex).url
     )
   }
 
@@ -251,8 +250,8 @@ class ItemAnswersHelper(
   def addOrRemoveDocuments: Option[Link] = buildLink(DocumentsSection(itemIndex)) {
     Link(
       id = "add-or-remove-documents",
-      text = messages("item.checkYourAnswers.document.addOrRemove"),
-      href = controllers.item.documents.routes.AddAnotherDocumentController.onPageLoad(userAnswers.lrn, mode, itemIndex).url
+      text = messages("item.checkYourAnswers.documents.addOrRemove"),
+      href = controllers.item.documents.routes.AddAnotherDocumentController.onPageLoad(userAnswers.lrn, CheckMode, itemIndex).url
     )
   }
 
@@ -277,9 +276,9 @@ class ItemAnswersHelper(
 
   def addOrRemoveAdditionalReferences: Option[Link] = buildLink(AdditionalReferencesSection(itemIndex)) {
     Link(
-      id = "add-or-remove-additional-reference",
-      text = messages("item.checkYourAnswers.additionalReference.addOrRemove"),
-      href = controllers.item.additionalReference.routes.AddAnotherAdditionalReferenceController.onPageLoad(userAnswers.lrn, mode, itemIndex).url
+      id = "add-or-remove-additional-references",
+      text = messages("item.checkYourAnswers.additionalReferences.addOrRemove"),
+      href = controllers.item.additionalReference.routes.AddAnotherAdditionalReferenceController.onPageLoad(userAnswers.lrn, CheckMode, itemIndex).url
     )
   }
 
@@ -305,7 +304,7 @@ class ItemAnswersHelper(
     Link(
       id = "add-or-remove-additional-information",
       text = messages("item.checkYourAnswers.additionalInformation.addOrRemove"),
-      href = controllers.item.additionalInformation.routes.AddAnotherAdditionalInformationController.onPageLoad(userAnswers.lrn, mode, itemIndex).url
+      href = controllers.item.additionalInformation.routes.AddAnotherAdditionalInformationController.onPageLoad(userAnswers.lrn, CheckMode, itemIndex).url
     )
   }
 

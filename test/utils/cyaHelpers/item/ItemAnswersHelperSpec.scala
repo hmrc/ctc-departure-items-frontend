@@ -52,7 +52,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "itemDescription" - {
       "must return None" - {
         "when DescriptionPage is undefined" in {
-          val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
           val result = helper.itemDescription
           result mustBe None
         }
@@ -64,7 +64,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
             description =>
               val answers = emptyUserAnswers.setValue(DescriptionPage(itemIndex), description)
 
-              val helper = new ItemAnswersHelper(answers, mode, itemIndex)
+              val helper = new ItemAnswersHelper(answers, itemIndex)
               val result = helper.itemDescription.get
 
               result.key.value mustBe "Description"
@@ -85,7 +85,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "declarationType" - {
       "must return None" - {
         "when DeclarationTypePage is undefined" in {
-          val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
           val result = helper.declarationType
           result mustBe None
         }
@@ -98,7 +98,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
             declarationType =>
               val answers = userAnswers.setValue(DeclarationTypePage(itemIndex), declarationType)
 
-              val helper = new ItemAnswersHelper(answers, mode, itemIndex)
+              val helper = new ItemAnswersHelper(answers, itemIndex)
               val result = helper.declarationType.get
 
               result.key.value mustBe "Declaration type"
@@ -120,7 +120,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "countryOfDispatch" - {
       "must return None" - {
         "when CountryOfDispatchPage is undefined" in {
-          val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
           val result = helper.countryOfDispatch
           result mustBe None
         }
@@ -131,7 +131,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
           forAll(arbitrary[Country]) {
             country =>
               val answers = emptyUserAnswers.setValue(CountryOfDispatchPage(itemIndex), country)
-              val helper  = new ItemAnswersHelper(answers, mode, itemIndex)
+              val helper  = new ItemAnswersHelper(answers, itemIndex)
               val result  = helper.countryOfDispatch.get
 
               result.key.value mustBe "Country of dispatch"
@@ -152,7 +152,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "countryOfDestination" - {
       "must return None" - {
         "when CountryOfDestinationPage is undefined" in {
-          val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
           val result = helper.countryOfDestination
           result mustBe None
         }
@@ -163,7 +163,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
           forAll(arbitrary[Country]) {
             country =>
               val answers = emptyUserAnswers.setValue(CountryOfDestinationPage(itemIndex), country)
-              val helper  = new ItemAnswersHelper(answers, mode, itemIndex)
+              val helper  = new ItemAnswersHelper(answers, itemIndex)
               val result  = helper.countryOfDestination.get
 
               result.key.value mustBe "Country of destination"
@@ -184,7 +184,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "ucrYesNo" - {
       "must return None" - {
         "when AddUCRYesNoPage is undefined" in {
-          val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
           val result = helper.ucrYesNo
           result mustBe None
         }
@@ -194,7 +194,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when AddUCRYesNoPage is defined" in {
           val answers = emptyUserAnswers.setValue(AddUCRYesNoPage(itemIndex), true)
 
-          val helper = new ItemAnswersHelper(answers, mode, index)
+          val helper = new ItemAnswersHelper(answers, itemIndex)
           val result = helper.ucrYesNo.get
 
           result.key.value mustBe "Do you want to add a Unique Consignment Reference (UCR)?"
@@ -214,7 +214,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "uniqueConsignmentReference" - {
       "must return None" - {
         "when UniqueConsignmentReferencePage is undefined" in {
-          val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
           val result = helper.uniqueConsignmentReference
           result mustBe None
         }
@@ -226,7 +226,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
             ucr =>
               val answers = emptyUserAnswers.setValue(UniqueConsignmentReferencePage(itemIndex), ucr)
 
-              val helper = new ItemAnswersHelper(answers, mode, itemIndex)
+              val helper = new ItemAnswersHelper(answers, itemIndex)
               val result = helper.uniqueConsignmentReference.get
 
               result.key.value mustBe "Unique Consignment Reference (UCR)"
@@ -247,7 +247,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "cusCodeYesNo" - {
       "must return None" - {
         "when AddCUSCodeYesNoPage is undefined" in {
-          val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
           val result = helper.cusCodeYesNo
           result mustBe None
         }
@@ -257,7 +257,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when AddCUSCodeYesNoPage is defined" in {
           val answers = emptyUserAnswers.setValue(AddCUSCodeYesNoPage(itemIndex), true)
 
-          val helper = new ItemAnswersHelper(answers, mode, index)
+          val helper = new ItemAnswersHelper(answers, itemIndex)
           val result = helper.cusCodeYesNo.get
 
           result.key.value mustBe "Do you want to declare a Customs Union and Statistics (CUS) code?"
@@ -277,7 +277,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "customsUnionAndStatisticsCode" - {
       "must return None" - {
         "when CustomsUnionAndStatisticsCodePage is undefined" in {
-          val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
           val result = helper.customsUnionAndStatisticsCode
           result mustBe None
         }
@@ -289,7 +289,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
             cusCode =>
               val answers = emptyUserAnswers.setValue(CustomsUnionAndStatisticsCodePage(itemIndex), cusCode)
 
-              val helper = new ItemAnswersHelper(answers, mode, itemIndex)
+              val helper = new ItemAnswersHelper(answers, itemIndex)
               val result = helper.customsUnionAndStatisticsCode.get
 
               result.key.value mustBe "Customs Union and Statistics (CUS) code"
@@ -310,7 +310,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "commodityCodeYesNo" - {
       "must return None" - {
         "when AddCommodityCodeYesNoPage is undefined" in {
-          val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
           val result = helper.commodityCodeYesNo
           result mustBe None
         }
@@ -320,7 +320,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when AddCommodityCodeYesNoPage is defined" in {
           val answers = emptyUserAnswers.setValue(AddCommodityCodeYesNoPage(itemIndex), true)
 
-          val helper = new ItemAnswersHelper(answers, mode, index)
+          val helper = new ItemAnswersHelper(answers, itemIndex)
           val result = helper.commodityCodeYesNo.get
 
           result.key.value mustBe "Do you want to add a commodity code?"
@@ -340,7 +340,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "commodityCode" - {
       "must return None" - {
         "when CommodityCodePage is undefined" in {
-          val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
           val result = helper.commodityCode
           result mustBe None
         }
@@ -352,7 +352,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
             commodityCode =>
               val answers = emptyUserAnswers.setValue(CommodityCodePage(itemIndex), commodityCode)
 
-              val helper = new ItemAnswersHelper(answers, mode, itemIndex)
+              val helper = new ItemAnswersHelper(answers, itemIndex)
               val result = helper.commodityCode.get
 
               result.key.value mustBe "Commodity code"
@@ -373,7 +373,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "combinedNomenclatureCodeYesNo" - {
       "must return None" - {
         "when AddCombinedNomenclatureCodeYesNoPage is undefined" in {
-          val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
           val result = helper.combinedNomenclatureCodeYesNo
           result mustBe None
         }
@@ -383,7 +383,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when AddCombinedNomenclatureCodeYesNoPage is defined" in {
           val answers = emptyUserAnswers.setValue(AddCombinedNomenclatureCodeYesNoPage(itemIndex), true)
 
-          val helper = new ItemAnswersHelper(answers, mode, index)
+          val helper = new ItemAnswersHelper(answers, itemIndex)
           val result = helper.combinedNomenclatureCodeYesNo.get
 
           result.key.value mustBe "Do you want to add a combined nomenclature code?"
@@ -403,7 +403,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "combinedNomenclatureCode" - {
       "must return None" - {
         "when CombinedNomenclatureCodePage is undefined" in {
-          val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
           val result = helper.combinedNomenclatureCode
           result mustBe None
         }
@@ -415,7 +415,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
             combinedNomenclatureCode =>
               val answers = emptyUserAnswers.setValue(CombinedNomenclatureCodePage(itemIndex), combinedNomenclatureCode)
 
-              val helper = new ItemAnswersHelper(answers, mode, itemIndex)
+              val helper = new ItemAnswersHelper(answers, itemIndex)
               val result = helper.combinedNomenclatureCode.get
 
               result.key.value mustBe "Combined nomenclature code"
@@ -436,7 +436,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "dangerousGoodsYesNo" - {
       "must return None" - {
         "when AddDangerousGoodsYesNoPage is undefined" in {
-          val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
           val result = helper.dangerousGoodsYesNo
           result mustBe None
         }
@@ -446,7 +446,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when AddDangerousGoodsYesNoPage is defined" in {
           val answers = emptyUserAnswers.setValue(AddDangerousGoodsYesNoPage(itemIndex), true)
 
-          val helper = new ItemAnswersHelper(answers, mode, index)
+          val helper = new ItemAnswersHelper(answers, itemIndex)
           val result = helper.dangerousGoodsYesNo.get
 
           result.key.value mustBe "Does the item contain any dangerous goods?"
@@ -466,7 +466,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "dangerousGoods" - {
       "must return None" - {
         "when dangerousGoods is undefined" in {
-          val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
           val result = helper.dangerousGoods(dangerousGoodsIndex)
           result mustBe None
         }
@@ -477,7 +477,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
           forAll(nonEmptyString) {
             unNumber =>
               val userAnswers = emptyUserAnswers.setValue(UNNumberPage(itemIndex, dangerousGoodsIndex), unNumber)
-              val helper      = new ItemAnswersHelper(userAnswers, mode, itemIndex)
+              val helper      = new ItemAnswersHelper(userAnswers, itemIndex)
               val result      = helper.dangerousGoods(dangerousGoodsIndex).get
 
               result.key.value mustBe "UN number 1"
@@ -499,7 +499,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when dangerous goods array is empty" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+              val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
               val result = helper.addOrRemoveDangerousGoods
               result mustBe None
           }
@@ -508,16 +508,14 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
       "must return Some(Link)" - {
         "when dangerous goods array is non-empty" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val answers = emptyUserAnswers.setValue(DangerousGoodsSection(Index(0), Index(0)), Json.obj("foo" -> "bar"))
-              val helper  = new ItemAnswersHelper(answers, mode, itemIndex)
-              val result  = helper.addOrRemoveDangerousGoods.get
+          val answers = emptyUserAnswers.setValue(DangerousGoodsSection(Index(0), Index(0)), Json.obj("foo" -> "bar"))
+          val helper  = new ItemAnswersHelper(answers, itemIndex)
+          val result  = helper.addOrRemoveDangerousGoods.get
 
-              result.id mustBe "add-or-remove-dangerous-goods"
-              result.text mustBe "Add or remove dangerous goods"
-              result.href mustBe controllers.item.dangerousGoods.routes.AddAnotherDangerousGoodsController.onPageLoad(answers.lrn, mode, itemIndex).url
-          }
+          result.id mustBe "add-or-remove-dangerous-goods"
+          result.text mustBe "Add or remove dangerous goods"
+          result.href mustBe controllers.item.dangerousGoods.routes.AddAnotherDangerousGoodsController.onPageLoad(answers.lrn, mode, itemIndex).url
+
         }
       }
     }
@@ -525,7 +523,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "grossWeight" - {
       "must return None" - {
         "when GrossWeightPage is undefined" in {
-          val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
           val result = helper.grossWeight
           result mustBe None
         }
@@ -537,7 +535,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
             grossWeight =>
               val answers = emptyUserAnswers.setValue(GrossWeightPage(itemIndex), grossWeight)
 
-              val helper = new ItemAnswersHelper(answers, mode, itemIndex)
+              val helper = new ItemAnswersHelper(answers, itemIndex)
               val result = helper.grossWeight.get
 
               result.key.value mustBe "Gross weight"
@@ -558,7 +556,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "itemNetWeightYesNo" - {
       "must return None" - {
         "when AddItemNetWeightYesNoPage is undefined" in {
-          val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
           val result = helper.itemNetWeightYesNo
           result mustBe None
         }
@@ -568,7 +566,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when AddItemNetWeightYesNoPage is defined" in {
           val answers = emptyUserAnswers.setValue(AddItemNetWeightYesNoPage(itemIndex), true)
 
-          val helper = new ItemAnswersHelper(answers, mode, index)
+          val helper = new ItemAnswersHelper(answers, itemIndex)
           val result = helper.itemNetWeightYesNo.get
 
           result.key.value mustBe "Do you want to add the item’s net weight?"
@@ -588,7 +586,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "netWeight" - {
       "must return None" - {
         "when NetWeightPage is undefined" in {
-          val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
           val result = helper.netWeight
           result mustBe None
         }
@@ -600,7 +598,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
             netWeight =>
               val answers = emptyUserAnswers.setValue(NetWeightPage(itemIndex), netWeight)
 
-              val helper = new ItemAnswersHelper(answers, mode, itemIndex)
+              val helper = new ItemAnswersHelper(answers, itemIndex)
               val result = helper.netWeight.get
 
               result.key.value mustBe "Net weight"
@@ -621,7 +619,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "supplementaryUnitsYesNo" - {
       "must return None" - {
         "when AddSupplementaryUnitsYesNoPage is undefined" in {
-          val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
           val result = helper.supplementaryUnitsYesNo
           result mustBe None
         }
@@ -631,7 +629,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when AddSupplementaryUnitsYesNoPage is defined" in {
           val answers = emptyUserAnswers.setValue(AddSupplementaryUnitsYesNoPage(itemIndex), true)
 
-          val helper = new ItemAnswersHelper(answers, mode, index)
+          val helper = new ItemAnswersHelper(answers, itemIndex)
           val result = helper.supplementaryUnitsYesNo.get
 
           result.key.value mustBe "Do you want to add supplementary units?"
@@ -651,7 +649,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "supplementaryUnits" - {
       "must return None" - {
         "when SupplementaryUnitsPage is undefined" in {
-          val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
           val result = helper.supplementaryUnits
           result mustBe None
         }
@@ -664,7 +662,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               val answers = emptyUserAnswers
                 .setValue(SupplementaryUnitsPage(itemIndex), units)
 
-              val helper = new ItemAnswersHelper(answers, mode, itemIndex)
+              val helper = new ItemAnswersHelper(answers, itemIndex)
               val result = helper.supplementaryUnits.get
 
               result.key.value mustBe "Number of supplementary units"
@@ -685,7 +683,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "package" - {
       "must return None" - {
         "when package is undefined" in {
-          val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
           val result = helper.`package`(packageIndex)
           result mustBe None
         }
@@ -701,7 +699,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
           forAll(arbitraryPackageAnswers(initialUserAnswers, itemIndex, packageIndex)) {
             userAnswers =>
-              val helper = new ItemAnswersHelper(userAnswers, mode, itemIndex)
+              val helper = new ItemAnswersHelper(userAnswers, itemIndex)
               val result = helper.`package`(packageIndex).get
 
               result.key.value mustBe "Package 1"
@@ -727,7 +725,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
           forAll(arbitraryPackageAnswers(initialUserAnswers, itemIndex, packageIndex)) {
             userAnswers =>
-              val helper = new ItemAnswersHelper(userAnswers, mode, itemIndex)
+              val helper = new ItemAnswersHelper(userAnswers, itemIndex)
               val result = helper.`package`(packageIndex).get
 
               result.key.value mustBe "Package 1"
@@ -750,7 +748,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when packages array is empty" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+              val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
               val result = helper.addOrRemovePackages
               result mustBe None
           }
@@ -759,16 +757,13 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
       "must return Some(Link)" - {
         "when packages array is non-empty" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val answers = emptyUserAnswers.setValue(PackageSection(Index(0), Index(0)), Json.obj("foo" -> "bar"))
-              val helper  = new ItemAnswersHelper(answers, mode, itemIndex)
-              val result  = helper.addOrRemovePackages.get
+          val answers = emptyUserAnswers.setValue(PackageSection(Index(0), Index(0)), Json.obj("foo" -> "bar"))
+          val helper  = new ItemAnswersHelper(answers, itemIndex)
+          val result  = helper.addOrRemovePackages.get
 
-              result.id mustBe "add-or-remove-packages"
-              result.text mustBe "Add or remove packages"
-              result.href mustBe controllers.item.packages.routes.AddAnotherPackageController.onPageLoad(answers.lrn, mode, itemIndex).url
-          }
+          result.id mustBe "add-or-remove-packages"
+          result.text mustBe "Add or remove packages"
+          result.href mustBe controllers.item.packages.routes.AddAnotherPackageController.onPageLoad(answers.lrn, mode, itemIndex).url
         }
       }
     }
@@ -776,7 +771,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "documentYesNo" - {
       "must return None" - {
         "when AddDocumentsYesNoPage is undefined" in {
-          val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
           val result = helper.documentsYesNo
           result mustBe None
         }
@@ -786,7 +781,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when AddDocumentsYesNoPage is defined" in {
           val answers = emptyUserAnswers.setValue(AddDocumentsYesNoPage(itemIndex), true)
 
-          val helper = new ItemAnswersHelper(answers, mode, index)
+          val helper = new ItemAnswersHelper(answers, itemIndex)
           val result = helper.documentsYesNo.get
 
           result.key.value mustBe "Do you want to add any documents for this item?"
@@ -812,7 +807,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
       "must return None" - {
         "when document is undefined" in {
           when(mockDocumentsService.getDocument(any(), any(), any())).thenReturn(None)
-          val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
           val result = helper.document(documentIndex)
           result mustBe None
         }
@@ -825,7 +820,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               when(mockDocumentsService.getDocument(any(), any(), any())).thenReturn(Some(document))
               val userAnswers = emptyUserAnswers.setValue(DocumentPage(itemIndex, documentIndex), document.uuid)
 
-              val helper = new ItemAnswersHelper(userAnswers, mode, itemIndex)
+              val helper = new ItemAnswersHelper(userAnswers, itemIndex)
               val result = helper.document(documentIndex).get
 
               result.key.value mustBe "Document 1"
@@ -847,7 +842,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when documents array is empty" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+              val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
               val result = helper.addOrRemoveDocuments
               result mustBe None
           }
@@ -856,16 +851,13 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
       "must return Some(Link)" - {
         "when documents array is non-empty" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val answers = emptyUserAnswers.setValue(DocumentSection(Index(0), Index(0)), Json.obj("foo" -> "bar"))
-              val helper  = new ItemAnswersHelper(answers, mode, itemIndex)
-              val result  = helper.addOrRemoveDocuments.get
+          val answers = emptyUserAnswers.setValue(DocumentSection(Index(0), Index(0)), Json.obj("foo" -> "bar"))
+          val helper  = new ItemAnswersHelper(answers, itemIndex)
+          val result  = helper.addOrRemoveDocuments.get
 
-              result.id mustBe "add-or-remove-documents"
-              result.text mustBe "Add or remove documents"
-              result.href mustBe controllers.item.documents.routes.AddAnotherDocumentController.onPageLoad(answers.lrn, mode, itemIndex).url
-          }
+          result.id mustBe "add-or-remove-documents"
+          result.text mustBe "Add or remove documents"
+          result.href mustBe controllers.item.documents.routes.AddAnotherDocumentController.onPageLoad(answers.lrn, mode, itemIndex).url
         }
       }
     }
@@ -873,7 +865,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "additionalReferenceYesNo" - {
       "must return None" - {
         "when AddAdditionalReferenceYesNo is undefined" in {
-          val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
           val result = helper.additionalReferenceYesNo
           result mustBe None
         }
@@ -883,7 +875,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when addAdditionalReferenceYesNo is defined" in {
           val answers = emptyUserAnswers.setValue(AddAdditionalReferenceYesNoPage(itemIndex), true)
 
-          val helper = new ItemAnswersHelper(answers, mode, index)
+          val helper = new ItemAnswersHelper(answers, itemIndex)
           val result = helper.additionalReferenceYesNo.get
 
           result.key.value mustBe "Do you want to add an additional reference for this item?"
@@ -903,7 +895,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "additionalReference" - {
       "must return None" - {
         "when additionalReference is undefined" in {
-          val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
           val result = helper.additionalReference(additionalReferenceIndex)
           result mustBe None
         }
@@ -917,7 +909,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
                 .setValue(AdditionalReferencePage(itemIndex, additionalReferenceIndex), additionalReference)
                 .setValue(AddAdditionalReferenceNumberYesNoPage(itemIndex, additionalReferenceIndex), true)
                 .setValue(AdditionalReferenceNumberPage(itemIndex, additionalReferenceIndex), additionalReferenceNumber)
-              val helper = new ItemAnswersHelper(userAnswers, mode, itemIndex)
+              val helper = new ItemAnswersHelper(userAnswers, itemIndex)
               val result = helper.additionalReference(additionalReferenceIndex).get
 
               result.key.value mustBe "Additional reference 1"
@@ -939,7 +931,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when additional references array is empty" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+              val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
               val result = helper.addOrRemoveAdditionalReferences
               result mustBe None
           }
@@ -948,18 +940,16 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
       "must return Some(Link)" - {
         "when additional references array is non-empty" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val answers = emptyUserAnswers.setValue(AdditionalReferenceSection(Index(0), Index(0)), Json.obj("foo" -> "bar"))
-              val helper  = new ItemAnswersHelper(answers, mode, itemIndex)
-              val result  = helper.addOrRemoveAdditionalReferences.get
+          val answers = emptyUserAnswers.setValue(AdditionalReferenceSection(Index(0), Index(0)), Json.obj("foo" -> "bar"))
+          val helper  = new ItemAnswersHelper(answers, itemIndex)
+          val result  = helper.addOrRemoveAdditionalReferences.get
 
-              result.id mustBe "add-or-remove-additional-reference"
-              result.text mustBe "Add or remove additional references"
-              result.href mustBe controllers.item.additionalReference.routes.AddAnotherAdditionalReferenceController
-                .onPageLoad(answers.lrn, mode, itemIndex)
-                .url
-          }
+          result.id mustBe "add-or-remove-additional-references"
+          result.text mustBe "Add or remove additional references"
+          result.href mustBe controllers.item.additionalReference.routes.AddAnotherAdditionalReferenceController
+            .onPageLoad(answers.lrn, mode, itemIndex)
+            .url
+
         }
       }
     }
@@ -967,7 +957,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "additionalInformationYesNo" - {
       "must return None" - {
         "when AddAdditionalInformationYesNo is undefined" in {
-          val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
           val result = helper.additionalInformationYesNo
           result mustBe None
         }
@@ -978,7 +968,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
           val answers = emptyUserAnswers
             .setValue(AddAdditionalInformationYesNoPage(itemIndex), true)
 
-          val helper = new ItemAnswersHelper(answers, mode, index)
+          val helper = new ItemAnswersHelper(answers, itemIndex)
           val result = helper.additionalInformationYesNo.get
 
           result.key.value mustBe "Do you want to add any additional information for this item?"
@@ -998,7 +988,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "additionalInformation" - {
       "must return None" - {
         "when additionalInformation is undefined" in {
-          val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
           val result = helper.additionalInformation(additionalInformationIndex)
           result mustBe None
         }
@@ -1011,7 +1001,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               val userAnswers = emptyUserAnswers
                 .setValue(AdditionalInformationTypePage(itemIndex, additionalInformationIndex), additionalInformationType)
                 .setValue(AdditionalInformationPage(itemIndex, additionalInformationIndex), additionalInformation)
-              val helper = new ItemAnswersHelper(userAnswers, mode, itemIndex)
+              val helper = new ItemAnswersHelper(userAnswers, itemIndex)
               val result = helper.additionalInformation(additionalInformationIndex).get
 
               result.key.value mustBe "Additional information 1"
@@ -1033,7 +1023,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when additional information array is empty" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val helper = new ItemAnswersHelper(emptyUserAnswers, mode, itemIndex)
+              val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
               val result = helper.addOrRemoveAdditionalInformation
               result mustBe None
           }
@@ -1042,18 +1032,15 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
       "must return Some(Link)" - {
         "when additional information array is non-empty" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val answers = emptyUserAnswers.setValue(AdditionalInformationSection(Index(0), Index(0)), Json.obj("foo" -> "bar"))
-              val helper  = new ItemAnswersHelper(answers, mode, itemIndex)
-              val result  = helper.addOrRemoveAdditionalInformation.get
+          val answers = emptyUserAnswers.setValue(AdditionalInformationSection(Index(0), Index(0)), Json.obj("foo" -> "bar"))
+          val helper  = new ItemAnswersHelper(answers, itemIndex)
+          val result  = helper.addOrRemoveAdditionalInformation.get
 
-              result.id mustBe "add-or-remove-additional-information"
-              result.text mustBe "Add or remove additional information"
-              result.href mustBe controllers.item.additionalInformation.routes.AddAnotherAdditionalInformationController
-                .onPageLoad(answers.lrn, mode, itemIndex)
-                .url
-          }
+          result.id mustBe "add-or-remove-additional-information"
+          result.text mustBe "Add or remove additional information"
+          result.href mustBe controllers.item.additionalInformation.routes.AddAnotherAdditionalInformationController
+            .onPageLoad(answers.lrn, mode, itemIndex)
+            .url
         }
       }
     }

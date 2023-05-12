@@ -39,8 +39,7 @@ object ItemAnswersViewModel {
 
     // scalastyle:off method.length
     def apply(userAnswers: UserAnswers, itemIndex: Index)(implicit messages: Messages, config: FrontendAppConfig): ItemAnswersViewModel = {
-      val mode   = CheckMode
-      val helper = new ItemAnswersHelper(userAnswers, mode, itemIndex)
+      val helper = new ItemAnswersHelper(userAnswers, itemIndex)
 
       val firstItemSection = Section(
         rows = Seq(
