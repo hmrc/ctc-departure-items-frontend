@@ -37,6 +37,16 @@ class DocumentsService @Inject() () {
       }
     } yield SelectableList(filteredDocuments)
 
+  def getDocuments(userAnswers: UserAnswers, itemIndex: Index, documentIndex: Index): Option[SelectableList[Document]] =
+    for {
+      documents <- userAnswers.get(DocumentsSection).validate[Seq[Document]]
+      document          = getDocument(userAnswers, itemIndex, documentIndex)
+      itemDocumentUuids = userAnswers.get(ItemDocumentsSection(itemIndex)).validate[Seq[UUID]].getOrElse(Nil)
+      filteredDocuments = documents.filter {
+        x => !itemDocumentUuids.contains(x.uuid) || document.map(_.uuid).contains(x.uuid)
+      }
+    } yield SelectableList(filteredDocuments)
+
   def getDocument(userAnswers: UserAnswers, itemIndex: Index, documentIndex: Index): Option[Document] =
     for {
       uuid      <- userAnswers.get(DocumentPage(itemIndex, documentIndex))

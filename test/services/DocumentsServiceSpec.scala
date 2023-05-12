@@ -155,6 +155,187 @@ class DocumentsServiceSpec extends SpecBase {
       }
     }
 
+    "getDocuments (including current document)" - {
+
+      "must return some documents and filter out any documents already selected but not the one at current index" - {
+        "when documents present in user answers and documents selected" - {
+          "and at an already answered index" in {
+            val json = Json
+              .parse("""
+                  |{
+                  |  "documents" : [
+                  |    {
+                  |      "previousDocumentType" : {
+                  |        "type" : "Type 1",
+                  |        "code" : "Code 1",
+                  |        "description" : "Description 1"
+                  |      },
+                  |      "details" : {
+                  |        "documentReferenceNumber" : "Ref no. 1",
+                  |        "uuid" : "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
+                  |      }
+                  |    },
+                  |    {
+                  |      "type" : {
+                  |        "type" : "Type 2",
+                  |        "code" : "Code 2"
+                  |      },
+                  |      "details" : {
+                  |        "documentReferenceNumber" : "Ref no. 2",
+                  |        "uuid" : "a573bfd3-6470-40c4-a290-ea2d8d43c02a"
+                  |      }
+                  |    }
+                  |  ],
+                  |  "items" : [
+                  |    {
+                  |      "documents" : [
+                  |        {
+                  |          "document" : "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
+                  |        }
+                  |      ]
+                  |    }
+                  |  ]
+                  |}
+                  |""".stripMargin)
+              .as[JsObject]
+
+            val userAnswers = emptyUserAnswers.copy(data = json)
+
+            val result = service.getDocuments(userAnswers, itemIndex, documentIndex)
+
+            result.value mustBe SelectableList(
+              Seq(
+                Document("Type 1", "Code 1", Some("Description 1"), "Ref no. 1", UUID.fromString("1794d93b-17d5-44fe-a18d-aaa2059d06fe")),
+                Document("Type 2", "Code 2", None, "Ref no. 2", UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a"))
+              )
+            )
+          }
+
+          "and not at an already answered index" in {
+            val json = Json
+              .parse("""
+                  |{
+                  |  "documents" : [
+                  |    {
+                  |      "previousDocumentType" : {
+                  |        "type" : "Type 1",
+                  |        "code" : "Code 1",
+                  |        "description" : "Description 1"
+                  |      },
+                  |      "details" : {
+                  |        "documentReferenceNumber" : "Ref no. 1",
+                  |        "uuid" : "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
+                  |      }
+                  |    },
+                  |    {
+                  |      "type" : {
+                  |        "type" : "Type 2",
+                  |        "code" : "Code 2"
+                  |      },
+                  |      "details" : {
+                  |        "documentReferenceNumber" : "Ref no. 2",
+                  |        "uuid" : "a573bfd3-6470-40c4-a290-ea2d8d43c02a"
+                  |      }
+                  |    }
+                  |  ],
+                  |  "items" : [
+                  |    {
+                  |      "documents" : [
+                  |        {
+                  |          "document" : "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
+                  |        }
+                  |      ]
+                  |    }
+                  |  ]
+                  |}
+                  |""".stripMargin)
+              .as[JsObject]
+
+            val userAnswers = emptyUserAnswers.copy(data = json)
+
+            val result = service.getDocuments(userAnswers, itemIndex, Index(1))
+
+            result.value mustBe SelectableList(
+              Seq(
+                Document("Type 2", "Code 2", None, "Ref no. 2", UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a"))
+              )
+            )
+          }
+        }
+
+        "when documents present in user answers and no documents selected" in {
+          val json = Json
+            .parse("""
+              |{
+              |  "documents" : [
+              |    {
+              |      "previousDocumentType" : {
+              |        "type" : "Type 1",
+              |        "code" : "Code 1",
+              |        "description" : "Description 1"
+              |      },
+              |      "details" : {
+              |        "documentReferenceNumber" : "Ref no. 1",
+              |        "uuid" : "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
+              |      }
+              |    },
+              |    {
+              |      "type" : {
+              |        "type" : "Type 2",
+              |        "code" : "Code 2"
+              |      },
+              |      "details" : {
+              |        "documentReferenceNumber" : "Ref no. 2",
+              |        "uuid" : "a573bfd3-6470-40c4-a290-ea2d8d43c02a"
+              |      }
+              |    }
+              |  ]
+              |}
+              |""".stripMargin)
+            .as[JsObject]
+
+          val userAnswers = emptyUserAnswers.copy(data = json)
+
+          val result = service.getDocuments(userAnswers, itemIndex, documentIndex)
+
+          result.value mustBe SelectableList(
+            Seq(
+              Document("Type 1", "Code 1", Some("Description 1"), "Ref no. 1", UUID.fromString("1794d93b-17d5-44fe-a18d-aaa2059d06fe")),
+              Document("Type 2", "Code 2", None, "Ref no. 2", UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a"))
+            )
+          )
+        }
+      }
+
+      "must return None" - {
+        "when empty list of documents" in {
+          val result = service.getDocuments(emptyUserAnswers, itemIndex, documentIndex)
+
+          result mustBe None
+        }
+
+        "when data is in an invalid shape" in {
+          val json = Json
+            .parse("""
+              |{
+              |  "documents" : [
+              |    {
+              |      "foo" : "bar"
+              |    }
+              |  ]
+              |}
+              |""".stripMargin)
+            .as[JsObject]
+
+          val userAnswers = emptyUserAnswers.copy(data = json)
+
+          val result = service.getDocuments(userAnswers, itemIndex, documentIndex)
+
+          result mustBe Some(SelectableList(List()))
+        }
+      }
+    }
+
     "getDocument" - {
 
       val json = Json
