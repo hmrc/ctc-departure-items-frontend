@@ -73,7 +73,7 @@ class DocumentsServiceSpec extends SpecBase {
 
           val userAnswers = emptyUserAnswers.copy(data = json)
 
-          val result = service.getDocuments(userAnswers, itemIndex)
+          val result = service.getDocuments(userAnswers, itemIndex, None)
 
           result.value mustBe SelectableList(
             Seq(
@@ -115,7 +115,7 @@ class DocumentsServiceSpec extends SpecBase {
 
           val userAnswers = emptyUserAnswers.copy(data = json)
 
-          val result = service.getDocuments(userAnswers, itemIndex)
+          val result = service.getDocuments(userAnswers, itemIndex, None)
 
           result.value mustBe SelectableList(
             Seq(
@@ -128,7 +128,7 @@ class DocumentsServiceSpec extends SpecBase {
 
       "must return None" - {
         "when empty list of documents" in {
-          val result = service.getDocuments(emptyUserAnswers, itemIndex)
+          val result = service.getDocuments(emptyUserAnswers, itemIndex, None)
 
           result mustBe None
         }
@@ -148,7 +148,7 @@ class DocumentsServiceSpec extends SpecBase {
 
           val userAnswers = emptyUserAnswers.copy(data = json)
 
-          val result = service.getDocuments(userAnswers, itemIndex)
+          val result = service.getDocuments(userAnswers, itemIndex, None)
 
           result mustBe Some(SelectableList(List()))
         }
@@ -201,7 +201,7 @@ class DocumentsServiceSpec extends SpecBase {
 
             val userAnswers = emptyUserAnswers.copy(data = json)
 
-            val result = service.getDocuments(userAnswers, itemIndex, documentIndex)
+            val result = service.getDocuments(userAnswers, itemIndex, Some(documentIndex))
 
             result.value mustBe SelectableList(
               Seq(
@@ -253,7 +253,7 @@ class DocumentsServiceSpec extends SpecBase {
 
             val userAnswers = emptyUserAnswers.copy(data = json)
 
-            val result = service.getDocuments(userAnswers, itemIndex, Index(1))
+            val result = service.getDocuments(userAnswers, itemIndex, Some(Index(1)))
 
             result.value mustBe SelectableList(
               Seq(
@@ -296,7 +296,7 @@ class DocumentsServiceSpec extends SpecBase {
 
           val userAnswers = emptyUserAnswers.copy(data = json)
 
-          val result = service.getDocuments(userAnswers, itemIndex, documentIndex)
+          val result = service.getDocuments(userAnswers, itemIndex, Some(documentIndex))
 
           result.value mustBe SelectableList(
             Seq(
@@ -309,7 +309,7 @@ class DocumentsServiceSpec extends SpecBase {
 
       "must return None" - {
         "when empty list of documents" in {
-          val result = service.getDocuments(emptyUserAnswers, itemIndex, documentIndex)
+          val result = service.getDocuments(emptyUserAnswers, itemIndex, Some(documentIndex))
 
           result mustBe None
         }
@@ -329,7 +329,7 @@ class DocumentsServiceSpec extends SpecBase {
 
           val userAnswers = emptyUserAnswers.copy(data = json)
 
-          val result = service.getDocuments(userAnswers, itemIndex, documentIndex)
+          val result = service.getDocuments(userAnswers, itemIndex, Some(documentIndex))
 
           result mustBe Some(SelectableList(List()))
         }

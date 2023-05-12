@@ -53,7 +53,7 @@ class DocumentController @Inject() (
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      service.getDocuments(request.userAnswers, itemIndex, documentIndex) match {
+      service.getDocuments(request.userAnswers, itemIndex, Some(documentIndex)) match {
         case Some(documentList) =>
           val form = formProvider(prefix, documentList)
           val preparedForm = request.userAnswers.get(DocumentPage(itemIndex, documentIndex)) match {
@@ -72,7 +72,7 @@ class DocumentController @Inject() (
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      service.getDocuments(request.userAnswers, itemIndex, documentIndex) match {
+      service.getDocuments(request.userAnswers, itemIndex, Some(documentIndex)) match {
         case Some(documentList) =>
           val form = formProvider(prefix, documentList)
           form

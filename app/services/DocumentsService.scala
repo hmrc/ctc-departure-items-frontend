@@ -28,19 +28,10 @@ import javax.inject.Inject
 
 class DocumentsService @Inject() () {
 
-  def getDocuments(userAnswers: UserAnswers, itemIndex: Index): Option[SelectableList[Document]] =
+  def getDocuments(userAnswers: UserAnswers, itemIndex: Index, documentIndex: Option[Index]): Option[SelectableList[Document]] =
     for {
       documents <- userAnswers.get(DocumentsSection).validate[Seq[Document]]
-      itemDocumentUuids = userAnswers.get(ItemDocumentsSection(itemIndex)).validate[Seq[UUID]].getOrElse(Nil)
-      filteredDocuments = documents.filterNot {
-        document => itemDocumentUuids.contains(document.uuid)
-      }
-    } yield SelectableList(filteredDocuments)
-
-  def getDocuments(userAnswers: UserAnswers, itemIndex: Index, documentIndex: Index): Option[SelectableList[Document]] =
-    for {
-      documents <- userAnswers.get(DocumentsSection).validate[Seq[Document]]
-      document          = getDocument(userAnswers, itemIndex, documentIndex)
+      document          = documentIndex.flatMap(getDocument(userAnswers, itemIndex, _))
       itemDocumentUuids = userAnswers.get(ItemDocumentsSection(itemIndex)).validate[Seq[UUID]].getOrElse(Nil)
       filteredDocuments = documents.filter {
         x => !itemDocumentUuids.contains(x.uuid) || document.map(_.uuid).contains(x.uuid)
