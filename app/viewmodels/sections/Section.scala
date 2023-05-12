@@ -30,4 +30,7 @@ object Section {
 
   def apply(sectionTitle: String, rows: Seq[SummaryListRow], addAnotherLink: Link): Section =
     new Section(Some(sectionTitle), rows, Some(addAnotherLink))
+
+  def apply(sectionTitle: String, rows: Seq[SummaryListRow], addAnotherLink: Option[Link]): Section =
+    new Section(Some(sectionTitle), rows, addAnotherLink)
 }
