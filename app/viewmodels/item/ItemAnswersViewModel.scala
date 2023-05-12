@@ -17,7 +17,7 @@
 package viewmodels.item
 
 import config.FrontendAppConfig
-import models.{CheckMode, Index, UserAnswers}
+import models.{Index, UserAnswers}
 import play.api.i18n.Messages
 import services.DocumentsService
 import utils.cyaHelpers.item.ItemAnswersHelper

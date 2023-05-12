@@ -23,7 +23,7 @@ import models.journeyDomain.item.dangerousGoods.DangerousGoodsDomain
 import models.journeyDomain.item.documents.DocumentDomain
 import models.journeyDomain.item.packages.PackageDomain
 import models.reference.Country
-import models.{CheckMode, DeclarationType, Index, Mode, UserAnswers}
+import models.{CheckMode, DeclarationType, Index, UserAnswers}
 import pages.item._
 import pages.sections.additionalInformation.AdditionalInformationListSection
 import pages.sections.additionalReference.AdditionalReferencesSection
@@ -159,11 +159,12 @@ class ItemAnswersHelper(
     )(DangerousGoodsDomain.userAnswersReader(itemIndex, dangerousGoodsIndex))
 
   def addOrRemoveDangerousGoods: Option[Link] = buildLink(DangerousGoodsListSection(itemIndex)) {
-    Link(
-      id = "add-or-remove-dangerous-goods",
-      text = messages("item.checkYourAnswers.dangerousGoods.addOrRemove"),
-      href = controllers.item.dangerousGoods.routes.AddAnotherDangerousGoodsController.onPageLoad(userAnswers.lrn, CheckMode, itemIndex).url
-    )
+    mode =>
+      Link(
+        id = "add-or-remove-dangerous-goods",
+        text = messages("item.checkYourAnswers.dangerousGoods.addOrRemove"),
+        href = controllers.item.dangerousGoods.routes.AddAnotherDangerousGoodsController.onPageLoad(userAnswers.lrn, mode, itemIndex).url
+      )
   }
 
   def grossWeight: Option[SummaryListRow] = getAnswerAndBuildRow[BigDecimal](
@@ -218,11 +219,12 @@ class ItemAnswersHelper(
     )(PackageDomain.userAnswersReader(itemIndex, packageIndex))
 
   def addOrRemovePackages: Option[Link] = buildLink(PackagesSection(itemIndex)) {
-    Link(
-      id = "add-or-remove-packages",
-      text = messages("item.checkYourAnswers.packages.addOrRemove"),
-      href = controllers.item.packages.routes.AddAnotherPackageController.onPageLoad(userAnswers.lrn, CheckMode, itemIndex).url
-    )
+    mode =>
+      Link(
+        id = "add-or-remove-packages",
+        text = messages("item.checkYourAnswers.packages.addOrRemove"),
+        href = controllers.item.packages.routes.AddAnotherPackageController.onPageLoad(userAnswers.lrn, mode, itemIndex).url
+      )
   }
 
   def documentsYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
@@ -248,11 +250,12 @@ class ItemAnswersHelper(
     }
 
   def addOrRemoveDocuments: Option[Link] = buildLink(DocumentsSection(itemIndex)) {
-    Link(
-      id = "add-or-remove-documents",
-      text = messages("item.checkYourAnswers.documents.addOrRemove"),
-      href = controllers.item.documents.routes.AddAnotherDocumentController.onPageLoad(userAnswers.lrn, CheckMode, itemIndex).url
-    )
+    mode =>
+      Link(
+        id = "add-or-remove-documents",
+        text = messages("item.checkYourAnswers.documents.addOrRemove"),
+        href = controllers.item.documents.routes.AddAnotherDocumentController.onPageLoad(userAnswers.lrn, mode, itemIndex).url
+      )
   }
 
   def additionalReferenceYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
@@ -275,11 +278,12 @@ class ItemAnswersHelper(
     )(AdditionalReferenceDomain.userAnswersReader(itemIndex, additionalReferenceIndex))
 
   def addOrRemoveAdditionalReferences: Option[Link] = buildLink(AdditionalReferencesSection(itemIndex)) {
-    Link(
-      id = "add-or-remove-additional-references",
-      text = messages("item.checkYourAnswers.additionalReferences.addOrRemove"),
-      href = controllers.item.additionalReference.routes.AddAnotherAdditionalReferenceController.onPageLoad(userAnswers.lrn, CheckMode, itemIndex).url
-    )
+    mode =>
+      Link(
+        id = "add-or-remove-additional-references",
+        text = messages("item.checkYourAnswers.additionalReferences.addOrRemove"),
+        href = controllers.item.additionalReference.routes.AddAnotherAdditionalReferenceController.onPageLoad(userAnswers.lrn, mode, itemIndex).url
+      )
   }
 
   def additionalInformationYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
@@ -301,11 +305,12 @@ class ItemAnswersHelper(
   )(AdditionalInformationDomain.userAnswersReader(itemIndex, additionalInformationIndex))
 
   def addOrRemoveAdditionalInformation: Option[Link] = buildLink(AdditionalInformationListSection(itemIndex)) {
-    Link(
-      id = "add-or-remove-additional-information",
-      text = messages("item.checkYourAnswers.additionalInformation.addOrRemove"),
-      href = controllers.item.additionalInformation.routes.AddAnotherAdditionalInformationController.onPageLoad(userAnswers.lrn, CheckMode, itemIndex).url
-    )
+    mode =>
+      Link(
+        id = "add-or-remove-additional-information",
+        text = messages("item.checkYourAnswers.additionalInformation.addOrRemove"),
+        href = controllers.item.additionalInformation.routes.AddAnotherAdditionalInformationController.onPageLoad(userAnswers.lrn, mode, itemIndex).url
+      )
   }
 
 }

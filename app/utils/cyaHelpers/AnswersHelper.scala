@@ -148,6 +148,6 @@ class AnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Mes
         }
     }
 
-  protected def buildLink(section: Section[JsArray])(link: => Link): Option[Link] =
-    if (userAnswers.get(section).exists(_.nonEmpty)) Some(link) else None
+  protected def buildLink(section: Section[JsArray])(link: Mode => Link): Option[Link] =
+    if (userAnswers.get(section).exists(_.nonEmpty)) Some(link(mode)) else None
 }
