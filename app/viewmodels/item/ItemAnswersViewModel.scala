@@ -60,7 +60,8 @@ object ItemAnswersViewModel {
 
       val dangerousGoodsSection = Section(
         sectionTitle = messages("item.checkYourAnswers.dangerousGoods"),
-        rows = helper.dangerousGoodsYesNo.toList ++ helper.dangerousGoodsList
+        rows = helper.dangerousGoodsYesNo.toList ++ helper.dangerousGoodsList,
+        addAnotherLink = helper.addOrRemoveDangerousGoods
       )
 
       val measurementSection = Section(
@@ -76,22 +77,26 @@ object ItemAnswersViewModel {
 
       val packagesSection = Section(
         sectionTitle = messages("item.checkYourAnswers.packages"),
-        rows = helper.packages
+        rows = helper.packages,
+        addAnotherLink = helper.addOrRemovePackages
       )
 
       val documentsSection = Section(
         sectionTitle = messages("item.checkYourAnswers.documents"),
-        rows = helper.documentsYesNo.toList ++ helper.documents
+        rows = helper.documentsYesNo.toList ++ helper.documents,
+        addAnotherLink = helper.addOrRemoveDocuments
       )
 
       val additionalReferencesSection = Section(
         sectionTitle = messages("item.checkYourAnswers.additionalReferences"),
-        rows = helper.additionalReferenceYesNo.toList ++ helper.additionalReferences
+        rows = helper.additionalReferenceYesNo.toList ++ helper.additionalReferences,
+        addAnotherLink = helper.addOrRemoveAdditionalReferences
       )
 
       val additionalInformationSection = Section(
         sectionTitle = messages("item.checkYourAnswers.additionalInformation"),
-        rows = helper.additionalInformationYesNo.toList ++ helper.additionalInformationList
+        rows = helper.additionalInformationYesNo.toList ++ helper.additionalInformationList,
+        addAnotherLink = helper.addOrRemoveAdditionalInformation
       )
 
       val sections = firstItemSection.toSeq ++

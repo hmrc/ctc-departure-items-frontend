@@ -45,6 +45,8 @@ package object models {
 
     def isEmpty: Boolean = arr.value.isEmpty
 
+    def nonEmpty: Boolean = !isEmpty
+
     def traverse[T](implicit userAnswersReader: Index => UserAnswersReader[T]): UserAnswersReader[Seq[T]] =
       arr.zipWithIndex
         .traverse[UserAnswersReader, T] {

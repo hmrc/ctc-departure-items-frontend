@@ -25,7 +25,7 @@ import controllers.item.packages.index.routes.PackageTypeController
 import controllers.item.routes._
 import generators.Generators
 import models.reference.{AdditionalInformation, AdditionalReference, Country, PackageType}
-import models.{CheckMode, DeclarationType, Document, Mode}
+import models.{CheckMode, DeclarationType, Document, Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -35,6 +35,12 @@ import pages.item.additionalReference.index.{AddAdditionalReferenceNumberYesNoPa
 import pages.item.dangerousGoods.index.UNNumberPage
 import pages.item.documents.index.DocumentPage
 import pages.item.packages.index.{AddShippingMarkYesNoPage, NumberOfPackagesPage, PackageTypePage, ShippingMarkPage}
+import pages.sections.additionalInformation.AdditionalInformationSection
+import pages.sections.additionalReference.AdditionalReferenceSection
+import pages.sections.dangerousGoods.DangerousGoodsSection
+import pages.sections.documents.DocumentSection
+import pages.sections.packages.PackageSection
+import play.api.libs.json.Json
 import services.DocumentsService
 
 class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -188,7 +194,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when AddUCRYesNoPage is defined" in {
           val answers = emptyUserAnswers.setValue(AddUCRYesNoPage(itemIndex), true)
 
-          val helper = new ItemAnswersHelper(answers, index)
+          val helper = new ItemAnswersHelper(answers, itemIndex)
           val result = helper.ucrYesNo.get
 
           result.key.value mustBe "Do you want to add a Unique Consignment Reference (UCR)?"
@@ -251,7 +257,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when AddCUSCodeYesNoPage is defined" in {
           val answers = emptyUserAnswers.setValue(AddCUSCodeYesNoPage(itemIndex), true)
 
-          val helper = new ItemAnswersHelper(answers, index)
+          val helper = new ItemAnswersHelper(answers, itemIndex)
           val result = helper.cusCodeYesNo.get
 
           result.key.value mustBe "Do you want to declare a Customs Union and Statistics (CUS) code?"
@@ -314,7 +320,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when AddCommodityCodeYesNoPage is defined" in {
           val answers = emptyUserAnswers.setValue(AddCommodityCodeYesNoPage(itemIndex), true)
 
-          val helper = new ItemAnswersHelper(answers, index)
+          val helper = new ItemAnswersHelper(answers, itemIndex)
           val result = helper.commodityCodeYesNo.get
 
           result.key.value mustBe "Do you want to add a commodity code?"
@@ -377,7 +383,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when AddCombinedNomenclatureCodeYesNoPage is defined" in {
           val answers = emptyUserAnswers.setValue(AddCombinedNomenclatureCodeYesNoPage(itemIndex), true)
 
-          val helper = new ItemAnswersHelper(answers, index)
+          val helper = new ItemAnswersHelper(answers, itemIndex)
           val result = helper.combinedNomenclatureCodeYesNo.get
 
           result.key.value mustBe "Do you want to add a combined nomenclature code?"
@@ -440,7 +446,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when AddDangerousGoodsYesNoPage is defined" in {
           val answers = emptyUserAnswers.setValue(AddDangerousGoodsYesNoPage(itemIndex), true)
 
-          val helper = new ItemAnswersHelper(answers, index)
+          val helper = new ItemAnswersHelper(answers, itemIndex)
           val result = helper.dangerousGoodsYesNo.get
 
           result.key.value mustBe "Does the item contain any dangerous goods?"
@@ -484,6 +490,32 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               action.visuallyHiddenText.get mustBe s"UN number 1"
               action.id mustBe "change-dangerous-goods-1"
           }
+        }
+      }
+    }
+
+    "addOrRemoveDangerousGoods" - {
+      "must return None" - {
+        "when dangerous goods array is empty" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+              val result = helper.addOrRemoveDangerousGoods
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Link)" - {
+        "when dangerous goods array is non-empty" in {
+          val answers = emptyUserAnswers.setValue(DangerousGoodsSection(Index(0), Index(0)), Json.obj("foo" -> "bar"))
+          val helper  = new ItemAnswersHelper(answers, itemIndex)
+          val result  = helper.addOrRemoveDangerousGoods.get
+
+          result.id mustBe "add-or-remove-dangerous-goods"
+          result.text mustBe "Add or remove dangerous goods"
+          result.href mustBe controllers.item.dangerousGoods.routes.AddAnotherDangerousGoodsController.onPageLoad(answers.lrn, mode, itemIndex).url
+
         }
       }
     }
@@ -534,7 +566,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when AddItemNetWeightYesNoPage is defined" in {
           val answers = emptyUserAnswers.setValue(AddItemNetWeightYesNoPage(itemIndex), true)
 
-          val helper = new ItemAnswersHelper(answers, index)
+          val helper = new ItemAnswersHelper(answers, itemIndex)
           val result = helper.itemNetWeightYesNo.get
 
           result.key.value mustBe "Do you want to add the item’s net weight?"
@@ -597,7 +629,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when AddSupplementaryUnitsYesNoPage is defined" in {
           val answers = emptyUserAnswers.setValue(AddSupplementaryUnitsYesNoPage(itemIndex), true)
 
-          val helper = new ItemAnswersHelper(answers, index)
+          val helper = new ItemAnswersHelper(answers, itemIndex)
           val result = helper.supplementaryUnitsYesNo.get
 
           result.key.value mustBe "Do you want to add supplementary units?"
@@ -711,6 +743,31 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
       }
     }
 
+    "addOrRemovePackages" - {
+      "must return None" - {
+        "when packages array is empty" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+              val result = helper.addOrRemovePackages
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Link)" - {
+        "when packages array is non-empty" in {
+          val answers = emptyUserAnswers.setValue(PackageSection(Index(0), Index(0)), Json.obj("foo" -> "bar"))
+          val helper  = new ItemAnswersHelper(answers, itemIndex)
+          val result  = helper.addOrRemovePackages.get
+
+          result.id mustBe "add-or-remove-packages"
+          result.text mustBe "Add or remove packages"
+          result.href mustBe controllers.item.packages.routes.AddAnotherPackageController.onPageLoad(answers.lrn, mode, itemIndex).url
+        }
+      }
+    }
+
     "documentYesNo" - {
       "must return None" - {
         "when AddDocumentsYesNoPage is undefined" in {
@@ -724,7 +781,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when AddDocumentsYesNoPage is defined" in {
           val answers = emptyUserAnswers.setValue(AddDocumentsYesNoPage(itemIndex), true)
 
-          val helper = new ItemAnswersHelper(answers, index)
+          val helper = new ItemAnswersHelper(answers, itemIndex)
           val result = helper.documentsYesNo.get
 
           result.key.value mustBe "Do you want to add any documents for this item?"
@@ -780,6 +837,31 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
       }
     }
 
+    "addOrRemoveDocuments" - {
+      "must return None" - {
+        "when documents array is empty" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+              val result = helper.addOrRemoveDocuments
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Link)" - {
+        "when documents array is non-empty" in {
+          val answers = emptyUserAnswers.setValue(DocumentSection(Index(0), Index(0)), Json.obj("foo" -> "bar"))
+          val helper  = new ItemAnswersHelper(answers, itemIndex)
+          val result  = helper.addOrRemoveDocuments.get
+
+          result.id mustBe "add-or-remove-documents"
+          result.text mustBe "Add or remove documents"
+          result.href mustBe controllers.item.documents.routes.AddAnotherDocumentController.onPageLoad(answers.lrn, mode, itemIndex).url
+        }
+      }
+    }
+
     "additionalReferenceYesNo" - {
       "must return None" - {
         "when AddAdditionalReferenceYesNo is undefined" in {
@@ -793,7 +875,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when addAdditionalReferenceYesNo is defined" in {
           val answers = emptyUserAnswers.setValue(AddAdditionalReferenceYesNoPage(itemIndex), true)
 
-          val helper = new ItemAnswersHelper(answers, index)
+          val helper = new ItemAnswersHelper(answers, itemIndex)
           val result = helper.additionalReferenceYesNo.get
 
           result.key.value mustBe "Do you want to add an additional reference for this item?"
@@ -844,6 +926,34 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
       }
     }
 
+    "addOrRemoveAdditionalReferences" - {
+      "must return None" - {
+        "when additional references array is empty" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+              val result = helper.addOrRemoveAdditionalReferences
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Link)" - {
+        "when additional references array is non-empty" in {
+          val answers = emptyUserAnswers.setValue(AdditionalReferenceSection(Index(0), Index(0)), Json.obj("foo" -> "bar"))
+          val helper  = new ItemAnswersHelper(answers, itemIndex)
+          val result  = helper.addOrRemoveAdditionalReferences.get
+
+          result.id mustBe "add-or-remove-additional-references"
+          result.text mustBe "Add or remove additional references"
+          result.href mustBe controllers.item.additionalReference.routes.AddAnotherAdditionalReferenceController
+            .onPageLoad(answers.lrn, mode, itemIndex)
+            .url
+
+        }
+      }
+    }
+
     "additionalInformationYesNo" - {
       "must return None" - {
         "when AddAdditionalInformationYesNo is undefined" in {
@@ -858,7 +968,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
           val answers = emptyUserAnswers
             .setValue(AddAdditionalInformationYesNoPage(itemIndex), true)
 
-          val helper = new ItemAnswersHelper(answers, index)
+          val helper = new ItemAnswersHelper(answers, itemIndex)
           val result = helper.additionalInformationYesNo.get
 
           result.key.value mustBe "Do you want to add any additional information for this item?"
@@ -904,6 +1014,33 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               action.visuallyHiddenText.get mustBe "additional information 1"
               action.id mustBe "change-additional-information-1"
           }
+        }
+      }
+    }
+
+    "addOrRemoveAdditionalInformation" - {
+      "must return None" - {
+        "when additional information array is empty" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+              val result = helper.addOrRemoveAdditionalInformation
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Link)" - {
+        "when additional information array is non-empty" in {
+          val answers = emptyUserAnswers.setValue(AdditionalInformationSection(Index(0), Index(0)), Json.obj("foo" -> "bar"))
+          val helper  = new ItemAnswersHelper(answers, itemIndex)
+          val result  = helper.addOrRemoveAdditionalInformation.get
+
+          result.id mustBe "add-or-remove-additional-information"
+          result.text mustBe "Add or remove additional information"
+          result.href mustBe controllers.item.additionalInformation.routes.AddAnotherAdditionalInformationController
+            .onPageLoad(answers.lrn, mode, itemIndex)
+            .url
         }
       }
     }

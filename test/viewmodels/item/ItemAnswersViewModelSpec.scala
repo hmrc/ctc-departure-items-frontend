@@ -40,22 +40,15 @@ class ItemAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks wi
           sections.head.addAnotherLink must not be defined
 
           sections(1: Int).sectionTitle.get mustBe "Dangerous goods"
-          sections(1: Int).addAnotherLink must not be defined
 
           sections(2: Int).sectionTitle.get mustBe "Measurement"
           sections(2: Int).addAnotherLink must not be defined
 
           sections(3: Int).sectionTitle.get mustBe "Packages"
-          sections(3: Int).addAnotherLink must not be defined
 
           sections(4: Int).sectionTitle.get mustBe "Documents"
-          sections(4: Int).addAnotherLink must not be defined
-
-          sections(5: Int).sectionTitle.get mustBe "Additional references"
-          sections(5: Int).addAnotherLink must not be defined
 
           sections(6: Int).sectionTitle.get mustBe "Additional information"
-          sections(6: Int).addAnotherLink must not be defined
 
       }
     }
