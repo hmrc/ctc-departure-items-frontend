@@ -34,7 +34,7 @@ class GrossWeightPageSpec extends PageBehaviours {
         "must clean up net weight page" in {
           forAll(arbitrary[BigDecimal]) {
             value =>
-              forAll(arbitrary[BigDecimal].retryUntil(_ != value), arbitrary[BigDecimal].retryUntil(_ <= value)) {
+              forAll(arbitrary[BigDecimal].retryUntil(_ != value), arbitrary[BigDecimal]) {
                 (differentValue, netWeight) =>
                   val userAnswers = emptyUserAnswers
                     .setValue(GrossWeightPage(itemIndex), value)
@@ -53,7 +53,7 @@ class GrossWeightPageSpec extends PageBehaviours {
         "must not clean up net weight page" in {
           forAll(arbitrary[BigDecimal]) {
             value =>
-              forAll(arbitrary[BigDecimal].retryUntil(_ <= value)) {
+              forAll(arbitrary[BigDecimal]) {
                 netWeight =>
                   val userAnswers = emptyUserAnswers
                     .setValue(GrossWeightPage(itemIndex), value)
