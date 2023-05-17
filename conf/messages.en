@@ -405,3 +405,6 @@ item.supplyChainActors.index.supplyChainActorType.manufacturer = Manufacturer
 item.supplyChainActors.index.supplyChainActorType.warehouseKeeper = Warehouse keeper
 item.supplyChainActors.index.supplyChainActorType.checkYourAnswersLabel = Which type of supply chain actor do you want to add?
 item.supplyChainActors.index.supplyChainActorType.error.required = Select which type of supply chain actor you want to add
+
+item.supplyChainActors.addAnotherSupplyChainActor.title = You have added 1 supply chain actor for this item
+item.supplyChainActors.addAnotherSupplyChainActor.heading = You have added 1 supply chain actor for this item
