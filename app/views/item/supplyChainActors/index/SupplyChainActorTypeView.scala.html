@@ -43,7 +43,7 @@
         @inputRadio(
             field = form("value"),
             radioType = Radio(
-                caption = None,
+                caption = Some(messages("item.supplyChainActor.caption", itemIndex.display)),
                 heading = messages("item.supplyChainActors.index.supplyChainActorType.heading")
             ),
             radioItems = fieldId => values.toRadioItems(fieldId, form.value)

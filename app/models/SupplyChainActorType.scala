@@ -27,7 +27,7 @@ object SupplyChainActorType extends EnumerableType[SupplyChainActorType] {
   case object Manufacturer extends WithName("manufacturer") with SupplyChainActorType
   case object WarehouseKeeper extends WithName("warehouseKeeper") with SupplyChainActorType
 
-  val messageKeyPrefix: String = "item.supplyChainActors.supplyChainActorType"
+  val messageKeyPrefix: String = "item.supplyChainActors.index.supplyChainActorType"
 
   val values: Seq[SupplyChainActorType] = Seq(
     Consolidator,
