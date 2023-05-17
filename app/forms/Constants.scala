@@ -28,4 +28,5 @@ object Constants {
   lazy val maxShippingMarkLength: Int               = 512
   lazy val maxAdditionalReferenceNumLength: Int     = 70
   lazy val maxAdditionalInformationLength: Int      = 512
+  lazy val maxEoriNumberLength: Int                 = 17
 }
