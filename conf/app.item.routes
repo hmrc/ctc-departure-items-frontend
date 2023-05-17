@@ -114,3 +114,8 @@ POST       /:itemIndex/check-answers/:lrn                                   cont
 
 GET        /:itemIndex/remove-item/:lrn                                     controllers.item.RemoveItemController.onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index)
 POST       /:itemIndex/remove-item/:lrn                                     controllers.item.RemoveItemController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index)
+
+GET        /item/do-you-want-to-add-a-supply-chain-actor-for-this-item/:lrn                        controllers.item.AddSupplyChainActorYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /item/do-you-want-to-add-a-supply-chain-actor-for-this-item/:lrn                        controllers.item.AddSupplyChainActorYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /item/change-do-you-want-to-add-a-supply-chain-actor-for-this-item/:lrn                 controllers.item.AddSupplyChainActorYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /item/change-do-you-want-to-add-a-supply-chain-actor-for-this-item/:lrn                 controllers.item.AddSupplyChainActorYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

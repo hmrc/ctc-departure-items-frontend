@@ -395,3 +395,8 @@ addAnotherItem.maxLimit.label = You cannot add any more items. To add another, y
 item.removeItem.title = Are you sure you want to remove item {0}?
 item.removeItem.heading = Are you sure you want to remove item {0}?
 item.removeItem.error.required = Select yes if you want to remove item {0}
+
+item.addSupplyChainActorYesNo.title = Do you want to add a supply chain actor for this item
+item.addSupplyChainActorYesNo.heading = Do you want to add a supply chain actor for this item
+item.addSupplyChainActorYesNo.checkYourAnswersLabel = Do you want to add a supply chain actor for this item
+item.addSupplyChainActorYesNo.error.required = Select yes if Do you want to add a supply chain actor for this item
