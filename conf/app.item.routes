@@ -110,13 +110,13 @@ POST       /:itemIndex/additional-information/add/:lrn                      cont
 GET        /:itemIndex/additional-information/change-add/:lrn               controllers.item.AddAdditionalInformationYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
 POST       /:itemIndex/additional-information/change-add/:lrn               controllers.item.AddAdditionalInformationYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
 
+GET        /:itemIndex/consignee/supply-chain-actor/add/:lrn                controllers.item.AddSupplyChainActorYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+POST       /:itemIndex/consignee/supply-chain-actor/add/:lrn                controllers.item.AddSupplyChainActorYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+GET        /:itemIndex/consignee/supply-chain-actor/change-add/:lrn         controllers.item.AddSupplyChainActorYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+POST       /:itemIndex/consignee/supply-chain-actor/change-add/:lrn         controllers.item.AddSupplyChainActorYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+
 GET        /:itemIndex/check-answers/:lrn                                   controllers.item.CheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index)
 POST       /:itemIndex/check-answers/:lrn                                   controllers.item.CheckYourAnswersController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index)
 
 GET        /:itemIndex/remove-item/:lrn                                     controllers.item.RemoveItemController.onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index)
 POST       /:itemIndex/remove-item/:lrn                                     controllers.item.RemoveItemController.onSubmit(lrn: LocalReferenceNumber, itemIndex: Index)
-
-GET        /item/do-you-want-to-add-a-supply-chain-actor-for-this-item/:lrn                        controllers.item.AddSupplyChainActorYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /item/do-you-want-to-add-a-supply-chain-actor-for-this-item/:lrn                        controllers.item.AddSupplyChainActorYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /item/change-do-you-want-to-add-a-supply-chain-actor-for-this-item/:lrn                 controllers.item.AddSupplyChainActorYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /item/change-do-you-want-to-add-a-supply-chain-actor-for-this-item/:lrn                 controllers.item.AddSupplyChainActorYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
