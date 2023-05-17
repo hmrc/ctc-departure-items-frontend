@@ -37,6 +37,7 @@ item.packages.caption = Item {0} - Packages
 item.documents.caption = Item {0} - Documents
 item.additionalReference.caption = Item {0} - Additional reference
 item.additionalInformation.caption = Item {0} - Additional information
+item.supplyChainActor.caption = Item {0} - Supply chain actor
 
 item.checkYourAnswers.heading = Check your answers
 item.checkYourAnswers.title = Check your answers
@@ -361,8 +362,8 @@ item.addAdditionalInformationYesNo.error.required = Select yes if you want to ad
 item.additionalInformation.index.additionalInformationType.title = What type of additional information do you want to add?
 item.additionalInformation.index.additionalInformationType.heading = What type of additional information do you want to add?
 item.additionalInformation.index.additionalInformationType.placeholder = Select an additional information type
-item.additionalInformation.index.additionalInformationType.change.hidden = What type of additional information do you want to add?
-item.additionalInformation.index.additionalInformationType.checkYourAnswersLabel = What type of additional information do you want to add?
+item.additionalInformation.index.additionalInformationType.change.hidden = additional information {0}
+item.additionalInformation.index.additionalInformationType.checkYourAnswersLabel = Additional information {0}
 item.additionalInformation.index.additionalInformationType.error.required = Select the type of additional information
 
 item.additionalInformation.index.removeAdditionalInformation.title = Are you sure you want to remove this additional information?
@@ -384,6 +385,13 @@ item.additionalInformation.addAnotherAdditionalInformation.error.required = Sele
 item.additionalInformation.addAnotherAdditionalInformation.label = Do you want to add any more additional information?
 item.additionalInformation.addAnotherAdditionalInformation.maxLimit.label = You cannot add any more additional information. To add another, you need to remove one first.
 
+item.addSupplyChainActorYesNo.title = Do you want to add a supply chain actor for this item?
+item.addSupplyChainActorYesNo.heading = Do you want to add a supply chain actor for this item?
+item.addSupplyChainActorYesNo.paragraph = This is someone who helps move the goods to their destination. They can be a consolidator, freight forwarder, manufacturer or warehouse keeper.
+item.addSupplyChainActorYesNo.change.hidden = if you want to add a supply chain actor for item {0}
+item.addSupplyChainActorYesNo.checkYourAnswersLabel = Do you want to add a supply chain actor for this item?
+item.addSupplyChainActorYesNo.error.required = Select yes if you want to add a supply chain actor for this item
+
 addAnotherItem.singular.title = You have added 1 item
 addAnotherItem.plural.title = You have added {0} items
 addAnotherItem.singular.heading = You have added 1 item
@@ -395,8 +403,3 @@ addAnotherItem.maxLimit.label = You cannot add any more items. To add another, y
 item.removeItem.title = Are you sure you want to remove item {0}?
 item.removeItem.heading = Are you sure you want to remove item {0}?
 item.removeItem.error.required = Select yes if you want to remove item {0}
-
-item.addSupplyChainActorYesNo.title = Do you want to add a supply chain actor for this item
-item.addSupplyChainActorYesNo.heading = Do you want to add a supply chain actor for this item
-item.addSupplyChainActorYesNo.checkYourAnswersLabel = Do you want to add a supply chain actor for this item
-item.addSupplyChainActorYesNo.error.required = Select yes if Do you want to add a supply chain actor for this item

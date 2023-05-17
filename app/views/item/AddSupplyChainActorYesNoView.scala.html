@@ -41,8 +41,10 @@
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = OrdinaryYesNo(
-                heading = messages("item.addSupplyChainActorYesNo.heading")
+            yesNoType = YesNoWithAdditionalHtml(
+                heading = messages("item.addSupplyChainActorYesNo.heading"),
+                caption = Some(messages("item.supplyChainActor.caption", itemIndex.display)),
+                additionalHtml = messages("item.addSupplyChainActorYesNo.paragraph").toParagraph
             )
         )
 

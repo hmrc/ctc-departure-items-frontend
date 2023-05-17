@@ -33,7 +33,14 @@ class AddSupplyChainActorYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithBackLink()
 
+  behave like pageWithSectionCaption(s"Item ${itemIndex.display} - Supply chain actor")
+
   behave like pageWithHeading()
+
+  behave like pageWithContent(
+    "p",
+    "This is someone who helps move the goods to their destination. They can be a consolidator, freight forwarder, manufacturer or warehouse keeper."
+  )
 
   behave like pageWithRadioItems()
 
