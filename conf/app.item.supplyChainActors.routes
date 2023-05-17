@@ -1,1 +1,2 @@
 ->         /                                                 app.item.supplyChainActors.index.Routes
+GET        /:lrn/item/supplyChainActors/you-have-added-1-supply-chain-actor-for-this-item                        controllers.item.supplyChainActors.AddAnotherSupplyChainActorController.onPageLoad(lrn: LocalReferenceNumber)
