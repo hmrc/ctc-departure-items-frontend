@@ -403,3 +403,10 @@ addAnotherItem.maxLimit.label = You cannot add any more items. To add another, y
 item.removeItem.title = Are you sure you want to remove item {0}?
 item.removeItem.heading = Are you sure you want to remove item {0}?
 item.removeItem.error.required = Select yes if you want to remove item {0}
+
+item.supplyChainActors.supplyChainActorType.title = Which type of supply chain actor do you want to add?
+item.supplyChainActors.supplyChainActorType.heading = Which type of supply chain actor do you want to add?
+item.supplyChainActors.supplyChainActorType.option1 = Option 1
+item.supplyChainActors.supplyChainActorType.option2 = Option 2
+item.supplyChainActors.supplyChainActorType.checkYourAnswersLabel = Which type of supply chain actor do you want to add?
+item.supplyChainActors.supplyChainActorType.error.required = Select  Which type of supply chain actor do you want to add?

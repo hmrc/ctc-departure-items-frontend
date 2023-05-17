@@ -56,6 +56,7 @@ trait SpecBase
   val documentIndex: Index              = Index(0)
   val additionalReferenceIndex: Index   = Index(0)
   val additionalInformationIndex: Index = Index(0)
+  val actorIndex: Index                 = Index(0)
 
   def fakeRequest: FakeRequest[AnyContent] = FakeRequest("", "")
 
