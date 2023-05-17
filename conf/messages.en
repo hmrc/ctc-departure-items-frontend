@@ -297,9 +297,9 @@ item.addDocumentsYesNo.checkYourAnswersLabel = Do you want to add any documents 
 item.addDocumentsYesNo.change.hidden = if you want to add any documents for item {0}
 item.addDocumentsYesNo.error.required = Select yes if you want to attach any documents to this item
 
-item.documents.index.removeDocument.title = Are you sure you want to remove the {0} from this item?
-item.documents.index.removeDocument.heading = Are you sure you want to remove the {0} from this item?
-item.documents.index.removeDocument.error.required = Select yes if you want to remove the {0} from this item
+item.documents.index.removeDocument.title = Are you sure you want to remove this document from the item?
+item.documents.index.removeDocument.heading = Are you sure you want to remove this document from the item?
+item.documents.index.removeDocument.error.required = Select yes if you want to remove this document type from the item
 
 item.addAdditionalReferenceYesNo.title = Do you want to add an additional reference for this item?
 item.addAdditionalReferenceYesNo.heading = Do you want to add an additional reference for this item?

@@ -24,13 +24,14 @@
     formHelper: FormWithCSRF,
     inputYesNo: InputYesNo,
     errorSummary: ErrorSummary,
-    button: Button
+    button: Button,
+    govukInsetText : GovukInsetText
 )
 
 @(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, documentIndex: Index, document: Document)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("item.documents.index.removeDocument.title", document.toString),
+    title = messages("item.documents.index.removeDocument.title"),
     showBackLink = true,
     lrn = lrn
 ) {
@@ -41,9 +42,10 @@
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = OrdinaryYesNo(
-                heading = messages("item.documents.index.removeDocument.heading", document.toString),
-                caption = Some(messages("item.documents.caption", itemIndex.display))
+            yesNoType = YesNoWithAdditionalHtml(
+                heading = messages("item.documents.index.removeDocument.heading"),
+                caption = Some(messages("item.documents.caption", itemIndex.display)),
+                additionalHtml = govukInsetText(InsetText(content = Text(document.toString)))
             )
         )
 
