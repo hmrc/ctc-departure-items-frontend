@@ -195,4 +195,9 @@ trait ModelGenerators {
     Gen.oneOf(TaskStatus.InProgress, TaskStatus.NotStarted, TaskStatus.CannotStartYet)
   }
 
+  implicit lazy val arbitrarySupplyChainActorType: Arbitrary[models.SupplyChainActorType] =
+    Arbitrary {
+      Gen.oneOf(models.SupplyChainActorType.values)
+    }
+
 }
