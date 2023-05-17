@@ -50,13 +50,13 @@ class IdentificationNumberController @Inject() (
     .requireData(lrn)
     .andThen(getMandatoryPage(SupplyChainActorTypePage(itemIndex, actorIndex))) {
       implicit request =>
-        val supplyChainActor = request.arg.asString.toLowerCase
+        val supplyChainActor = request.arg
 
         val preparedForm = request.userAnswers.get(IdentificationNumberPage(itemIndex, actorIndex)) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
-        Ok(view(preparedForm, lrn, mode, itemIndex, actorIndex, supplyChainActor))
+        Ok(view(preparedForm, lrn, mode, itemIndex, actorIndex, supplyChainActor.toString))
     }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, actorIndex: Index): Action[AnyContent] = actions
@@ -64,11 +64,11 @@ class IdentificationNumberController @Inject() (
     .andThen(getMandatoryPage(SupplyChainActorTypePage(itemIndex, actorIndex)))
     .async {
       implicit request =>
-        val supplyChainActor = request.arg.asString.toLowerCase
+        val supplyChainActor = request.arg
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex, actorIndex, supplyChainActor))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex, actorIndex, supplyChainActor.toString))),
             value => {
               implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, actorIndex)
               IdentificationNumberPage(itemIndex, actorIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()

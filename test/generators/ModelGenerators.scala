@@ -30,11 +30,6 @@ import java.util.UUID
 trait ModelGenerators {
   self: Generators =>
 
-  implicit lazy val arbitrarySupplyChainActorType: Arbitrary[SupplyChainActorType] =
-    Arbitrary {
-      Gen.oneOf(SupplyChainActorType.values)
-    }
-
   implicit lazy val arbitraryDeclarationType: Arbitrary[DeclarationType] =
     Arbitrary {
       Gen.oneOf(DeclarationType.values)
