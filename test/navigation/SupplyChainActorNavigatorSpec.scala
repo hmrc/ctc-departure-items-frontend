@@ -20,8 +20,6 @@ import base.SpecBase
 import generators.Generators
 import models._
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.mvc.Call
-import uk.gov.hmrc.http.HttpVerbs.GET
 
 class SupplyChainActorNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -39,8 +37,7 @@ class SupplyChainActorNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
             answers =>
               navigator
                 .nextPage(answers)
-                //TODO: Change to add another supply chain actor
-                .mustBe(Call(GET, "#"))
+                .mustBe(controllers.item.supplyChainActors.routes.AddAnotherSupplyChainActorController.onPageLoad(answers.lrn, mode, itemIndex))
           }
         }
       }
