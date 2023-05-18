@@ -81,4 +81,8 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators {
 
   def arbitraryAdditionalInformationAnswers(userAnswers: UserAnswers, itemIndex: Index, additionalInformationIndex: Index): Gen[UserAnswers] =
     buildUserAnswers[AdditionalInformationDomain](userAnswers)(AdditionalInformationDomain.userAnswersReader(itemIndex, additionalInformationIndex))
+
+  def arbitrarySupplyChainActorAnswers(userAnswers: UserAnswers, itemIndex: Index, actorIndex: Index): Gen[UserAnswers] =
+    buildUserAnswers[SupplyChainActorDomain](userAnswers)(SupplyChainActorDomain.userAnswersReader(itemIndex, actorIndex))
+
 }

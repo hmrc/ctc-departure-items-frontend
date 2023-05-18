@@ -16,11 +16,17 @@
 
 package views.item.supplyChainActors
 
+import forms.AddAnotherFormProvider
 import play.twirl.api.HtmlFormat
-import views.behaviours.ViewBehaviours
+import views.behaviours.ListWithActionsViewBehaviours
 import views.html.item.supplyChainActors.AddAnotherSupplyChainActorView
 
-class AddAnotherSupplyChainActorViewSpec extends ViewBehaviours {
+class AddAnotherSupplyChainActorViewSpec extends ListWithActionsViewBehaviours {
+
+  override def maxNumber: Int = frontendAppConfig.maxSupplyChainActors
+
+  private def formProvider(viewModel: AddAnotherSupplyChainActorViewModel) =
+    new AddAnotherFormProvider()(viewModel.prefix, viewModel.allowMore)
 
   override def view: HtmlFormat.Appendable =
     injector.instanceOf[AddAnotherSupplyChainActorView].apply(lrn)(fakeRequest, messages)
