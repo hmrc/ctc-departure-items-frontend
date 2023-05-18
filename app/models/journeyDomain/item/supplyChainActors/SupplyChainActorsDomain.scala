@@ -16,17 +16,19 @@
 
 package models.journeyDomain.item.supplyChainActors
 
-import models.journeyDomain.{JsArrayGettableAsReaderOps, UserAnswersReader}
-import models.{Index, RichJsArray}
+import models.journeyDomain.{JourneyDomainModel, JsArrayGettableAsReaderOps, Stage, UserAnswersReader}
+import models.{Index, Mode, RichJsArray, UserAnswers}
 import pages.sections.supplyChainActors.SupplyChainActorsSection
+import play.api.mvc.Call
+import uk.gov.hmrc.http.HttpVerbs.GET
 
 case class SupplyChainActorsDomain(
-  value: Seq[SupplyChainActorDomain]
+  SupplyChainActorsDomain: Seq[SupplyChainActorDomain]
 )
 
 object SupplyChainActorsDomain {
 
-  def userAnswersReader(itemIndex: Index): UserAnswersReader[SupplyChainActorsDomain] =
+  implicit def userAnswersReader(itemIndex: Index): UserAnswersReader[SupplyChainActorsDomain] =
     SupplyChainActorsSection(itemIndex).arrayReader
       .flatMap {
         case x if x.isEmpty =>
