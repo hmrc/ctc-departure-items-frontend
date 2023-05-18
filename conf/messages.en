@@ -428,3 +428,7 @@ item.supplyChainActors.addAnotherSupplyChainActor.plural.heading = You have adde
 item.supplyChainActors.addAnotherSupplyChainActor.maxLimit.label = You cannot add any more supply chain actors. To add another, you need to remove one first.
 item.supplyChainActors.addAnotherSupplyChainActor.label = Do you want to add another supply chain actor for this item?
 item.supplyChainActors.addAnotherSupplyChainActor.error.required = Select yes if you want to add another supply chain actor for this item
+
+item.supplyChainActors.index.removeSupplyChainActor.title = Are you sure you want to remove this supply chain actor?
+item.supplyChainActors.index.removeSupplyChainActor.heading = Are you sure you want to remove this supply chain actor?
+item.supplyChainActors.index.removeSupplyChainActor.error.required = Select yes if you want to remove this supply chain actor
