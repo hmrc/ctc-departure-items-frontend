@@ -2,3 +2,9 @@ GET        /:itemIndex/supply-chain-actor/:actorIndex/type/:lrn                 
 POST       /:itemIndex/supply-chain-actor/:actorIndex/type/:lrn                            controllers.item.supplyChainActors.index.SupplyChainActorTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index, actorIndex: Index)
 GET        /:itemIndex/supply-chain-actor/:actorIndex/change-type/:lrn                     controllers.item.supplyChainActors.index.SupplyChainActorTypeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index, actorIndex: Index)
 POST       /:itemIndex/supply-chain-actor/:actorIndex/change-type/:lrn                     controllers.item.supplyChainActors.index.SupplyChainActorTypeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index, actorIndex: Index)
+
+
+GET        /:itemIndex/supply-chain-actor/:actorIndex/eori-tin/:lrn                        controllers.item.supplyChainActors.index.IdentificationNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index, actorIndex: Index)
+POST       /:itemIndex/supply-chain-actor/:actorIndex/eori-tin/:lrn                        controllers.item.supplyChainActors.index.IdentificationNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index, actorIndex: Index)
+GET        /:itemIndex/supply-chain-actor/:actorIndex/change-eori-tin/:lrn                 controllers.item.supplyChainActors.index.IdentificationNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex:Index, actorIndex: Index)
+POST       /:itemIndex/supply-chain-actor/:actorIndex/change-eori-tin/:lrn                 controllers.item.supplyChainActors.index.IdentificationNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index, actorIndex: Index)
