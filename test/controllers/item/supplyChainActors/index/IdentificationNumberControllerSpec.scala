@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.EoriNumberFormProvider
 import generators.Generators
 import models.{NormalMode, SupplyChainActorType}
-import navigation.ItemNavigatorProvider
+import navigation.SupplyChainActorNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
@@ -45,7 +45,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
     super
       .guiceApplicationBuilder()
       .overrides(
-        bind(classOf[ItemNavigatorProvider]).toInstance(fakeItemNavigatorProvider)
+        bind(classOf[SupplyChainActorNavigatorProvider]).toInstance(fakeSupplyChainActorNavigatorProvider)
       )
 
   "IdentificationNumber Controller" - {
