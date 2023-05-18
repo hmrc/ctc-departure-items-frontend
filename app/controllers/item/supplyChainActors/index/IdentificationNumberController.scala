@@ -20,7 +20,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EoriNumberFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
-import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
+import navigation.{SupplyChainActorNavigatorProvider, UserAnswersNavigator}
 import pages.item.supplyChainActors.index.{IdentificationNumberPage, SupplyChainActorTypePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class IdentificationNumberController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigatorProvider: ItemNavigatorProvider,
+  navigatorProvider: SupplyChainActorNavigatorProvider,
   formProvider: EoriNumberFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
@@ -70,7 +70,7 @@ class IdentificationNumberController @Inject() (
           .fold(
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex, actorIndex, supplyChainActor.toString))),
             value => {
-              implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, actorIndex)
+              implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex, actorIndex)
               IdentificationNumberPage(itemIndex, actorIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
             }
           )

@@ -16,11 +16,9 @@
 
 package models.journeyDomain.item.supplyChainActors
 
-import models.journeyDomain.{JourneyDomainModel, JsArrayGettableAsReaderOps, Stage, UserAnswersReader}
-import models.{Index, Mode, RichJsArray, UserAnswers}
+import models.journeyDomain.{JsArrayGettableAsReaderOps, UserAnswersReader}
+import models.{Index, RichJsArray}
 import pages.sections.supplyChainActors.SupplyChainActorsSection
-import play.api.mvc.Call
-import uk.gov.hmrc.http.HttpVerbs.GET
 
 case class SupplyChainActorsDomain(
   SupplyChainActorsDomain: Seq[SupplyChainActorDomain]

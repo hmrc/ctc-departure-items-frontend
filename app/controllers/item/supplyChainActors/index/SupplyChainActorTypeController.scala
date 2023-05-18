@@ -20,7 +20,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
 import models.{Index, LocalReferenceNumber, Mode, SupplyChainActorType}
-import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
+import navigation.{SupplyChainActorNavigatorProvider, UserAnswersNavigator}
 import pages.item.supplyChainActors.index.SupplyChainActorTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class SupplyChainActorTypeController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigatorProvider: ItemNavigatorProvider,
+  navigatorProvider: SupplyChainActorNavigatorProvider,
   actions: Actions,
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -62,7 +62,7 @@ class SupplyChainActorTypeController @Inject() (
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, SupplyChainActorType.values, mode, itemIndex, actorIndex))),
           value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
+            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex, actorIndex)
             SupplyChainActorTypePage(itemIndex, actorIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
           }
         )
