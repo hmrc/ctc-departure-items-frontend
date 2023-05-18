@@ -18,14 +18,13 @@ package utils.cyaHelpers.item.supplyChainActors
 
 import base.SpecBase
 import generators.Generators
+import controllers.item.supplyChainActors.index.routes
 import models.{Index, Mode, SupplyChainActorType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import controllers.item.supplyChainActors.index.routes
 import pages.item.AddSupplyChainActorYesNoPage
 import pages.item.supplyChainActors.index.{IdentificationNumberPage, SupplyChainActorTypePage}
-import play.api.mvc.Call
 import viewmodels.ListItem
 
 class SupplyChainActorsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -63,14 +62,14 @@ class SupplyChainActorsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
                   ListItem(
                     name = s"${actorRole.asString} - $actorId",
                     changeUrl = routes.SupplyChainActorTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url,
-                    removeUrl = Some(Call("GET", "#").url)
+                    removeUrl = Some(routes.RemoveSupplyChainActorController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url)
                   )
                 ),
                 Right(
                   ListItem(
                     name = s"${actorRole.asString} - $actorId",
                     changeUrl = routes.SupplyChainActorTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url,
-                    removeUrl = Some(Call("GET", "#").url)
+                    removeUrl = Some(routes.RemoveSupplyChainActorController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url)
                   )
                 )
               )
@@ -92,7 +91,7 @@ class SupplyChainActorsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
                 ListItem(
                   name = s"${actorRole.asString}",
                   changeUrl = routes.IdentificationNumberController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url,
-                  removeUrl = Some(Call("GET", "#").url)
+                  removeUrl = Some(routes.RemoveSupplyChainActorController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url)
                 )
               )
             )

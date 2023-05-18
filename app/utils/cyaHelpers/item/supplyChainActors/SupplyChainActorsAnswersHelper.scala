@@ -17,12 +17,12 @@
 package utils.cyaHelpers.item.supplyChainActors
 
 import config.FrontendAppConfig
+import controllers.item.supplyChainActors.index.routes
 import models.journeyDomain.item.supplyChainActors.SupplyChainActorDomain
 import models.{Index, Mode, UserAnswers}
 import pages.item.supplyChainActors.index.SupplyChainActorTypePage
 import pages.sections.supplyChainActors.SupplyChainActorsSection
 import play.api.i18n.Messages
-import play.api.mvc.Call
 import utils.cyaHelpers.AnswersHelper
 import viewmodels.ListItem
 
@@ -35,7 +35,7 @@ class SupplyChainActorsAnswersHelper(userAnswers: UserAnswers, mode: Mode, itemI
         buildListItem[SupplyChainActorDomain](
           nameWhenComplete = _.asString,
           nameWhenInProgress = userAnswers.get(SupplyChainActorTypePage(itemIndex, actorIndex)).map(_.asString),
-          removeRoute = Some(Call("GET", "#"))
+          removeRoute = Some(routes.RemoveSupplyChainActorController.onPageLoad(userAnswers.lrn, mode, itemIndex, actorIndex))
         )(SupplyChainActorDomain.userAnswersReader(itemIndex, actorIndex))
     }
 
