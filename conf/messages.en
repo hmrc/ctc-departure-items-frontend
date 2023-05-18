@@ -37,6 +37,7 @@ item.packages.caption = Item {0} - Packages
 item.documents.caption = Item {0} - Documents
 item.additionalReference.caption = Item {0} - Additional reference
 item.additionalInformation.caption = Item {0} - Additional information
+item.supplyChainActor.caption = Item {0} - Supply chain actor
 
 item.checkYourAnswers.heading = Check your answers
 item.checkYourAnswers.title = Check your answers
@@ -395,3 +396,12 @@ addAnotherItem.maxLimit.label = You cannot add any more items. To add another, y
 item.removeItem.title = Are you sure you want to remove item {0}?
 item.removeItem.heading = Are you sure you want to remove item {0}?
 item.removeItem.error.required = Select yes if you want to remove item {0}
+
+item.supplyChainActors.index.supplyChainActorType.title = Which type of supply chain actor do you want to add?
+item.supplyChainActors.index.supplyChainActorType.heading = Which type of supply chain actor do you want to add?
+item.supplyChainActors.index.supplyChainActorType.consolidator = Consolidator
+item.supplyChainActors.index.supplyChainActorType.freightForwarder = Freight forwarder
+item.supplyChainActors.index.supplyChainActorType.manufacturer = Manufacturer
+item.supplyChainActors.index.supplyChainActorType.warehouseKeeper = Warehouse keeper
+item.supplyChainActors.index.supplyChainActorType.checkYourAnswersLabel = Which type of supply chain actor do you want to add?
+item.supplyChainActors.index.supplyChainActorType.error.required = Select which type of supply chain actor you want to add
