@@ -19,7 +19,7 @@ package controllers.item.supplyChainActors.index
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.EnumerableFormProvider
 import models.{NormalMode, SupplyChainActorType}
-import navigation.{ItemNavigatorProvider, SupplyChainActorNavigatorProvider}
+import navigation.SupplyChainActorNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.item.supplyChainActors.index.SupplyChainActorTypePage
