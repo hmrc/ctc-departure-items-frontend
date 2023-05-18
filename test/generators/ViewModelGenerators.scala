@@ -29,6 +29,7 @@ import viewmodels.item.additionalInformation.AddAnotherAdditionalInformationView
 import viewmodels.item.dangerousGoods.AddAnotherDangerousGoodsViewModel
 import viewmodels.item.documents.AddAnotherDocumentViewModel
 import viewmodels.item.packages.AddAnotherPackageViewModel
+import viewmodels.item.supplyChainActors.AddAnotherSupplyChainActorViewModel
 import viewmodels.sections.Section
 import viewmodels.{AddAnotherItemViewModel, Link, ListItem}
 
@@ -224,5 +225,12 @@ trait ViewModelGenerators {
       listItems    <- arbitrary[Seq[ListItem]]
       onSubmitCall <- arbitrary[Call]
     } yield AddAnotherAdditionalInformationViewModel(listItems, onSubmitCall)
+  }
+
+  implicit lazy val arbitraryAddAnotherSupplyChainActorViewModel: Arbitrary[AddAnotherSupplyChainActorViewModel] = Arbitrary {
+    for {
+      listItems    <- arbitrary[Seq[ListItem]]
+      onSubmitCall <- arbitrary[Call]
+    } yield AddAnotherSupplyChainActorViewModel(listItems, onSubmitCall)
   }
 }

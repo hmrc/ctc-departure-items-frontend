@@ -22,6 +22,7 @@ import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import viewmodels.item.supplyChainActors.AddAnotherSupplyChainActorViewModel.AddAnotherSupplyChainActorViewModelProvider
 
 class AddAnotherSupplyChainActorViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
 
@@ -32,12 +33,12 @@ class AddAnotherSupplyChainActorViewModelSpec extends SpecBase with Generators w
         mode =>
           val userAnswers = arbitrarySupplyChainActorAnswers(emptyUserAnswers, itemIndex, actorIndex).sample.value
 
-          val result = new AddAnotherSupplyChainActorViewModelProvider()(frontendAppConfig)(userAnswers, mode)
+          val result = new AddAnotherSupplyChainActorViewModelProvider()(userAnswers, mode, itemIndex)
 
           result.listItems.length mustBe 1
-          result.title mustBe "You have added 1 supply chain actor"
-          result.heading mustBe "You have added 1 supply chain actor"
-          result.legend mustBe "Do you want to add another supply chain actor?"
+          result.title mustBe "You have added 1 supply chain actor for this item"
+          result.heading mustBe "You have added 1 supply chain actor for this item"
+          result.legend mustBe "Do you want to add another supply chain actor for this item?"
           result.maxLimitLabel mustBe "You cannot add any more supply chain actors. To add another, you need to remove one first."
       }
     }
@@ -49,14 +50,14 @@ class AddAnotherSupplyChainActorViewModelSpec extends SpecBase with Generators w
         (mode, supplyChainActors) =>
           val userAnswers = (0 until supplyChainActors).foldLeft(emptyUserAnswers) {
             (acc, i) =>
-              arbitrarySupplyChainActorAnswers(acc, Index(i)).sample.value
+              arbitrarySupplyChainActorAnswers(acc, itemIndex, Index(i)).sample.value
           }
 
-          val result = new AddAnotherSupplyChainActorViewModelProvider()(frontendAppConfig)(userAnswers, mode)
+          val result = new AddAnotherSupplyChainActorViewModelProvider()(userAnswers, mode, itemIndex)
           result.listItems.length mustBe supplyChainActors
-          result.title mustBe s"You have added ${formatter.format(supplyChainActors)} supply chain actors"
-          result.heading mustBe s"You have added ${formatter.format(supplyChainActors)} supply chain actors"
-          result.legend mustBe "Do you want to add another supply chain actor?"
+          result.title mustBe s"You have added ${formatter.format(supplyChainActors)} supply chain actors for this item"
+          result.heading mustBe s"You have added ${formatter.format(supplyChainActors)} supply chain actors for this item"
+          result.legend mustBe "Do you want to add another supply chain actor for this item?"
           result.maxLimitLabel mustBe "You cannot add any more supply chain actors. To add another, you need to remove one first."
       }
     }

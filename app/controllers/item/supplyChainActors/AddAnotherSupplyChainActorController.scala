@@ -16,24 +16,61 @@
 
 package controllers.item.supplyChainActors
 
+import config.FrontendAppConfig
 import controllers.actions._
-import javax.inject.Inject
-import models.LocalReferenceNumber
+import forms.AddAnotherFormProvider
+import controllers.item.supplyChainActors.index.{routes => supplyChainActorRoutes}
+import models.{Index, LocalReferenceNumber, Mode}
+import navigation.ItemNavigatorProvider
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.item.supplyChainActors.AddAnotherSupplyChainActorViewModel
+import viewmodels.item.supplyChainActors.AddAnotherSupplyChainActorViewModel.AddAnotherSupplyChainActorViewModelProvider
 import views.html.item.supplyChainActors.AddAnotherSupplyChainActorView
+
+import javax.inject.Inject
 
 class AddAnotherSupplyChainActorController @Inject() (
   override val messagesApi: MessagesApi,
   actions: Actions,
+  formProvider: AddAnotherFormProvider,
+  navigatorProvider: ItemNavigatorProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: AddAnotherSupplyChainActorView
-) extends FrontendBaseController
+  view: AddAnotherSupplyChainActorView,
+  viewModelProvider: AddAnotherSupplyChainActorViewModelProvider
+)(implicit config: FrontendAppConfig)
+    extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = actions.requireData(lrn) {
+  private def form(viewModel: AddAnotherSupplyChainActorViewModel): Form[Boolean] = formProvider(viewModel.prefix, viewModel.allowMore)
+
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      Ok(view(lrn))
+      val viewModel = viewModelProvider(request.userAnswers, mode, itemIndex)
+      viewModel.count match {
+        case 0 =>
+          Redirect(controllers.item.routes.AddSupplyChainActorYesNoController.onPageLoad(lrn, mode, itemIndex))
+        case _ =>
+          Ok(view(form(viewModel), lrn, viewModel, itemIndex))
+      }
   }
+
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
+    implicit request =>
+      val viewModel = viewModelProvider(request.userAnswers, mode, itemIndex)
+      form(viewModel)
+        .bindFromRequest()
+        .fold(
+          formWithErrors => BadRequest(view(formWithErrors, lrn, viewModel, itemIndex)),
+          {
+            case true =>
+              Redirect(supplyChainActorRoutes.SupplyChainActorTypeController.onPageLoad(lrn, mode, itemIndex, viewModel.nextIndex))
+            case false =>
+              Redirect(navigatorProvider(mode, itemIndex).nextPage(request.userAnswers))
+          }
+        )
+  }
+
 }
