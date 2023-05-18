@@ -17,6 +17,7 @@
 package models
 
 sealed trait SupplyChainActorType extends Radioable[SupplyChainActorType] {
+
   override val messageKeyPrefix: String = SupplyChainActorType.messageKeyPrefix
 }
 

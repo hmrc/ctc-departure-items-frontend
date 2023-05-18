@@ -17,7 +17,7 @@
 package controllers.item.supplyChainActors.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.item.supplyChainActors.index.routes
+import controllers.item.supplyChainActors.{routes => supplyChainActorRoutes}
 import forms.YesNoFormProvider
 import generators.Generators
 import models.{NormalMode, SupplyChainActorType, UserAnswers}
@@ -27,7 +27,6 @@ import org.mockito.Mockito.{never, reset, verify, when}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.item.supplyChainActors.index.{IdentificationNumberPage, SupplyChainActorTypePage}
 import pages.sections.supplyChainActors.SupplyChainActorSection
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.item.supplyChainActors.index.RemoveSupplyChainActorView
@@ -82,7 +81,8 @@ class RemoveSupplyChainActorControllerSpec extends SpecBase with AppWithDefaultM
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual Call(GET, "#").url
+        redirectLocation(result).value mustEqual
+          supplyChainActorRoutes.AddAnotherSupplyChainActorController.onPageLoad(lrn, mode, itemIndex).url
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
@@ -106,7 +106,8 @@ class RemoveSupplyChainActorControllerSpec extends SpecBase with AppWithDefaultM
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual Call(GET, "#").url
+        redirectLocation(result).value mustEqual
+          supplyChainActorRoutes.AddAnotherSupplyChainActorController.onPageLoad(lrn, mode, itemIndex).url
 
         verify(mockSessionRepository, never()).set(any())(any())
 
