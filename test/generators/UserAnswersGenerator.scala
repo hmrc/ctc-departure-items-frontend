@@ -22,6 +22,7 @@ import models.journeyDomain.item.additionalReferences.AdditionalReferenceDomain
 import models.journeyDomain.item.dangerousGoods.DangerousGoodsDomain
 import models.journeyDomain.item.documents.DocumentDomain
 import models.journeyDomain.item.packages.PackageDomain
+import models.journeyDomain.item.supplyChainActors.SupplyChainActorDomain
 import models.journeyDomain.{ItemsDomain, ReaderError, UserAnswersReader}
 import models.{EoriNumber, Index, LocalReferenceNumber, RichJsObject, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
@@ -81,4 +82,8 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators {
 
   def arbitraryAdditionalInformationAnswers(userAnswers: UserAnswers, itemIndex: Index, additionalInformationIndex: Index): Gen[UserAnswers] =
     buildUserAnswers[AdditionalInformationDomain](userAnswers)(AdditionalInformationDomain.userAnswersReader(itemIndex, additionalInformationIndex))
+
+  def arbitrarySupplyChainActorAnswers(userAnswers: UserAnswers, itemIndex: Index, actorIndex: Index): Gen[UserAnswers] =
+    buildUserAnswers[SupplyChainActorDomain](userAnswers)(SupplyChainActorDomain.userAnswersReader(itemIndex, actorIndex))
+
 }

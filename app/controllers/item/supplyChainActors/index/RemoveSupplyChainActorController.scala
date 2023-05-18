@@ -17,14 +17,14 @@
 package controllers.item.supplyChainActors.index
 
 import controllers.actions._
+import controllers.item.supplyChainActors.routes
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import pages.sections.supplyChainActors.SupplyChainActorSection
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import uk.gov.hmrc.http.HttpVerbs.GET
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.item.supplyChainActors.index.RemoveSupplyChainActorView
 
@@ -51,6 +51,7 @@ class RemoveSupplyChainActorController @Inject() (
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, actorIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
+      lazy val redirect = routes.AddAnotherSupplyChainActorController.onPageLoad(lrn, mode, itemIndex)
       form
         .bindFromRequest()
         .fold(
@@ -61,9 +62,9 @@ class RemoveSupplyChainActorController @Inject() (
                 .removeFromUserAnswers()
                 .updateTask()
                 .writeToSession()
-                .navigateTo(Call(GET, "#"))
+                .navigateTo(redirect)
             case false =>
-              Future.successful(Redirect(Call(GET, "#")))
+              Future.successful(Redirect(redirect))
           }
         )
   }
