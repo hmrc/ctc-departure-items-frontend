@@ -19,16 +19,14 @@ package models.journeyDomain.item.supplyChainActors
 import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
 import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
 import models.{Index, Mode, SupplyChainActorType, UserAnswers}
-import pages.item.supplyChainActors.index.SupplyChainActorTypePage
+import pages.item.supplyChainActors.index.{IdentificationNumberPage, SupplyChainActorTypePage}
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import cats.implicits._
 
-case class SupplyChainActorDomain(
-                                   role: SupplyChainActorType)(itemIndex: Index, actorIndex: Index) extends JourneyDomainModel {
+case class SupplyChainActorDomain(role: SupplyChainActorType, identification: String)(itemIndex: Index, actorIndex: Index) extends JourneyDomainModel {
 
-  def asString(implicit messages: Messages): String =
-    SupplyChainActorDomain.asString(role)
+  def asString(implicit messages: Messages): String = s"${role.asString} - $identification"
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some {
     stage match {
@@ -42,11 +40,12 @@ case class SupplyChainActorDomain(
 
 object SupplyChainActorDomain {
 
-  def asString(role: SupplyChainActorType)(implicit messages: Messages): String =
-    role.asString
-
   def userAnswersReader(itemIndex: Index, actorIndex: Index): UserAnswersReader[SupplyChainActorDomain] =
-    SupplyChainActorTypePage(itemIndex, actorIndex).reader.map(SupplyChainActorDomain(_)(itemIndex, actorIndex))
-
+    (
+      SupplyChainActorTypePage(itemIndex, actorIndex).reader,
+      IdentificationNumberPage(itemIndex, actorIndex).reader
+    ).mapN {
+      (actor, identification) => SupplyChainActorDomain(actor, identification)(itemIndex, actorIndex)
+    }
 
 }

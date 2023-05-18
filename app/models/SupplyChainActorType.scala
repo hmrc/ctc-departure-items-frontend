@@ -22,7 +22,7 @@ sealed trait SupplyChainActorType extends Radioable[SupplyChainActorType] {
   override val messageKeyPrefix: String = SupplyChainActorType.messageKeyPrefix
 
   def asString(implicit messages: Messages): String =
-    messages(s"${SupplyChainActorType.messageKeyPrefix}.$this")
+    messages(s"$messageKeyPrefix.$this")
 }
 
 object SupplyChainActorType extends EnumerableType[SupplyChainActorType] {

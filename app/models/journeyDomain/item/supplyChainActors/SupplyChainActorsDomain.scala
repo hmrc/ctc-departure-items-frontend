@@ -16,37 +16,23 @@
 
 package models.journeyDomain.item.supplyChainActors
 
-import models.journeyDomain.{JourneyDomainModel, Stage}
-import models.{Index, Mode, UserAnswers}
+import models.journeyDomain.{JsArrayGettableAsReaderOps, UserAnswersReader}
+import models.{Index, RichJsArray}
 import pages.sections.supplyChainActors.SupplyChainActorsSection
-import play.api.mvc.Call
 
 case class SupplyChainActorsDomain(
-  SupplyChainActorsDomain: Seq[SupplyChainActorDomain]
-) extends JourneyDomainModel {
-
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
-    Some(controllers.supplyChainActors.routes.AddAnotherSupplyChainActorController.onPageLoad(userAnswers.lrn, mode))
-}
+  value: Seq[SupplyChainActorDomain]
+)
 
 object SupplyChainActorsDomain {
 
-  implicit val userAnswersReader: UserAnswersReader[SupplyChainActorsDomain] = {
-
-    val actorsReader: UserAnswersReader[Seq[SupplyChainActorDomain]] =
-      SupplyChainActorsSection.arrayReader.flatMap {
+  def userAnswersReader(itemIndex: Index): UserAnswersReader[SupplyChainActorsDomain] =
+    SupplyChainActorsSection(itemIndex).arrayReader
+      .flatMap {
         case x if x.isEmpty =>
-          UserAnswersReader[SupplyChainActorDomain](
-            SupplyChainActorDomain.userAnswersReader(Index(0))
-          ).map(Seq(_))
-
+          UserAnswersReader(SupplyChainActorDomain.userAnswersReader(itemIndex, Index(0))).map(Seq(_))
         case x =>
-          x.traverse[SupplyChainActorDomain](
-            SupplyChainActorDomain.userAnswersReader
-          ).map(_.toSeq)
+          x.traverse[SupplyChainActorDomain](SupplyChainActorDomain.userAnswersReader(itemIndex, _))
       }
-
-    UserAnswersReader[Seq[SupplyChainActorDomain]](actorsReader).map(SupplyChainActorsDomain(_))
-
-  }
+      .map(SupplyChainActorsDomain(_))
 }

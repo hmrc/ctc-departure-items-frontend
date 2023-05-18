@@ -14,21 +14,52 @@
  * limitations under the License.
  *@
 
+@import config.FrontendAppConfig
 @import models.LocalReferenceNumber
-@import views.html.components.Heading
+@import viewmodels.components.InputYesNoViewModel._
+@import viewmodels.item.supplyChainActors.AddAnotherSupplyChainActorViewModel
+@import views.html.components.{Button, ErrorSummary, Heading, InputYesNo, ListWithActions}
 
 @this(
     mainTemplate: MainTemplate,
-    heading: Heading
+    formHelper: FormWithCSRF,
+    heading: Heading,
+    listWithActions: ListWithActions,
+    inputYesNo: InputYesNo,
+    errorSummary: ErrorSummary,
+    button: Button
 )
 
-@(lrn: LocalReferenceNumber)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], lrn: LocalReferenceNumber, viewModel: AddAnotherSupplyChainActorViewModel, itemIndex: Index)(implicit request: Request[_], messages: Messages, config: FrontendAppConfig)
 
 @mainTemplate(
-    title = messages("item.supplyChainActors.addAnotherSupplyChainActor.title"),
+    title = viewModel.title,
     showBackLink = true,
     lrn = lrn
 ) {
 
-    @heading(messages("item.supplyChainActors.addAnotherSupplyChainActor.heading"))
+    @errorSummary(form.errors)
+
+    @heading(
+        heading = viewModel.heading,
+        caption = Some(messages("item.supplyChainActor.caption", itemIndex.display))
+    )
+
+    @listWithActions(viewModel.listItems)
+
+    @formHelper(action = viewModel.onSubmitCall, Symbol("autoComplete") -> "off") {
+
+        @if(viewModel.allowMore) {
+            @inputYesNo(
+                field = form("value"),
+                yesNoType = YesNoWithLegend(
+                    legend = viewModel.legend
+                )
+            )
+        } else {
+            <p class="govuk-body" data-testId="maxLimit">@viewModel.maxLimitLabel</p>
+        }
+
+        @button(attributes = Map("id" -> "submit"))
+    }
 }

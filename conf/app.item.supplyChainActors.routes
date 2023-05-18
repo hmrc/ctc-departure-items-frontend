@@ -1,2 +1,6 @@
-->         /                                                 app.item.supplyChainActors.index.Routes
-GET        /:lrn/item/supplyChainActors/you-have-added-1-supply-chain-actor-for-this-item                        controllers.item.supplyChainActors.AddAnotherSupplyChainActorController.onPageLoad(lrn: LocalReferenceNumber)
+->         /                                                             app.item.supplyChainActors.index.Routes
+
+GET        /:itemIndex/supply-chain-actor/add-another/:lrn               controllers.item.supplyChainActors.AddAnotherSupplyChainActorController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+POST       /:itemIndex/supply-chain-actor/add-another/:lrn               controllers.item.supplyChainActors.AddAnotherSupplyChainActorController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+GET        /:itemIndex/supply-chain-actor/change-add-another/:lrn        controllers.item.supplyChainActors.AddAnotherSupplyChainActorController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+POST       /:itemIndex/supply-chain-actor/change-add-another/:lrn        controllers.item.supplyChainActors.AddAnotherSupplyChainActorController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)

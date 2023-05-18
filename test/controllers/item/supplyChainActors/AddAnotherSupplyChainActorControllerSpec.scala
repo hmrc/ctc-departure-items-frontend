@@ -17,29 +17,220 @@
 package controllers.item.supplyChainActors
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import forms.AddAnotherFormProvider
+import generators.Generators
+import org.scalacheck.Arbitrary.arbitrary
+import models.{Index, NormalMode}
+import navigation.ItemNavigatorProvider
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, when}
+import org.scalacheck.Gen
+import org.scalatestplus.mockito.MockitoSugar
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import viewmodels.ListItem
+import viewmodels.item.supplyChainActors.AddAnotherSupplyChainActorViewModel
+import viewmodels.item.supplyChainActors.AddAnotherSupplyChainActorViewModel.AddAnotherSupplyChainActorViewModelProvider
 import views.html.item.supplyChainActors.AddAnotherSupplyChainActorView
 
-class AddAnotherSupplyChainActorControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class AddAnotherSupplyChainActorControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar with Generators {
 
-  private lazy val addAnotherSupplyChainActorRoute = routes.AddAnotherSupplyChainActorController.onPageLoad(lrn).url
+  private val formProvider                         = new AddAnotherFormProvider()
+  private val mode                                 = NormalMode
+  private lazy val addAnotherSupplyChainActorRoute = routes.AddAnotherSupplyChainActorController.onPageLoad(lrn, mode, itemIndex).url
+
+  private def form(viewModel: AddAnotherSupplyChainActorViewModel) =
+    formProvider(viewModel.prefix, viewModel.allowMore(frontendAppConfig))
+
+  private val mockViewModelProvider = mock[AddAnotherSupplyChainActorViewModelProvider]
+
+  override def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    super
+      .guiceApplicationBuilder()
+      .overrides(bind(classOf[AddAnotherSupplyChainActorViewModelProvider]).toInstance(mockViewModelProvider))
+      .overrides(bind(classOf[ItemNavigatorProvider]).toInstance(fakeItemNavigatorProvider))
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockViewModelProvider)
+  }
+
+  private val listItem          = arbitrary[ListItem].sample.value
+  private val listItems         = Seq.fill(Gen.choose(1, frontendAppConfig.maxAdditionalInformation - 1).sample.value)(listItem)
+  private val maxedOutListItems = Seq.fill(frontendAppConfig.maxAdditionalInformation)(listItem)
+
+  private val viewModel = arbitrary[AddAnotherSupplyChainActorViewModel].sample.value
+
+  private val emptyViewModel       = viewModel.copy(listItems = Nil)
+  private val notMaxedOutViewModel = viewModel.copy(listItems = listItems)
+  private val maxedOutViewModel    = viewModel.copy(listItems = maxedOutListItems)
 
   "AddAnotherSupplyChainActor Controller" - {
 
-    "must return OK and the correct view for a GET" in {
+    "must redirect to add supply chain actor yes no page when 0 supply chain actor added" in {
+      when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
+        .thenReturn(emptyViewModel)
 
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, addAnotherSupplyChainActorRoute)
-      val result  = route(app, request).value
+        .withFormUrlEncodedBody(("value", "true"))
 
-      val view = injector.instanceOf[AddAnotherSupplyChainActorView]
+      val result = route(app, request).value
 
-      status(result) mustEqual OK
+      status(result) mustEqual SEE_OTHER
 
-      contentAsString(result) mustEqual
-        view(lrn)(request, messages).toString
+      redirectLocation(result).value mustEqual
+        controllers.item.routes.AddSupplyChainActorYesNoController.onPageLoad(lrn, mode, itemIndex).url
+    }
+
+    "must return OK and the correct view for a GET" - {
+      "when max limit not reached" in {
+        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
+          .thenReturn(notMaxedOutViewModel)
+
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(GET, addAnotherSupplyChainActorRoute)
+
+        val result = route(app, request).value
+
+        val view = injector.instanceOf[AddAnotherSupplyChainActorView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(form(notMaxedOutViewModel), lrn, notMaxedOutViewModel, itemIndex)(request, messages, frontendAppConfig).toString
+      }
+
+      "when max limit reached" in {
+        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
+          .thenReturn(maxedOutViewModel)
+
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(GET, addAnotherSupplyChainActorRoute)
+
+        val result = route(app, request).value
+
+        val view = injector.instanceOf[AddAnotherSupplyChainActorView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(form(maxedOutViewModel), lrn, maxedOutViewModel, itemIndex)(request, messages, frontendAppConfig).toString
+      }
+    }
+
+    "when max limit not reached" - {
+      "when yes submitted" - {
+        "must redirect to supply chain actor type page at next index" in {
+          when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
+            .thenReturn(notMaxedOutViewModel)
+
+          setExistingUserAnswers(emptyUserAnswers)
+
+          val request = FakeRequest(POST, addAnotherSupplyChainActorRoute)
+            .withFormUrlEncodedBody(("value", "true"))
+
+          val result = route(app, request).value
+
+          status(result) mustEqual SEE_OTHER
+
+          redirectLocation(result).value mustEqual
+            controllers.item.supplyChainActors.index.routes.SupplyChainActorTypeController
+              .onPageLoad(lrn, mode, itemIndex, Index(listItems.length))
+              .url
+        }
+      }
+
+      "when no submitted" - {
+        "must redirect to next page" in {
+          when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
+            .thenReturn(notMaxedOutViewModel)
+
+          setExistingUserAnswers(emptyUserAnswers)
+
+          val request = FakeRequest(POST, addAnotherSupplyChainActorRoute)
+            .withFormUrlEncodedBody(("value", "false"))
+
+          val result = route(app, request).value
+
+          status(result) mustEqual SEE_OTHER
+
+          redirectLocation(result).value mustEqual onwardRoute.url
+        }
+      }
+    }
+
+    "when max limit reached" - {
+      "must redirect to next page" in {
+        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
+          .thenReturn(maxedOutViewModel)
+
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(POST, addAnotherSupplyChainActorRoute)
+          .withFormUrlEncodedBody(("value", ""))
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual onwardRoute.url
+      }
+    }
+
+    "must return a Bad Request and errors" - {
+      "when invalid data is submitted and max limit not reached" in {
+        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
+          .thenReturn(notMaxedOutViewModel)
+
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(POST, addAnotherSupplyChainActorRoute)
+          .withFormUrlEncodedBody(("value", ""))
+
+        val boundForm = form(notMaxedOutViewModel).bind(Map("value" -> ""))
+
+        val result = route(app, request).value
+
+        val view = injector.instanceOf[AddAnotherSupplyChainActorView]
+
+        status(result) mustEqual BAD_REQUEST
+
+        contentAsString(result) mustEqual
+          view(boundForm, lrn, notMaxedOutViewModel, itemIndex)(request, messages, frontendAppConfig).toString
+      }
+    }
+
+    "must redirect to Session Expired for a GET if no existing data is found" in {
+
+      setNoExistingUserAnswers()
+
+      val request = FakeRequest(GET, addAnotherSupplyChainActorRoute)
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+    }
+
+    "must redirect to Session Expired for a POST if no existing data is found" in {
+
+      setNoExistingUserAnswers()
+
+      val request = FakeRequest(POST, addAnotherSupplyChainActorRoute)
+        .withFormUrlEncodedBody(("value", "true"))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
     }
   }
 }

@@ -16,7 +16,7 @@
 
 package generators
 
-import models.DeclarationType
+import models.{DeclarationType, SupplyChainActorType}
 import models.reference.{AdditionalInformation, AdditionalReference, Country, PackageType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -72,13 +72,15 @@ trait UserAnswersEntryGenerators {
       case AddDocumentsYesNoPage(_)                => arbitrary[Boolean].map(JsBoolean)
       case AddAdditionalReferenceYesNoPage(_)      => arbitrary[Boolean].map(JsBoolean)
       case AddAdditionalInformationYesNoPage(_)    => arbitrary[Boolean].map(JsBoolean)
+      case AddSupplyChainActorYesNoPage(_)         => arbitrary[Boolean].map(JsBoolean)
     }
     pf orElse
       generateDangerousGoodsAnswer orElse
       generatePackageAnswer orElse
       generateDocumentsAnswer orElse
       generateAdditionalReferenceAnswer orElse
-      generateAdditionalInformationAnswer
+      generateAdditionalInformationAnswer orElse
+      generateSupplyChainActorAnswers
   }
 
   private def generateDangerousGoodsAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
@@ -127,6 +129,14 @@ trait UserAnswersEntryGenerators {
     {
       case AdditionalInformationTypePage(_, _) => arbitrary[AdditionalInformation].map(Json.toJson(_))
       case AdditionalInformationPage(_, _)     => Gen.alphaNumStr.map(JsString)
+    }
+  }
+
+  private def generateSupplyChainActorAnswers: PartialFunction[Gettable[_], Gen[JsValue]] = {
+    import pages.item.supplyChainActors.index._
+    {
+      case SupplyChainActorTypePage(_, _) => arbitrary[SupplyChainActorType].map(Json.toJson(_))
+      case IdentificationNumberPage(_, _) => Gen.alphaNumStr.map(JsString)
     }
   }
 

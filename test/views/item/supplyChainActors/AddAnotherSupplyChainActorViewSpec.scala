@@ -18,6 +18,9 @@ package views.item.supplyChainActors
 
 import forms.AddAnotherFormProvider
 import play.twirl.api.HtmlFormat
+import org.scalacheck.Arbitrary.arbitrary
+import play.api.data.Form
+import viewmodels.item.supplyChainActors.AddAnotherSupplyChainActorViewModel
 import views.behaviours.ListWithActionsViewBehaviours
 import views.html.item.supplyChainActors.AddAnotherSupplyChainActorView
 
@@ -28,14 +31,31 @@ class AddAnotherSupplyChainActorViewSpec extends ListWithActionsViewBehaviours {
   private def formProvider(viewModel: AddAnotherSupplyChainActorViewModel) =
     new AddAnotherFormProvider()(viewModel.prefix, viewModel.allowMore)
 
-  override def view: HtmlFormat.Appendable =
-    injector.instanceOf[AddAnotherSupplyChainActorView].apply(lrn)(fakeRequest, messages)
+  private val viewModel            = arbitrary[AddAnotherSupplyChainActorViewModel].sample.value
+  private val notMaxedOutViewModel = viewModel.copy(listItems = listItems)
+  private val maxedOutViewModel    = viewModel.copy(listItems = maxedOutListItems)
+
+  override def form: Form[Boolean] = formProvider(notMaxedOutViewModel)
+
+  override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
+    injector
+      .instanceOf[AddAnotherSupplyChainActorView]
+      .apply(form, lrn, notMaxedOutViewModel, itemIndex)(fakeRequest, messages, frontendAppConfig)
+
+  override def applyMaxedOutView: HtmlFormat.Appendable =
+    injector
+      .instanceOf[AddAnotherSupplyChainActorView]
+      .apply(formProvider(maxedOutViewModel), lrn, maxedOutViewModel, itemIndex)(fakeRequest, messages, frontendAppConfig)
 
   override val prefix: String = "item.supplyChainActors.addAnotherSupplyChainActor"
 
-  behave like pageWithTitle()
-
   behave like pageWithBackLink()
 
-  behave like pageWithHeading()
+  behave like pageWithSectionCaption(s"Item ${itemIndex.display} - Supply chain actor")
+
+  behave like pageWithMoreItemsAllowed(notMaxedOutViewModel.count)()
+
+  behave like pageWithItemsMaxedOut(maxedOutViewModel.count)
+
+  behave like pageWithSubmitButton("Save and continue")
 }
