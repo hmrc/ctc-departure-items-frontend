@@ -14,56 +14,56 @@
  * limitations under the License.
  */
 
-package controllers.item.supplyChainActors.index
+package controllers.item
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.EnumerableFormProvider
-import models.{Index, LocalReferenceNumber, Mode, SupplyChainActorType}
-import navigation.{SupplyChainActorNavigatorProvider, UserAnswersNavigator}
-import pages.item.supplyChainActors.index.SupplyChainActorTypePage
+import forms.YesNoFormProvider
+import models.{Index, LocalReferenceNumber, Mode}
+import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
+import pages.item.AddSupplyChainActorYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.item.supplyChainActors.index.SupplyChainActorTypeView
+import views.html.item.AddSupplyChainActorYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class SupplyChainActorTypeController @Inject() (
+class AddSupplyChainActorYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigatorProvider: SupplyChainActorNavigatorProvider,
+  navigatorProvider: ItemNavigatorProvider,
   actions: Actions,
-  formProvider: EnumerableFormProvider,
+  formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: SupplyChainActorTypeView
+  view: AddSupplyChainActorYesNoView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider[SupplyChainActorType]("item.supplyChainActors.index.supplyChainActorType")
+  private val form = formProvider("item.addSupplyChainActorYesNo")
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, actorIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(SupplyChainActorTypePage(itemIndex, actorIndex)) match {
+      val preparedForm = request.userAnswers.get(AddSupplyChainActorYesNoPage(itemIndex)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, lrn, SupplyChainActorType.values, mode, itemIndex, actorIndex))
+      Ok(view(preparedForm, lrn, mode, itemIndex))
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, actorIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, SupplyChainActorType.values, mode, itemIndex, actorIndex))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex))),
           value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex, actorIndex)
-            SupplyChainActorTypePage(itemIndex, actorIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
+            AddSupplyChainActorYesNoPage(itemIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
           }
         )
   }
