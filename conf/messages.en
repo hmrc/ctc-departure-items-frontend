@@ -362,8 +362,8 @@ item.addAdditionalInformationYesNo.error.required = Select yes if you want to ad
 item.additionalInformation.index.additionalInformationType.title = What type of additional information do you want to add?
 item.additionalInformation.index.additionalInformationType.heading = What type of additional information do you want to add?
 item.additionalInformation.index.additionalInformationType.placeholder = Select an additional information type
-item.additionalInformation.index.additionalInformationType.change.hidden = additional information {0}
-item.additionalInformation.index.additionalInformationType.checkYourAnswersLabel = Additional information {0}
+item.additionalInformation.index.additionalInformationType.change.hidden = What type of additional information do you want to add?
+item.additionalInformation.index.additionalInformationType.checkYourAnswersLabel = What type of additional information do you want to add?
 item.additionalInformation.index.additionalInformationType.error.required = Select the type of additional information
 
 item.additionalInformation.index.removeAdditionalInformation.title = Are you sure you want to remove this additional information?
@@ -397,13 +397,6 @@ item.removeItem.title = Are you sure you want to remove item {0}?
 item.removeItem.heading = Are you sure you want to remove item {0}?
 item.removeItem.error.required = Select yes if you want to remove item {0}
 
-item.addSupplyChainActorYesNo.title = Do you want to add a supply chain actor for this item?
-item.addSupplyChainActorYesNo.heading = Do you want to add a supply chain actor for this item?
-item.addSupplyChainActorYesNo.paragraph = This is someone who helps move the goods to their destination. They can be a consolidator, freight forwarder, manufacturer or warehouse keeper.
-item.addSupplyChainActorYesNo.change.hidden = if you want to add a supply chain actor for item {0}
-item.addSupplyChainActorYesNo.checkYourAnswersLabel = Do you want to add a supply chain actor for this item?
-item.addSupplyChainActorYesNo.error.required = Select yes if you want to add a supply chain actor for this item
-
 item.supplyChainActors.index.supplyChainActorType.title = Which type of supply chain actor do you want to add?
 item.supplyChainActors.index.supplyChainActorType.heading = Which type of supply chain actor do you want to add?
 item.supplyChainActors.index.supplyChainActorType.consolidator = Consolidator
@@ -420,15 +413,3 @@ item.supplyChainActors.index.identificationNumber.checkYourAnswersLabel = What i
 item.supplyChainActors.index.identificationNumber.error.required = Enter the EORI number or Trader Identification Number (TIN) for the supply chain actor
 item.supplyChainActors.index.identificationNumber.error.invalidCharacters = The EORI number or Trader Identification Number (TIN) must only include letters a to z and numbers 0 to 9
 item.supplyChainActors.index.identificationNumber.error.length = The EORI number or Trader Identification Number (TIN) must be 17 characters or less
-
-item.supplyChainActors.addAnotherSupplyChainActor.singular.title = You have added 1 supply chain actor for this item
-item.supplyChainActors.addAnotherSupplyChainActor.plural.title = You have added {0} supply chain actors for this item
-item.supplyChainActors.addAnotherSupplyChainActor.singular.heading = You have added 1 supply chain actor for this item
-item.supplyChainActors.addAnotherSupplyChainActor.plural.heading = You have added {0} supply chain actors for this item
-item.supplyChainActors.addAnotherSupplyChainActor.maxLimit.label = You cannot add any more supply chain actors. To add another, you need to remove one first.
-item.supplyChainActors.addAnotherSupplyChainActor.label = Do you want to add another supply chain actor for this item?
-item.supplyChainActors.addAnotherSupplyChainActor.error.required = Select yes if you want to add another supply chain actor for this item
-
-item.supplyChainActors.index.removeSupplyChainActor.title = Are you sure you want to remove this supply chain actor?
-item.supplyChainActors.index.removeSupplyChainActor.heading = Are you sure you want to remove this supply chain actor?
-item.supplyChainActors.index.removeSupplyChainActor.error.required = Select yes if you want to remove this supply chain actor

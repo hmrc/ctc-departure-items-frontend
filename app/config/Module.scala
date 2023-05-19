@@ -35,7 +35,6 @@ class Module extends AbstractModule {
     bind(classOf[ItemNavigatorProvider]).to(classOf[ItemNavigatorProviderImpl])
     bind(classOf[DangerousGoodsNavigatorProvider]).to(classOf[DangerousGoodsNavigatorProviderImpl])
     bind(classOf[PackageNavigatorProvider]).to(classOf[PackageNavigatorProviderImpl])
-    bind(classOf[SupplyChainActorNavigatorProvider]).to(classOf[SupplyChainActorNavigatorProviderImpl])
     bind(classOf[DocumentNavigatorProvider]).to(classOf[DocumentNavigatorProviderImpl])
     bind(classOf[AdditionalReferenceNavigatorProvider]).to(classOf[AdditionalReferenceNavigatorProviderImpl])
     bind(classOf[AdditionalInformationNavigatorProvider]).to(classOf[AdditionalInformationNavigatorProviderImpl])
