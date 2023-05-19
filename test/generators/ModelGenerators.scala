@@ -30,11 +30,6 @@ import java.util.UUID
 trait ModelGenerators {
   self: Generators =>
 
-  implicit lazy val arbitrarySupplyChainActorType: Arbitrary[SupplyChainActorType] =
-    Arbitrary {
-      Gen.oneOf(SupplyChainActorType.values)
-    }
-
   implicit lazy val arbitraryDeclarationType: Arbitrary[DeclarationType] =
     Arbitrary {
       Gen.oneOf(DeclarationType.values)
@@ -194,5 +189,10 @@ trait ModelGenerators {
   lazy val arbitraryIncompleteTaskStatus: Arbitrary[TaskStatus] = Arbitrary {
     Gen.oneOf(TaskStatus.InProgress, TaskStatus.NotStarted, TaskStatus.CannotStartYet)
   }
+
+  implicit lazy val arbitrarySupplyChainActorType: Arbitrary[models.SupplyChainActorType] =
+    Arbitrary {
+      Gen.oneOf(models.SupplyChainActorType.values)
+    }
 
 }

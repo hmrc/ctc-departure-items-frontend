@@ -24,7 +24,6 @@ import models.journeyDomain.item.additionalReferences.AdditionalReferencesDomain
 import models.journeyDomain.item.dangerousGoods.DangerousGoodsListDomain
 import models.journeyDomain.item.documents.DocumentsDomain
 import models.journeyDomain.item.packages.PackagesDomain
-import models.journeyDomain.item.supplyChainActors.SupplyChainActorsDomain
 import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
 import models.reference.Country
 import models.{DeclarationType, Index, Mode, UserAnswers}
@@ -49,7 +48,6 @@ case class ItemDomain(
   netWeight: Option[BigDecimal],
   supplementaryUnits: Option[BigDecimal],
   packages: PackagesDomain,
-  supplyChainActors: Option[SupplyChainActorsDomain],
   documents: Option[DocumentsDomain],
   additionalReferences: Option[AdditionalReferencesDomain],
   additionalInformation: Option[AdditionalInformationListDomain]
@@ -80,7 +78,6 @@ object ItemDomain {
       netWeightReader(itemIndex),
       supplementaryUnitsReader(itemIndex),
       packagesReader(itemIndex),
-      supplyChainActorsReader(itemIndex),
       documentsReader(itemIndex),
       additionalReferencesReader(itemIndex),
       additionalInformationListReader(itemIndex)
@@ -161,10 +158,6 @@ object ItemDomain {
 
   def packagesReader(itemIndex: Index): UserAnswersReader[PackagesDomain] =
     PackagesDomain.userAnswersReader(itemIndex)
-
-  def supplyChainActorsReader(itemIndex: Index): UserAnswersReader[Option[SupplyChainActorsDomain]] =
-    AddSupplyChainActorYesNoPage(itemIndex)
-      .filterOptionalDependent(identity)(SupplyChainActorsDomain.userAnswersReader(itemIndex))
 
   def documentsReader(itemIndex: Index): UserAnswersReader[Option[DocumentsDomain]] =
     for {
