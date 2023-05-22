@@ -35,8 +35,8 @@ import views.html.item.documents.index.RemoveDocumentView
 
 class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val formProvider             = new YesNoFormProvider()
-  private def form(document: Document) = formProvider("item.documents.index.removeDocument", document)
+  private val formProvider = new YesNoFormProvider()
+  private val form         = formProvider("item.documents.index.removeDocument")
 
   private val document                 = arbitrary[Document].sample.value
   private val mode                     = NormalMode
@@ -69,7 +69,7 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form(document), lrn, mode, itemIndex, documentIndex, document)(request, messages).toString
+        view(form, lrn, mode, itemIndex, documentIndex, document)(request, messages).toString
     }
 
     "must redirect to the next page" - {
@@ -120,7 +120,7 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       setExistingUserAnswers(emptyUserAnswers)
 
       val request   = FakeRequest(POST, removeDocumentRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form(document).bind(Map("value" -> ""))
+      val boundForm = form.bind(Map("value" -> ""))
 
       val result = route(app, request).value
 
