@@ -33,15 +33,17 @@ class RemoveDocumentViewSpec extends YesNoViewBehaviours with Generators {
 
   override val prefix: String = "item.documents.index.removeDocument"
 
-  behave like pageWithTitle(document)
+  behave like pageWithTitle()
 
   behave like pageWithBackLink()
 
   behave like pageWithSectionCaption(s"Item ${itemIndex.display} - Documents")
 
-  behave like pageWithHeading(document)
+  behave like pageWithHeading()
 
-  behave like pageWithRadioItems(args = Seq(document))
+  behave like pageWithRadioItems()
+
+  behave like pageWithInsetText(document.toString)
 
   behave like pageWithSubmitButton("Save and continue")
 }

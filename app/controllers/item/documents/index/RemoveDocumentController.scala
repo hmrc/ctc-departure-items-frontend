@@ -21,7 +21,7 @@ import controllers.actions._
 import controllers.item.documents.routes
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
-import models.{Document, Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode}
 import pages.sections.documents.DocumentSection
 import play.api.Logging
 import play.api.data.Form
@@ -49,13 +49,12 @@ class RemoveDocumentController @Inject() (
     with I18nSupport
     with Logging {
 
-  private def form(document: Document): Form[Boolean] =
-    formProvider("item.documents.index.removeDocument", document)
+  private val form: Form[Boolean] = formProvider("item.documents.index.removeDocument")
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
       service.getDocument(request.userAnswers, itemIndex, documentIndex) match {
-        case Some(document) => Ok(view(form(document), lrn, mode, itemIndex, documentIndex, document))
+        case Some(document) => Ok(view(form, lrn, mode, itemIndex, documentIndex, document))
         case None           => handleError
       }
   }
@@ -65,7 +64,7 @@ class RemoveDocumentController @Inject() (
       lazy val redirect = routes.AddAnotherDocumentController.onPageLoad(lrn, mode, itemIndex)
       service.getDocument(request.userAnswers, itemIndex, documentIndex) match {
         case Some(document) =>
-          form(document)
+          form
             .bindFromRequest()
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex, documentIndex, document))),
