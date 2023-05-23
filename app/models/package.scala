@@ -53,6 +53,9 @@ package object models {
           case (_, index) => userAnswersReader(index)
         }
         .map(_.toSeq)
+
+    def validateAsListOf[T](implicit reads: Reads[T]): Seq[T] =
+      arr.value.flatMap(_.validate[T].asOpt).toSeq
   }
 
   implicit class RichOptionalJsArray(arr: Option[JsArray]) {

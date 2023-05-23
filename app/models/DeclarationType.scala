@@ -18,6 +18,8 @@ package models
 
 sealed trait DeclarationType extends Radioable[DeclarationType] {
   override val messageKeyPrefix: String = DeclarationType.messageKeyPrefix
+
+  def isOneOf(declarationTypes: DeclarationType*): Boolean = declarationTypes.contains(this)
 }
 
 object DeclarationType extends EnumerableType[DeclarationType] {

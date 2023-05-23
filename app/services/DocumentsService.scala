@@ -16,7 +16,7 @@
 
 package services
 
-import models.{Document, Index, RichOptionalJsArray, SelectableList, UserAnswers}
+import models.{Document, Index, RichJsArray, RichOptionalJsArray, SelectableList, UserAnswers}
 import pages.item.documents.index.DocumentPage
 import pages.sections.documents.{DocumentsSection => ItemDocumentsSection}
 import pages.sections.external.DocumentsSection
@@ -49,9 +49,9 @@ class DocumentsService @Inject() () {
 object DocumentsService {
 
   implicit val documentsReads: Reads[Seq[Document]] = Reads[Seq[Document]] {
-    case JsArray(values) =>
+    case x: JsArray =>
       JsSuccess(
-        values.flatMap(_.validate[Document](Document.reads).asOpt).toSeq
+        x.validateAsListOf[Document]
       )
     case _ => JsError("DocumentsService::documentsReads: Failed to read documents from cache")
   }
