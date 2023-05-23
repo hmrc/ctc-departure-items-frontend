@@ -19,7 +19,7 @@ package controllers.item.supplyChainActors.index
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.EnumerableFormProvider
 import models.{NormalMode, SupplyChainActorType}
-import navigation.ItemNavigatorProvider
+import navigation.SupplyChainActorNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.item.supplyChainActors.index.SupplyChainActorTypePage
@@ -41,7 +41,7 @@ class SupplyChainActorTypeControllerSpec extends SpecBase with AppWithDefaultMoc
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[ItemNavigatorProvider]).toInstance(fakeItemNavigatorProvider))
+      .overrides(bind(classOf[SupplyChainActorNavigatorProvider]).toInstance(fakeSupplyChainActorNavigatorProvider))
 
   "SupplyChainActorType Controller" - {
 
