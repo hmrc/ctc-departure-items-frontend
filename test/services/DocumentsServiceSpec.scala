@@ -37,7 +37,7 @@ class DocumentsServiceSpec extends SpecBase {
               |{
               |  "documents" : [
               |    {
-              |      "attachToAllItems" : true,
+              |      "attachToAllItems" : false,
               |      "previousDocumentType" : {
               |        "type" : "Type 1",
               |        "code" : "Code 1",
@@ -49,6 +49,19 @@ class DocumentsServiceSpec extends SpecBase {
               |      }
               |    },
               |    {
+              |      "attachToAllItems" : true,
+              |      "type" : {
+              |        "type" : "Type 3",
+              |        "code" : "Code 3",
+              |        "description" : "Description 3"
+              |      },
+              |      "details" : {
+              |        "documentReferenceNumber" : "Ref no. 3",
+              |        "uuid" : "cc09f64b-e519-4b21-9961-243ba7cad1b7"
+              |      }
+              |    },
+              |    {
+              |      "attachToAllItems" : false,
               |      "type" : {
               |        "type" : "Type 2",
               |        "code" : "Code 2"
@@ -78,7 +91,7 @@ class DocumentsServiceSpec extends SpecBase {
 
           result.value mustBe SelectableList(
             Seq(
-              Document(attachToAllItems = true, "Type 2", "Code 2", None, "Ref no. 2", UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a"))
+              Document(attachToAllItems = false, "Type 2", "Code 2", None, "Ref no. 2", UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a"))
             )
           )
         }
@@ -89,7 +102,7 @@ class DocumentsServiceSpec extends SpecBase {
               |{
               |  "documents" : [
               |    {
-              |      "attachToAllItems" : true,
+              |      "attachToAllItems" : false,
               |      "previousDocumentType" : {
               |        "type" : "Type 1",
               |        "code" : "Code 1",
@@ -101,7 +114,7 @@ class DocumentsServiceSpec extends SpecBase {
               |      }
               |    },
               |    {
-              |      "attachToAllItems" : true,
+              |      "attachToAllItems" : false,
               |      "type" : {
               |        "type" : "Type 2",
               |        "code" : "Code 2"
@@ -122,14 +135,15 @@ class DocumentsServiceSpec extends SpecBase {
 
           result.value mustBe SelectableList(
             Seq(
-              Document(attachToAllItems = true,
-                       "Type 1",
-                       "Code 1",
-                       Some("Description 1"),
-                       "Ref no. 1",
-                       UUID.fromString("1794d93b-17d5-44fe-a18d-aaa2059d06fe")
+              Document(
+                attachToAllItems = false,
+                "Type 1",
+                "Code 1",
+                Some("Description 1"),
+                "Ref no. 1",
+                UUID.fromString("1794d93b-17d5-44fe-a18d-aaa2059d06fe")
               ),
-              Document(attachToAllItems = true, "Type 2", "Code 2", None, "Ref no. 2", UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a"))
+              Document(attachToAllItems = false, "Type 2", "Code 2", None, "Ref no. 2", UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a"))
             )
           )
         }
@@ -174,7 +188,7 @@ class DocumentsServiceSpec extends SpecBase {
                   |{
                   |  "documents" : [
                   |    {
-                  |      "attachToAllItems" : true,
+                  |      "attachToAllItems" : false,
                   |      "previousDocumentType" : {
                   |        "type" : "Type 1",
                   |        "code" : "Code 1",
@@ -186,7 +200,7 @@ class DocumentsServiceSpec extends SpecBase {
                   |      }
                   |    },
                   |    {
-                  |      "attachToAllItems" : true,
+                  |      "attachToAllItems" : false,
                   |      "type" : {
                   |        "type" : "Type 2",
                   |        "code" : "Code 2"
@@ -216,14 +230,15 @@ class DocumentsServiceSpec extends SpecBase {
 
             result.value mustBe SelectableList(
               Seq(
-                Document(attachToAllItems = true,
-                         "Type 1",
-                         "Code 1",
-                         Some("Description 1"),
-                         "Ref no. 1",
-                         UUID.fromString("1794d93b-17d5-44fe-a18d-aaa2059d06fe")
+                Document(
+                  attachToAllItems = false,
+                  "Type 1",
+                  "Code 1",
+                  Some("Description 1"),
+                  "Ref no. 1",
+                  UUID.fromString("1794d93b-17d5-44fe-a18d-aaa2059d06fe")
                 ),
-                Document(attachToAllItems = true, "Type 2", "Code 2", None, "Ref no. 2", UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a"))
+                Document(attachToAllItems = false, "Type 2", "Code 2", None, "Ref no. 2", UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a"))
               )
             )
           }
@@ -234,7 +249,7 @@ class DocumentsServiceSpec extends SpecBase {
                   |{
                   |  "documents" : [
                   |    {
-                  |      "attachToAllItems" : true,
+                  |      "attachToAllItems" : false,
                   |      "previousDocumentType" : {
                   |        "type" : "Type 1",
                   |        "code" : "Code 1",
@@ -246,7 +261,7 @@ class DocumentsServiceSpec extends SpecBase {
                   |      }
                   |    },
                   |    {
-                  |      "attachToAllItems" : true,
+                  |      "attachToAllItems" : false,
                   |      "type" : {
                   |        "type" : "Type 2",
                   |        "code" : "Code 2"
@@ -276,7 +291,7 @@ class DocumentsServiceSpec extends SpecBase {
 
             result.value mustBe SelectableList(
               Seq(
-                Document(attachToAllItems = true, "Type 2", "Code 2", None, "Ref no. 2", UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a"))
+                Document(attachToAllItems = false, "Type 2", "Code 2", None, "Ref no. 2", UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a"))
               )
             )
           }
@@ -288,7 +303,7 @@ class DocumentsServiceSpec extends SpecBase {
               |{
               |  "documents" : [
               |    {
-              |      "attachToAllItems" : true,
+              |      "attachToAllItems" : false,
               |      "previousDocumentType" : {
               |        "type" : "Type 1",
               |        "code" : "Code 1",
@@ -300,7 +315,7 @@ class DocumentsServiceSpec extends SpecBase {
               |      }
               |    },
               |    {
-              |      "attachToAllItems" : true,
+              |      "attachToAllItems" : false,
               |      "type" : {
               |        "type" : "Type 2",
               |        "code" : "Code 2"
@@ -321,14 +336,15 @@ class DocumentsServiceSpec extends SpecBase {
 
           result.value mustBe SelectableList(
             Seq(
-              Document(attachToAllItems = true,
-                       "Type 1",
-                       "Code 1",
-                       Some("Description 1"),
-                       "Ref no. 1",
-                       UUID.fromString("1794d93b-17d5-44fe-a18d-aaa2059d06fe")
+              Document(
+                attachToAllItems = false,
+                "Type 1",
+                "Code 1",
+                Some("Description 1"),
+                "Ref no. 1",
+                UUID.fromString("1794d93b-17d5-44fe-a18d-aaa2059d06fe")
               ),
-              Document(attachToAllItems = true, "Type 2", "Code 2", None, "Ref no. 2", UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a"))
+              Document(attachToAllItems = false, "Type 2", "Code 2", None, "Ref no. 2", UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a"))
             )
           )
         }

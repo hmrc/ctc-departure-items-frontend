@@ -33,9 +33,13 @@ class DocumentsService @Inject() () {
       documents <- userAnswers.get(DocumentsSection).validate[Seq[Document]]
       document          = documentIndex.flatMap(getDocument(userAnswers, itemIndex, _))
       itemDocumentUuids = userAnswers.get(ItemDocumentsSection(itemIndex)).validate[Seq[UUID]].getOrElse(Nil)
-      filteredDocuments = documents.filter {
-        x => !itemDocumentUuids.contains(x.uuid) || document.map(_.uuid).contains(x.uuid)
-      }
+      filteredDocuments = documents
+        .filter {
+          x => !itemDocumentUuids.contains(x.uuid) || document.map(_.uuid).contains(x.uuid)
+        }
+        .filter {
+          !_.attachToAllItems
+        }
     } yield SelectableList(filteredDocuments)
 
   def getDocument(userAnswers: UserAnswers, itemIndex: Index, documentIndex: Index): Option[Document] =
