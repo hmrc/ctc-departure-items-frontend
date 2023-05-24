@@ -47,6 +47,11 @@
         caption = Some(messages("item.documents.caption", itemIndex.display))
     )
 
+    @if(viewModel.consignmentLevelDocumentsListItems.nonEmpty) {
+        @listWithActions(viewModel.consignmentLevelDocumentsListItems)
+        <p class="govuk-body">@messages("item.documents.addAnotherDocument.consignment.paragraph")</p>
+    }
+
     @listWithActions(viewModel.listItems)
 
     @formHelper(action = viewModel.onSubmitCall, Symbol("autoComplete") -> "off") {

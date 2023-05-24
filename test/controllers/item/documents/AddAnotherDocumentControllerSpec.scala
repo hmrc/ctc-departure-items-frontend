@@ -68,9 +68,9 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
 
   private val viewModel = arbitrary[AddAnotherDocumentViewModel].sample.value
 
-  private val emptyViewModel       = viewModel.copy(listItems = Nil)
-  private val notMaxedOutViewModel = viewModel.copy(listItems = listItems)
-  private val maxedOutViewModel    = viewModel.copy(listItems = maxedOutListItems)
+  private val emptyViewModel       = viewModel.copy(listItems = Nil, consignmentLevelDocumentsListItems = Nil)
+  private val notMaxedOutViewModel = viewModel.copy(listItems = listItems, consignmentLevelDocumentsListItems = Nil)
+  private val maxedOutViewModel    = viewModel.copy(listItems = maxedOutListItems, consignmentLevelDocumentsListItems = Nil)
 
   "AddAnotherDocument Controller" - {
 

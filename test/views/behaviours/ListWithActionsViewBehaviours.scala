@@ -70,7 +70,7 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours with Generators 
     }
 
   // scalastyle:off method.length
-  private def pageWithListWithActions(doc: Document, listItems: Seq[ListItem]): Unit =
+  def pageWithListWithActions(doc: Document, listItems: Seq[ListItem]): Unit =
     "page with a list with actions" - {
       "must contain a description list" in {
         val descriptionLists = getElementsByTag(doc, "dl")

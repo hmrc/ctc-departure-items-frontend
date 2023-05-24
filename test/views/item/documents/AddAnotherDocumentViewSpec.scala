@@ -21,6 +21,7 @@ import forms.AddAnotherFormProvider
 import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
+import viewmodels.ListItem
 import viewmodels.item.documents.AddAnotherDocumentViewModel
 import views.behaviours.ListWithActionsViewBehaviours
 import views.html.item.documents.AddAnotherDocumentView
@@ -33,8 +34,8 @@ class AddAnotherDocumentViewSpec extends ListWithActionsViewBehaviours {
     new AddAnotherFormProvider()(viewModel.prefix, viewModel.allowMore)
 
   private val viewModel            = arbitrary[AddAnotherDocumentViewModel].sample.value
-  private val notMaxedOutViewModel = viewModel.copy(listItems = listItems)
-  private val maxedOutViewModel    = viewModel.copy(listItems = maxedOutListItems)
+  private val notMaxedOutViewModel = viewModel.copy(listItems = listItems, consignmentLevelDocumentsListItems = Nil)
+  private val maxedOutViewModel    = viewModel.copy(listItems = maxedOutListItems, consignmentLevelDocumentsListItems = Nil)
 
   override def form: Form[Boolean] = formProvider(notMaxedOutViewModel)
 
@@ -77,5 +78,29 @@ class AddAnotherDocumentViewSpec extends ListWithActionsViewBehaviours {
       expectedText = "Go to your Documents section to add another document",
       expectedHref = routes.AddAnotherDocumentController.redirectToDocuments(lrn, itemIndex).url
     )
+  }
+
+  "when there are consignment level documents" - {
+    val listItems = listWithMaxLength[ListItem]().sample.value
+
+    val view = injector
+      .instanceOf[AddAnotherDocumentView]
+      .apply(form, lrn, viewModel.copy(listItems = Nil, consignmentLevelDocumentsListItems = listItems), itemIndex)(fakeRequest, messages, frontendAppConfig)
+
+    val doc = parseView(view)
+
+    behave like pageWithListWithActions(doc, listItems)
+
+    behave like pageWithContent(doc, "p", "You attached the documents above in your Documents section.")
+  }
+
+  "when there are no consignment level documents" - {
+    val view = injector
+      .instanceOf[AddAnotherDocumentView]
+      .apply(form, lrn, viewModel.copy(consignmentLevelDocumentsListItems = Nil), itemIndex)(fakeRequest, messages, frontendAppConfig)
+
+    val doc = parseView(view)
+
+    behave like pageWithoutContent(doc, "p", "You attached the documents above in your Documents section.")
   }
 }
