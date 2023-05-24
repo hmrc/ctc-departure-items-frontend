@@ -29,6 +29,16 @@ import viewmodels.ListItem
 class DocumentAnswersHelper(userAnswers: UserAnswers, mode: Mode, itemIndex: Index)(implicit messages: Messages, config: FrontendAppConfig)
     extends AnswersHelper(userAnswers, mode) {
 
+  def consignmentLevelListItems(implicit documentsService: DocumentsService): Seq[ListItem] =
+    documentsService.getConsignmentLevelDocuments(userAnswers).map {
+      document =>
+        ListItem(
+          name = document.toString,
+          changeUrl = None,
+          removeUrl = None
+        )
+    }
+
   def listItems(implicit documentsService: DocumentsService): Seq[Either[ListItem, ListItem]] =
     buildListItems(DocumentsSection(itemIndex)) {
       documentIndex =>

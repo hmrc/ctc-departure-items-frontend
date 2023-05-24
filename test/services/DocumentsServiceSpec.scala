@@ -379,6 +379,65 @@ class DocumentsServiceSpec extends SpecBase {
       }
     }
 
+    "getConsignmentLevelDocuments" - {
+
+      "must return all consignment level documents" - {
+        "when documents present in user answers" in {
+          val json = Json
+            .parse("""
+                |{
+                |  "documents" : [
+                |    {
+                |      "attachToAllItems" : false,
+                |      "previousDocumentType" : {
+                |        "type" : "Type 1",
+                |        "code" : "Code 1",
+                |        "description" : "Description 1"
+                |      },
+                |      "details" : {
+                |        "documentReferenceNumber" : "Ref no. 1",
+                |        "uuid" : "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
+                |      }
+                |    },
+                |    {
+                |      "attachToAllItems" : true,
+                |      "type" : {
+                |        "type" : "Type 3",
+                |        "code" : "Code 3"
+                |      },
+                |      "details" : {
+                |        "documentReferenceNumber" : "Ref no. 3",
+                |        "uuid" : "cc09f64b-e519-4b21-9961-243ba7cad1b7"
+                |      }
+                |    },
+                |    {
+                |      "attachToAllItems" : false,
+                |      "type" : {
+                |        "type" : "Type 2",
+                |        "code" : "Code 2"
+                |      },
+                |      "details" : {
+                |        "documentReferenceNumber" : "Ref no. 2",
+                |        "uuid" : "a573bfd3-6470-40c4-a290-ea2d8d43c02a"
+                |      }
+                |    }
+                |  ]
+                |}
+                |""".stripMargin)
+            .as[JsObject]
+
+          val userAnswers = emptyUserAnswers.copy(data = json)
+
+          val result = service.getConsignmentLevelDocuments(userAnswers)
+
+          result mustBe Seq(
+            Document(attachToAllItems = true, "Type 3", "Code 3", None, "Ref no. 3", UUID.fromString("cc09f64b-e519-4b21-9961-243ba7cad1b7"))
+          )
+
+        }
+      }
+    }
+
     "getDocument" - {
 
       val json = Json

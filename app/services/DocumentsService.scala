@@ -42,6 +42,13 @@ class DocumentsService @Inject() () {
         }
     } yield SelectableList(filteredDocuments)
 
+  def getConsignmentLevelDocuments(userAnswers: UserAnswers): Seq[Document] =
+    userAnswers
+      .get(DocumentsSection)
+      .validate[Seq[Document]]
+      .getOrElse(Nil)
+      .filter(_.attachToAllItems)
+
   def getDocument(userAnswers: UserAnswers, itemIndex: Index, documentIndex: Index): Option[Document] =
     for {
       uuid      <- userAnswers.get(DocumentPage(itemIndex, documentIndex))

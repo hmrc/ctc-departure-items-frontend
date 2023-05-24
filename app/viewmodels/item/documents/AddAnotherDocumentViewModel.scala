@@ -30,8 +30,11 @@ import javax.inject.Inject
 case class AddAnotherDocumentViewModel(
   override val listItems: Seq[ListItem],
   onSubmitCall: Call,
-  documents: Seq[Document]
+  documents: Seq[Document],
+  consignmentLevelDocumentsListItems: Seq[ListItem]
 ) extends AddAnotherViewModel {
+
+  override def count: Int = super.count + consignmentLevelDocumentsListItems.length
 
   override val prefix: String = "item.documents.addAnotherDocument"
 
@@ -58,7 +61,8 @@ object AddAnotherDocumentViewModel {
       new AddAnotherDocumentViewModel(
         listItems,
         onSubmitCall = routes.AddAnotherDocumentController.onSubmit(userAnswers.lrn, mode, itemIndex),
-        documents = documents
+        documents = documents,
+        consignmentLevelDocumentsListItems = helper.consignmentLevelListItems
       )
     }
   }

@@ -20,42 +20,72 @@ import base.SpecBase
 import generators.Generators
 import models.{Document, Index, Mode}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.item.documents.index.DocumentPage
 import services.DocumentsService
 import viewmodels.item.documents.AddAnotherDocumentViewModel.AddAnotherDocumentViewModelProvider
 
-class AddAnotherDocumentViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
+class AddAnotherDocumentViewModelSpec extends SpecBase with BeforeAndAfterEach with Generators with ScalaCheckPropertyChecks {
 
   implicit private val mockDocumentsService: DocumentsService = mock[DocumentsService]
 
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockDocumentsService)
+  }
+
   "must get list items" - {
 
-    "when there is one document added" in {
-      forAll(arbitrary[Mode], arbitrary[Document]) {
-        (mode, document) =>
-          when(mockDocumentsService.getDocument(any(), any(), any())).thenReturn(Some(document))
+    "when there is one document added" - {
+      "at item level" in {
+        forAll(arbitrary[Mode], arbitrary[Document]) {
+          (mode, document) =>
+            when(mockDocumentsService.getDocument(any(), any(), any())).thenReturn(Some(document))
+            when(mockDocumentsService.getConsignmentLevelDocuments(any())).thenReturn(Nil)
 
-          val userAnswers = emptyUserAnswers.setValue(DocumentPage(itemIndex, documentIndex), document.uuid)
+            val userAnswers = emptyUserAnswers.setValue(DocumentPage(itemIndex, documentIndex), document.uuid)
 
-          val result = new AddAnotherDocumentViewModelProvider().apply(userAnswers, mode, itemIndex, Nil)
+            val result = new AddAnotherDocumentViewModelProvider().apply(userAnswers, mode, itemIndex, Nil)
 
-          result.listItems.length mustBe 1
-          result.title mustBe "You have attached 1 document to this item"
-          result.heading mustBe "You have attached 1 document to this item"
-          result.legend mustBe "Do you want to attach another document?"
-          result.maxLimitLabel mustBe "You cannot attach any more documents. To attach another, you need to remove one first."
+            result.listItems.length mustBe 1
+            result.consignmentLevelDocumentsListItems.length mustBe 0
+            result.title mustBe "You have attached 1 document to this item"
+            result.heading mustBe "You have attached 1 document to this item"
+            result.legend mustBe "Do you want to attach another document?"
+            result.maxLimitLabel mustBe "You cannot attach any more documents. To attach another, you need to remove one first."
+        }
       }
+
+      "at consignment level" in {
+        forAll(arbitrary[Mode], arbitrary[Document]) {
+          (mode, document) =>
+            when(mockDocumentsService.getDocument(any(), any(), any())).thenReturn(None)
+            when(mockDocumentsService.getConsignmentLevelDocuments(any())).thenReturn(Seq(document))
+
+            val result = new AddAnotherDocumentViewModelProvider().apply(emptyUserAnswers, mode, itemIndex, Nil)
+
+            result.consignmentLevelDocumentsListItems.length mustBe 1
+            result.listItems.length mustBe 0
+            result.title mustBe "You have attached 1 document to this item"
+            result.heading mustBe "You have attached 1 document to this item"
+            result.legend mustBe "Do you want to attach another document?"
+            result.maxLimitLabel mustBe "You cannot attach any more documents. To attach another, you need to remove one first."
+        }
+      }
+
     }
 
     "when there are multiple documents added" in {
-      forAll(arbitrary[Mode], arbitrary[Document], arbitrary[Document]) {
-        (mode, document1, document2) =>
+      forAll(arbitrary[Mode], arbitrary[Document], arbitrary[Document], arbitrary[Document]) {
+        (mode, document1, document2, document3) =>
           when(mockDocumentsService.getDocument(any(), any(), any()))
             .thenReturn(Some(document1))
             .thenReturn(Some(document2))
+
+          when(mockDocumentsService.getConsignmentLevelDocuments(any())).thenReturn(Seq(document3))
 
           val userAnswers = emptyUserAnswers
             .setValue(DocumentPage(itemIndex, Index(0)), document1.uuid)
@@ -63,8 +93,9 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with Generators with Scal
 
           val result = new AddAnotherDocumentViewModelProvider().apply(userAnswers, mode, itemIndex, Nil)
           result.listItems.length mustBe 2
-          result.title mustBe s"You have attached 2 documents to this item"
-          result.heading mustBe s"You have attached 2 documents to this item"
+          result.consignmentLevelDocumentsListItems.length mustBe 1
+          result.title mustBe s"You have attached 3 documents to this item"
+          result.heading mustBe s"You have attached 3 documents to this item"
           result.legend mustBe "Do you want to attach another document?"
           result.maxLimitLabel mustBe "You cannot attach any more documents. To attach another, you need to remove one first."
       }

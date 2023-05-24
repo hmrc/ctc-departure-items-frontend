@@ -18,6 +18,12 @@ package viewmodels
 
 case class ListItem(
   name: String,
-  changeUrl: String,
+  changeUrl: Option[String],
   removeUrl: Option[String]
 )
+
+object ListItem {
+
+  def apply(name: String, changeUrl: String, removeUrl: Option[String]): ListItem =
+    ListItem(name, Some(changeUrl), removeUrl)
+}

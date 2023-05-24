@@ -22,7 +22,7 @@ import play.api.i18n.Messages
 
 trait AddAnotherViewModel {
   val listItems: Seq[ListItem]
-  val count: Int = listItems.length
+  def count: Int = listItems.length
 
   val nextIndex: Index = Index(count)
 
