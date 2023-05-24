@@ -81,6 +81,12 @@ object ItemAnswersViewModel {
         addAnotherLink = helper.addOrRemovePackages
       )
 
+      val supplyChainActorsSection = Section(
+        sectionTitle = messages("item.checkYourAnswers.supplyChainActors"),
+        rows = helper.supplyChainActorYesNo.toList ++ helper.supplyChainActors,
+        addAnotherLink = helper.addOrRemoveSupplyChainActors
+      )
+
       val documentsSection = Section(
         sectionTitle = messages("item.checkYourAnswers.documents"),
         rows = helper.documentsYesNo.toList ++ helper.documents,
@@ -103,6 +109,7 @@ object ItemAnswersViewModel {
         dangerousGoodsSection.toSeq ++
         measurementSection.toSeq ++
         packagesSection.toSeq ++
+        supplyChainActorsSection.toSeq ++
         documentsSection.toSeq ++
         additionalReferencesSection.toSeq ++
         additionalInformationSection.toSeq

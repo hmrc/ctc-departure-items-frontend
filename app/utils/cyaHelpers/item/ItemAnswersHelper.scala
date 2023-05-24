@@ -22,6 +22,7 @@ import models.journeyDomain.item.additionalReferences.AdditionalReferenceDomain
 import models.journeyDomain.item.dangerousGoods.DangerousGoodsDomain
 import models.journeyDomain.item.documents.DocumentDomain
 import models.journeyDomain.item.packages.PackageDomain
+import models.journeyDomain.item.supplyChainActors.SupplyChainActorDomain
 import models.reference.Country
 import models.{CheckMode, DeclarationType, Index, UserAnswers}
 import pages.item._
@@ -30,9 +31,11 @@ import pages.sections.additionalReference.AdditionalReferencesSection
 import pages.sections.dangerousGoods.DangerousGoodsListSection
 import pages.sections.documents.DocumentsSection
 import pages.sections.packages.PackagesSection
+import pages.sections.supplyChainActors.SupplyChainActorsSection
 import play.api.i18n.Messages
 import services.DocumentsService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import utils.cyaHelpers.AnswersHelper
 import viewmodels.Link
 
@@ -224,6 +227,34 @@ class ItemAnswersHelper(
         id = "add-or-remove-packages",
         text = messages("item.checkYourAnswers.packages.addOrRemove"),
         href = controllers.item.packages.routes.AddAnotherPackageController.onPageLoad(userAnswers.lrn, mode, itemIndex).url
+      )
+  }
+
+  def supplyChainActorYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddSupplyChainActorYesNoPage(itemIndex),
+    formatAnswer = formatAsYesOrNo,
+    prefix = "item.addSupplyChainActorYesNo",
+    id = Some("change-add-supply-chain-actors"),
+    args = itemIndex.display
+  )
+
+  def supplyChainActors: Seq[SummaryListRow] =
+    getAnswersAndBuildSectionRows(SupplyChainActorsSection(itemIndex))(supplyChainActor)
+
+  def supplyChainActor(actorIndex: Index): Option[SummaryListRow] =
+    getAnswerAndBuildSectionRow[SupplyChainActorDomain](
+      formatAnswer = _.asString.toText,
+      prefix = "item.checkYourAnswers.supplyChainActor",
+      id = Some(s"change-supply-chain-actor-${actorIndex.display}"),
+      args = actorIndex.display
+    )(SupplyChainActorDomain.userAnswersReader(itemIndex, actorIndex))
+
+  def addOrRemoveSupplyChainActors: Option[Link] = buildLink(SupplyChainActorsSection(itemIndex)) {
+    mode =>
+      Link(
+        id = "add-or-remove-supply-chain-actors",
+        text = messages("item.checkYourAnswers.supplyChainActors.addOrRemove"),
+        href = controllers.item.supplyChainActors.routes.AddAnotherSupplyChainActorController.onPageLoad(userAnswers.lrn, mode, itemIndex).url
       )
   }
 
