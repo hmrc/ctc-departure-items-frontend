@@ -118,5 +118,27 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with BeforeAndAfterEach w
         }
       }
     }
+
+    "when consignment level document present and new documents to attach have been added" - {
+      "nextIndex value must be read from item level documents" in {
+        forAll(arbitrary[Mode], arbitrary[Document], arbitrary[Document], arbitrary[Document]) {
+          (mode, document1, document2, document3) =>
+            when(mockDocumentsService.getDocument(any(), any(), any()))
+              .thenReturn(Some(document1))
+              .thenReturn(Some(document2))
+
+            when(mockDocumentsService.getConsignmentLevelDocuments(any())).thenReturn(Seq(document3))
+
+            val userAnswers = emptyUserAnswers
+              .setValue(DocumentPage(itemIndex, Index(0)), document1.uuid)
+              .setValue(DocumentPage(itemIndex, Index(1)), document2.uuid)
+
+            val result = new AddAnotherDocumentViewModelProvider().apply(userAnswers, mode, itemIndex, Nil)
+            result.listItems.length mustBe 2
+            result.consignmentLevelDocumentsListItems.length mustBe 1
+            result.nextIndex mustBe Index(2)
+        }
+      }
+    }
   }
 }

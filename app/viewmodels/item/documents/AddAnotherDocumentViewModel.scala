@@ -36,6 +36,8 @@ case class AddAnotherDocumentViewModel(
 
   override def count: Int = super.count + consignmentLevelDocumentsListItems.length
 
+  override val nextIndex: Index = Index(super.count)
+
   override val prefix: String = "item.documents.addAnotherDocument"
 
   override def maxCount(implicit config: FrontendAppConfig): Int = config.maxDocuments
