@@ -57,7 +57,7 @@ class TransportEquipmentControllerSpec extends SpecBase with AppWithDefaultMockF
 
     "must return OK and the correct view for a GET" in {
 
-      when(mockTransportEquipmentService.getTransportEquipments(any())).thenReturn(Some(transportEquipmentList))
+      when(mockTransportEquipmentService.getTransportEquipments(any())).thenReturn(transportEquipmentList)
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, transportEquipmentRoute)
@@ -74,7 +74,7 @@ class TransportEquipmentControllerSpec extends SpecBase with AppWithDefaultMockF
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      when(mockTransportEquipmentService.getTransportEquipments(any())).thenReturn(Some(transportEquipmentList))
+      when(mockTransportEquipmentService.getTransportEquipments(any())).thenReturn(transportEquipmentList)
       val userAnswers = emptyUserAnswers.setValue(TransportEquipmentPage(itemIndex), transportEquipment1.number)
       setExistingUserAnswers(userAnswers)
 
@@ -94,7 +94,7 @@ class TransportEquipmentControllerSpec extends SpecBase with AppWithDefaultMockF
 
     "must redirect to the next page when valid data is submitted" in {
 
-      when(mockTransportEquipmentService.getTransportEquipments(any())).thenReturn(Some(transportEquipmentList))
+      when(mockTransportEquipmentService.getTransportEquipments(any())).thenReturn(transportEquipmentList)
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
@@ -111,7 +111,7 @@ class TransportEquipmentControllerSpec extends SpecBase with AppWithDefaultMockF
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      when(mockTransportEquipmentService.getTransportEquipments(any())).thenReturn(Some(transportEquipmentList))
+      when(mockTransportEquipmentService.getTransportEquipments(any())).thenReturn(transportEquipmentList)
       setExistingUserAnswers(emptyUserAnswers)
 
       val request   = FakeRequest(POST, transportEquipmentRoute).withFormUrlEncodedBody(("value", "invalid value"))

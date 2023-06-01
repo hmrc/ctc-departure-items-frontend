@@ -14,20 +14,14 @@
  * limitations under the License.
  */
 
-package services
+package pages.sections.external
 
-import models.{SelectableList, TransportEquipment, UserAnswers}
-import pages.sections.external.TransportEquipmentsSection
+import pages.sections.ReadOnlySection
+import play.api.libs.json.{JsArray, JsPath}
 
-import javax.inject.Inject
+case object TransportEquipmentsSection extends ReadOnlySection[JsArray] {
 
-class TransportEquipmentService @Inject() () {
+  override def path: JsPath = equipmentsPath \ toString
 
-  def getTransportEquipments(userAnswers: UserAnswers): SelectableList[TransportEquipment] = {
-    val equipmentCount = userAnswers.get(TransportEquipmentsSection).get.value.length
-    val transportEquipments = (1 to equipmentCount).map(
-      x => TransportEquipment(x)
-    )
-    SelectableList(transportEquipments)
-  }
+  override def toString: String = "equipments"
 }

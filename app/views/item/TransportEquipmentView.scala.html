@@ -44,10 +44,11 @@
 
         @inputSelect(
             field = form("value"),
-            selectType = OrdinarySelect(
-                heading = messages("item.transportEquipment.heading")
+            selectType = SelectWithAdditionalHtml(
+                heading = messages("item.transportEquipment.heading"),
+                caption = Some(messages("item.caption", itemIndex.display)),
+                additionalHtml = messages("item.transportEquipment.paragraph").toParagraph
             ),
-            hint = Some(messages("item.transportEquipment.hint")),
             selectItems = transportEquipmentList.toSelectItems(form.value),
             placeholder = messages("item.transportEquipment.placeholder")
         )

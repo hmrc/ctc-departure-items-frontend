@@ -14,20 +14,11 @@
  * limitations under the License.
  */
 
-package services
+package pages.sections
 
-import models.{SelectableList, TransportEquipment, UserAnswers}
-import pages.sections.external.TransportEquipmentsSection
+import play.api.libs.json.{__, JsPath}
 
-import javax.inject.Inject
-
-class TransportEquipmentService @Inject() () {
-
-  def getTransportEquipments(userAnswers: UserAnswers): SelectableList[TransportEquipment] = {
-    val equipmentCount = userAnswers.get(TransportEquipmentsSection).get.value.length
-    val transportEquipments = (1 to equipmentCount).map(
-      x => TransportEquipment(x)
-    )
-    SelectableList(transportEquipments)
-  }
+package object external {
+  lazy val transportPath: JsPath  = __ \ "transportDetails"
+  lazy val equipmentsPath: JsPath = transportPath \ "equipmentsAndCharges"
 }

@@ -25,7 +25,7 @@ import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
 import pages.item.TransportEquipmentPage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.TransportEquipmentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -53,44 +53,33 @@ class TransportEquipmentController @Inject() (
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      service.getTransportEquipments(request.userAnswers) match {
-        case Some(transportEquipmentList) =>
-          val form = formProvider(prefix, transportEquipmentList)
-          val preparedForm = request.userAnswers.get(TransportEquipmentPage(itemIndex)) match {
-            case None => form
-            case Some(number) =>
-              transportEquipmentList.values.find(_.number == number) match {
-                case None        => form
-                case Some(value) => form.fill(value)
-              }
+      val transportEquipmentList = service.getTransportEquipments(request.userAnswers)
+      val form                   = formProvider(prefix, transportEquipmentList)
+      val preparedForm = request.userAnswers.get(TransportEquipmentPage(itemIndex)) match {
+        case None => form
+        case Some(number) =>
+          transportEquipmentList.values.find(_.number == number) match {
+            case None        => form
+            case Some(value) => form.fill(value)
           }
-          Ok(view(preparedForm, lrn, transportEquipmentList.values, mode, itemIndex))
-        case None =>
-          handleError
       }
+      Ok(view(preparedForm, lrn, transportEquipmentList.values, mode, itemIndex))
+
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      service.getTransportEquipments(request.userAnswers) match {
-        case Some(transportEquipmentList) =>
-          val form = formProvider(prefix, transportEquipmentList)
-          form
-            .bindFromRequest()
-            .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, transportEquipmentList.values, mode, itemIndex))),
-              value => {
-                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
-                TransportEquipmentPage(itemIndex).writeToUserAnswers(value.number).updateTask().writeToSession().navigate()
-              }
-            )
-        case None =>
-          Future.successful(handleError)
-      }
+      val transportEquipmentList = service.getTransportEquipments(request.userAnswers)
+      val form                   = formProvider(prefix, transportEquipmentList)
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, transportEquipmentList.values, mode, itemIndex))),
+          value => {
+            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
+            TransportEquipmentPage(itemIndex).writeToUserAnswers(value.number).updateTask().writeToSession().navigate()
+          }
+        )
   }
 
-  private def handleError: Result = {
-    logger.error("Failed to read transport equipments from user answers")
-    Redirect(config.technicalDifficultiesUrl)
-  }
 }
