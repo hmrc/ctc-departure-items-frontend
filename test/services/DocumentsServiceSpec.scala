@@ -37,6 +37,7 @@ class DocumentsServiceSpec extends SpecBase {
               |{
               |  "documents" : [
               |    {
+              |      "attachToAllItems" : false,
               |      "previousDocumentType" : {
               |        "type" : "Type 1",
               |        "code" : "Code 1",
@@ -48,6 +49,19 @@ class DocumentsServiceSpec extends SpecBase {
               |      }
               |    },
               |    {
+              |      "attachToAllItems" : true,
+              |      "type" : {
+              |        "type" : "Type 3",
+              |        "code" : "Code 3",
+              |        "description" : "Description 3"
+              |      },
+              |      "details" : {
+              |        "documentReferenceNumber" : "Ref no. 3",
+              |        "uuid" : "cc09f64b-e519-4b21-9961-243ba7cad1b7"
+              |      }
+              |    },
+              |    {
+              |      "attachToAllItems" : false,
               |      "type" : {
               |        "type" : "Type 2",
               |        "code" : "Code 2"
@@ -77,7 +91,7 @@ class DocumentsServiceSpec extends SpecBase {
 
           result.value mustBe SelectableList(
             Seq(
-              Document("Type 2", "Code 2", None, "Ref no. 2", UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a"))
+              Document(attachToAllItems = false, "Type 2", "Code 2", None, "Ref no. 2", UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a"))
             )
           )
         }
@@ -88,6 +102,7 @@ class DocumentsServiceSpec extends SpecBase {
               |{
               |  "documents" : [
               |    {
+              |      "attachToAllItems" : false,
               |      "previousDocumentType" : {
               |        "type" : "Type 1",
               |        "code" : "Code 1",
@@ -99,6 +114,7 @@ class DocumentsServiceSpec extends SpecBase {
               |      }
               |    },
               |    {
+              |      "attachToAllItems" : false,
               |      "type" : {
               |        "type" : "Type 2",
               |        "code" : "Code 2"
@@ -119,8 +135,15 @@ class DocumentsServiceSpec extends SpecBase {
 
           result.value mustBe SelectableList(
             Seq(
-              Document("Type 1", "Code 1", Some("Description 1"), "Ref no. 1", UUID.fromString("1794d93b-17d5-44fe-a18d-aaa2059d06fe")),
-              Document("Type 2", "Code 2", None, "Ref no. 2", UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a"))
+              Document(
+                attachToAllItems = false,
+                "Type 1",
+                "Code 1",
+                Some("Description 1"),
+                "Ref no. 1",
+                UUID.fromString("1794d93b-17d5-44fe-a18d-aaa2059d06fe")
+              ),
+              Document(attachToAllItems = false, "Type 2", "Code 2", None, "Ref no. 2", UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a"))
             )
           )
         }
@@ -165,6 +188,7 @@ class DocumentsServiceSpec extends SpecBase {
                   |{
                   |  "documents" : [
                   |    {
+                  |      "attachToAllItems" : false,
                   |      "previousDocumentType" : {
                   |        "type" : "Type 1",
                   |        "code" : "Code 1",
@@ -176,6 +200,7 @@ class DocumentsServiceSpec extends SpecBase {
                   |      }
                   |    },
                   |    {
+                  |      "attachToAllItems" : false,
                   |      "type" : {
                   |        "type" : "Type 2",
                   |        "code" : "Code 2"
@@ -205,8 +230,15 @@ class DocumentsServiceSpec extends SpecBase {
 
             result.value mustBe SelectableList(
               Seq(
-                Document("Type 1", "Code 1", Some("Description 1"), "Ref no. 1", UUID.fromString("1794d93b-17d5-44fe-a18d-aaa2059d06fe")),
-                Document("Type 2", "Code 2", None, "Ref no. 2", UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a"))
+                Document(
+                  attachToAllItems = false,
+                  "Type 1",
+                  "Code 1",
+                  Some("Description 1"),
+                  "Ref no. 1",
+                  UUID.fromString("1794d93b-17d5-44fe-a18d-aaa2059d06fe")
+                ),
+                Document(attachToAllItems = false, "Type 2", "Code 2", None, "Ref no. 2", UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a"))
               )
             )
           }
@@ -217,6 +249,7 @@ class DocumentsServiceSpec extends SpecBase {
                   |{
                   |  "documents" : [
                   |    {
+                  |      "attachToAllItems" : false,
                   |      "previousDocumentType" : {
                   |        "type" : "Type 1",
                   |        "code" : "Code 1",
@@ -228,6 +261,7 @@ class DocumentsServiceSpec extends SpecBase {
                   |      }
                   |    },
                   |    {
+                  |      "attachToAllItems" : false,
                   |      "type" : {
                   |        "type" : "Type 2",
                   |        "code" : "Code 2"
@@ -257,7 +291,7 @@ class DocumentsServiceSpec extends SpecBase {
 
             result.value mustBe SelectableList(
               Seq(
-                Document("Type 2", "Code 2", None, "Ref no. 2", UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a"))
+                Document(attachToAllItems = false, "Type 2", "Code 2", None, "Ref no. 2", UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a"))
               )
             )
           }
@@ -269,6 +303,7 @@ class DocumentsServiceSpec extends SpecBase {
               |{
               |  "documents" : [
               |    {
+              |      "attachToAllItems" : false,
               |      "previousDocumentType" : {
               |        "type" : "Type 1",
               |        "code" : "Code 1",
@@ -280,6 +315,7 @@ class DocumentsServiceSpec extends SpecBase {
               |      }
               |    },
               |    {
+              |      "attachToAllItems" : false,
               |      "type" : {
               |        "type" : "Type 2",
               |        "code" : "Code 2"
@@ -300,8 +336,15 @@ class DocumentsServiceSpec extends SpecBase {
 
           result.value mustBe SelectableList(
             Seq(
-              Document("Type 1", "Code 1", Some("Description 1"), "Ref no. 1", UUID.fromString("1794d93b-17d5-44fe-a18d-aaa2059d06fe")),
-              Document("Type 2", "Code 2", None, "Ref no. 2", UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a"))
+              Document(
+                attachToAllItems = false,
+                "Type 1",
+                "Code 1",
+                Some("Description 1"),
+                "Ref no. 1",
+                UUID.fromString("1794d93b-17d5-44fe-a18d-aaa2059d06fe")
+              ),
+              Document(attachToAllItems = false, "Type 2", "Code 2", None, "Ref no. 2", UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a"))
             )
           )
         }
@@ -336,6 +379,65 @@ class DocumentsServiceSpec extends SpecBase {
       }
     }
 
+    "getConsignmentLevelDocuments" - {
+
+      "must return all consignment level documents" - {
+        "when documents present in user answers" in {
+          val json = Json
+            .parse("""
+                |{
+                |  "documents" : [
+                |    {
+                |      "attachToAllItems" : false,
+                |      "previousDocumentType" : {
+                |        "type" : "Type 1",
+                |        "code" : "Code 1",
+                |        "description" : "Description 1"
+                |      },
+                |      "details" : {
+                |        "documentReferenceNumber" : "Ref no. 1",
+                |        "uuid" : "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
+                |      }
+                |    },
+                |    {
+                |      "attachToAllItems" : true,
+                |      "type" : {
+                |        "type" : "Type 3",
+                |        "code" : "Code 3"
+                |      },
+                |      "details" : {
+                |        "documentReferenceNumber" : "Ref no. 3",
+                |        "uuid" : "cc09f64b-e519-4b21-9961-243ba7cad1b7"
+                |      }
+                |    },
+                |    {
+                |      "attachToAllItems" : false,
+                |      "type" : {
+                |        "type" : "Type 2",
+                |        "code" : "Code 2"
+                |      },
+                |      "details" : {
+                |        "documentReferenceNumber" : "Ref no. 2",
+                |        "uuid" : "a573bfd3-6470-40c4-a290-ea2d8d43c02a"
+                |      }
+                |    }
+                |  ]
+                |}
+                |""".stripMargin)
+            .as[JsObject]
+
+          val userAnswers = emptyUserAnswers.copy(data = json)
+
+          val result = service.getConsignmentLevelDocuments(userAnswers)
+
+          result mustBe Seq(
+            Document(attachToAllItems = true, "Type 3", "Code 3", None, "Ref no. 3", UUID.fromString("cc09f64b-e519-4b21-9961-243ba7cad1b7"))
+          )
+
+        }
+      }
+    }
+
     "getDocument" - {
 
       val json = Json
@@ -343,6 +445,7 @@ class DocumentsServiceSpec extends SpecBase {
           |{
           |  "documents" : [
           |    {
+          |      "attachToAllItems" : true,
           |      "previousDocumentType" : {
           |        "type" : "Type 1",
           |        "code" : "Code 1",
@@ -354,6 +457,7 @@ class DocumentsServiceSpec extends SpecBase {
           |      }
           |    },
           |    {
+          |      "attachToAllItems" : true,
           |      "type" : {
           |        "type" : "Type 2",
           |        "code" : "Code 2"
@@ -390,8 +494,14 @@ class DocumentsServiceSpec extends SpecBase {
           val result1 = service.getDocument(userAnswers, itemIndex, Index(0))
           val result2 = service.getDocument(userAnswers, itemIndex, Index(1))
 
-          result1.value mustBe Document("Type 1", "Code 1", Some("Description 1"), "Ref no. 1", UUID.fromString("1794d93b-17d5-44fe-a18d-aaa2059d06fe"))
-          result2.value mustBe Document("Type 2", "Code 2", None, "Ref no. 2", UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a"))
+          result1.value mustBe Document(attachToAllItems = true,
+                                        "Type 1",
+                                        "Code 1",
+                                        Some("Description 1"),
+                                        "Ref no. 1",
+                                        UUID.fromString("1794d93b-17d5-44fe-a18d-aaa2059d06fe")
+          )
+          result2.value mustBe Document(attachToAllItems = true, "Type 2", "Code 2", None, "Ref no. 2", UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a"))
         }
       }
 

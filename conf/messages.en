@@ -328,6 +328,7 @@ item.documents.addAnotherDocument.label = Do you want to attach another document
 item.documents.addAnotherDocument.maxLimit.label = You cannot attach any more documents. To attach another, you need to remove one first.
 item.documents.addAnotherDocument.paragraph = You can only attach another document if you have added it in your Documents section.
 item.documents.addAnotherDocument.link = Go to your Documents section to add another document
+item.documents.addAnotherDocument.consignment.paragraph = You attached the documents above in your Documents section.
 
 item.additionalReference.index.addAdditionalReferenceNumberYesNo.title = Do you want to add an additional reference number?
 item.additionalReference.index.addAdditionalReferenceNumberYesNo.heading = Do you want to add an additional reference number?

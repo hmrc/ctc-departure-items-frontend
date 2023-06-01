@@ -70,7 +70,7 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours with Generators 
     }
 
   // scalastyle:off method.length
-  private def pageWithListWithActions(doc: Document, listItems: Seq[ListItem]): Unit =
+  def pageWithListWithActions(doc: Document, listItems: Seq[ListItem]): Unit =
     "page with a list with actions" - {
       "must contain a description list" in {
         val descriptionLists = getElementsByTag(doc, "dl")
@@ -89,20 +89,21 @@ trait ListWithActionsViewBehaviours extends YesNoViewBehaviours with Generators 
               name mustBe listItem.name
             }
 
-            listItem.removeUrl match {
-              case Some(removeUrl) =>
+            (listItem.changeUrl, listItem.removeUrl) match {
+              case (Some(changeUrl), Some(removeUrl)) =>
                 val actions = renderedItem.getElementsByClass("govuk-summary-list__actions-list-item")
                 "must contain 2 actions" in {
                   actions.size() mustBe 2
                 }
-                withActionLink(actions, "Change", 0, listItem.changeUrl)
+                withActionLink(actions, "Change", 0, changeUrl)
                 withActionLink(actions, "Remove", 1, removeUrl)
-              case None =>
+              case (Some(changeUrl), None) =>
                 val actions = renderedItem.getElementsByClass("govuk-summary-list__actions")
                 "must contain 1 action" in {
                   actions.size() mustBe 1
                 }
-                withActionLink(actions, "Change", 0, listItem.changeUrl)
+                withActionLink(actions, "Change", 0, changeUrl)
+              case _ => ()
             }
 
             def withActionLink(actions: Elements, linkType: String, index: Int, url: String): Unit =

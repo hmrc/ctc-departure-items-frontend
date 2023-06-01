@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-package viewmodels
+package models
 
-case class ListItem(
-  name: String,
-  changeUrl: Option[String],
-  removeUrl: Option[String]
-)
+sealed trait DocumentType
 
-object ListItem {
+object DocumentType extends EnumerableType[DocumentType] {
+  case object Support extends DocumentType
+  case object Transport extends DocumentType
+  case object Previous extends DocumentType
 
-  def apply(name: String, changeUrl: String, removeUrl: Option[String]): ListItem =
-    ListItem(name, Some(changeUrl), removeUrl)
+  override val values: Seq[DocumentType] = Seq(Support, Transport, Previous)
 }

@@ -43,6 +43,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
 
       val json = Json.parse(s"""
           |{
+          |  "attachToAllItems": true,
           |  "type" : {
           |  	 "type" : "Transport",
           |  	 "code" : "$code",
@@ -56,6 +57,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
           |""".stripMargin)
 
       val expectedResult = Document(
+        attachToAllItems = true,
         `type` = "Transport",
         code = code,
         description = Some(description),
@@ -75,6 +77,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
 
       val json = Json.parse(s"""
           |{
+          |  "inferredAttachToAllItems": false,
           |  "type" : {
           |  	 "type" : "Support",
           |  	 "code" : "$code",
@@ -90,6 +93,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
           |""".stripMargin)
 
       val expectedResult = Document(
+        attachToAllItems = false,
         `type` = "Support",
         code = code,
         description = Some(description),
@@ -109,6 +113,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
 
       val json = Json.parse(s"""
           |{
+          |  "attachToAllItems": true,
           |  "type" : {
           |  	 "type" : "Previous",
           |  	 "code" : "$code",
@@ -137,6 +142,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
           |""".stripMargin)
 
       val expectedResult = Document(
+        attachToAllItems = true,
         `type` = "Previous",
         code = code,
         description = Some(description),
@@ -156,6 +162,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
 
       val json = Json.parse(s"""
           |{
+          |  "attachToAllItems": true,
           |  "previousDocumentType" : {
           |  	 "type" : "Previous",
           |  	 "code" : "$code",
@@ -172,6 +179,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
           |""".stripMargin)
 
       val expectedResult = Document(
+        attachToAllItems = true,
         `type` = "Previous",
         code = code,
         description = Some(description),
@@ -187,9 +195,10 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
 
   "must format as string" - {
     "when description defined" in {
-      forAll(typeGen, nonEmptyString, nonEmptyString, nonEmptyString, arbitrary[UUID]) {
-        (`type`, code, description, referenceNumber, uuid) =>
+      forAll(typeGen, nonEmptyString, nonEmptyString, nonEmptyString, arbitrary[UUID], arbitrary[Boolean]) {
+        (`type`, code, description, referenceNumber, uuid, attachToAllItems) =>
           val document = Document(
+            attachToAllItems = attachToAllItems,
             `type` = `type`,
             code = code,
             description = Some(description),
@@ -202,9 +211,10 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
     }
 
     "when description undefined" in {
-      forAll(typeGen, nonEmptyString, nonEmptyString, arbitrary[UUID]) {
-        (`type`, code, referenceNumber, uuid) =>
+      forAll(typeGen, nonEmptyString, nonEmptyString, arbitrary[UUID], arbitrary[Boolean]) {
+        (`type`, code, referenceNumber, uuid, attachToAllItems) =>
           val document = Document(
+            attachToAllItems = attachToAllItems,
             `type` = `type`,
             code = code,
             description = None,
@@ -220,7 +230,8 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
   "must convert to select item" in {
     forAll(typeGen, nonEmptyString, Gen.option(nonEmptyString), nonEmptyString, arbitrary[UUID], arbitrary[Boolean]) {
       (`type`, code, description, referenceNumber, uuid, selected) =>
-        val document = Document(`type`, code, description, referenceNumber, uuid)
+        val attachToAllItems = arbitrary[Boolean].sample.value
+        val document         = Document(attachToAllItems, `type`, code, description, referenceNumber, uuid)
         document.toSelectItem(selected) mustBe SelectItem(Some(document.toString), document.toString, selected)
     }
   }

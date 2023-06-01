@@ -19,17 +19,19 @@ package models.journeyDomain.item
 import cats.implicits._
 import config.Constants.GB
 import models.DeclarationType._
+import models._
 import models.journeyDomain.item.additionalInformation.AdditionalInformationListDomain
 import models.journeyDomain.item.additionalReferences.AdditionalReferencesDomain
 import models.journeyDomain.item.dangerousGoods.DangerousGoodsListDomain
 import models.journeyDomain.item.documents.DocumentsDomain
 import models.journeyDomain.item.packages.PackagesDomain
 import models.journeyDomain.item.supplyChainActors.SupplyChainActorsDomain
-import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
+import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, JsArrayGettableAsReaderOps, Stage, UserAnswersReader}
 import models.reference.Country
-import models.{DeclarationType, Index, Mode, UserAnswers}
+import models.{DeclarationType, Document, Index, Mode, UserAnswers}
 import pages.external._
 import pages.item._
+import pages.sections.external.DocumentsSection
 import play.api.i18n.Messages
 import play.api.mvc.Call
 
@@ -168,13 +170,19 @@ object ItemDomain {
 
   def documentsReader(itemIndex: Index): UserAnswersReader[Option[DocumentsDomain]] =
     for {
-      declarationType       <- TransitOperationDeclarationTypePage.reader
-      isGBOfficeOfDeparture <- CustomsOfficeOfDeparturePage.reader.map(_.startsWith(GB))
-      reader <- (declarationType, isGBOfficeOfDeparture) match {
-        case (T2 | T2F, true) =>
-          DocumentsDomain.userAnswersReader(itemIndex).map(Some(_))
-        case _ =>
+      transitOperationDeclarationType <- TransitOperationDeclarationTypePage.reader
+      isGBOfficeOfDeparture           <- CustomsOfficeOfDeparturePage.reader.map(_.startsWith(GB))
+      itemDeclarationType             <- DeclarationTypePage(itemIndex).optionalReader
+      isT2OrT2FItemDeclarationType = itemDeclarationType.exists(_.isOneOf(T2, T2F))
+      documents <- DocumentsSection.arrayReader.map(_.validateAsListOf[Document])
+      consignmentLevelPreviousDocumentPresent = documents.exists(
+        x => x.attachToAllItems && x.`type` == "Previous"
+      ) // TODO: tidy up so type is not a string
+      reader <- (transitOperationDeclarationType, isGBOfficeOfDeparture, isT2OrT2FItemDeclarationType, consignmentLevelPreviousDocumentPresent) match {
+        case (T, true, true, true) =>
           AddDocumentsYesNoPage(itemIndex).filterOptionalDependent(identity)(DocumentsDomain.userAnswersReader(itemIndex))
+        case _ =>
+          DocumentsDomain.userAnswersReader(itemIndex).map(Some(_))
       }
     } yield reader
 

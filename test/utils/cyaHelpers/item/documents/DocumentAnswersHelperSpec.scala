@@ -34,6 +34,43 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
 
   "DocumentAnswersHelper" - {
 
+    "consignmentLevelListItems" - {
+      "when no consignment level documents" - {
+        "must return empty list of list items" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              when(mockDocumentsService.getConsignmentLevelDocuments(any()))
+                .thenReturn(Nil)
+
+              val helper = new DocumentAnswersHelper(emptyUserAnswers, mode, itemIndex)
+              helper.consignmentLevelListItems mustBe Nil
+          }
+        }
+      }
+
+      "when there are consignment level documents" in {
+        forAll(arbitrary[Mode], arbitrary[Document], arbitrary[Document]) {
+          (mode, document1, document2) =>
+            when(mockDocumentsService.getConsignmentLevelDocuments(any()))
+              .thenReturn(Seq(document1, document2))
+
+            val helper = new DocumentAnswersHelper(emptyUserAnswers, mode, itemIndex)
+            helper.consignmentLevelListItems mustBe Seq(
+              ListItem(
+                name = document1.toString,
+                changeUrl = None,
+                removeUrl = None
+              ),
+              ListItem(
+                name = document2.toString,
+                changeUrl = None,
+                removeUrl = None
+              )
+            )
+        }
+      }
+    }
+
     "listItems" - {
 
       "when empty user answers" - {

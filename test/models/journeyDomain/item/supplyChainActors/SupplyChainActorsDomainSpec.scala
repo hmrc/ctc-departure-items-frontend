@@ -28,8 +28,7 @@ class SupplyChainActorsDomainSpec extends SpecBase with Generators {
 
     "can be parsed from UserAnswers" in {
 
-      //TODO: Change maxPackages to maxSupplyChainActors
-      val numberOfSupplyChainActors = Gen.choose(1, frontendAppConfig.maxPackages).sample.value
+      val numberOfSupplyChainActors = Gen.choose(1, frontendAppConfig.maxSupplyChainActors).sample.value
 
       val userAnswers = (0 until numberOfSupplyChainActors).foldLeft(emptyUserAnswers)({
         case (updatedUserAnswers, index) =>

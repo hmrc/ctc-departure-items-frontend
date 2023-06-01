@@ -22,6 +22,7 @@ import play.api.libs.json._
 import java.util.UUID
 
 case class Document(
+  attachToAllItems: Boolean,
   `type`: String,
   code: String,
   description: Option[String],
@@ -39,10 +40,11 @@ case class Document(
 
 object Document {
 
-  def reads: Reads[Document] = {
+  implicit val reads: Reads[Document] = {
 
     def readsForKey(key: String): Reads[Document] = (
-      (__ \ key \ "type").read[String] and
+      ((__ \ "attachToAllItems").read[Boolean] orElse (__ \ "inferredAttachToAllItems").read[Boolean]) and
+        (__ \ key \ "type").read[String] and
         (__ \ key \ "code").read[String] and
         (__ \ key \ "description").readNullable[String] and
         (__ \ "details" \ "documentReferenceNumber").read[String] and
@@ -51,6 +53,4 @@ object Document {
 
     readsForKey("type") orElse readsForKey("previousDocumentType")
   }
-
-  implicit val format: Format[Document] = Json.format[Document]
 }
