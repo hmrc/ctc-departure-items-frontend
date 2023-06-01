@@ -79,6 +79,13 @@ trait ModelGenerators {
       } yield Document(attachToAllItems, documentType, code, description, referenceNumber, uuid)
     }
 
+  implicit lazy val arbitraryTransportEquipment: Arbitrary[TransportEquipment] =
+    Arbitrary {
+      for {
+        number <- positiveIntsMinMax(1: Int, 9999: Int)
+      } yield TransportEquipment(number)
+    }
+
   implicit lazy val arbitraryLocalReferenceNumber: Arbitrary[LocalReferenceNumber] =
     Arbitrary {
       for {

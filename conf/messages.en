@@ -433,3 +433,12 @@ item.supplyChainActors.addAnotherSupplyChainActor.error.required = Select yes if
 item.supplyChainActors.index.removeSupplyChainActor.title = Are you sure you want to remove this supply chain actor?
 item.supplyChainActors.index.removeSupplyChainActor.heading = Are you sure you want to remove this supply chain actor?
 item.supplyChainActors.index.removeSupplyChainActor.error.required = Select yes if you want to remove this supply chain actor
+
+item.transportEquipment.title = Which transport equipment are you using for this item?
+item.transportEquipment.heading = Which transport equipment are you using for this item?
+item.transportEquipment.hint = Which transport equipment are you using for this item? hint
+item.transportEquipment.label = Which transport equipment are you using for this item? label
+item.transportEquipment.placeholder = Select a customsOffice
+item.transportEquipment.change.hidden = Which transport equipment are you using for this item?
+item.transportEquipment.checkYourAnswersLabel = Which transport equipment are you using for this item?
+item.transportEquipment.error.required = Select the customsOffice
