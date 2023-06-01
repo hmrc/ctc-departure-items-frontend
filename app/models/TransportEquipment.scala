@@ -16,9 +16,14 @@
 
 package models
 
+import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
+
 case class TransportEquipment(number: Int) extends Selectable {
 
-  override def toString: String = s"Transport equipment $number"
+  def asString(implicit messages: Messages): String = messages("item.transportEquipment", number)
+
+  override def toSelectItem(selected: Boolean = false)(implicit messages: Messages): SelectItem = SelectItem(Some(value), this.asString, selected)
 
   override val value: String = s"$number"
 }

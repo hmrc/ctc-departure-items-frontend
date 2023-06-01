@@ -38,6 +38,7 @@ item.documents.caption = Item {0} - Documents
 item.additionalReference.caption = Item {0} - Additional reference
 item.additionalInformation.caption = Item {0} - Additional information
 item.supplyChainActor.caption = Item {0} - Supply chain actor
+item.transportEquipment = Transport equipment {0}
 
 item.checkYourAnswers.heading = Check your answers
 item.checkYourAnswers.title = Check your answers

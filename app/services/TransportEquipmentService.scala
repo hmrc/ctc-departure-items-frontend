@@ -24,10 +24,7 @@ import javax.inject.Inject
 class TransportEquipmentService @Inject() () {
 
   def getTransportEquipments(userAnswers: UserAnswers): SelectableList[TransportEquipment] = {
-    val equipmentCount = userAnswers.get(TransportEquipmentsSection).get.value.length
-    val transportEquipments = (1 to equipmentCount).map(
-      x => TransportEquipment(x)
-    )
+    val transportEquipments = userAnswers.get(TransportEquipmentsSection).map(_.value).getOrElse(Nil).zipWithIndex.map(_._2 + 1).map(TransportEquipment).toSeq
     SelectableList(transportEquipments)
   }
 }
