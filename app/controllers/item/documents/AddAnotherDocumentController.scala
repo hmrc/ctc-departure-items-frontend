@@ -53,7 +53,7 @@ class AddAnotherDocumentController @Inject() (
     with I18nSupport {
 
   private def form(viewModel: AddAnotherDocumentViewModel): Form[Boolean] =
-    formProvider(viewModel.prefix)
+    formProvider(viewModel.prefix, viewModel.allowMoreDocuments && viewModel.canAttachMoreDocumentsToItem)
 
   private def documents(itemIndex: Index)(implicit request: DataRequest[_]): Seq[Document] =
     service.getDocuments(request.userAnswers, itemIndex, None).values

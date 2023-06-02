@@ -56,23 +56,25 @@
 
     @formHelper(action = viewModel.onSubmitCall, Symbol("autoComplete") -> "off") {
 
-
-        @if(viewModel.allowMore) {
-
-            @inputYesNo(
-                field = form("value"),
-                yesNoType = YesNoWithLegend(
-                    legend = viewModel.legend
+        @(viewModel.allowMore, viewModel.canAttachMoreDocumentsToItem) match {
+            case (true, true) => {
+                @inputYesNo(
+                    field = form("value"),
+                    yesNoType = YesNoWithLegend(
+                        legend = viewModel.legend
+                    )
                 )
-            )
-        } else {
+            }
+            case (false, _) => {
+                <p class="govuk-body" data-testId="maxLimit">@viewModel.maxLimitLabel</p>
+            }
+            case _ => {
+                <p class="govuk-body">@messages("item.documents.addAnotherDocument.paragraph")</p>
 
-            <p class="govuk-body" data-testId="maxLimit">@viewModel.maxLimitLabel</p>
-            <p class="govuk-body">@messages("item.documents.addAnotherDocument.paragraph")</p>
-            <p class="govuk-body">
-                <a class="govuk-link" id="documents" href="@routes.AddAnotherDocumentController.redirectToDocuments(lrn, itemIndex)">@messages("item.documents.addAnotherDocument.link")</a>
-            </p>
-
+                <p class="govuk-body">
+                    <a class="govuk-link" id="documents" href="@routes.AddAnotherDocumentController.redirectToDocuments(lrn, itemIndex)">@messages("item.documents.addAnotherDocument.link")</a>
+                </p>
+            }
         }
 
         @button(attributes = Map("id" -> "submit"))

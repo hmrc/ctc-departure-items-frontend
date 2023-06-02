@@ -42,7 +42,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
   private val formProvider = new AddAnotherFormProvider()
 
   private def form(viewModel: AddAnotherDocumentViewModel): Form[Boolean] =
-    formProvider(viewModel.prefix)
+    formProvider(viewModel.prefix, viewModel.allowMoreDocuments)
 
   private val mode                         = NormalMode
   private lazy val addAnotherDocumentRoute = routes.AddAnotherDocumentController.onPageLoad(lrn, mode, itemIndex).url
@@ -62,9 +62,9 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
 
   private val viewModel = arbitrary[AddAnotherDocumentViewModel].sample.value
 
-  private val emptyViewModel       = viewModel.copy(listItems = Nil)
-  private val notMaxedOutViewModel = viewModel.copy(allowMoreDocuments = true)
-  private val maxedOutViewModel    = viewModel.copy(allowMoreDocuments = false)
+  private val emptyViewModel       = viewModel.copy(listItems = Nil, consignmentLevelDocumentsListItems = Nil)
+  private val notMaxedOutViewModel = viewModel.copy(allowMoreDocuments = true, consignmentLevelDocumentsListItems = Nil)
+  private val maxedOutViewModel    = viewModel.copy(allowMoreDocuments = false, consignmentLevelDocumentsListItems = Nil)
 
   "AddAnotherDocument Controller" - {
 
@@ -143,7 +143,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
           status(result) mustEqual SEE_OTHER
 
           redirectLocation(result).value mustEqual
-            controllers.item.documents.index.routes.DocumentController.onPageLoad(lrn, mode, itemIndex, Index(viewModel.count)).url
+            controllers.item.documents.index.routes.DocumentController.onPageLoad(lrn, mode, itemIndex, Index(viewModel.listItems.length)).url
         }
       }
 

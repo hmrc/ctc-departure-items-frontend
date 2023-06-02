@@ -41,9 +41,7 @@ case class AddAnotherDocumentViewModel(
 
   override val prefix: String = "item.documents.addAnotherDocument"
 
-  override def maxCount(implicit config: FrontendAppConfig): Int = config.maxDocuments
-
-  def canAttachMoreDocumentsToItem: Boolean = documents.nonEmpty
+  def canAttachMoreDocumentsToItem: Boolean                           = documents.nonEmpty
   override def allowMore(implicit config: FrontendAppConfig): Boolean = allowMoreDocuments
 }
 

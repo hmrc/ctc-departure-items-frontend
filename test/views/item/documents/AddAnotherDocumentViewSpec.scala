@@ -34,20 +34,20 @@ class AddAnotherDocumentViewSpec extends ListWithActionsViewBehaviours {
     new AddAnotherFormProvider()(viewModel.prefix, viewModel.allowMore)
 
   private val viewModel            = arbitrary[AddAnotherDocumentViewModel].sample.value
-  private val notMaxedOutViewModel = viewModel.copy(listItems = listItems, consignmentLevelDocumentsListItems = Nil)
-  private val maxedOutViewModel    = viewModel.copy(listItems = maxedOutListItems, consignmentLevelDocumentsListItems = Nil)
+  private val notMaxedOutViewModel = viewModel.copy(listItems = listItems, consignmentLevelDocumentsListItems = Nil, allowMoreDocuments = true)
+  private val maxedOutViewModel    = viewModel.copy(listItems = maxedOutListItems, consignmentLevelDocumentsListItems = Nil, allowMoreDocuments = false)
 
   override def form: Form[Boolean] = formProvider(notMaxedOutViewModel)
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
       .instanceOf[AddAnotherDocumentView]
-      .apply(form, lrn, notMaxedOutViewModel, itemIndex)(fakeRequest, messages)
+      .apply(form, lrn, notMaxedOutViewModel, itemIndex)(fakeRequest, messages, frontendAppConfig)
 
   override def applyMaxedOutView: HtmlFormat.Appendable =
     injector
       .instanceOf[AddAnotherDocumentView]
-      .apply(formProvider(maxedOutViewModel), lrn, maxedOutViewModel, itemIndex)(fakeRequest, messages)
+      .apply(formProvider(maxedOutViewModel), lrn, maxedOutViewModel, itemIndex)(fakeRequest, messages, frontendAppConfig)
 
   override val prefix: String = "item.documents.addAnotherDocument"
 
@@ -65,7 +65,7 @@ class AddAnotherDocumentViewSpec extends ListWithActionsViewBehaviours {
     val viewModel = notMaxedOutViewModel.copy(documents = Nil)
     val view = injector
       .instanceOf[AddAnotherDocumentView]
-      .apply(formProvider(viewModel), lrn, viewModel, itemIndex)(fakeRequest, messages)
+      .apply(formProvider(viewModel), lrn, viewModel, itemIndex)(fakeRequest, messages, frontendAppConfig)
     val doc = parseView(view)
 
     behave like pageWithoutRadioItems(doc)

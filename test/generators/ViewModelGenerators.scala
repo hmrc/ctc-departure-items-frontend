@@ -197,7 +197,7 @@ trait ViewModelGenerators {
       onSubmitCall                       <- arbitrary[Call]
       documents                          <- listWithMaxLength[Document]()
       consignmentLevelDocumentsListItems <- arbitrary[Seq[ListItem]]
-      allowMore    <- arbitrary[Boolean]
+      allowMore                          <- arbitrary[Boolean]
     } yield AddAnotherDocumentViewModel(listItems, onSubmitCall, documents, consignmentLevelDocumentsListItems, allowMore)
   }
 
