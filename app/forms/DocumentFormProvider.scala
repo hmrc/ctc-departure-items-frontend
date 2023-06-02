@@ -16,15 +16,25 @@
 
 package forms
 
+import config.FrontendAppConfig
 import forms.mappings.Mappings
+import models.{Document, ItemLevelDocuments, SelectableList}
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class AddAnotherFormProvider @Inject() extends Mappings {
+class DocumentFormProvider @Inject() extends Mappings {
 
-  def apply(prefix: String, allowMore: Boolean = true): Form[Boolean] =
+  def apply(
+    prefix: String,
+    selectableList: SelectableList[Document],
+    itemLevelDocuments: ItemLevelDocuments,
+    args: Any*
+  )(implicit config: FrontendAppConfig): Form[Document] =
     Form(
-      "value" -> mandatoryIfBoolean(s"$prefix.error.required", allowMore, defaultValue = false)
+      "value" -> selectable[Document](selectableList, s"$prefix.error.required", args)
+        .verifying(
+          maxLimit(itemLevelDocuments, s"$prefix.error.maxLimitReached")
+        )
     )
 }

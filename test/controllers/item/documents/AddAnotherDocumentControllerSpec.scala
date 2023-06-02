@@ -25,7 +25,6 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
 import pages.item.AddDocumentsYesNoPage
 import pages.item.documents.DocumentsInProgressPage
@@ -34,7 +33,6 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import viewmodels.ListItem
 import viewmodels.item.documents.AddAnotherDocumentViewModel
 import viewmodels.item.documents.AddAnotherDocumentViewModel.AddAnotherDocumentViewModelProvider
 import views.html.item.documents.AddAnotherDocumentView
@@ -44,7 +42,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
   private val formProvider = new AddAnotherFormProvider()
 
   private def form(viewModel: AddAnotherDocumentViewModel): Form[Boolean] =
-    formProvider(viewModel.prefix, viewModel.allowMore(frontendAppConfig))
+    formProvider(viewModel.prefix)
 
   private val mode                         = NormalMode
   private lazy val addAnotherDocumentRoute = routes.AddAnotherDocumentController.onPageLoad(lrn, mode, itemIndex).url
@@ -62,15 +60,11 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
     reset(mockViewModelProvider)
   }
 
-  private val listItem          = arbitrary[ListItem].sample.value
-  private val listItems         = Seq.fill(Gen.choose(1, frontendAppConfig.maxDocuments - 1).sample.value)(listItem)
-  private val maxedOutListItems = Seq.fill(frontendAppConfig.maxDocuments)(listItem)
-
   private val viewModel = arbitrary[AddAnotherDocumentViewModel].sample.value
 
-  private val emptyViewModel       = viewModel.copy(listItems = Nil, consignmentLevelDocumentsListItems = Nil)
-  private val notMaxedOutViewModel = viewModel.copy(listItems = listItems, consignmentLevelDocumentsListItems = Nil)
-  private val maxedOutViewModel    = viewModel.copy(listItems = maxedOutListItems, consignmentLevelDocumentsListItems = Nil)
+  private val emptyViewModel       = viewModel.copy(listItems = Nil)
+  private val notMaxedOutViewModel = viewModel.copy(allowMore = true)
+  private val maxedOutViewModel    = viewModel.copy(allowMore = false)
 
   "AddAnotherDocument Controller" - {
 
@@ -111,7 +105,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(notMaxedOutViewModel), lrn, notMaxedOutViewModel, itemIndex)(request, messages, frontendAppConfig).toString
+          view(form(notMaxedOutViewModel), lrn, notMaxedOutViewModel, itemIndex)(request, messages).toString
       }
 
       "when max limit reached" in {
@@ -129,7 +123,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(maxedOutViewModel), lrn, maxedOutViewModel, itemIndex)(request, messages, frontendAppConfig).toString
+          view(form(maxedOutViewModel), lrn, maxedOutViewModel, itemIndex)(request, messages).toString
       }
     }
 
@@ -149,7 +143,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
           status(result) mustEqual SEE_OTHER
 
           redirectLocation(result).value mustEqual
-            controllers.item.documents.index.routes.DocumentController.onPageLoad(lrn, mode, itemIndex, Index(listItems.length)).url
+            controllers.item.documents.index.routes.DocumentController.onPageLoad(lrn, mode, itemIndex, Index(viewModel.count)).url
         }
       }
 
@@ -231,7 +225,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, lrn, notMaxedOutViewModel, itemIndex)(request, messages, frontendAppConfig).toString
+          view(boundForm, lrn, notMaxedOutViewModel, itemIndex)(request, messages).toString
       }
     }
 

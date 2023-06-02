@@ -16,10 +16,12 @@
 
 package forms.mappings
 
-import models.{Enumerable, Selectable, SelectableList}
+import config.FrontendAppConfig
+import models.{Document, Enumerable, ItemLevelDocuments, Selectable, SelectableList}
 import play.api.data.FieldMapping
 import play.api.data.Forms.of
 import play.api.data.format.Formats.ignoredFormat
+import play.api.data.validation.{Constraint, Invalid, Valid}
 
 import java.time.LocalDate
 
@@ -74,4 +76,14 @@ trait Mappings extends Formatters with Constraints {
     args: Seq[Any] = Seq.empty
   ): FieldMapping[T] =
     of(selectableFormatter[T](selectableList, errorKey, args))
+
+  protected def maxLimit(itemLevelDocuments: ItemLevelDocuments, errorKey: String)(implicit
+    config: FrontendAppConfig
+  ): Constraint[Document] =
+    Constraint {
+      case document if itemLevelDocuments.canAdd(document.`type`) =>
+        Valid
+      case _ =>
+        Invalid(errorKey)
+    }
 }

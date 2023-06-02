@@ -42,12 +42,12 @@ class AddAnotherDocumentViewSpec extends ListWithActionsViewBehaviours {
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
       .instanceOf[AddAnotherDocumentView]
-      .apply(form, lrn, notMaxedOutViewModel, itemIndex)(fakeRequest, messages, frontendAppConfig)
+      .apply(form, lrn, notMaxedOutViewModel, itemIndex)(fakeRequest, messages)
 
   override def applyMaxedOutView: HtmlFormat.Appendable =
     injector
       .instanceOf[AddAnotherDocumentView]
-      .apply(formProvider(maxedOutViewModel), lrn, maxedOutViewModel, itemIndex)(fakeRequest, messages, frontendAppConfig)
+      .apply(formProvider(maxedOutViewModel), lrn, maxedOutViewModel, itemIndex)(fakeRequest, messages)
 
   override val prefix: String = "item.documents.addAnotherDocument"
 
@@ -65,7 +65,7 @@ class AddAnotherDocumentViewSpec extends ListWithActionsViewBehaviours {
     val viewModel = notMaxedOutViewModel.copy(documents = Nil)
     val view = injector
       .instanceOf[AddAnotherDocumentView]
-      .apply(formProvider(viewModel), lrn, viewModel, itemIndex)(fakeRequest, messages, frontendAppConfig)
+      .apply(formProvider(viewModel), lrn, viewModel, itemIndex)(fakeRequest, messages)
     val doc = parseView(view)
 
     behave like pageWithoutRadioItems(doc)

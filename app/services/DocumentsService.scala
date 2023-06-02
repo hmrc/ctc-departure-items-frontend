@@ -28,6 +28,9 @@ import javax.inject.Inject
 
 class DocumentsService @Inject() () {
 
+  def numberOfDocuments(userAnswers: UserAnswers, itemIndex: Index): Int =
+    userAnswers.getArraySize(ItemDocumentsSection(itemIndex))
+
   private def getDocuments(userAnswers: UserAnswers): Seq[Document] =
     userAnswers.get(DocumentsSection).validate[Seq[Document]].getOrElse(Nil)
 

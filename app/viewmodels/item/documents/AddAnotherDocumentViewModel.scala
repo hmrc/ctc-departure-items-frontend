@@ -18,7 +18,7 @@ package viewmodels.item.documents
 
 import config.FrontendAppConfig
 import controllers.item.documents.routes
-import models.{Document, Index, Mode, UserAnswers}
+import models.{Document, Index, ItemLevelDocuments, Mode, UserAnswers}
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import services.DocumentsService
@@ -31,7 +31,8 @@ case class AddAnotherDocumentViewModel(
   override val listItems: Seq[ListItem],
   onSubmitCall: Call,
   documents: Seq[Document],
-  consignmentLevelDocumentsListItems: Seq[ListItem]
+  consignmentLevelDocumentsListItems: Seq[ListItem],
+  allowMore: Boolean
 ) extends AddAnotherViewModel {
 
   override def count: Int = super.count + consignmentLevelDocumentsListItems.length
@@ -60,11 +61,14 @@ object AddAnotherDocumentViewModel {
         case Right(value) => value
       }
 
+      val itemLevelDocuments = ItemLevelDocuments(userAnswers, itemIndex)
+
       new AddAnotherDocumentViewModel(
         listItems,
         onSubmitCall = routes.AddAnotherDocumentController.onSubmit(userAnswers.lrn, mode, itemIndex),
         documents = documents,
-        consignmentLevelDocumentsListItems = helper.consignmentLevelListItems
+        consignmentLevelDocumentsListItems = helper.consignmentLevelListItems,
+        allowMore = !itemLevelDocuments.cannotAddAnyMore
       )
     }
   }

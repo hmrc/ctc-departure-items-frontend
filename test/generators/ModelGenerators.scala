@@ -79,6 +79,39 @@ trait ModelGenerators {
       } yield Document(attachToAllItems, documentType, code, description, referenceNumber, uuid)
     }
 
+  lazy val arbitrarySupportingDocument: Arbitrary[Document] =
+    Arbitrary {
+      for {
+        attachToAllItems <- arbitrary[Boolean]
+        code            <- nonEmptyString
+        description     <- Gen.option(nonEmptyString)
+        referenceNumber <- nonEmptyString
+        uuid            <- arbitrary[UUID]
+      } yield Document(attachToAllItems,"Support", code, description, referenceNumber, uuid)
+    }
+
+  lazy val arbitraryTransportDocument: Arbitrary[Document] =
+    Arbitrary {
+      for {
+        attachToAllItems <- arbitrary[Boolean]
+        code            <- nonEmptyString
+        description     <- Gen.option(nonEmptyString)
+        referenceNumber <- nonEmptyString
+        uuid            <- arbitrary[UUID]
+      } yield Document(attachToAllItems, "Transport", code, description, referenceNumber, uuid)
+    }
+
+  lazy val arbitraryPreviousDocument: Arbitrary[Document] =
+    Arbitrary {
+      for {
+        attachToAllItems <- arbitrary[Boolean]
+        code            <- nonEmptyString
+        description     <- Gen.option(nonEmptyString)
+        referenceNumber <- nonEmptyString
+        uuid            <- arbitrary[UUID]
+      } yield Document(attachToAllItems, "Previous", code, description, referenceNumber, uuid)
+    }
+
   implicit lazy val arbitraryTransportEquipment: Arbitrary[TransportEquipment] =
     Arbitrary {
       for {
