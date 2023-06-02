@@ -63,8 +63,8 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
   private val viewModel = arbitrary[AddAnotherDocumentViewModel].sample.value
 
   private val emptyViewModel       = viewModel.copy(listItems = Nil)
-  private val notMaxedOutViewModel = viewModel.copy(allowMore = true)
-  private val maxedOutViewModel    = viewModel.copy(allowMore = false)
+  private val notMaxedOutViewModel = viewModel.copy(allowMoreDocuments = true)
+  private val maxedOutViewModel    = viewModel.copy(allowMoreDocuments = false)
 
   "AddAnotherDocument Controller" - {
 
@@ -105,7 +105,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(notMaxedOutViewModel), lrn, notMaxedOutViewModel, itemIndex)(request, messages).toString
+          view(form(notMaxedOutViewModel), lrn, notMaxedOutViewModel, itemIndex)(request, messages, frontendAppConfig).toString
       }
 
       "when max limit reached" in {
@@ -123,7 +123,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(maxedOutViewModel), lrn, maxedOutViewModel, itemIndex)(request, messages).toString
+          view(form(maxedOutViewModel), lrn, maxedOutViewModel, itemIndex)(request, messages, frontendAppConfig).toString
       }
     }
 
@@ -225,7 +225,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, lrn, notMaxedOutViewModel, itemIndex)(request, messages).toString
+          view(boundForm, lrn, notMaxedOutViewModel, itemIndex)(request, messages, frontendAppConfig).toString
       }
     }
 

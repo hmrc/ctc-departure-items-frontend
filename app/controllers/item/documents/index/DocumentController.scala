@@ -19,7 +19,7 @@ package controllers.item.documents.index
 import config.FrontendAppConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.{DocumentFormProvider}
+import forms.DocumentFormProvider
 import models.{Index, ItemLevelDocuments, LocalReferenceNumber, Mode}
 import navigation.{DocumentNavigatorProvider, UserAnswersNavigator}
 import pages.item.documents.index.DocumentPage
@@ -69,7 +69,6 @@ class DocumentController @Inject() (
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-
       val itemLevelDocuments = ItemLevelDocuments(request.userAnswers, itemIndex, documentIndex)(service)
       val documentList = service.getDocuments(request.userAnswers, itemIndex, Some(documentIndex))
       val form = formProvider(prefix, documentList, itemLevelDocuments)(config)

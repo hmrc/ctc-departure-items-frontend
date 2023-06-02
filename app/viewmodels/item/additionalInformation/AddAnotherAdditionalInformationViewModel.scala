@@ -33,7 +33,7 @@ case class AddAnotherAdditionalInformationViewModel(
 
   override val prefix: String = "item.additionalInformation.addAnotherAdditionalInformation"
 
-  override def maxCount(implicit config: FrontendAppConfig): Int = config.maxAdditionalInformation
+  override def allowMore(implicit config: FrontendAppConfig): Boolean = count < config.maxAdditionalInformation
 }
 
 object AddAnotherAdditionalInformationViewModel {

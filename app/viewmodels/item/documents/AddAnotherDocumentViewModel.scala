@@ -32,7 +32,7 @@ case class AddAnotherDocumentViewModel(
   onSubmitCall: Call,
   documents: Seq[Document],
   consignmentLevelDocumentsListItems: Seq[ListItem],
-  allowMore: Boolean
+  allowMoreDocuments: Boolean
 ) extends AddAnotherViewModel {
 
   override def count: Int = super.count + consignmentLevelDocumentsListItems.length
@@ -44,6 +44,7 @@ case class AddAnotherDocumentViewModel(
   override def maxCount(implicit config: FrontendAppConfig): Int = config.maxDocuments
 
   def canAttachMoreDocumentsToItem: Boolean = documents.nonEmpty
+  override def allowMore(implicit config: FrontendAppConfig): Boolean = allowMoreDocuments
 }
 
 object AddAnotherDocumentViewModel {
@@ -68,7 +69,7 @@ object AddAnotherDocumentViewModel {
         onSubmitCall = routes.AddAnotherDocumentController.onSubmit(userAnswers.lrn, mode, itemIndex),
         documents = documents,
         consignmentLevelDocumentsListItems = helper.consignmentLevelListItems,
-        allowMore = !itemLevelDocuments.cannotAddAnyMore
+        allowMoreDocuments = !itemLevelDocuments.cannotAddAnyMore
       )
     }
   }

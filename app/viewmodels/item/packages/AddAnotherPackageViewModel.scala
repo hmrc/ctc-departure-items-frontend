@@ -33,7 +33,7 @@ case class AddAnotherPackageViewModel(
 
   override val prefix: String = "item.packages.addAnotherPackage"
 
-  override def maxCount(implicit config: FrontendAppConfig): Int = config.maxPackages
+  override def allowMore(implicit config: FrontendAppConfig): Boolean = count < config.maxPackages
 }
 
 object AddAnotherPackageViewModel {
