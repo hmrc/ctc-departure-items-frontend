@@ -18,9 +18,9 @@ package controllers.item.documents.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.item.documents.{routes => documentRoutes}
-import forms.SelectableFormProvider
+import forms.DocumentFormProvider
 import generators.Generators
-import models.{Document, NormalMode, SelectableList, UserAnswers}
+import models.{Document, ItemLevelDocuments, NormalMode, SelectableList, UserAnswers}
 import navigation.DocumentNavigatorProvider
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -39,13 +39,15 @@ import scala.concurrent.Future
 
 class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val document1    = arbitrary[Document].sample.value
-  private val document2    = arbitrary[Document].sample.value
+  private val document1    = arbitrary[Document](arbitrarySupportingDocument).sample.value
+  private val document2    = arbitrary[Document](arbitraryTransportDocument).sample.value
   private val documentList = SelectableList(Seq(document1, document2))
 
-  private val formProvider = new SelectableFormProvider()
-  private val form         = formProvider("item.documents.index.document", documentList)
-  private val mode         = NormalMode
+  private lazy val formProvider  = new DocumentFormProvider()
+  private val itemLevelDocuments = ItemLevelDocuments()
+
+  private lazy val form = formProvider("item.documents.index.document", documentList, itemLevelDocuments)
+  private val mode      = NormalMode
 
   private val mockDocumentsService: DocumentsService = mock[DocumentsService]
   private lazy val documentRoute                     = routes.DocumentController.onPageLoad(lrn, mode, itemIndex, documentIndex).url
