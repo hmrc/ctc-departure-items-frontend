@@ -51,6 +51,14 @@ class ItemAnswersHelper(
     args = itemIndex.display
   )
 
+  def transportEquipment: Option[SummaryListRow] = getAnswerAndBuildRow[Int](
+    page = TransportEquipmentPage(itemIndex),
+    formatAnswer = formatAsText,
+    prefix = "item.transportEquipment",
+    id = Some("change-transport-equipment"),
+    args = itemIndex.display
+  )
+
   def declarationType: Option[SummaryListRow] = getAnswerAndBuildRow[DeclarationType](
     page = DeclarationTypePage(itemIndex),
     formatAnswer = formatEnumAsText(DeclarationType.messageKeyPrefix),

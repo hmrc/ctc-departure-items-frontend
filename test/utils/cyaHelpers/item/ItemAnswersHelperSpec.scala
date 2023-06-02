@@ -82,6 +82,39 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
       }
     }
 
+    "transportEquipment" - {
+      "must return None" - {
+        "when TransportEquipmentPage is undefined" in {
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+          val result = helper.transportEquipment
+          result mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when TransportEquipmentPage is defined" in {
+          val userAnswers = emptyUserAnswers
+          forAll(positiveIntsMinMax(1: Int, 9999: Int)) {
+            transportEquipment =>
+              val answers = userAnswers.setValue(TransportEquipmentPage(itemIndex), transportEquipment)
+
+              val helper = new ItemAnswersHelper(answers, itemIndex)
+              val result = helper.transportEquipment.get
+
+              result.key.value mustBe "Transport equipment"
+              result.value.value mustBe transportEquipment.toString
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe TransportEquipmentController.onPageLoad(answers.lrn, mode, itemIndex).url
+              action.visuallyHiddenText.get mustBe "transport equipment for item 1"
+              action.id mustBe "change-transport-equipment"
+          }
+        }
+      }
+    }
+
     "declarationType" - {
       "must return None" - {
         "when DeclarationTypePage is undefined" in {

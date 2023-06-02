@@ -44,6 +44,7 @@ object ItemAnswersViewModel {
       val firstItemSection = Section(
         rows = Seq(
           helper.itemDescription,
+          helper.transportEquipment,
           helper.declarationType,
           helper.countryOfDispatch,
           helper.countryOfDestination,

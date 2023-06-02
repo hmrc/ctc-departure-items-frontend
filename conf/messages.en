@@ -440,6 +440,6 @@ item.transportEquipment.title = Which transport equipment are you using for this
 item.transportEquipment.heading = Which transport equipment are you using for this item?
 item.transportEquipment.paragraph = Transport equipment can be anything used to transport goods. For example, a swap body, articulated lorry or trailer.
 item.transportEquipment.placeholder = Select a transportEquipment
-item.transportEquipment.change.hidden = transport equipment
+item.transportEquipment.change.hidden = transport equipment for item {0}
 item.transportEquipment.checkYourAnswersLabel = Transport equipment
 item.transportEquipment.error.required = Select which transport equipment you are using for this item
