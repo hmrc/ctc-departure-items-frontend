@@ -36,6 +36,7 @@ class TransportEquipmentsServiceSpec extends SpecBase {
               |    "equipmentsAndCharges" : {
               |      "equipments" : [
               |        {
+              |          "containerIdentificationNumber" : "98777",
               |          "addSealsYesNo" : true,
               |          "seals" : [
               |            {
@@ -49,6 +50,7 @@ class TransportEquipmentsServiceSpec extends SpecBase {
               |          ]
               |         },
               |         {
+              |           "addContainerIdentificationNumberYesNo" : false,
               |           "addSealsYesNo" : false,
               |           "itemNumbers" : [
               |             {
@@ -69,8 +71,8 @@ class TransportEquipmentsServiceSpec extends SpecBase {
 
         result mustBe SelectableList(
           Seq(
-            TransportEquipment(1),
-            TransportEquipment(2)
+            TransportEquipment(1, Some("98777")),
+            TransportEquipment(2, None)
           )
         )
       }

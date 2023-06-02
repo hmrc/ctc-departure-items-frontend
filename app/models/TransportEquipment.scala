@@ -17,13 +17,26 @@
 package models
 
 import play.api.i18n.Messages
+import play.api.libs.json._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
-case class TransportEquipment(number: Int) extends Selectable {
+case class TransportEquipment(number: Int, containerId: Option[String]) extends Selectable {
 
-  def asString(implicit messages: Messages): String = messages("item.transportEquipment", number)
+  def asString(implicit messages: Messages): String = containerId match {
+    case Some(value) => messages("item.transportEquipment.withContainerId", number, value)
+    case None        => messages("item.transportEquipment.withoutContainerId", number)
+  }
 
   override def toSelectItem(selected: Boolean = false)(implicit messages: Messages): SelectItem = SelectItem(Some(value), this.asString, selected)
 
   override val value: String = s"$number"
+}
+
+object TransportEquipment {
+
+  def equipmentReads(equipmentIndex: Int): Reads[TransportEquipment] =
+    (__ \ "containerIdentificationNumber").readNullable[String].map {
+      containerId =>
+        TransportEquipment(equipmentIndex, containerId)
+    }
 }

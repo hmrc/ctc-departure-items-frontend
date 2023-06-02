@@ -24,7 +24,15 @@ import javax.inject.Inject
 class TransportEquipmentService @Inject() () {
 
   def getTransportEquipments(userAnswers: UserAnswers): SelectableList[TransportEquipment] = {
-    val transportEquipments = userAnswers.get(TransportEquipmentsSection).map(_.value).getOrElse(Nil).zipWithIndex.map(_._2 + 1).map(TransportEquipment).toSeq
+    val transportEquipments = userAnswers
+      .get(TransportEquipmentsSection)
+      .map(_.value)
+      .getOrElse(Nil)
+      .zipWithIndex
+      .flatMap {
+        case (value, index) => value.validate[TransportEquipment](TransportEquipment.equipmentReads(index + 1)).asOpt
+      }
+      .toSeq
     SelectableList(transportEquipments)
   }
 }

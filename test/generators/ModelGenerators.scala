@@ -82,8 +82,9 @@ trait ModelGenerators {
   implicit lazy val arbitraryTransportEquipment: Arbitrary[TransportEquipment] =
     Arbitrary {
       for {
-        number <- positiveIntsMinMax(1: Int, 9999: Int)
-      } yield TransportEquipment(number)
+        number      <- positiveIntsMinMax(1: Int, 9999: Int)
+        containerId <- Gen.option(nonEmptyString)
+      } yield TransportEquipment(number, containerId)
     }
 
   implicit lazy val arbitraryLocalReferenceNumber: Arbitrary[LocalReferenceNumber] =
