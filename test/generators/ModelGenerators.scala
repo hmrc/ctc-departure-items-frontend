@@ -18,7 +18,7 @@ package generators
 
 import config.Constants._
 import models.AddressLine.{Country => _, _}
-import models.DocumentType.{Previous, Supporting, Transport}
+import models.DocumentType.{Previous, Support, Transport}
 import models._
 import models.reference._
 import org.scalacheck.Arbitrary.arbitrary
@@ -93,7 +93,7 @@ trait ModelGenerators {
         description      <- Gen.option(nonEmptyString)
         referenceNumber  <- nonEmptyString
         uuid             <- arbitrary[UUID]
-      } yield Document(attachToAllItems, Supporting, code, description, referenceNumber, uuid)
+      } yield Document(attachToAllItems, Support, code, description, referenceNumber, uuid)
     }
 
   lazy val arbitraryTransportDocument: Arbitrary[Document] =

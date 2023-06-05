@@ -18,7 +18,7 @@ package models
 
 import base.SpecBase
 import generators.Generators
-import models.DocumentType.{Previous, Supporting, Transport}
+import models.DocumentType.{Previous, Support, Transport}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -78,7 +78,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
           |{
           |  "inferredAttachToAllItems": false,
           |  "type" : {
-          |  	 "type" : "Supporting",
+          |  	 "type" : "Support",
           |  	 "code" : "$code",
           |  	 "description" : "$description"
           |  },
@@ -93,7 +93,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
 
       val expectedResult = Document(
         attachToAllItems = false,
-        `type` = Supporting,
+        `type` = Support,
         code = code,
         description = Some(description),
         referenceNumber = referenceNumber,

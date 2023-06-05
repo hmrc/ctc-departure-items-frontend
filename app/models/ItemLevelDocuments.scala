@@ -17,23 +17,23 @@
 package models
 
 import config.FrontendAppConfig
-import models.DocumentType.{Previous, Supporting, Transport}
+import models.DocumentType.{Previous, Support, Transport}
 import services.DocumentsService
 
 case class ItemLevelDocuments(
   previous: Int,
-  supporting: Int,
+  support: Int,
   transport: Int
 ) {
 
   def canAdd(documentType: DocumentType)(implicit config: FrontendAppConfig): Boolean = documentType match {
-    case Previous   => previous < config.maxPreviousDocuments
-    case Supporting => supporting < config.maxSupportingDocuments
-    case Transport  => transport < config.maxTransportDocuments
+    case Previous  => previous < config.maxPreviousDocuments
+    case Support   => support < config.maxSupportingDocuments
+    case Transport => transport < config.maxTransportDocuments
   }
 
   def cannotAddAnyMore(implicit config: FrontendAppConfig): Boolean =
-    !canAdd(Previous) && !canAdd(Supporting) && !canAdd(Transport)
+    !canAdd(Previous) && !canAdd(Support) && !canAdd(Transport)
 }
 
 object ItemLevelDocuments {
@@ -48,13 +48,13 @@ object ItemLevelDocuments {
 
   def apply(userAnswers: UserAnswers, itemIndex: Index, documentIndex: Option[Index] = None)(implicit documentsService: DocumentsService): ItemLevelDocuments =
     (0 until documentsService.numberOfDocuments(userAnswers, itemIndex)).map(Index(_)).foldLeft(ItemLevelDocuments()) {
-      case (ItemLevelDocuments(previous, supporting, transport), index) if !documentIndex.contains(index) =>
+      case (ItemLevelDocuments(previous, support, transport), index) if !documentIndex.contains(index) =>
         lazy val documentType = documentsService.getDocument(userAnswers, itemIndex, index).map(_.`type`)
         val values = documentType match {
-          case Some(Previous)   => (previous + 1, supporting, transport)
-          case Some(Supporting) => (previous, supporting + 1, transport)
-          case Some(Transport)  => (previous, supporting, transport + 1)
-          case _                => (previous, supporting, transport)
+          case Some(Previous)  => (previous + 1, support, transport)
+          case Some(Support)   => (previous, support + 1, transport)
+          case Some(Transport) => (previous, support, transport + 1)
+          case _               => (previous, support, transport)
         }
         ItemLevelDocuments(values)
       case (itemLevelDocuments, _) => itemLevelDocuments

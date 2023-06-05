@@ -48,7 +48,7 @@ class ItemLevelDocumentsSpec extends SpecBase with ScalaCheckPropertyChecks with
 
               val result = ItemLevelDocuments.apply(userAnswers, itemIndex)
               result.previous mustBe 1
-              result.supporting mustBe 0
+              result.support mustBe 0
               result.transport mustBe 0
           }
         }
@@ -61,7 +61,7 @@ class ItemLevelDocumentsSpec extends SpecBase with ScalaCheckPropertyChecks with
 
               val result = ItemLevelDocuments.apply(userAnswers, itemIndex, Some(documentIndex))
               result.previous mustBe 0
-              result.supporting mustBe 0
+              result.support mustBe 0
               result.transport mustBe 0
           }
         }
@@ -77,7 +77,7 @@ class ItemLevelDocumentsSpec extends SpecBase with ScalaCheckPropertyChecks with
 
               val result = ItemLevelDocuments.apply(userAnswers, itemIndex)
               result.previous mustBe 0
-              result.supporting mustBe 0
+              result.support mustBe 0
               result.transport mustBe 1
           }
         }
@@ -90,7 +90,7 @@ class ItemLevelDocumentsSpec extends SpecBase with ScalaCheckPropertyChecks with
 
               val result = ItemLevelDocuments.apply(userAnswers, itemIndex, Some(documentIndex))
               result.previous mustBe 0
-              result.supporting mustBe 0
+              result.support mustBe 0
               result.transport mustBe 0
           }
         }
@@ -106,7 +106,7 @@ class ItemLevelDocumentsSpec extends SpecBase with ScalaCheckPropertyChecks with
 
               val result = ItemLevelDocuments.apply(userAnswers, itemIndex)
               result.previous mustBe 0
-              result.supporting mustBe 1
+              result.support mustBe 1
               result.transport mustBe 0
           }
         }
@@ -119,7 +119,7 @@ class ItemLevelDocumentsSpec extends SpecBase with ScalaCheckPropertyChecks with
 
               val result = ItemLevelDocuments.apply(userAnswers, itemIndex, Some(documentIndex))
               result.previous mustBe 0
-              result.supporting mustBe 0
+              result.support mustBe 0
               result.transport mustBe 0
           }
         }
