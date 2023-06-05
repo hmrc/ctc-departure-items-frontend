@@ -39,12 +39,7 @@ class AdditionalInformationServiceSpec extends SpecBase with BeforeAndAfterEach 
   private val additionalInformation2: AdditionalInformation =
     AdditionalInformation("20300", "Export")
 
-  private val additionalInformation3: AdditionalInformation =
-    AdditionalInformation("30600",
-                          "In EXS, where negotiable bills of lading 'to order blank endorsed' are concerned and the consignee particulars are unknown."
-    )
-
-  private val additionalInformationTypes = Seq(additionalInformation1, additionalInformation3, additionalInformation2)
+  private val additionalInformationTypes = Seq(additionalInformation1, additionalInformation2)
 
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)
@@ -60,7 +55,7 @@ class AdditionalInformationServiceSpec extends SpecBase with BeforeAndAfterEach 
           .thenReturn(Future.successful(additionalInformationTypes))
 
         service.getAdditionalInformationTypes().futureValue mustBe
-          SelectableList(Seq(additionalInformation2, additionalInformation1, additionalInformation3))
+          SelectableList(Seq(additionalInformation2, additionalInformation1))
 
         verify(mockRefDataConnector).getAdditionlInformationTypes()(any(), any())
       }
