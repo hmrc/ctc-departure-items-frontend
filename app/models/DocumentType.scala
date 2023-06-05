@@ -19,9 +19,9 @@ package models
 sealed trait DocumentType
 
 object DocumentType extends EnumerableType[DocumentType] {
-  case object Support extends DocumentType
+  case object Supporting extends DocumentType
   case object Transport extends DocumentType
   case object Previous extends DocumentType
 
-  override val values: Seq[DocumentType] = Seq(Support, Transport, Previous)
+  override val values: Seq[DocumentType] = Seq(Supporting, Transport, Previous)
 }

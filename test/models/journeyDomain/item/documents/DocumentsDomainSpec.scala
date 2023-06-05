@@ -30,7 +30,7 @@ class DocumentsDomainSpec extends SpecBase with Generators {
     "can be parsed from UserAnswers" - {
 
       "when documents not in progress" in {
-        val numberOfDocuments = Gen.choose(1, frontendAppConfig.maxDocuments).sample.value
+        val numberOfDocuments = Gen.choose(1, frontendAppConfig.maxTransportDocuments).sample.value
 
         val userAnswers = (0 until numberOfDocuments)
           .foldLeft(emptyUserAnswers)({
@@ -47,7 +47,7 @@ class DocumentsDomainSpec extends SpecBase with Generators {
       }
 
       "when no value set for DocumentsInProgressPage" in {
-        val numberOfDocuments = Gen.choose(1, frontendAppConfig.maxDocuments).sample.value
+        val numberOfDocuments = Gen.choose(1, frontendAppConfig.maxTransportDocuments).sample.value
 
         val userAnswers = (0 until numberOfDocuments).foldLeft(emptyUserAnswers)({
           case (updatedUserAnswers, index) =>
@@ -64,7 +64,7 @@ class DocumentsDomainSpec extends SpecBase with Generators {
 
     "can not be parsed from user answers" - {
       "when documents in progress" in {
-        val numberOfDocuments = Gen.choose(1, frontendAppConfig.maxDocuments).sample.value
+        val numberOfDocuments = Gen.choose(1, frontendAppConfig.maxTransportDocuments).sample.value
 
         val userAnswers = (0 until numberOfDocuments)
           .foldLeft(emptyUserAnswers)({
