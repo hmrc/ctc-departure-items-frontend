@@ -35,43 +35,46 @@ class DocumentsServiceSpec extends SpecBase {
           val json = Json
             .parse("""
               |{
-              |  "documents" : [
-              |    {
-              |      "attachToAllItems" : false,
-              |      "previousDocumentType" : {
-              |        "type" : "Type 1",
-              |        "code" : "Code 1",
-              |        "description" : "Description 1"
+              |  "documents" : {
+              |    "addDocumentsYesNo" : true,
+              |    "documents" : [
+              |      {
+              |        "attachToAllItems" : false,
+              |        "previousDocumentType" : {
+              |          "type" : "Type 1",
+              |          "code" : "Code 1",
+              |          "description" : "Description 1"
+              |        },
+              |        "details" : {
+              |          "documentReferenceNumber" : "Ref no. 1",
+              |          "uuid" : "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
+              |        }
               |      },
-              |      "details" : {
-              |        "documentReferenceNumber" : "Ref no. 1",
-              |        "uuid" : "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
-              |      }
-              |    },
-              |    {
-              |      "attachToAllItems" : true,
-              |      "type" : {
-              |        "type" : "Type 3",
-              |        "code" : "Code 3",
-              |        "description" : "Description 3"
+              |      {
+              |        "attachToAllItems" : true,
+              |        "type" : {
+              |          "type" : "Type 3",
+              |          "code" : "Code 3",
+              |          "description" : "Description 3"
+              |        },
+              |        "details" : {
+              |          "documentReferenceNumber" : "Ref no. 3",
+              |          "uuid" : "cc09f64b-e519-4b21-9961-243ba7cad1b7"
+              |        }
               |      },
-              |      "details" : {
-              |        "documentReferenceNumber" : "Ref no. 3",
-              |        "uuid" : "cc09f64b-e519-4b21-9961-243ba7cad1b7"
+              |      {
+              |        "attachToAllItems" : false,
+              |        "type" : {
+              |          "type" : "Type 2",
+              |          "code" : "Code 2"
+              |        },
+              |        "details" : {
+              |          "documentReferenceNumber" : "Ref no. 2",
+              |          "uuid" : "a573bfd3-6470-40c4-a290-ea2d8d43c02a"
+              |        }
               |      }
-              |    },
-              |    {
-              |      "attachToAllItems" : false,
-              |      "type" : {
-              |        "type" : "Type 2",
-              |        "code" : "Code 2"
-              |      },
-              |      "details" : {
-              |        "documentReferenceNumber" : "Ref no. 2",
-              |        "uuid" : "a573bfd3-6470-40c4-a290-ea2d8d43c02a"
-              |      }
-              |    }
-              |  ],
+              |    ]
+              |  },
               |  "items" : [
               |    {
               |      "documents" : [
@@ -100,31 +103,34 @@ class DocumentsServiceSpec extends SpecBase {
           val json = Json
             .parse("""
               |{
-              |  "documents" : [
-              |    {
-              |      "attachToAllItems" : false,
-              |      "previousDocumentType" : {
-              |        "type" : "Type 1",
-              |        "code" : "Code 1",
-              |        "description" : "Description 1"
+              |  "documents" : {
+              |    "addDocumentsYesNo" : true,
+              |    "documents" : [
+              |      {
+              |        "attachToAllItems" : false,
+              |        "previousDocumentType" : {
+              |          "type" : "Type 1",
+              |          "code" : "Code 1",
+              |          "description" : "Description 1"
+              |        },
+              |        "details" : {
+              |          "documentReferenceNumber" : "Ref no. 1",
+              |          "uuid" : "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
+              |        }
               |      },
-              |      "details" : {
-              |        "documentReferenceNumber" : "Ref no. 1",
-              |        "uuid" : "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
+              |      {
+              |        "attachToAllItems" : false,
+              |        "type" : {
+              |          "type" : "Type 2",
+              |          "code" : "Code 2"
+              |        },
+              |        "details" : {
+              |          "documentReferenceNumber" : "Ref no. 2",
+              |          "uuid" : "a573bfd3-6470-40c4-a290-ea2d8d43c02a"
+              |        }
               |      }
-              |    },
-              |    {
-              |      "attachToAllItems" : false,
-              |      "type" : {
-              |        "type" : "Type 2",
-              |        "code" : "Code 2"
-              |      },
-              |      "details" : {
-              |        "documentReferenceNumber" : "Ref no. 2",
-              |        "uuid" : "a573bfd3-6470-40c4-a290-ea2d8d43c02a"
-              |      }
-              |    }
-              |  ]
+              |    ]
+              |  }
               |}
               |""".stripMargin)
             .as[JsObject]
@@ -160,11 +166,14 @@ class DocumentsServiceSpec extends SpecBase {
           val json = Json
             .parse("""
               |{
-              |  "documents" : [
-              |    {
-              |      "foo" : "bar"
+              |  "documents" : {
+              |    "addDocumentsYesNo" : true,
+              |    "documents" : [
+              |      {
+              |        "foo" : "bar"
+              |      }
+              |    ]
               |    }
-              |  ]
               |}
               |""".stripMargin)
             .as[JsObject]
@@ -186,31 +195,34 @@ class DocumentsServiceSpec extends SpecBase {
             val json = Json
               .parse("""
                   |{
-                  |  "documents" : [
-                  |    {
-                  |      "attachToAllItems" : false,
-                  |      "previousDocumentType" : {
-                  |        "type" : "Type 1",
-                  |        "code" : "Code 1",
-                  |        "description" : "Description 1"
+                  |  "documents" : {
+                  |    "addDocumentsYesNo" : true,
+                  |    "documents" : [
+                  |      {
+                  |        "attachToAllItems" : false,
+                  |        "previousDocumentType" : {
+                  |          "type" : "Type 1",
+                  |          "code" : "Code 1",
+                  |          "description" : "Description 1"
+                  |        },
+                  |        "details" : {
+                  |          "documentReferenceNumber" : "Ref no. 1",
+                  |          "uuid" : "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
+                  |        }
                   |      },
-                  |      "details" : {
-                  |        "documentReferenceNumber" : "Ref no. 1",
-                  |        "uuid" : "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
+                  |      {
+                  |        "attachToAllItems" : false,
+                  |        "type" : {
+                  |          "type" : "Type 2",
+                  |          "code" : "Code 2"
+                  |        },
+                  |        "details" : {
+                  |          "documentReferenceNumber" : "Ref no. 2",
+                  |          "uuid" : "a573bfd3-6470-40c4-a290-ea2d8d43c02a"
+                  |        }
                   |      }
-                  |    },
-                  |    {
-                  |      "attachToAllItems" : false,
-                  |      "type" : {
-                  |        "type" : "Type 2",
-                  |        "code" : "Code 2"
-                  |      },
-                  |      "details" : {
-                  |        "documentReferenceNumber" : "Ref no. 2",
-                  |        "uuid" : "a573bfd3-6470-40c4-a290-ea2d8d43c02a"
-                  |      }
-                  |    }
-                  |  ],
+                  |    ]
+                  |  },
                   |  "items" : [
                   |    {
                   |      "documents" : [
@@ -247,31 +259,34 @@ class DocumentsServiceSpec extends SpecBase {
             val json = Json
               .parse("""
                   |{
-                  |  "documents" : [
-                  |    {
-                  |      "attachToAllItems" : false,
-                  |      "previousDocumentType" : {
-                  |        "type" : "Type 1",
-                  |        "code" : "Code 1",
-                  |        "description" : "Description 1"
+                  |  "documents" : {
+                  |    "addDocumentsYesNo" : true,
+                  |    "documents" : [
+                  |      {
+                  |        "attachToAllItems" : false,
+                  |        "previousDocumentType" : {
+                  |          "type" : "Type 1",
+                  |          "code" : "Code 1",
+                  |          "description" : "Description 1"
+                  |        },
+                  |        "details" : {
+                  |          "documentReferenceNumber" : "Ref no. 1",
+                  |          "uuid" : "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
+                  |        }
                   |      },
-                  |      "details" : {
-                  |        "documentReferenceNumber" : "Ref no. 1",
-                  |        "uuid" : "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
+                  |      {
+                  |        "attachToAllItems" : false,
+                  |        "type" : {
+                  |          "type" : "Type 2",
+                  |          "code" : "Code 2"
+                  |        },
+                  |        "details" : {
+                  |          "documentReferenceNumber" : "Ref no. 2",
+                  |          "uuid" : "a573bfd3-6470-40c4-a290-ea2d8d43c02a"
+                  |        }
                   |      }
-                  |    },
-                  |    {
-                  |      "attachToAllItems" : false,
-                  |      "type" : {
-                  |        "type" : "Type 2",
-                  |        "code" : "Code 2"
-                  |      },
-                  |      "details" : {
-                  |        "documentReferenceNumber" : "Ref no. 2",
-                  |        "uuid" : "a573bfd3-6470-40c4-a290-ea2d8d43c02a"
-                  |      }
-                  |    }
-                  |  ],
+                  |    ]
+                  |  },
                   |  "items" : [
                   |    {
                   |      "documents" : [
@@ -301,31 +316,34 @@ class DocumentsServiceSpec extends SpecBase {
           val json = Json
             .parse("""
               |{
-              |  "documents" : [
-              |    {
-              |      "attachToAllItems" : false,
-              |      "previousDocumentType" : {
-              |        "type" : "Type 1",
-              |        "code" : "Code 1",
-              |        "description" : "Description 1"
+              |  "documents" : {
+              |    "addDocumentsYesNo" : true,
+              |    "documents" : [
+              |      {
+              |        "attachToAllItems" : false,
+              |        "previousDocumentType" : {
+              |          "type" : "Type 1",
+              |          "code" : "Code 1",
+              |          "description" : "Description 1"
+              |        },
+              |        "details" : {
+              |          "documentReferenceNumber" : "Ref no. 1",
+              |          "uuid" : "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
+              |        }
               |      },
-              |      "details" : {
-              |        "documentReferenceNumber" : "Ref no. 1",
-              |        "uuid" : "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
+              |      {
+              |        "attachToAllItems" : false,
+              |        "type" : {
+              |          "type" : "Type 2",
+              |          "code" : "Code 2"
+              |        },
+              |        "details" : {
+              |          "documentReferenceNumber" : "Ref no. 2",
+              |          "uuid" : "a573bfd3-6470-40c4-a290-ea2d8d43c02a"
+              |        }
               |      }
-              |    },
-              |    {
-              |      "attachToAllItems" : false,
-              |      "type" : {
-              |        "type" : "Type 2",
-              |        "code" : "Code 2"
-              |      },
-              |      "details" : {
-              |        "documentReferenceNumber" : "Ref no. 2",
-              |        "uuid" : "a573bfd3-6470-40c4-a290-ea2d8d43c02a"
-              |      }
-              |    }
-              |  ]
+              |    ]
+              |  }
               |}
               |""".stripMargin)
             .as[JsObject]
@@ -361,11 +379,13 @@ class DocumentsServiceSpec extends SpecBase {
           val json = Json
             .parse("""
               |{
-              |  "documents" : [
-              |    {
-              |      "foo" : "bar"
-              |    }
-              |  ]
+              |  "documents" : {
+              |    "documents" : [
+              |      {
+              |        "foo" : "bar"
+              |      }
+              |    ]
+              |  }
               |}
               |""".stripMargin)
             .as[JsObject]
@@ -386,42 +406,45 @@ class DocumentsServiceSpec extends SpecBase {
           val json = Json
             .parse("""
                 |{
-                |  "documents" : [
-                |    {
-                |      "attachToAllItems" : false,
-                |      "previousDocumentType" : {
-                |        "type" : "Type 1",
-                |        "code" : "Code 1",
-                |        "description" : "Description 1"
+                |  "documents" : {
+                |    "addDocumentsYesNo" : true,
+                |    "documents" : [
+                |      {
+                |        "attachToAllItems" : false,
+                |        "previousDocumentType" : {
+                |          "type" : "Type 1",
+                |          "code" : "Code 1",
+                |          "description" : "Description 1"
+                |        },
+                |        "details" : {
+                |          "documentReferenceNumber" : "Ref no. 1",
+                |          "uuid" : "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
+                |        }
                 |      },
-                |      "details" : {
-                |        "documentReferenceNumber" : "Ref no. 1",
-                |        "uuid" : "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
-                |      }
-                |    },
-                |    {
-                |      "attachToAllItems" : true,
-                |      "type" : {
-                |        "type" : "Type 3",
-                |        "code" : "Code 3"
+                |      {
+                |        "attachToAllItems" : true,
+                |        "type" : {
+                |          "type" : "Type 3",
+                |          "code" : "Code 3"
+                |        },
+                |        "details" : {
+                |          "documentReferenceNumber" : "Ref no. 3",
+                |          "uuid" : "cc09f64b-e519-4b21-9961-243ba7cad1b7"
+                |        }
                 |      },
-                |      "details" : {
-                |        "documentReferenceNumber" : "Ref no. 3",
-                |        "uuid" : "cc09f64b-e519-4b21-9961-243ba7cad1b7"
+                |      {
+                |        "attachToAllItems" : false,
+                |        "type" : {
+                |          "type" : "Type 2",
+                |          "code" : "Code 2"
+                |        },
+                |        "details" : {
+                |          "documentReferenceNumber" : "Ref no. 2",
+                |          "uuid" : "a573bfd3-6470-40c4-a290-ea2d8d43c02a"
+                |        }
                 |      }
-                |    },
-                |    {
-                |      "attachToAllItems" : false,
-                |      "type" : {
-                |        "type" : "Type 2",
-                |        "code" : "Code 2"
-                |      },
-                |      "details" : {
-                |        "documentReferenceNumber" : "Ref no. 2",
-                |        "uuid" : "a573bfd3-6470-40c4-a290-ea2d8d43c02a"
-                |      }
-                |    }
-                |  ]
+                |    ]
+                |  }
                 |}
                 |""".stripMargin)
             .as[JsObject]
@@ -443,31 +466,34 @@ class DocumentsServiceSpec extends SpecBase {
       val json = Json
         .parse("""
           |{
-          |  "documents" : [
-          |    {
-          |      "attachToAllItems" : true,
-          |      "previousDocumentType" : {
-          |        "type" : "Type 1",
-          |        "code" : "Code 1",
-          |        "description" : "Description 1"
+          |  "documents" : {
+          |    "addDocumentsYesNo" : true,
+          |    "documents" : [
+          |      {
+          |        "attachToAllItems" : true,
+          |        "previousDocumentType" : {
+          |          "type" : "Type 1",
+          |          "code" : "Code 1",
+          |          "description" : "Description 1"
+          |        },
+          |        "details" : {
+          |          "documentReferenceNumber" : "Ref no. 1",
+          |          "uuid" : "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
+          |        }
           |      },
-          |      "details" : {
-          |        "documentReferenceNumber" : "Ref no. 1",
-          |        "uuid" : "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
+          |      {
+          |        "attachToAllItems" : true,
+          |        "type" : {
+          |          "type" : "Type 2",
+          |          "code" : "Code 2"
+          |        },
+          |        "details" : {
+          |          "documentReferenceNumber" : "Ref no. 2",
+          |          "uuid" : "a573bfd3-6470-40c4-a290-ea2d8d43c02a"
+          |        }
           |      }
-          |    },
-          |    {
-          |      "attachToAllItems" : true,
-          |      "type" : {
-          |        "type" : "Type 2",
-          |        "code" : "Code 2"
-          |      },
-          |      "details" : {
-          |        "documentReferenceNumber" : "Ref no. 2",
-          |        "uuid" : "a573bfd3-6470-40c4-a290-ea2d8d43c02a"
-          |      }
-          |    }
-          |  ],
+          |    ]
+          |  },
           |  "items" : [
           |    {
           |      "documents" : [
@@ -494,14 +520,22 @@ class DocumentsServiceSpec extends SpecBase {
           val result1 = service.getDocument(userAnswers, itemIndex, Index(0))
           val result2 = service.getDocument(userAnswers, itemIndex, Index(1))
 
-          result1.value mustBe Document(attachToAllItems = true,
-                                        "Type 1",
-                                        "Code 1",
-                                        Some("Description 1"),
-                                        "Ref no. 1",
-                                        UUID.fromString("1794d93b-17d5-44fe-a18d-aaa2059d06fe")
+          result1.value mustBe Document(
+            attachToAllItems = true,
+            `type` = "Type 1",
+            code = "Code 1",
+            description = Some("Description 1"),
+            referenceNumber = "Ref no. 1",
+            uuid = UUID.fromString("1794d93b-17d5-44fe-a18d-aaa2059d06fe")
           )
-          result2.value mustBe Document(attachToAllItems = true, "Type 2", "Code 2", None, "Ref no. 2", UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a"))
+          result2.value mustBe Document(
+            attachToAllItems = true,
+            `type` = "Type 2",
+            code = "Code 2",
+            description = None,
+            referenceNumber = "Ref no. 2",
+            uuid = UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a")
+          )
         }
       }
 
