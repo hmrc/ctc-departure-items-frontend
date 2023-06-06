@@ -30,7 +30,7 @@ class AdditionalInformationService @Inject() (referenceDataConnector: ReferenceD
     referenceDataConnector
       .getAdditionlInformationTypes()
       .map {
-        x => x.filter(_.code != "30600")
+        _.filter(_.code != "30600")
       }
       .map(sort)
 
