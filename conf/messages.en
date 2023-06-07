@@ -52,6 +52,10 @@ item.checkYourAnswers.package.label = Package {0}
 item.checkYourAnswers.package.change.hidden = package {0}
 item.checkYourAnswers.packages = Packages
 item.checkYourAnswers.packages.addOrRemove = Add or remove packages
+item.checkYourAnswers.supplyChainActor.label = Supply chain actor {0}
+item.checkYourAnswers.supplyChainActor.change.hidden = supply chain actor {0}
+item.checkYourAnswers.supplyChainActors = Supply chain actors
+item.checkYourAnswers.supplyChainActors.addOrRemove = Add or remove supply chain actors
 item.checkYourAnswers.document.label = Document {0}
 item.checkYourAnswers.document.change.hidden = document {0}
 item.checkYourAnswers.documents = Documents
@@ -387,6 +391,13 @@ item.additionalInformation.addAnotherAdditionalInformation.plural.heading = You 
 item.additionalInformation.addAnotherAdditionalInformation.error.required = Select yes if you want to add any more additional information
 item.additionalInformation.addAnotherAdditionalInformation.label = Do you want to add any more additional information?
 item.additionalInformation.addAnotherAdditionalInformation.maxLimit.label = You cannot add any more additional information. To add another, you need to remove one first.
+
+item.addSupplyChainActorYesNo.title = Do you want to add a supply chain actor for this item?
+item.addSupplyChainActorYesNo.heading = Do you want to add a supply chain actor for this item?
+item.addSupplyChainActorYesNo.paragraph = This is someone who helps move the goods to their destination. They can be a consolidator, freight forwarder, manufacturer or warehouse keeper.
+item.addSupplyChainActorYesNo.change.hidden = if you want to add a supply chain actor for item {0}
+item.addSupplyChainActorYesNo.checkYourAnswersLabel = Do you want to add a supply chain actor for this item?
+item.addSupplyChainActorYesNo.error.required = Select yes if you want to add a supply chain actor for this item
 
 addAnotherItem.singular.title = You have added 1 item
 addAnotherItem.plural.title = You have added {0} items

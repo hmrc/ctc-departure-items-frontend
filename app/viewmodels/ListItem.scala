@@ -20,7 +20,10 @@ case class ListItem(
   name: String,
   changeUrl: Option[String],
   removeUrl: Option[String]
-)
+) {
+
+  def hasAction: Boolean = changeUrl.isDefined || removeUrl.isDefined
+}
 
 object ListItem {
 

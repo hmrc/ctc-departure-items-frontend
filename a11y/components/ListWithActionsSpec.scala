@@ -27,15 +27,37 @@ class ListWithActionsSpec extends A11ySpecBase {
     val template  = app.injector.instanceOf[MainTemplate]
     val component = app.injector.instanceOf[ListWithActions]
 
-    val title     = nonEmptyString.sample.value
-    val listItems = listWithMaxLength[ListItem]().sample.value
+    val title = nonEmptyString.sample.value
 
-    val content = template.apply(title = title, lrn = lrn) {
-      component.apply(listItems).withHeading(title)
-    }
+    "pass accessibility checks" when {
+      "ordinary list items" in {
+        val listItems = listWithMaxLength[ListItem]().sample.value
 
-    "pass accessibility checks" in {
-      content.toString() must passAccessibilityChecks
+        val content = template.apply(title = title, lrn = lrn) {
+          component.apply(listItems).withHeading(title)
+        }
+
+        content.toString() must passAccessibilityChecks
+      }
+
+      "list items have no actions" in {
+        val listItems = listWithMaxLength[ListItem]().sample.value
+          .map(_.copy(changeUrl = None, removeUrl = None))
+
+        val content = template.apply(title = title, lrn = lrn) {
+          component.apply(listItems).withHeading(title)
+        }
+
+        content.toString() must passAccessibilityChecks
+      }
+
+      "empty list items" in {
+        val content = template.apply(title = title, lrn = lrn) {
+          component.apply(Nil).withHeading(title)
+        }
+
+        content.toString() must passAccessibilityChecks
+      }
     }
   }
 }

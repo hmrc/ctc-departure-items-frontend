@@ -22,10 +22,11 @@ import controllers.item.additionalReference.index.routes._
 import controllers.item.dangerousGoods.index.routes.UNNumberController
 import controllers.item.documents.index.routes.DocumentController
 import controllers.item.packages.index.routes.PackageTypeController
+import controllers.item.supplyChainActors.index.routes.SupplyChainActorTypeController
 import controllers.item.routes._
 import generators.Generators
 import models.reference.{AdditionalInformation, AdditionalReference, Country, PackageType}
-import models.{CheckMode, DeclarationType, Document, Index, Mode}
+import models.{CheckMode, DeclarationType, Document, Index, Mode, SupplyChainActorType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -35,11 +36,13 @@ import pages.item.additionalReference.index.{AddAdditionalReferenceNumberYesNoPa
 import pages.item.dangerousGoods.index.UNNumberPage
 import pages.item.documents.index.DocumentPage
 import pages.item.packages.index.{AddShippingMarkYesNoPage, NumberOfPackagesPage, PackageTypePage, ShippingMarkPage}
+import pages.item.supplyChainActors.index.{IdentificationNumberPage, SupplyChainActorTypePage}
 import pages.sections.additionalInformation.AdditionalInformationSection
 import pages.sections.additionalReference.AdditionalReferenceSection
 import pages.sections.dangerousGoods.DangerousGoodsSection
 import pages.sections.documents.DocumentSection
 import pages.sections.packages.PackageSection
+import pages.sections.supplyChainActors.SupplyChainActorSection
 import play.api.libs.json.Json
 import services.DocumentsService
 
@@ -530,12 +533,9 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "addOrRemoveDangerousGoods" - {
       "must return None" - {
         "when dangerous goods array is empty" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
-              val result = helper.addOrRemoveDangerousGoods
-              result mustBe None
-          }
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+          val result = helper.addOrRemoveDangerousGoods
+          result mustBe None
         }
       }
 
@@ -779,12 +779,9 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "addOrRemovePackages" - {
       "must return None" - {
         "when packages array is empty" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
-              val result = helper.addOrRemovePackages
-              result mustBe None
-          }
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+          val result = helper.addOrRemovePackages
+          result mustBe None
         }
       }
 
@@ -797,6 +794,94 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
           result.id mustBe "add-or-remove-packages"
           result.text mustBe "Add or remove packages"
           result.href mustBe controllers.item.packages.routes.AddAnotherPackageController.onPageLoad(answers.lrn, mode, itemIndex).url
+        }
+      }
+    }
+
+    "supplyChainActorYesNo" - {
+      "must return None" - {
+        "when AddSupplyChainActorYesNoPage is undefined" in {
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+          val result = helper.supplyChainActorYesNo
+          result mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when AddSupplyChainActorYesNoPage is defined" in {
+          val answers = emptyUserAnswers.setValue(AddSupplyChainActorYesNoPage(itemIndex), true)
+
+          val helper = new ItemAnswersHelper(answers, itemIndex)
+          val result = helper.supplyChainActorYesNo.get
+
+          result.key.value mustBe "Do you want to add a supply chain actor for this item?"
+          result.value.value mustBe "Yes"
+
+          val actions = result.actions.get.items
+          actions.size mustBe 1
+          val action = actions.head
+          action.content.value mustBe "Change"
+          action.href mustBe AddSupplyChainActorYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
+          action.visuallyHiddenText.get mustBe s"if you want to add a supply chain actor for item ${itemIndex.display}"
+          action.id mustBe "change-add-supply-chain-actors"
+        }
+      }
+    }
+
+    "supplyChainActor" - {
+      "must return None" - {
+        "when supplyChainActor is undefined" in {
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+          val result = helper.supplyChainActor(actorIndex)
+          result mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when supplyChainActor is defined" in {
+          forAll(arbitrary[SupplyChainActorType], nonEmptyString) {
+            (actorType, identificationNumber) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(SupplyChainActorTypePage(itemIndex, actorIndex), actorType)
+                .setValue(IdentificationNumberPage(itemIndex, actorIndex), identificationNumber)
+              val helper = new ItemAnswersHelper(userAnswers, itemIndex)
+              val result = helper.supplyChainActor(actorIndex).get
+
+              result.key.value mustBe "Supply chain actor 1"
+              result.value.value mustBe s"${actorType.asString} - $identificationNumber"
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe SupplyChainActorTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, actorIndex).url
+              action.visuallyHiddenText.get mustBe s"supply chain actor 1"
+              action.id mustBe "change-supply-chain-actor-1"
+          }
+        }
+      }
+    }
+
+    "addOrRemoveSupplyChainActors" - {
+      "must return None" - {
+        "when supply chain actors array is empty" in {
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+          val result = helper.addOrRemoveSupplyChainActors
+          result mustBe None
+        }
+      }
+
+      "must return Some(Link)" - {
+        "when supply chain actors array is non-empty" in {
+          val answers = emptyUserAnswers.setValue(SupplyChainActorSection(Index(0), Index(0)), Json.obj("foo" -> "bar"))
+          val helper  = new ItemAnswersHelper(answers, itemIndex)
+          val result  = helper.addOrRemoveSupplyChainActors.get
+
+          result.id mustBe "add-or-remove-supply-chain-actors"
+          result.text mustBe "Add or remove supply chain actors"
+          result.href mustBe controllers.item.supplyChainActors.routes.AddAnotherSupplyChainActorController
+            .onPageLoad(answers.lrn, mode, itemIndex)
+            .url
+
         }
       }
     }
@@ -873,12 +958,9 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "addOrRemoveDocuments" - {
       "must return None" - {
         "when documents array is empty" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
-              val result = helper.addOrRemoveDocuments
-              result mustBe None
-          }
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+          val result = helper.addOrRemoveDocuments
+          result mustBe None
         }
       }
 
@@ -962,12 +1044,9 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "addOrRemoveAdditionalReferences" - {
       "must return None" - {
         "when additional references array is empty" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
-              val result = helper.addOrRemoveAdditionalReferences
-              result mustBe None
-          }
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+          val result = helper.addOrRemoveAdditionalReferences
+          result mustBe None
         }
       }
 
@@ -1054,12 +1133,9 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "addOrRemoveAdditionalInformation" - {
       "must return None" - {
         "when additional information array is empty" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
-              val result = helper.addOrRemoveAdditionalInformation
-              result mustBe None
-          }
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+          val result = helper.addOrRemoveAdditionalInformation
+          result mustBe None
         }
       }
 

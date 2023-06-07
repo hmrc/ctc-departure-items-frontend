@@ -22,33 +22,47 @@
     listItems: Seq[ListItem]
 )(implicit messages: Messages)
 
-<div class="govuk-form-group">
-    @hmrcListWithActions(
-        ListWithActions(
-            items = listItems map (
-                listItem =>
-                    ListWithActionsItem(
-                        name = Text(listItem.name),
-                        actions = Seq(
-                            listItem.changeUrl.map (
-                                url =>
-                                    ListWithActionsAction(
-                                        content = Text(messages("site.edit")),
-                                        visuallyHiddenText = Some(messages("site.edit.hidden", listItem.name)),
-                                        href = url
+@if(listItems.nonEmpty) {
+    <div class="govuk-form-group">
+        @if(listItems.exists(_.hasAction)) {
+            @hmrcListWithActions(
+                ListWithActions(
+                    items = listItems map (
+                        listItem =>
+                            ListWithActionsItem(
+                                name = Text(listItem.name),
+                                actions = Seq(
+                                    listItem.changeUrl.map (
+                                        url =>
+                                            ListWithActionsAction(
+                                                content = Text(messages("site.edit")),
+                                                visuallyHiddenText = Some(messages("site.edit.hidden", listItem.name)),
+                                                href = url
+                                            )
+                                    ),
+                                    listItem.removeUrl.map (
+                                        url =>
+                                            ListWithActionsAction(
+                                                content = Text(messages("site.delete")),
+                                                visuallyHiddenText = Some(messages("site.delete.hidden", listItem.name)),
+                                                href = url
+                                            )
                                     )
-                            ),
-                            listItem.removeUrl.map (
-                                url =>
-                                    ListWithActionsAction(
-                                        content = Text(messages("site.delete")),
-                                        visuallyHiddenText = Some(messages("site.delete.hidden", listItem.name)),
-                                        href = url
-                                    )
+                                ).flatten
                             )
-                        ).flatten
                     )
+                )
             )
-        )
-    )
-</div>
+        } else {
+            <ul class="govuk-summary-list govuk-list">
+                @listItems.map { listItem =>
+                    <li class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+                        <p class="govuk-summary-list__key govuk-!-font-weight-regular hmrc-summary-list__key">
+                            @listItem.name
+                        </p>
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+}

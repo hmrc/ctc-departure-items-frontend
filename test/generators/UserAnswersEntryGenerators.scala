@@ -73,6 +73,7 @@ trait UserAnswersEntryGenerators {
       case AddDocumentsYesNoPage(_)                => arbitrary[Boolean].map(JsBoolean)
       case AddAdditionalReferenceYesNoPage(_)      => arbitrary[Boolean].map(JsBoolean)
       case AddAdditionalInformationYesNoPage(_)    => arbitrary[Boolean].map(JsBoolean)
+      case AddSupplyChainActorYesNoPage(_)         => arbitrary[Boolean].map(JsBoolean)
     }
     pf orElse
       generateDangerousGoodsAnswer orElse
