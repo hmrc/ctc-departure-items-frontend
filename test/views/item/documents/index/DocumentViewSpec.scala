@@ -42,7 +42,7 @@ class DocumentViewSpec extends InputSelectViewBehaviours[Document] {
 
   behave like pageWithSectionCaption(s"Item ${itemIndex.display} - Documents")
 
-  behave like pageWithContent("p", "You can only select a document if you have added it in your Documents section.")
+  behave like pageWithContent("p", "You can only attach a document if you have added it in your Documents section.")
 
   behave like pageWithLink(
     id = "documents",
