@@ -22,6 +22,11 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
 case class TransportEquipment(number: Int, containerId: Option[String]) extends Selectable {
 
+  override def toString: String = containerId match {
+    case Some(value) => s"${number + 1} - $value"
+    case None        => s"${number + 1}"
+  }
+
   def asString(implicit messages: Messages): String = containerId match {
     case Some(value) => messages("item.transportEquipment.withContainerId", number, value)
     case None        => messages("item.transportEquipment.withoutContainerId", number)
@@ -34,9 +39,9 @@ case class TransportEquipment(number: Int, containerId: Option[String]) extends 
 
 object TransportEquipment {
 
-  def equipmentReads(equipmentIndex: Int): Reads[TransportEquipment] =
+  implicit val equipmentReads: Int => Reads[TransportEquipment] = index =>
     (__ \ "containerIdentificationNumber").readNullable[String].map {
       containerId =>
-        TransportEquipment(equipmentIndex, containerId)
+        TransportEquipment(index, containerId)
     }
 }

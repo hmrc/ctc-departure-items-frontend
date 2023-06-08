@@ -82,7 +82,7 @@ trait ModelGenerators {
   implicit lazy val arbitraryTransportEquipment: Arbitrary[TransportEquipment] =
     Arbitrary {
       for {
-        number      <- positiveIntsMinMax(1: Int, 9999: Int)
+        number      <- positiveIntsMinMax(0: Int, 9998: Int)
         containerId <- Gen.option(nonEmptyString)
       } yield TransportEquipment(number, containerId)
     }

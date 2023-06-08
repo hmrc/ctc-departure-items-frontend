@@ -58,7 +58,7 @@ class TransportEquipmentSpec extends SpecBase with ScalaCheckPropertyChecks with
 
   "must format as string" - {
     "when containerId defined" in {
-      forAll(positiveIntsMinMax(1: Int, 9999: Int), nonEmptyString) {
+      forAll(positiveIntsMinMax(0: Int, 9998: Int), nonEmptyString) {
         (number, containerId) =>
           val numberString = String.format("%,d", number)
           val equipment = TransportEquipment(
@@ -67,6 +67,7 @@ class TransportEquipmentSpec extends SpecBase with ScalaCheckPropertyChecks with
           )
 
           equipment.asString mustBe s"($numberString) Transport equipment - $containerId"
+          equipment.toString mustBe s"${number + 1} - $containerId"
       }
     }
 
@@ -80,6 +81,7 @@ class TransportEquipmentSpec extends SpecBase with ScalaCheckPropertyChecks with
           )
 
           equipment.asString mustBe s"($numberString) Transport equipment"
+          equipment.toString mustBe s"${number + 1}"
       }
     }
   }

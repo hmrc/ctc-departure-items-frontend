@@ -56,6 +56,11 @@ package object models {
 
     def validateAsListOf[T](implicit reads: Reads[T]): Seq[T] =
       arr.value.flatMap(_.validate[T].asOpt).toSeq
+
+    def validateAsAListOf[T](implicit reads: Int => Reads[T]): Seq[T] =
+      arr.value.zipWithIndex.flatMap {
+        case (value, index) => value.validate[T](reads(index)).asOpt
+      }.toSeq
   }
 
   implicit class RichOptionalJsArray(arr: Option[JsArray]) {

@@ -17,7 +17,7 @@
 package services
 
 import base.SpecBase
-import models.{SelectableList, TransportEquipment}
+import models.{Index, SelectableList, TransportEquipment}
 import play.api.libs.json.{JsObject, Json}
 
 class TransportEquipmentsServiceSpec extends SpecBase {
@@ -75,6 +75,79 @@ class TransportEquipmentsServiceSpec extends SpecBase {
             TransportEquipment(2, None)
           )
         )
+      }
+    }
+
+    "getTransportEquipment" - {
+
+      val json = Json
+        .parse("""
+            |{
+            |  "transportDetails" : {
+            |    "equipmentsAndCharges" : {
+            |      "equipments" : [
+            |        {
+            |          "containerIdentificationNumber" : "98777",
+            |          "addSealsYesNo" : true,
+            |          "seals" : [
+            |            {
+            |              "identificationNumber" : "TransportSeal1"
+            |            }
+            |          ],
+            |          "itemNumbers" : [
+            |            {
+            |              "itemNumber" : "1234"
+            |            }
+            |          ]
+            |         },
+            |         {
+            |           "addContainerIdentificationNumberYesNo" : false,
+            |           "addSealsYesNo" : false,
+            |           "itemNumbers" : [
+            |             {
+            |               "itemNumber" : "1944"
+            |             }
+            |           ]
+            |          }
+            |        ]
+            |      }
+            |    },
+            |  "items": [
+            |    {
+            |      "transportEquipment" : 1
+            |    },
+            |    {
+            |      "transportEquipment" : 2
+            |    }
+            |  ]
+            |}
+            |""".stripMargin)
+        .as[JsObject]
+
+      val userAnswers = emptyUserAnswers.copy(data = json)
+
+      "must return some equipment" - {
+        "when index found" in {
+          val result1 = service.getTransportEquipment(userAnswers, Index(0))
+          val result2 = service.getTransportEquipment(userAnswers, Index(1))
+
+          result1.value mustBe TransportEquipment(
+            number = 0,
+            containerId = Some("98777")
+          )
+          result2.value mustBe TransportEquipment(
+            number = 1,
+            containerId = None
+          )
+        }
+      }
+
+      "must return None" - {
+        "when Index not found" in {
+          val result = service.getTransportEquipment(userAnswers, Index(2))
+
+          result mustBe None
+        }
       }
     }
   }

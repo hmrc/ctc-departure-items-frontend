@@ -26,7 +26,7 @@ import controllers.item.supplyChainActors.index.routes.SupplyChainActorTypeContr
 import controllers.item.routes._
 import generators.Generators
 import models.reference.{AdditionalInformation, AdditionalReference, Country, PackageType}
-import models.{CheckMode, DeclarationType, Document, Index, Mode, SupplyChainActorType}
+import models.{CheckMode, DeclarationType, Document, Index, Mode, SupplyChainActorType, TransportEquipment}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -44,7 +44,7 @@ import pages.sections.documents.DocumentSection
 import pages.sections.packages.PackageSection
 import pages.sections.supplyChainActors.SupplyChainActorSection
 import play.api.libs.json.Json
-import services.DocumentsService
+import services.{DocumentsService, TransportEquipmentService}
 
 class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -86,8 +86,14 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     }
 
     "transportEquipment" - {
+      import org.mockito.ArgumentMatchers.any
+      import org.mockito.Mockito.when
+
+      implicit val mockTransportEquipmentsService: TransportEquipmentService = mock[TransportEquipmentService]
+
       "must return None" - {
         "when TransportEquipmentPage is undefined" in {
+          when(mockTransportEquipmentsService.getTransportEquipment(any(), any())).thenReturn(None)
           val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
           val result = helper.transportEquipment
           result mustBe None
@@ -96,10 +102,10 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
       "must return Some(Row)" - {
         "when TransportEquipmentPage is defined" in {
-          val userAnswers = emptyUserAnswers
-          forAll(positiveIntsMinMax(1: Int, 9999: Int)) {
+          forAll(arbitrary[TransportEquipment]) {
             transportEquipment =>
-              val answers = userAnswers.setValue(TransportEquipmentPage(itemIndex), transportEquipment)
+              when(mockTransportEquipmentsService.getTransportEquipment(any(), any())).thenReturn(Some(transportEquipment))
+              val answers = emptyUserAnswers.setValue(TransportEquipmentPage(itemIndex), transportEquipment.number)
 
               val helper = new ItemAnswersHelper(answers, itemIndex)
               val result = helper.transportEquipment.get
