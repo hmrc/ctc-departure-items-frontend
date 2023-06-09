@@ -16,7 +16,6 @@
 
 package controllers.item.documents.index
 
-import config.FrontendAppConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.SelectableFormProvider
@@ -25,7 +24,7 @@ import navigation.{DocumentNavigatorProvider, UserAnswersNavigator}
 import pages.item.documents.index.DocumentPage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.DocumentsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -42,8 +41,7 @@ class DocumentController @Inject() (
   formProvider: SelectableFormProvider,
   service: DocumentsService,
   val controllerComponents: MessagesControllerComponents,
-  view: DocumentView,
-  config: FrontendAppConfig
+  view: DocumentView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
@@ -53,44 +51,31 @@ class DocumentController @Inject() (
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      service.getDocuments(request.userAnswers, itemIndex, Some(documentIndex)) match {
-        case Some(documentList) =>
-          val form = formProvider(prefix, documentList)
-          val preparedForm = request.userAnswers.get(DocumentPage(itemIndex, documentIndex)) match {
-            case None => form
-            case Some(uuid) =>
-              documentList.values.find(_.uuid == uuid) match {
-                case None        => form
-                case Some(value) => form.fill(value)
-              }
+      val documentList = service.getDocuments(request.userAnswers, itemIndex, Some(documentIndex))
+      val form         = formProvider(prefix, documentList)
+      val preparedForm = request.userAnswers.get(DocumentPage(itemIndex, documentIndex)) match {
+        case None => form
+        case Some(uuid) =>
+          documentList.values.find(_.uuid == uuid) match {
+            case None        => form
+            case Some(value) => form.fill(value)
           }
-          Ok(view(preparedForm, lrn, documentList.values, mode, itemIndex, documentIndex))
-        case None =>
-          handleError
       }
+      Ok(view(preparedForm, lrn, documentList.values, mode, itemIndex, documentIndex))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      service.getDocuments(request.userAnswers, itemIndex, Some(documentIndex)) match {
-        case Some(documentList) =>
-          val form = formProvider(prefix, documentList)
-          form
-            .bindFromRequest()
-            .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, documentList.values, mode, itemIndex, documentIndex))),
-              value => {
-                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex, documentIndex)
-                DocumentPage(itemIndex, documentIndex).writeToUserAnswers(value.uuid).updateTask().writeToSession().navigate()
-              }
-            )
-        case None =>
-          Future.successful(handleError)
-      }
-  }
-
-  private def handleError: Result = {
-    logger.error("Failed to read documents from user answers")
-    Redirect(config.technicalDifficultiesUrl)
+      val documentList = service.getDocuments(request.userAnswers, itemIndex, Some(documentIndex))
+      val form         = formProvider(prefix, documentList)
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, documentList.values, mode, itemIndex, documentIndex))),
+          value => {
+            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex, documentIndex)
+            DocumentPage(itemIndex, documentIndex).writeToUserAnswers(value.uuid).updateTask().writeToSession().navigate()
+          }
+        )
   }
 }

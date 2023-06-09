@@ -28,32 +28,31 @@ import javax.inject.Inject
 
 class DocumentsService @Inject() () {
 
-  def getDocuments(userAnswers: UserAnswers, itemIndex: Index, documentIndex: Option[Index]): Option[SelectableList[Document]] =
-    for {
-      documents <- userAnswers.get(DocumentsSection).validate[Seq[Document]]
-      document          = documentIndex.flatMap(getDocument(userAnswers, itemIndex, _))
-      itemDocumentUuids = userAnswers.get(ItemDocumentsSection(itemIndex)).validate[Seq[UUID]].getOrElse(Nil)
-      filteredDocuments = documents
-        .filter {
-          x => !itemDocumentUuids.contains(x.uuid) || document.map(_.uuid).contains(x.uuid)
-        }
-        .filter {
-          !_.attachToAllItems
-        }
-    } yield SelectableList(filteredDocuments)
+  private def getDocuments(userAnswers: UserAnswers): Seq[Document] =
+    userAnswers.get(DocumentsSection).validate[Seq[Document]].getOrElse(Nil)
+
+  def getDocuments(userAnswers: UserAnswers, itemIndex: Index, documentIndex: Option[Index]): SelectableList[Document] = {
+    val documents         = getDocuments(userAnswers)
+    val document          = documentIndex.flatMap(getDocument(userAnswers, itemIndex, _))
+    val itemDocumentUuids = userAnswers.get(ItemDocumentsSection(itemIndex)).validate[Seq[UUID]].getOrElse(Nil)
+    val filteredDocuments = documents
+      .filter {
+        x => !itemDocumentUuids.contains(x.uuid) || document.map(_.uuid).contains(x.uuid)
+      }
+      .filter {
+        !_.attachToAllItems
+      }
+    SelectableList(filteredDocuments)
+  }
 
   def getConsignmentLevelDocuments(userAnswers: UserAnswers): Seq[Document] =
-    userAnswers
-      .get(DocumentsSection)
-      .validate[Seq[Document]]
-      .getOrElse(Nil)
-      .filter(_.attachToAllItems)
+    getDocuments(userAnswers).filter(_.attachToAllItems)
 
   def getDocument(userAnswers: UserAnswers, itemIndex: Index, documentIndex: Index): Option[Document] =
     for {
-      uuid      <- userAnswers.get(DocumentPage(itemIndex, documentIndex))
-      documents <- userAnswers.get(DocumentsSection).validate[Seq[Document]]
-      document  <- documents.find(_.uuid == uuid)
+      uuid <- userAnswers.get(DocumentPage(itemIndex, documentIndex))
+      documents = getDocuments(userAnswers)
+      document <- documents.find(_.uuid == uuid)
     } yield document
 }
 
