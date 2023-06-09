@@ -105,7 +105,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
           forAll(arbitrary[TransportEquipment]) {
             transportEquipment =>
               when(mockTransportEquipmentsService.getTransportEquipment(any(), any())).thenReturn(Some(transportEquipment))
-              val answers = emptyUserAnswers.setValue(TransportEquipmentPage(itemIndex), transportEquipment.number)
+              val answers = emptyUserAnswers.setValue(TransportEquipmentPage(itemIndex), transportEquipment.uuid)
 
               val helper = new ItemAnswersHelper(answers, itemIndex)
               val result = helper.transportEquipment.get

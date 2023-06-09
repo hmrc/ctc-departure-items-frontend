@@ -39,6 +39,8 @@ import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import utils.cyaHelpers.AnswersHelper
 import viewmodels.Link
 
+import java.util.UUID
+
 // scalastyle:off number.of.methods
 class ItemAnswersHelper(
   userAnswers: UserAnswers,
@@ -57,7 +59,7 @@ class ItemAnswersHelper(
   def transportEquipment(implicit transportEquipmentService: TransportEquipmentService): Option[SummaryListRow] =
     transportEquipmentService.getTransportEquipment(userAnswers, itemIndex).flatMap {
       transportEquipment =>
-        getAnswerAndBuildRow[Int](
+        getAnswerAndBuildRow[UUID](
           page = TransportEquipmentPage(itemIndex),
           formatAnswer = _ => formatAsText(transportEquipment),
           prefix = "item.transportEquipment",

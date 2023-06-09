@@ -75,7 +75,7 @@ class TransportEquipmentControllerSpec extends SpecBase with AppWithDefaultMockF
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       when(mockTransportEquipmentService.getTransportEquipments(any())).thenReturn(transportEquipmentList)
-      val userAnswers = emptyUserAnswers.setValue(TransportEquipmentPage(itemIndex), transportEquipment1.number)
+      val userAnswers = emptyUserAnswers.setValue(TransportEquipmentPage(itemIndex), transportEquipment1.uuid)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, transportEquipmentRoute)

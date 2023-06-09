@@ -24,12 +24,15 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
 import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
+import java.util.UUID
+
 class TransportEquipmentSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+  private val uuid = "8a081ef8-5e49-42c8-b4fc-9140018afce9"
 
   "must deserialise from mongo" in {
 
     val json = Json
-      .parse("""
+      .parse(s"""
           |{
           |  "containerIdentificationNumber" : "98777",
           |  "addSealsYesNo" : true,
@@ -38,17 +41,14 @@ class TransportEquipmentSpec extends SpecBase with ScalaCheckPropertyChecks with
           |      "identificationNumber" : "TransportSeal1"
           |    }
           |   ],
-          |   "itemNumbers" : [
-          |     {
-          |       "itemNumber" : "1234"
-          |     }
-          |   ]
+          |  "uuid": "$uuid"
           |}
           |""".stripMargin)
 
     val expectedResult = TransportEquipment(
       number = 1,
-      containerId = Some("98777")
+      containerId = Some("98777"),
+      uuid = UUID.fromString(uuid)
     )
 
     val result = json.as[TransportEquipment](TransportEquipment.equipmentReads(1))
@@ -63,7 +63,8 @@ class TransportEquipmentSpec extends SpecBase with ScalaCheckPropertyChecks with
           val numberString = String.format("%,d", number)
           val equipment = TransportEquipment(
             number = number,
-            containerId = Some(containerId)
+            containerId = Some(containerId),
+            uuid = UUID.fromString(uuid)
           )
 
           equipment.asString mustBe s"($numberString) Transport equipment - $containerId"
@@ -77,7 +78,8 @@ class TransportEquipmentSpec extends SpecBase with ScalaCheckPropertyChecks with
           val numberString = String.format("%,d", number)
           val equipment = TransportEquipment(
             number = number,
-            containerId = None
+            containerId = None,
+            uuid = UUID.fromString(uuid)
           )
 
           equipment.asString mustBe s"($numberString) Transport equipment"
@@ -87,9 +89,9 @@ class TransportEquipmentSpec extends SpecBase with ScalaCheckPropertyChecks with
   }
 
   "must convert to select item" in {
-    forAll(positiveIntsMinMax(1: Int, 9999: Int), Gen.option(nonEmptyString), arbitrary[Boolean]) {
-      (number, containerId, selected) =>
-        val equipment = TransportEquipment(number, containerId)
+    forAll(positiveIntsMinMax(1: Int, 9999: Int), Gen.option(nonEmptyString), arbitrary[Boolean], arbitrary[UUID]) {
+      (number, containerId, selected, uuid) =>
+        val equipment = TransportEquipment(number, containerId, uuid)
         equipment.toSelectItem(selected) mustBe SelectItem(Some(equipment.value), equipment.asString, selected)
     }
   }

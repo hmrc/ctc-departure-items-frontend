@@ -18,14 +18,16 @@ package pages.item
 
 import pages.behaviours.PageBehaviours
 
+import java.util.UUID
+
 class TransportEquipmentPageSpec extends PageBehaviours {
 
   "TransportEquipmentPage" - {
 
-    beRetrievable[Int](TransportEquipmentPage(itemIndex))
+    beRetrievable[UUID](TransportEquipmentPage(itemIndex))
 
-    beSettable[Int](TransportEquipmentPage(itemIndex))
+    beSettable[UUID](TransportEquipmentPage(itemIndex))
 
-    beRemovable[Int](TransportEquipmentPage(itemIndex))
+    beRemovable[UUID](TransportEquipmentPage(itemIndex))
   }
 }

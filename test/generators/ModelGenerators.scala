@@ -84,7 +84,8 @@ trait ModelGenerators {
       for {
         number      <- positiveIntsMinMax(0: Int, 9998: Int)
         containerId <- Gen.option(nonEmptyString)
-      } yield TransportEquipment(number, containerId)
+        uuid        <- arbitrary[UUID]
+      } yield TransportEquipment(number, containerId, uuid)
     }
 
   implicit lazy val arbitraryLocalReferenceNumber: Arbitrary[LocalReferenceNumber] =

@@ -64,7 +64,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
     }
 
     "transportEquipmentReader" - {
-      val equipments = Json
+      def equipments(uuid: UUID) = Json
         .parse(s"""
              |[
              |{
@@ -75,11 +75,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
              |      "identificationNumber" : "TransportSeal1"
              |    }
              |   ],
-             |   "itemNumbers" : [
-             |     {
-             |       "itemNumber" : "1234"
-             |     }
-             |   ]
+             |   "uuid": "$uuid"
              |}
              |]
              |""".stripMargin)
@@ -87,15 +83,15 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
       "can be read from user answers" - {
         "when transport equipment sequence is present" in {
-          forAll(positiveIntsMinMax(1: Int, 9999: Int)) {
-            transportEquipment =>
+          forAll(arbitrary[UUID]) {
+            uuid =>
               val userAnswers = emptyUserAnswers
-                .setValue(TransportEquipmentsSection, equipments)
-                .setValue(TransportEquipmentPage(itemIndex), transportEquipment)
+                .setValue(TransportEquipmentsSection, equipments(uuid))
+                .setValue(TransportEquipmentPage(itemIndex), uuid)
 
-              val expectedResult = Some(transportEquipment)
+              val expectedResult = Some(uuid)
 
-              val result: EitherType[Option[Int]] = UserAnswersReader[Option[Int]](
+              val result: EitherType[Option[UUID]] = UserAnswersReader[Option[UUID]](
                 ItemDomain.transportEquipmentReader(itemIndex)
               ).run(userAnswers)
 
@@ -106,7 +102,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         "when transport equipment sequence is not present" in {
           val expectedResult = None
 
-          val result: EitherType[Option[Int]] = UserAnswersReader[Option[Int]](
+          val result: EitherType[Option[UUID]] = UserAnswersReader[Option[UUID]](
             ItemDomain.transportEquipmentReader(itemIndex)
           ).run(emptyUserAnswers)
 
@@ -118,9 +114,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         "when transport equipment sequence is present" - {
           "and transport equipment is unanswered" in {
             val userAnswers = emptyUserAnswers
-              .setValue(TransportEquipmentsSection, equipments)
+              .setValue(TransportEquipmentsSection, equipments(UUID.randomUUID()))
 
-            val result: EitherType[Option[Int]] = UserAnswersReader[Option[Int]](
+            val result: EitherType[Option[UUID]] = UserAnswersReader[Option[UUID]](
               ItemDomain.transportEquipmentReader(itemIndex)
             ).run(userAnswers)
 

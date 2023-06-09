@@ -16,7 +16,6 @@
 
 package services
 
-import cats.implicits._
 import models.{Index, RichJsArray, SelectableList, TransportEquipment, UserAnswers}
 import pages.item.TransportEquipmentPage
 import pages.sections.external.TransportEquipmentsSection
@@ -40,9 +39,9 @@ class TransportEquipmentService @Inject() () {
 
   def getTransportEquipment(userAnswers: UserAnswers, itemIndex: Index): Option[TransportEquipment] =
     for {
-      number <- userAnswers.get(TransportEquipmentPage(itemIndex))
+      uuid <- userAnswers.get(TransportEquipmentPage(itemIndex))
       transportEquipments =
         userAnswers.get(TransportEquipmentsSection).map(_.validateAsAListOf[TransportEquipment]).getOrElse(Nil)
-      result <- transportEquipments.get(number - 1)
+      result <- transportEquipments.find(_.uuid == uuid)
     } yield result
 }

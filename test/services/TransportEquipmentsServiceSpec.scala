@@ -20,9 +20,14 @@ import base.SpecBase
 import models.{Index, SelectableList, TransportEquipment}
 import play.api.libs.json.{JsObject, Json}
 
+import java.util.UUID
+
 class TransportEquipmentsServiceSpec extends SpecBase {
 
   private val service = injector.instanceOf[TransportEquipmentService]
+
+  private val uuid1 = "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
+  private val uuid2 = "8a081ef8-5e49-42c8-b4fc-9140018afce9"
 
   "TransportEquipments Service" - {
 
@@ -30,7 +35,7 @@ class TransportEquipmentsServiceSpec extends SpecBase {
 
       "must return the transport equipments" in {
         val json = Json
-          .parse("""
+          .parse(s"""
               |{
               |  "transportDetails" : {
               |    "equipmentsAndCharges" : {
@@ -43,20 +48,12 @@ class TransportEquipmentsServiceSpec extends SpecBase {
               |              "identificationNumber" : "TransportSeal1"
               |            }
               |          ],
-              |          "itemNumbers" : [
-              |            {
-              |              "itemNumber" : "1234"
-              |            }
-              |          ]
+              |          "uuid": "$uuid1"
               |         },
               |         {
               |           "addContainerIdentificationNumberYesNo" : false,
               |           "addSealsYesNo" : false,
-              |           "itemNumbers" : [
-              |             {
-              |               "itemNumber" : "1944"
-              |             }
-              |           ]
+              |           "uuid": "$uuid2"
               |          }
               |        ]
               |      }
@@ -71,8 +68,8 @@ class TransportEquipmentsServiceSpec extends SpecBase {
 
         result mustBe SelectableList(
           Seq(
-            TransportEquipment(1, Some("98777")),
-            TransportEquipment(2, None)
+            TransportEquipment(1, Some("98777"), UUID.fromString(uuid1)),
+            TransportEquipment(2, None, UUID.fromString(uuid2))
           )
         )
       }
@@ -82,7 +79,7 @@ class TransportEquipmentsServiceSpec extends SpecBase {
 
       "when transport equipments present" - {
         val json = Json
-          .parse("""
+          .parse(s"""
               |{
               |  "transportDetails" : {
               |    "equipmentsAndCharges" : {
@@ -95,30 +92,22 @@ class TransportEquipmentsServiceSpec extends SpecBase {
               |              "identificationNumber" : "TransportSeal1"
               |            }
               |          ],
-              |          "itemNumbers" : [
-              |            {
-              |              "itemNumber" : "1234"
-              |            }
-              |          ]
+              |          "uuid": "$uuid1"
               |         },
               |         {
               |           "addContainerIdentificationNumberYesNo" : false,
               |           "addSealsYesNo" : false,
-              |           "itemNumbers" : [
-              |             {
-              |               "itemNumber" : "1944"
-              |             }
-              |           ]
+              |           "uuid": "$uuid2"
               |          }
               |        ]
               |      }
               |    },
               |  "items": [
               |    {
-              |      "transportEquipment" : 1
+              |      "transportEquipment" : "$uuid1"
               |    },
               |    {
-              |      "transportEquipment" : 2
+              |      "transportEquipment" : "$uuid2"
               |    }
               |  ]
               |}
@@ -134,11 +123,13 @@ class TransportEquipmentsServiceSpec extends SpecBase {
 
             result1.value mustBe TransportEquipment(
               number = 0,
-              containerId = Some("98777")
+              containerId = Some("98777"),
+              uuid = UUID.fromString(uuid1)
             )
             result2.value mustBe TransportEquipment(
               number = 1,
-              containerId = None
+              containerId = None,
+              uuid = UUID.fromString(uuid2)
             )
           }
         }
