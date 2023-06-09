@@ -56,7 +56,7 @@ class AddAnotherDocumentController @Inject() (
     formProvider(viewModel.prefix, viewModel.allowMore && viewModel.canAttachMoreDocumentsToItem)
 
   private def documents(itemIndex: Index)(implicit request: DataRequest[_]): Seq[Document] =
-    service.getDocuments(request.userAnswers, itemIndex, None).map(_.values).getOrElse(Nil)
+    service.getDocuments(request.userAnswers, itemIndex, None).values
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>

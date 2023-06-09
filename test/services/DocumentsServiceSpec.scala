@@ -30,7 +30,7 @@ class DocumentsServiceSpec extends SpecBase {
 
     "getDocuments" - {
 
-      "must return some documents and filter out any documents already selected" - {
+      "must return documents and filter out any documents already selected" - {
         "when documents present in user answers and documents selected" in {
           val json = Json
             .parse("""
@@ -92,7 +92,7 @@ class DocumentsServiceSpec extends SpecBase {
 
           val result = service.getDocuments(userAnswers, itemIndex, None)
 
-          result.value mustBe SelectableList(
+          result mustBe SelectableList(
             Seq(
               Document(attachToAllItems = false, "Type 2", "Code 2", None, "Ref no. 2", UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a"))
             )
@@ -139,7 +139,7 @@ class DocumentsServiceSpec extends SpecBase {
 
           val result = service.getDocuments(userAnswers, itemIndex, None)
 
-          result.value mustBe SelectableList(
+          result mustBe SelectableList(
             Seq(
               Document(
                 attachToAllItems = false,
@@ -155,11 +155,11 @@ class DocumentsServiceSpec extends SpecBase {
         }
       }
 
-      "must return None" - {
+      "must return empty selectable list" - {
         "when empty list of documents" in {
           val result = service.getDocuments(emptyUserAnswers, itemIndex, None)
 
-          result mustBe None
+          result mustBe SelectableList(Nil)
         }
 
         "when data is in an invalid shape" in {
@@ -182,14 +182,14 @@ class DocumentsServiceSpec extends SpecBase {
 
           val result = service.getDocuments(userAnswers, itemIndex, None)
 
-          result mustBe Some(SelectableList(List()))
+          result mustBe SelectableList(Nil)
         }
       }
     }
 
     "getDocuments (including current document)" - {
 
-      "must return some documents and filter out any documents already selected but not the one at current index" - {
+      "must return documents and filter out any documents already selected but not the one at current index" - {
         "when documents present in user answers and documents selected" - {
           "and at an already answered index" in {
             val json = Json
@@ -240,7 +240,7 @@ class DocumentsServiceSpec extends SpecBase {
 
             val result = service.getDocuments(userAnswers, itemIndex, Some(documentIndex))
 
-            result.value mustBe SelectableList(
+            result mustBe SelectableList(
               Seq(
                 Document(
                   attachToAllItems = false,
@@ -304,7 +304,7 @@ class DocumentsServiceSpec extends SpecBase {
 
             val result = service.getDocuments(userAnswers, itemIndex, Some(Index(1)))
 
-            result.value mustBe SelectableList(
+            result mustBe SelectableList(
               Seq(
                 Document(attachToAllItems = false, "Type 2", "Code 2", None, "Ref no. 2", UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a"))
               )
@@ -352,7 +352,7 @@ class DocumentsServiceSpec extends SpecBase {
 
           val result = service.getDocuments(userAnswers, itemIndex, Some(documentIndex))
 
-          result.value mustBe SelectableList(
+          result mustBe SelectableList(
             Seq(
               Document(
                 attachToAllItems = false,
@@ -368,11 +368,11 @@ class DocumentsServiceSpec extends SpecBase {
         }
       }
 
-      "must return None" - {
+      "must return empty selectable list" - {
         "when empty list of documents" in {
           val result = service.getDocuments(emptyUserAnswers, itemIndex, Some(documentIndex))
 
-          result mustBe None
+          result mustBe SelectableList(Nil)
         }
 
         "when data is in an invalid shape" in {
@@ -394,7 +394,7 @@ class DocumentsServiceSpec extends SpecBase {
 
           val result = service.getDocuments(userAnswers, itemIndex, Some(documentIndex))
 
-          result mustBe Some(SelectableList(List()))
+          result mustBe SelectableList(Nil)
         }
       }
     }
