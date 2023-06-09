@@ -37,6 +37,11 @@ class AddDocumentsYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithHeading()
 
+  behave like pageWithContent(
+    "p",
+    "This is to provide handling instructions or information, like packing lists or insurance details, for the item."
+  )
+
   behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Save and continue")
