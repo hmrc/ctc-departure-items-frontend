@@ -16,7 +16,8 @@
 
 package services
 
-import models.{Index, RichJsArray, RichOptionalJsArray, SelectableList, TransportEquipment, UserAnswers}
+import cats.implicits._
+import models.{Index, RichJsArray, SelectableList, TransportEquipment, UserAnswers}
 import pages.item.TransportEquipmentPage
 import pages.sections.external.TransportEquipmentsSection
 
@@ -42,5 +43,6 @@ class TransportEquipmentService @Inject() () {
       number <- userAnswers.get(TransportEquipmentPage(itemIndex))
       transportEquipments =
         userAnswers.get(TransportEquipmentsSection).map(_.validateAsAListOf[TransportEquipment]).getOrElse(Nil)
-    } yield transportEquipments(number - 1)
+      result <- transportEquipments.get(number - 1)
+    } yield result
 }
