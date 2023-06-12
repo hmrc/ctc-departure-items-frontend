@@ -20,7 +20,15 @@ import play.api.i18n.Messages
 import play.api.libs.json._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
-case class TransportEquipment(number: Int, containerId: Option[String]) extends Selectable {
+import java.util.UUID
+import play.api.libs.functional.syntax._
+
+case class TransportEquipment(number: Int, containerId: Option[String], uuid: UUID) extends Selectable {
+
+  override def toString: String = containerId match {
+    case Some(value) => s"${number + 1} - $value"
+    case None        => s"${number + 1}"
+  }
 
   def asString(implicit messages: Messages): String = containerId match {
     case Some(value) => messages("item.transportEquipment.withContainerId", number, value)
@@ -34,9 +42,11 @@ case class TransportEquipment(number: Int, containerId: Option[String]) extends 
 
 object TransportEquipment {
 
-  def equipmentReads(equipmentIndex: Int): Reads[TransportEquipment] =
-    (__ \ "containerIdentificationNumber").readNullable[String].map {
-      containerId =>
-        TransportEquipment(equipmentIndex, containerId)
-    }
+  implicit val equipmentReads: Int => Reads[TransportEquipment] = index =>
+    ((__ \ "containerIdentificationNumber").readNullable[String] and
+      (__ \ "uuid").read[UUID])
+      .apply {
+        (containerId, uuid) =>
+          TransportEquipment(index, containerId, uuid)
+      }
 }

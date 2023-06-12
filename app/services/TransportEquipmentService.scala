@@ -16,7 +16,8 @@
 
 package services
 
-import models.{SelectableList, TransportEquipment, UserAnswers}
+import models.{Index, RichJsArray, SelectableList, TransportEquipment, UserAnswers}
+import pages.item.TransportEquipmentPage
 import pages.sections.external.TransportEquipmentsSection
 
 import javax.inject.Inject
@@ -35,4 +36,12 @@ class TransportEquipmentService @Inject() () {
       .toSeq
     SelectableList(transportEquipments)
   }
+
+  def getTransportEquipment(userAnswers: UserAnswers, itemIndex: Index): Option[TransportEquipment] =
+    for {
+      uuid <- userAnswers.get(TransportEquipmentPage(itemIndex))
+      transportEquipments =
+        userAnswers.get(TransportEquipmentsSection).map(_.validateAsAListOf[TransportEquipment]).getOrElse(Nil)
+      result <- transportEquipments.find(_.uuid == uuid)
+    } yield result
 }

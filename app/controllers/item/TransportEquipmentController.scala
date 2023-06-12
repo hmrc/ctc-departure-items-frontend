@@ -57,8 +57,8 @@ class TransportEquipmentController @Inject() (
       val form                   = formProvider(prefix, transportEquipmentList)
       val preparedForm = request.userAnswers.get(TransportEquipmentPage(itemIndex)) match {
         case None => form
-        case Some(number) =>
-          transportEquipmentList.values.find(_.number == number) match {
+        case Some(uuid) =>
+          transportEquipmentList.values.find(_.uuid == uuid) match {
             case None        => form
             case Some(value) => form.fill(value)
           }
@@ -77,7 +77,7 @@ class TransportEquipmentController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, transportEquipmentList.values, mode, itemIndex))),
           value => {
             implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
-            TransportEquipmentPage(itemIndex).writeToUserAnswers(value.number).updateTask().writeToSession().navigate()
+            TransportEquipmentPage(itemIndex).writeToUserAnswers(value.uuid).updateTask().writeToSession().navigate()
           }
         )
   }

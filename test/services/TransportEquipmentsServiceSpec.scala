@@ -17,12 +17,17 @@
 package services
 
 import base.SpecBase
-import models.{SelectableList, TransportEquipment}
+import models.{Index, SelectableList, TransportEquipment}
 import play.api.libs.json.{JsObject, Json}
+
+import java.util.UUID
 
 class TransportEquipmentsServiceSpec extends SpecBase {
 
   private val service = injector.instanceOf[TransportEquipmentService]
+
+  private val uuid1 = "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
+  private val uuid2 = "8a081ef8-5e49-42c8-b4fc-9140018afce9"
 
   "TransportEquipments Service" - {
 
@@ -30,7 +35,7 @@ class TransportEquipmentsServiceSpec extends SpecBase {
 
       "must return the transport equipments" in {
         val json = Json
-          .parse("""
+          .parse(s"""
               |{
               |  "transportDetails" : {
               |    "equipmentsAndCharges" : {
@@ -43,20 +48,12 @@ class TransportEquipmentsServiceSpec extends SpecBase {
               |              "identificationNumber" : "TransportSeal1"
               |            }
               |          ],
-              |          "itemNumbers" : [
-              |            {
-              |              "itemNumber" : "1234"
-              |            }
-              |          ]
+              |          "uuid": "$uuid1"
               |         },
               |         {
               |           "addContainerIdentificationNumberYesNo" : false,
               |           "addSealsYesNo" : false,
-              |           "itemNumbers" : [
-              |             {
-              |               "itemNumber" : "1944"
-              |             }
-              |           ]
+              |           "uuid": "$uuid2"
               |          }
               |        ]
               |      }
@@ -71,10 +68,99 @@ class TransportEquipmentsServiceSpec extends SpecBase {
 
         result mustBe SelectableList(
           Seq(
-            TransportEquipment(1, Some("98777")),
-            TransportEquipment(2, None)
+            TransportEquipment(1, Some("98777"), UUID.fromString(uuid1)),
+            TransportEquipment(2, None, UUID.fromString(uuid2))
           )
         )
+      }
+    }
+
+    "getTransportEquipment" - {
+
+      "when transport equipments present" - {
+        val json = Json
+          .parse(s"""
+              |{
+              |  "transportDetails" : {
+              |    "equipmentsAndCharges" : {
+              |      "equipments" : [
+              |        {
+              |          "containerIdentificationNumber" : "98777",
+              |          "addSealsYesNo" : true,
+              |          "seals" : [
+              |            {
+              |              "identificationNumber" : "TransportSeal1"
+              |            }
+              |          ],
+              |          "uuid": "$uuid1"
+              |         },
+              |         {
+              |           "addContainerIdentificationNumberYesNo" : false,
+              |           "addSealsYesNo" : false,
+              |           "uuid": "$uuid2"
+              |          }
+              |        ]
+              |      }
+              |    },
+              |  "items": [
+              |    {
+              |      "transportEquipment" : "$uuid1"
+              |    },
+              |    {
+              |      "transportEquipment" : "$uuid2"
+              |    }
+              |  ]
+              |}
+              |""".stripMargin)
+          .as[JsObject]
+
+        val userAnswers = emptyUserAnswers.copy(data = json)
+
+        "must return some equipment" - {
+          "when index found" in {
+            val result1 = service.getTransportEquipment(userAnswers, Index(0))
+            val result2 = service.getTransportEquipment(userAnswers, Index(1))
+
+            result1.value mustBe TransportEquipment(
+              number = 0,
+              containerId = Some("98777"),
+              uuid = UUID.fromString(uuid1)
+            )
+            result2.value mustBe TransportEquipment(
+              number = 1,
+              containerId = None,
+              uuid = UUID.fromString(uuid2)
+            )
+          }
+        }
+
+        "must return None" - {
+          "when Index not found" in {
+            val result = service.getTransportEquipment(userAnswers, Index(2))
+
+            result mustBe None
+          }
+        }
+      }
+
+      "when no transport equipment present" in {
+        val json = Json
+          .parse("""
+              |{
+              |  "transportDetails" : {
+              |    "equipmentsAndCharges" : {
+              |      "equipments" : []
+              |      }
+              |    }
+              |}
+              |""".stripMargin)
+          .as[JsObject]
+
+        val userAnswers = emptyUserAnswers.copy(data = json)
+
+        val result = service.getTransportEquipment(userAnswers, Index(0))
+
+        result mustBe None
       }
     }
   }

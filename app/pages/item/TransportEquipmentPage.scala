@@ -23,7 +23,9 @@ import pages.sections.ItemSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class TransportEquipmentPage(itemIndex: Index) extends QuestionPage[Int] {
+import java.util.UUID
+
+case class TransportEquipmentPage(itemIndex: Index) extends QuestionPage[UUID] {
 
   override def path: JsPath = ItemSection(itemIndex).path \ toString
 
