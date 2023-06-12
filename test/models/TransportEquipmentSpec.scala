@@ -51,7 +51,7 @@ class TransportEquipmentSpec extends SpecBase with ScalaCheckPropertyChecks with
       uuid = UUID.fromString(uuid)
     )
 
-    val result = json.as[TransportEquipment](TransportEquipment.equipmentReads(1))
+    val result = json.as[TransportEquipment](TransportEquipment.equipmentReads(0))
 
     result mustBe expectedResult
   }

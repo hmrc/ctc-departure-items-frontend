@@ -25,23 +25,19 @@ import javax.inject.Inject
 class TransportEquipmentService @Inject() () {
 
   def getTransportEquipments(userAnswers: UserAnswers): SelectableList[TransportEquipment] = {
-    val transportEquipments = userAnswers
-      .get(TransportEquipmentsSection)
-      .map(_.value)
-      .getOrElse(Nil)
-      .zipWithIndex
-      .flatMap {
-        case (value, index) => value.validate[TransportEquipment](TransportEquipment.equipmentReads(index + 1)).asOpt
-      }
-      .toSeq
+    val transportEquipments = equipmentsSection(userAnswers)
     SelectableList(transportEquipments)
   }
 
   def getTransportEquipment(userAnswers: UserAnswers, itemIndex: Index): Option[TransportEquipment] =
     for {
       uuid <- userAnswers.get(TransportEquipmentPage(itemIndex))
-      transportEquipments =
-        userAnswers.get(TransportEquipmentsSection).map(_.validateAsAListOf[TransportEquipment]).getOrElse(Nil)
+      transportEquipments = equipmentsSection(userAnswers)
       result <- transportEquipments.find(_.uuid == uuid)
     } yield result
+
+  private def equipmentsSection(userAnswers: UserAnswers): Seq[TransportEquipment] = userAnswers
+    .get(TransportEquipmentsSection)
+    .map(_.validateAsAListOf[TransportEquipment])
+    .getOrElse(Nil)
 }

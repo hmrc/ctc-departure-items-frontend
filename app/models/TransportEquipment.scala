@@ -47,6 +47,6 @@ object TransportEquipment {
       (__ \ "uuid").read[UUID])
       .apply {
         (containerId, uuid) =>
-          TransportEquipment(index, containerId, uuid)
+          TransportEquipment(index + 1, containerId, uuid)
       }
 }

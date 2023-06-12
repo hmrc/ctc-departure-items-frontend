@@ -122,12 +122,12 @@ class TransportEquipmentsServiceSpec extends SpecBase {
             val result2 = service.getTransportEquipment(userAnswers, Index(1))
 
             result1.value mustBe TransportEquipment(
-              number = 0,
+              number = 1,
               containerId = Some("98777"),
               uuid = UUID.fromString(uuid1)
             )
             result2.value mustBe TransportEquipment(
-              number = 1,
+              number = 2,
               containerId = None,
               uuid = UUID.fromString(uuid2)
             )
