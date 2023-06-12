@@ -19,7 +19,7 @@ package viewmodels.item
 import config.FrontendAppConfig
 import models.{Index, UserAnswers}
 import play.api.i18n.Messages
-import services.DocumentsService
+import services.{DocumentsService, TransportEquipmentService}
 import utils.cyaHelpers.item.ItemAnswersHelper
 import viewmodels.sections.Section
 
@@ -32,10 +32,15 @@ object ItemAnswersViewModel {
   def apply(
     userAnswers: UserAnswers,
     itemIndex: Index
-  )(implicit messages: Messages, config: FrontendAppConfig, documentsService: DocumentsService): ItemAnswersViewModel =
+  )(implicit
+    messages: Messages,
+    config: FrontendAppConfig,
+    documentsService: DocumentsService,
+    transportEquipmentService: TransportEquipmentService
+  ): ItemAnswersViewModel =
     new ItemAnswersViewModelProvider().apply(userAnswers, itemIndex)
 
-  class ItemAnswersViewModelProvider @Inject() (implicit documentsService: DocumentsService) {
+  class ItemAnswersViewModelProvider @Inject() (implicit documentsService: DocumentsService, transportEquipmentService: TransportEquipmentService) {
 
     // scalastyle:off method.length
     def apply(userAnswers: UserAnswers, itemIndex: Index)(implicit messages: Messages, config: FrontendAppConfig): ItemAnswersViewModel = {
@@ -44,6 +49,7 @@ object ItemAnswersViewModel {
       val firstItemSection = Section(
         rows = Seq(
           helper.itemDescription,
+          helper.transportEquipment,
           helper.declarationType,
           helper.countryOfDispatch,
           helper.countryOfDestination,

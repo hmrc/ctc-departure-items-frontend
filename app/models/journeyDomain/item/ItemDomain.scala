@@ -32,13 +32,16 @@ import models.{DeclarationType, Document, Index, Mode, UserAnswers}
 import pages.external._
 import pages.item._
 import pages.sections.external.DocumentsSection
+import pages.sections.external.TransportEquipmentsSection
 import play.api.i18n.Messages
 import play.api.mvc.Call
 
+import java.util.UUID
 import scala.language.implicitConversions
 
 case class ItemDomain(
   itemDescription: String,
+  transportEquipment: Option[UUID],
   declarationType: Option[DeclarationType],
   countryOfDispatch: Option[Country],
   countryOfDestination: Option[Country],
@@ -70,6 +73,7 @@ object ItemDomain {
   implicit def userAnswersReader(itemIndex: Index): UserAnswersReader[ItemDomain] =
     (
       DescriptionPage(itemIndex).reader,
+      transportEquipmentReader(itemIndex),
       declarationTypeReader(itemIndex),
       countryOfDispatchReader(itemIndex),
       countryOfDestinationReader(itemIndex),
@@ -87,6 +91,12 @@ object ItemDomain {
       additionalReferencesReader(itemIndex),
       additionalInformationListReader(itemIndex)
     ).tupled.map((ItemDomain.apply _).tupled).map(_(itemIndex))
+
+  def transportEquipmentReader(itemIndex: Index): UserAnswersReader[Option[UUID]] =
+    TransportEquipmentsSection.optionalReader.flatMap {
+      case Some(array) if array.nonEmpty => TransportEquipmentPage(itemIndex).reader.map(Some(_))
+      case _                             => none[UUID].pure[UserAnswersReader]
+    }
 
   def declarationTypeReader(itemIndex: Index): UserAnswersReader[Option[DeclarationType]] =
     TransitOperationDeclarationTypePage.filterOptionalDependent(_ == T) {

@@ -33,11 +33,13 @@ import pages.sections.documents.DocumentsSection
 import pages.sections.packages.PackagesSection
 import pages.sections.supplyChainActors.SupplyChainActorsSection
 import play.api.i18n.Messages
-import services.DocumentsService
+import services.{DocumentsService, TransportEquipmentService}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import utils.cyaHelpers.AnswersHelper
 import viewmodels.Link
+
+import java.util.UUID
 
 // scalastyle:off number.of.methods
 class ItemAnswersHelper(
@@ -53,6 +55,18 @@ class ItemAnswersHelper(
     id = Some("change-description"),
     args = itemIndex.display
   )
+
+  def transportEquipment(implicit transportEquipmentService: TransportEquipmentService): Option[SummaryListRow] =
+    transportEquipmentService.getTransportEquipment(userAnswers, itemIndex).flatMap {
+      transportEquipment =>
+        getAnswerAndBuildRow[UUID](
+          page = TransportEquipmentPage(itemIndex),
+          formatAnswer = _ => formatAsText(transportEquipment),
+          prefix = "item.transportEquipment",
+          id = Some("change-transport-equipment"),
+          args = itemIndex.display
+        )
+    }
 
   def declarationType: Option[SummaryListRow] = getAnswerAndBuildRow[DeclarationType](
     page = DeclarationTypePage(itemIndex),

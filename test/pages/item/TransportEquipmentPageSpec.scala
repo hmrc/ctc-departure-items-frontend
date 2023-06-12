@@ -14,23 +14,20 @@
  * limitations under the License.
  */
 
-package models
+package pages.item
 
-import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
+import pages.behaviours.PageBehaviours
 
-trait Selectable {
-  val value: String
+import java.util.UUID
 
-  def toSelectItem(selected: Boolean = false)(implicit messages: Messages): SelectItem = SelectItem(Some(value), this.toString, selected)
-}
+class TransportEquipmentPageSpec extends PageBehaviours {
 
-object Selectable {
+  "TransportEquipmentPage" - {
 
-  implicit class Selectables(selectables: Seq[Selectable])(implicit messages: Messages) {
+    beRetrievable[UUID](TransportEquipmentPage(itemIndex))
 
-    def toSelectItems(selectedValue: Option[Selectable]): Seq[SelectItem] = selectables.map(
-      x => x.toSelectItem(selectedValue.contains(x))
-    )
+    beSettable[UUID](TransportEquipmentPage(itemIndex))
+
+    beRemovable[UUID](TransportEquipmentPage(itemIndex))
   }
 }

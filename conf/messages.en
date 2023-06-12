@@ -38,6 +38,8 @@ item.documents.caption = Item {0} - Documents
 item.additionalReference.caption = Item {0} - Additional reference
 item.additionalInformation.caption = Item {0} - Additional information
 item.supplyChainActor.caption = Item {0} - Supply chain actor
+item.transportEquipment.withContainerId = ({0}) Transport equipment - {1}
+item.transportEquipment.withoutContainerId = ({0}) Transport equipment
 
 item.checkYourAnswers.heading = Check your answers
 item.checkYourAnswers.title = Check your answers
@@ -445,3 +447,11 @@ item.supplyChainActors.addAnotherSupplyChainActor.error.required = Select yes if
 item.supplyChainActors.index.removeSupplyChainActor.title = Are you sure you want to remove this supply chain actor?
 item.supplyChainActors.index.removeSupplyChainActor.heading = Are you sure you want to remove this supply chain actor?
 item.supplyChainActors.index.removeSupplyChainActor.error.required = Select yes if you want to remove this supply chain actor
+
+item.transportEquipment.title = Which transport equipment are you using for this item?
+item.transportEquipment.heading = Which transport equipment are you using for this item?
+item.transportEquipment.paragraph = Transport equipment can be anything used to transport goods. For example, a swap body, articulated lorry or trailer.
+item.transportEquipment.placeholder = Select a transport equipment
+item.transportEquipment.change.hidden = transport equipment for item {0}
+item.transportEquipment.checkYourAnswersLabel = Transport equipment
+item.transportEquipment.error.required = Select which transport equipment you are using for this item

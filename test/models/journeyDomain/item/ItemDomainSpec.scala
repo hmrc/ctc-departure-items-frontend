@@ -39,6 +39,7 @@ import pages.item.dangerousGoods.index.UNNumberPage
 import pages.item.documents.index.DocumentPage
 import pages.item.packages.index._
 import pages.sections.external.DocumentsSection
+import pages.sections.external.TransportEquipmentsSection
 import play.api.libs.json.{JsArray, Json}
 
 import java.util.UUID
@@ -58,6 +59,69 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
             ).run(emptyUserAnswers)
 
           result.left.value.page mustBe DescriptionPage(itemIndex)
+        }
+      }
+    }
+
+    "transportEquipmentReader" - {
+      def equipments(uuid: UUID) = Json
+        .parse(s"""
+             |[
+             |{
+             |  "containerIdentificationNumber" : "98777",
+             |  "addSealsYesNo" : true,
+             |  "seals" : [
+             |    {
+             |      "identificationNumber" : "TransportSeal1"
+             |    }
+             |   ],
+             |   "uuid": "$uuid"
+             |}
+             |]
+             |""".stripMargin)
+        .as[JsArray]
+
+      "can be read from user answers" - {
+        "when transport equipment sequence is present" in {
+          forAll(arbitrary[UUID]) {
+            uuid =>
+              val userAnswers = emptyUserAnswers
+                .setValue(TransportEquipmentsSection, equipments(uuid))
+                .setValue(TransportEquipmentPage(itemIndex), uuid)
+
+              val expectedResult = Some(uuid)
+
+              val result: EitherType[Option[UUID]] = UserAnswersReader[Option[UUID]](
+                ItemDomain.transportEquipmentReader(itemIndex)
+              ).run(userAnswers)
+
+              result.value mustBe expectedResult
+          }
+        }
+
+        "when transport equipment sequence is not present" in {
+          val expectedResult = None
+
+          val result: EitherType[Option[UUID]] = UserAnswersReader[Option[UUID]](
+            ItemDomain.transportEquipmentReader(itemIndex)
+          ).run(emptyUserAnswers)
+
+          result.value mustBe expectedResult
+        }
+      }
+
+      "can not be read from user answers" - {
+        "when transport equipment sequence is present" - {
+          "and transport equipment is unanswered" in {
+            val userAnswers = emptyUserAnswers
+              .setValue(TransportEquipmentsSection, equipments(UUID.randomUUID()))
+
+            val result: EitherType[Option[UUID]] = UserAnswersReader[Option[UUID]](
+              ItemDomain.transportEquipmentReader(itemIndex)
+            ).run(userAnswers)
+
+            result.left.value.page mustBe TransportEquipmentPage(itemIndex)
+          }
         }
       }
     }

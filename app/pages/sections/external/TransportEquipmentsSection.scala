@@ -14,23 +14,14 @@
  * limitations under the License.
  */
 
-package models
+package pages.sections.external
 
-import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
+import pages.sections.ReadOnlySection
+import play.api.libs.json.{JsArray, JsPath}
 
-trait Selectable {
-  val value: String
+case object TransportEquipmentsSection extends ReadOnlySection[JsArray] {
 
-  def toSelectItem(selected: Boolean = false)(implicit messages: Messages): SelectItem = SelectItem(Some(value), this.toString, selected)
-}
+  override def path: JsPath = equipmentsPath \ toString
 
-object Selectable {
-
-  implicit class Selectables(selectables: Seq[Selectable])(implicit messages: Messages) {
-
-    def toSelectItems(selectedValue: Option[Selectable]): Seq[SelectItem] = selectables.map(
-      x => x.toSelectItem(selectedValue.contains(x))
-    )
-  }
+  override def toString: String = "equipments"
 }

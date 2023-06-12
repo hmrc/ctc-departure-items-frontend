@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package models
+package pages.item
 
-import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
+import controllers.item.routes
+import models.{Index, Mode, UserAnswers}
+import pages.QuestionPage
+import pages.sections.ItemSection
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-trait Selectable {
-  val value: String
+import java.util.UUID
 
-  def toSelectItem(selected: Boolean = false)(implicit messages: Messages): SelectItem = SelectItem(Some(value), this.toString, selected)
-}
+case class TransportEquipmentPage(itemIndex: Index) extends QuestionPage[UUID] {
 
-object Selectable {
+  override def path: JsPath = ItemSection(itemIndex).path \ toString
 
-  implicit class Selectables(selectables: Seq[Selectable])(implicit messages: Messages) {
+  override def toString: String = "transportEquipment"
 
-    def toSelectItems(selectedValue: Option[Selectable]): Seq[SelectItem] = selectables.map(
-      x => x.toSelectItem(selectedValue.contains(x))
-    )
-  }
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.TransportEquipmentController.onPageLoad(userAnswers.lrn, mode, itemIndex))
 }
