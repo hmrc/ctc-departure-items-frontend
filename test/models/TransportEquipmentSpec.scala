@@ -68,7 +68,7 @@ class TransportEquipmentSpec extends SpecBase with ScalaCheckPropertyChecks with
           )
 
           equipment.asString mustBe s"($numberString) Transport equipment - $containerId"
-          equipment.toString mustBe s"${number + 1} - $containerId"
+          equipment.toString mustBe s"$number - $containerId"
       }
     }
 
@@ -83,7 +83,7 @@ class TransportEquipmentSpec extends SpecBase with ScalaCheckPropertyChecks with
           )
 
           equipment.asString mustBe s"($numberString) Transport equipment"
-          equipment.toString mustBe s"${number + 1}"
+          equipment.toString mustBe s"$number"
       }
     }
   }
