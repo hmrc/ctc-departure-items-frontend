@@ -25,10 +25,9 @@ import play.api.libs.functional.syntax._
 
 case class TransportEquipment(number: Int, containerId: Option[String], uuid: UUID) extends Selectable {
 
-  override def toString: String = containerId match {
-    case Some(value) => s"${number + 1} - $value"
-    case None        => s"${number + 1}"
-  }
+  override def toString: String = number.toString + containerId.fold("")(
+    value => s" - $value"
+  )
 
   def asString(implicit messages: Messages): String = containerId match {
     case Some(value) => messages("item.transportEquipment.withContainerId", number, value)
