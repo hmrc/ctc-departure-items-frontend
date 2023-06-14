@@ -29,6 +29,9 @@ class AdditionalInformationService @Inject() (referenceDataConnector: ReferenceD
   def getAdditionalInformationTypes()(implicit hc: HeaderCarrier): Future[SelectableList[AdditionalInformation]] =
     referenceDataConnector
       .getAdditionlInformationTypes()
+      .map {
+        _.filter(_.code != "30600")
+      }
       .map(sort)
 
   private def sort(additionalInformationTypes: Seq[AdditionalInformation]): SelectableList[AdditionalInformation] =

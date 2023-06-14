@@ -33,18 +33,22 @@ class AdditionalInformationServiceSpec extends SpecBase with BeforeAndAfterEach 
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
   private val service                                      = new AdditionalInformationService(mockRefDataConnector)
 
-  private val additionalInformation1: AdditionalInformation =
-    AdditionalInformation("20100", "Export from one EFTA country subject to restriction or export from the Union subject to restriction")
+  private val additionalInformation1: AdditionalInformation = AdditionalInformation(
+    code = "20100",
+    description = "Export from one EFTA country subject to restriction or export from the Union subject to restriction"
+  )
 
-  private val additionalInformation2: AdditionalInformation =
-    AdditionalInformation("20300", "Export")
+  private val additionalInformation2: AdditionalInformation = AdditionalInformation(
+    code = "20300",
+    description = "Export"
+  )
 
-  private val additionalInformation3: AdditionalInformation =
-    AdditionalInformation("30600",
-                          "In EXS, where negotiable bills of lading 'to order blank endorsed' are concerned and the consignee particulars are unknown."
-    )
+  private val additionalInformation3: AdditionalInformation = AdditionalInformation(
+    code = "30600",
+    description = "In EXS, where negotiable bills of lading 'to order blank endorsed' are concerned and the consignee particulars are unknown."
+  )
 
-  private val additionalInformationTypes = Seq(additionalInformation1, additionalInformation3, additionalInformation2)
+  private val additionalInformationTypes = Seq(additionalInformation1, additionalInformation2, additionalInformation3)
 
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)
@@ -54,13 +58,13 @@ class AdditionalInformationServiceSpec extends SpecBase with BeforeAndAfterEach 
   "AdditionalInformation" - {
 
     "getAdditionalInformationTypes" - {
-      "must return a list of sorted additional information types" in {
+      "must return a list of sorted additional information types, filtering out code 30600" in {
 
         when(mockRefDataConnector.getAdditionlInformationTypes()(any(), any()))
           .thenReturn(Future.successful(additionalInformationTypes))
 
         service.getAdditionalInformationTypes().futureValue mustBe
-          SelectableList(Seq(additionalInformation2, additionalInformation1, additionalInformation3))
+          SelectableList(Seq(additionalInformation2, additionalInformation1))
 
         verify(mockRefDataConnector).getAdditionlInformationTypes()(any(), any())
       }
