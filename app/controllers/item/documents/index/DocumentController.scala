@@ -54,8 +54,8 @@ class DocumentController @Inject() (
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
       val itemLevelDocuments = ItemLevelDocuments(request.userAnswers, itemIndex, documentIndex)(service)
-      val documentList = service.getDocuments(request.userAnswers, itemIndex, Some(documentIndex))
-      val form         = formProvider(prefix, documentList, itemLevelDocuments)(config)
+      val documentList       = service.getDocuments(request.userAnswers, itemIndex, Some(documentIndex))
+      val form               = formProvider(prefix, documentList, itemLevelDocuments)(config)
       val preparedForm = request.userAnswers.get(DocumentPage(itemIndex, documentIndex)) match {
         case None => form
         case Some(uuid) =>
@@ -70,8 +70,8 @@ class DocumentController @Inject() (
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
       val itemLevelDocuments = ItemLevelDocuments(request.userAnswers, itemIndex, documentIndex)(service)
-      val documentList = service.getDocuments(request.userAnswers, itemIndex, Some(documentIndex))
-      val form = formProvider(prefix, documentList, itemLevelDocuments)(config)
+      val documentList       = service.getDocuments(request.userAnswers, itemIndex, Some(documentIndex))
+      val form               = formProvider(prefix, documentList, itemLevelDocuments)(config)
       form
         .bindFromRequest()
         .fold(

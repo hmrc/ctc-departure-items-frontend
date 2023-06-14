@@ -56,6 +56,15 @@ trait ModelGenerators {
       Gen.oneOf(DeclarationType.values.filterNot(_ == DeclarationType.TIR))
     }
 
+  implicit lazy val arbitraryTransportEquipment: Arbitrary[TransportEquipment] =
+    Arbitrary {
+      for {
+        number      <- positiveIntsMinMax(0: Int, 9998: Int)
+        containerId <- Gen.option(nonEmptyString)
+        uuid        <- arbitrary[UUID]
+      } yield TransportEquipment(number, containerId, uuid)
+    }
+
   implicit lazy val arbitraryCountryCode: Arbitrary[CountryCode] =
     Arbitrary {
       Gen
