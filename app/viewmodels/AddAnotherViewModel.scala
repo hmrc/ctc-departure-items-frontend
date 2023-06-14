@@ -34,7 +34,5 @@ trait AddAnotherViewModel {
   def heading(implicit messages: Messages): String       = messages(s"$prefix.$singularOrPlural.heading", count)
   def legend(implicit messages: Messages): String        = messages(s"$prefix.label")
   def maxLimitLabel(implicit messages: Messages): String = messages(s"$prefix.maxLimit.label")
-
-  def maxCount(implicit config: FrontendAppConfig): Int
-  def allowMore(implicit config: FrontendAppConfig): Boolean = count < maxCount
+  def allowMore(implicit config: FrontendAppConfig): Boolean
 }

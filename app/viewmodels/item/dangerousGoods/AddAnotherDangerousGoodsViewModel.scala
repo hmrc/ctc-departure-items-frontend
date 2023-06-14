@@ -33,7 +33,7 @@ case class AddAnotherDangerousGoodsViewModel(
 
   override val prefix: String = "item.dangerousGoods.addAnotherDangerousGoods"
 
-  override def maxCount(implicit config: FrontendAppConfig): Int = config.maxDangerousGoods
+  override def allowMore(implicit config: FrontendAppConfig): Boolean = count < config.maxDangerousGoods
 }
 
 object AddAnotherDangerousGoodsViewModel {

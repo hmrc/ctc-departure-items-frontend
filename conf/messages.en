@@ -297,6 +297,7 @@ item.documents.index.document.paragraph = You can only attach a document if you 
 item.documents.index.document.link = Go to your Documents section to add another document
 item.documents.index.document.placeholder = Select a document
 item.documents.index.document.error.required = Select which document you want to attach
+item.documents.index.document.error.maxLimitReached = You cannot add any more documents of this type. To add another, you need to remove one first
 
 item.addDocumentsYesNo.title = Do you want to attach any documents to this item?
 item.addDocumentsYesNo.heading = Do you want to attach any documents to this item?

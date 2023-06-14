@@ -18,6 +18,7 @@ package models
 
 import base.SpecBase
 import generators.Generators
+import models.DocumentType.{Previous, Support, Transport}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -27,8 +28,6 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 import java.util.UUID
 
 class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
-
-  private val typeGen = Gen.oneOf("Transport", "Support", "Previous")
 
   private val uuid = "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
 
@@ -58,7 +57,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
 
       val expectedResult = Document(
         attachToAllItems = true,
-        `type` = "Transport",
+        `type` = Transport,
         code = code,
         description = Some(description),
         referenceNumber = referenceNumber,
@@ -94,7 +93,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
 
       val expectedResult = Document(
         attachToAllItems = false,
-        `type` = "Support",
+        `type` = Support,
         code = code,
         description = Some(description),
         referenceNumber = referenceNumber,
@@ -143,7 +142,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
 
       val expectedResult = Document(
         attachToAllItems = true,
-        `type` = "Previous",
+        `type` = Previous,
         code = code,
         description = Some(description),
         referenceNumber = referenceNumber,
@@ -180,7 +179,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
 
       val expectedResult = Document(
         attachToAllItems = true,
-        `type` = "Previous",
+        `type` = Previous,
         code = code,
         description = Some(description),
         referenceNumber = referenceNumber,
@@ -195,7 +194,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
 
   "must format as string" - {
     "when description defined" in {
-      forAll(typeGen, nonEmptyString, nonEmptyString, nonEmptyString, arbitrary[UUID], arbitrary[Boolean]) {
+      forAll(arbitrary[DocumentType], nonEmptyString, nonEmptyString, nonEmptyString, arbitrary[UUID], arbitrary[Boolean]) {
         (`type`, code, description, referenceNumber, uuid, attachToAllItems) =>
           val document = Document(
             attachToAllItems = attachToAllItems,
@@ -211,7 +210,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
     }
 
     "when description undefined" in {
-      forAll(typeGen, nonEmptyString, nonEmptyString, arbitrary[UUID], arbitrary[Boolean]) {
+      forAll(arbitrary[DocumentType], nonEmptyString, nonEmptyString, arbitrary[UUID], arbitrary[Boolean]) {
         (`type`, code, referenceNumber, uuid, attachToAllItems) =>
           val document = Document(
             attachToAllItems = attachToAllItems,
@@ -228,7 +227,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
   }
 
   "must convert to select item" in {
-    forAll(typeGen, nonEmptyString, Gen.option(nonEmptyString), nonEmptyString, arbitrary[UUID], arbitrary[Boolean]) {
+    forAll(arbitrary[DocumentType], nonEmptyString, Gen.option(nonEmptyString), nonEmptyString, arbitrary[UUID], arbitrary[Boolean]) {
       (`type`, code, description, referenceNumber, uuid, selected) =>
         val attachToAllItems = arbitrary[Boolean].sample.value
         val document         = Document(attachToAllItems, `type`, code, description, referenceNumber, uuid)

@@ -17,6 +17,7 @@
 package services
 
 import base.SpecBase
+import models.DocumentType.Previous
 import models.{Document, Index, SelectableList}
 import play.api.libs.json.{JsObject, Json}
 
@@ -41,7 +42,7 @@ class DocumentsServiceSpec extends SpecBase {
               |      {
               |        "attachToAllItems" : false,
               |        "previousDocumentType" : {
-              |          "type" : "Type 1",
+              |          "type" : "Previous",
               |          "code" : "Code 1",
               |          "description" : "Description 1"
               |        },
@@ -53,7 +54,7 @@ class DocumentsServiceSpec extends SpecBase {
               |      {
               |        "attachToAllItems" : true,
               |        "type" : {
-              |          "type" : "Type 3",
+              |          "type" : "Previous",
               |          "code" : "Code 3",
               |          "description" : "Description 3"
               |        },
@@ -65,7 +66,7 @@ class DocumentsServiceSpec extends SpecBase {
               |      {
               |        "attachToAllItems" : false,
               |        "type" : {
-              |          "type" : "Type 2",
+              |          "type" : "Previous",
               |          "code" : "Code 2"
               |        },
               |        "details" : {
@@ -94,7 +95,7 @@ class DocumentsServiceSpec extends SpecBase {
 
           result mustBe SelectableList(
             Seq(
-              Document(attachToAllItems = false, "Type 2", "Code 2", None, "Ref no. 2", UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a"))
+              Document(attachToAllItems = false, Previous, "Code 2", None, "Ref no. 2", UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a"))
             )
           )
         }
@@ -109,7 +110,7 @@ class DocumentsServiceSpec extends SpecBase {
               |      {
               |        "attachToAllItems" : false,
               |        "previousDocumentType" : {
-              |          "type" : "Type 1",
+              |          "type" : "Previous",
               |          "code" : "Code 1",
               |          "description" : "Description 1"
               |        },
@@ -121,7 +122,7 @@ class DocumentsServiceSpec extends SpecBase {
               |      {
               |        "attachToAllItems" : false,
               |        "type" : {
-              |          "type" : "Type 2",
+              |          "type" : "Previous",
               |          "code" : "Code 2"
               |        },
               |        "details" : {
@@ -143,13 +144,13 @@ class DocumentsServiceSpec extends SpecBase {
             Seq(
               Document(
                 attachToAllItems = false,
-                "Type 1",
+                Previous,
                 "Code 1",
                 Some("Description 1"),
                 "Ref no. 1",
                 UUID.fromString("1794d93b-17d5-44fe-a18d-aaa2059d06fe")
               ),
-              Document(attachToAllItems = false, "Type 2", "Code 2", None, "Ref no. 2", UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a"))
+              Document(attachToAllItems = false, Previous, "Code 2", None, "Ref no. 2", UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a"))
             )
           )
         }
@@ -201,7 +202,7 @@ class DocumentsServiceSpec extends SpecBase {
                   |      {
                   |        "attachToAllItems" : false,
                   |        "previousDocumentType" : {
-                  |          "type" : "Type 1",
+                  |          "type" : "Previous",
                   |          "code" : "Code 1",
                   |          "description" : "Description 1"
                   |        },
@@ -213,7 +214,7 @@ class DocumentsServiceSpec extends SpecBase {
                   |      {
                   |        "attachToAllItems" : false,
                   |        "type" : {
-                  |          "type" : "Type 2",
+                  |          "type" : "Previous",
                   |          "code" : "Code 2"
                   |        },
                   |        "details" : {
@@ -244,13 +245,13 @@ class DocumentsServiceSpec extends SpecBase {
               Seq(
                 Document(
                   attachToAllItems = false,
-                  "Type 1",
+                  Previous,
                   "Code 1",
                   Some("Description 1"),
                   "Ref no. 1",
                   UUID.fromString("1794d93b-17d5-44fe-a18d-aaa2059d06fe")
                 ),
-                Document(attachToAllItems = false, "Type 2", "Code 2", None, "Ref no. 2", UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a"))
+                Document(attachToAllItems = false, Previous, "Code 2", None, "Ref no. 2", UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a"))
               )
             )
           }
@@ -265,7 +266,7 @@ class DocumentsServiceSpec extends SpecBase {
                   |      {
                   |        "attachToAllItems" : false,
                   |        "previousDocumentType" : {
-                  |          "type" : "Type 1",
+                  |          "type" : "Previous",
                   |          "code" : "Code 1",
                   |          "description" : "Description 1"
                   |        },
@@ -277,7 +278,7 @@ class DocumentsServiceSpec extends SpecBase {
                   |      {
                   |        "attachToAllItems" : false,
                   |        "type" : {
-                  |          "type" : "Type 2",
+                  |          "type" : "Previous",
                   |          "code" : "Code 2"
                   |        },
                   |        "details" : {
@@ -306,7 +307,7 @@ class DocumentsServiceSpec extends SpecBase {
 
             result mustBe SelectableList(
               Seq(
-                Document(attachToAllItems = false, "Type 2", "Code 2", None, "Ref no. 2", UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a"))
+                Document(attachToAllItems = false, Previous, "Code 2", None, "Ref no. 2", UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a"))
               )
             )
           }
@@ -322,7 +323,7 @@ class DocumentsServiceSpec extends SpecBase {
               |      {
               |        "attachToAllItems" : false,
               |        "previousDocumentType" : {
-              |          "type" : "Type 1",
+              |          "type" : "Previous",
               |          "code" : "Code 1",
               |          "description" : "Description 1"
               |        },
@@ -334,7 +335,7 @@ class DocumentsServiceSpec extends SpecBase {
               |      {
               |        "attachToAllItems" : false,
               |        "type" : {
-              |          "type" : "Type 2",
+              |          "type" : "Previous",
               |          "code" : "Code 2"
               |        },
               |        "details" : {
@@ -356,13 +357,13 @@ class DocumentsServiceSpec extends SpecBase {
             Seq(
               Document(
                 attachToAllItems = false,
-                "Type 1",
+                Previous,
                 "Code 1",
                 Some("Description 1"),
                 "Ref no. 1",
                 UUID.fromString("1794d93b-17d5-44fe-a18d-aaa2059d06fe")
               ),
-              Document(attachToAllItems = false, "Type 2", "Code 2", None, "Ref no. 2", UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a"))
+              Document(attachToAllItems = false, Previous, "Code 2", None, "Ref no. 2", UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a"))
             )
           )
         }
@@ -412,7 +413,7 @@ class DocumentsServiceSpec extends SpecBase {
                 |      {
                 |        "attachToAllItems" : false,
                 |        "previousDocumentType" : {
-                |          "type" : "Type 1",
+                |          "type" : "Previous",
                 |          "code" : "Code 1",
                 |          "description" : "Description 1"
                 |        },
@@ -424,7 +425,7 @@ class DocumentsServiceSpec extends SpecBase {
                 |      {
                 |        "attachToAllItems" : true,
                 |        "type" : {
-                |          "type" : "Type 3",
+                |          "type" : "Previous",
                 |          "code" : "Code 3"
                 |        },
                 |        "details" : {
@@ -435,7 +436,7 @@ class DocumentsServiceSpec extends SpecBase {
                 |      {
                 |        "attachToAllItems" : false,
                 |        "type" : {
-                |          "type" : "Type 2",
+                |          "type" : "Previous",
                 |          "code" : "Code 2"
                 |        },
                 |        "details" : {
@@ -454,7 +455,7 @@ class DocumentsServiceSpec extends SpecBase {
           val result = service.getConsignmentLevelDocuments(userAnswers)
 
           result mustBe Seq(
-            Document(attachToAllItems = true, "Type 3", "Code 3", None, "Ref no. 3", UUID.fromString("cc09f64b-e519-4b21-9961-243ba7cad1b7"))
+            Document(attachToAllItems = true, Previous, "Code 3", None, "Ref no. 3", UUID.fromString("cc09f64b-e519-4b21-9961-243ba7cad1b7"))
           )
 
         }
@@ -472,7 +473,7 @@ class DocumentsServiceSpec extends SpecBase {
           |      {
           |        "attachToAllItems" : true,
           |        "previousDocumentType" : {
-          |          "type" : "Type 1",
+          |          "type" : "Previous",
           |          "code" : "Code 1",
           |          "description" : "Description 1"
           |        },
@@ -484,7 +485,7 @@ class DocumentsServiceSpec extends SpecBase {
           |      {
           |        "attachToAllItems" : true,
           |        "type" : {
-          |          "type" : "Type 2",
+          |          "type" : "Previous",
           |          "code" : "Code 2"
           |        },
           |        "details" : {
@@ -522,7 +523,7 @@ class DocumentsServiceSpec extends SpecBase {
 
           result1.value mustBe Document(
             attachToAllItems = true,
-            `type` = "Type 1",
+            `type` = Previous,
             code = "Code 1",
             description = Some("Description 1"),
             referenceNumber = "Ref no. 1",
@@ -530,7 +531,7 @@ class DocumentsServiceSpec extends SpecBase {
           )
           result2.value mustBe Document(
             attachToAllItems = true,
-            `type` = "Type 2",
+            `type` = Previous,
             code = "Code 2",
             description = None,
             referenceNumber = "Ref no. 2",

@@ -18,6 +18,7 @@ package generators
 
 import config.Constants._
 import models.AddressLine.{Country => _, _}
+import models.DocumentType.{Previous, Support, Transport}
 import models._
 import models.reference._
 import org.scalacheck.Arbitrary.arbitrary
@@ -35,6 +36,11 @@ trait ModelGenerators {
       Gen.oneOf(SupplyChainActorType.values)
     }
 
+  implicit lazy val arbitraryDocumentType: Arbitrary[DocumentType] =
+    Arbitrary {
+      Gen.oneOf(DocumentType.values)
+    }
+
   implicit lazy val arbitraryDeclarationType: Arbitrary[DeclarationType] =
     Arbitrary {
       Gen.oneOf(DeclarationType.values)
@@ -48,6 +54,15 @@ trait ModelGenerators {
   lazy val arbitraryNonTIRDeclarationType: Arbitrary[DeclarationType] =
     Arbitrary {
       Gen.oneOf(DeclarationType.values.filterNot(_ == DeclarationType.TIR))
+    }
+
+  implicit lazy val arbitraryTransportEquipment: Arbitrary[TransportEquipment] =
+    Arbitrary {
+      for {
+        number      <- positiveIntsMinMax(0: Int, 9998: Int)
+        containerId <- Gen.option(nonEmptyString)
+        uuid        <- arbitrary[UUID]
+      } yield TransportEquipment(number, containerId, uuid)
     }
 
   implicit lazy val arbitraryCountryCode: Arbitrary[CountryCode] =
@@ -71,7 +86,7 @@ trait ModelGenerators {
     Arbitrary {
       for {
         attachToAllItems <- arbitrary[Boolean]
-        documentType     <- nonEmptyString
+        documentType     <- arbitrary[DocumentType]
         code             <- nonEmptyString
         description      <- Gen.option(nonEmptyString)
         referenceNumber  <- nonEmptyString
@@ -79,13 +94,37 @@ trait ModelGenerators {
       } yield Document(attachToAllItems, documentType, code, description, referenceNumber, uuid)
     }
 
-  implicit lazy val arbitraryTransportEquipment: Arbitrary[TransportEquipment] =
+  lazy val arbitrarySupportingDocument: Arbitrary[Document] =
     Arbitrary {
       for {
-        number      <- positiveIntsMinMax(0: Int, 9998: Int)
-        containerId <- Gen.option(nonEmptyString)
-        uuid        <- arbitrary[UUID]
-      } yield TransportEquipment(number, containerId, uuid)
+        attachToAllItems <- arbitrary[Boolean]
+        code             <- nonEmptyString
+        description      <- Gen.option(nonEmptyString)
+        referenceNumber  <- nonEmptyString
+        uuid             <- arbitrary[UUID]
+      } yield Document(attachToAllItems, Support, code, description, referenceNumber, uuid)
+    }
+
+  lazy val arbitraryTransportDocument: Arbitrary[Document] =
+    Arbitrary {
+      for {
+        attachToAllItems <- arbitrary[Boolean]
+        code             <- nonEmptyString
+        description      <- Gen.option(nonEmptyString)
+        referenceNumber  <- nonEmptyString
+        uuid             <- arbitrary[UUID]
+      } yield Document(attachToAllItems, Transport, code, description, referenceNumber, uuid)
+    }
+
+  lazy val arbitraryPreviousDocument: Arbitrary[Document] =
+    Arbitrary {
+      for {
+        attachToAllItems <- arbitrary[Boolean]
+        code             <- nonEmptyString
+        description      <- Gen.option(nonEmptyString)
+        referenceNumber  <- nonEmptyString
+        uuid             <- arbitrary[UUID]
+      } yield Document(attachToAllItems, Previous, code, description, referenceNumber, uuid)
     }
 
   implicit lazy val arbitraryLocalReferenceNumber: Arbitrary[LocalReferenceNumber] =

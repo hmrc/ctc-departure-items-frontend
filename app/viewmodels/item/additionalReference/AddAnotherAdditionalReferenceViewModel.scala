@@ -33,7 +33,7 @@ case class AddAnotherAdditionalReferenceViewModel(
 
   override val prefix: String = "item.additionalReference.addAnotherAdditionalReference"
 
-  override def maxCount(implicit config: FrontendAppConfig): Int = config.maxAdditionalReferences
+  override def allowMore(implicit config: FrontendAppConfig): Boolean = count < config.maxAdditionalReferences
 }
 
 object AddAnotherAdditionalReferenceViewModel {

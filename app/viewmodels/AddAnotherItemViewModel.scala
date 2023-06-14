@@ -31,7 +31,7 @@ case class AddAnotherItemViewModel(
 
   override val prefix: String = "addAnotherItem"
 
-  override def maxCount(implicit config: FrontendAppConfig): Int = config.maxItems
+  override def allowMore(implicit config: FrontendAppConfig): Boolean = count < config.maxItems
 }
 
 object AddAnotherItemViewModel {

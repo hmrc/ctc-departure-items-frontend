@@ -16,10 +16,11 @@
 
 package controllers.item.documents.index
 
+import config.FrontendAppConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.SelectableFormProvider
-import models.{Index, LocalReferenceNumber, Mode}
+import forms.DocumentFormProvider
+import models.{Index, ItemLevelDocuments, LocalReferenceNumber, Mode}
 import navigation.{DocumentNavigatorProvider, UserAnswersNavigator}
 import pages.item.documents.index.DocumentPage
 import play.api.Logging
@@ -38,10 +39,11 @@ class DocumentController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: DocumentNavigatorProvider,
   actions: Actions,
-  formProvider: SelectableFormProvider,
+  formProvider: DocumentFormProvider,
   service: DocumentsService,
   val controllerComponents: MessagesControllerComponents,
-  view: DocumentView
+  view: DocumentView,
+  config: FrontendAppConfig
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
@@ -51,8 +53,9 @@ class DocumentController @Inject() (
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      val documentList = service.getDocuments(request.userAnswers, itemIndex, Some(documentIndex))
-      val form         = formProvider(prefix, documentList)
+      val itemLevelDocuments = ItemLevelDocuments(request.userAnswers, itemIndex, documentIndex)(service)
+      val documentList       = service.getDocuments(request.userAnswers, itemIndex, Some(documentIndex))
+      val form               = formProvider(prefix, documentList, itemLevelDocuments)(config)
       val preparedForm = request.userAnswers.get(DocumentPage(itemIndex, documentIndex)) match {
         case None => form
         case Some(uuid) =>
@@ -66,8 +69,9 @@ class DocumentController @Inject() (
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      val documentList = service.getDocuments(request.userAnswers, itemIndex, Some(documentIndex))
-      val form         = formProvider(prefix, documentList)
+      val itemLevelDocuments = ItemLevelDocuments(request.userAnswers, itemIndex, documentIndex)(service)
+      val documentList       = service.getDocuments(request.userAnswers, itemIndex, Some(documentIndex))
+      val form               = formProvider(prefix, documentList, itemLevelDocuments)(config)
       form
         .bindFromRequest()
         .fold(
@@ -77,5 +81,7 @@ class DocumentController @Inject() (
             DocumentPage(itemIndex, documentIndex).writeToUserAnswers(value.uuid).updateTask().writeToSession().navigate()
           }
         )
+
   }
+
 }

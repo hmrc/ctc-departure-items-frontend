@@ -23,7 +23,7 @@ import java.util.UUID
 
 case class Document(
   attachToAllItems: Boolean,
-  `type`: String,
+  `type`: DocumentType,
   code: String,
   description: Option[String],
   referenceNumber: String,
@@ -44,7 +44,7 @@ object Document {
 
     def readsForKey(key: String): Reads[Document] = (
       ((__ \ "attachToAllItems").read[Boolean] orElse (__ \ "inferredAttachToAllItems").read[Boolean]) and
-        (__ \ key \ "type").read[String] and
+        (__ \ key \ "type").read[DocumentType] and
         (__ \ key \ "code").read[String] and
         (__ \ key \ "description").readNullable[String] and
         (__ \ "details" \ "documentReferenceNumber").read[String] and

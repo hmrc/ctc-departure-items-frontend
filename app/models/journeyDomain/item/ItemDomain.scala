@@ -19,6 +19,7 @@ package models.journeyDomain.item
 import cats.implicits._
 import config.Constants.GB
 import models.DeclarationType._
+import models.DocumentType.Previous
 import models._
 import models.journeyDomain.item.additionalInformation.AdditionalInformationListDomain
 import models.journeyDomain.item.additionalReferences.AdditionalReferencesDomain
@@ -186,8 +187,8 @@ object ItemDomain {
       isT2OrT2FItemDeclarationType = itemDeclarationType.exists(_.isOneOf(T2, T2F))
       documents <- DocumentsSection.arrayReader.map(_.validateAsListOf[Document])
       consignmentLevelPreviousDocumentPresent = documents.exists(
-        x => x.attachToAllItems && x.`type` == "Previous"
-      ) // TODO: tidy up so type is not a string
+        x => x.attachToAllItems && x.`type` == Previous
+      )
       reader <- (transitOperationDeclarationType, isGBOfficeOfDeparture, isT2OrT2FItemDeclarationType, consignmentLevelPreviousDocumentPresent) match {
         case (T, true, true, true) =>
           AddDocumentsYesNoPage(itemIndex).filterOptionalDependent(identity)(DocumentsDomain.userAnswersReader(itemIndex))
