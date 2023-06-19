@@ -70,8 +70,14 @@ class NumberOfPackagesController @Inject() (
           .fold(
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex, packageIndex, packageType))),
             value => {
-              implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex, packageIndex)
-              NumberOfPackagesPage(itemIndex, packageIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+              val writes = NumberOfPackagesPage(itemIndex, packageIndex).writeToUserAnswers(value).updateTask().writeToSession()
+              value match {
+                case 0 =>
+                  writes.navigateTo(routes.BeforeYouContinueController.onPageLoad(lrn, mode, itemIndex, packageIndex))
+                case _ =>
+                  implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex, packageIndex)
+                  writes.navigate()
+              }
             }
           )
     }
