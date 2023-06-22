@@ -264,6 +264,13 @@ item.packages.index.numberOfPackages.error.wholeNumber = The quantity must only 
 item.packages.index.numberOfPackages.error.maximum = The quantity must be 99,999,999 or less
 item.packages.index.numberOfPackages.error.negative = The quantity must be 0 or more
 
+item.packages.index.beforeYouContinue.title = Before you continue
+item.packages.index.beforeYouContinue.heading = Before you continue
+item.packages.index.beforeYouContinue.p1 = You entered 0 for the number of packages. This means you must add another item with:
+item.packages.index.beforeYouContinue.bullet1 = the same shipping mark as item {0}
+item.packages.index.beforeYouContinue.bullet2 = at least 1 package
+item.packages.index.beforeYouContinue.p2 = If not, the office of departure will reject this declaration.
+
 item.packages.index.addShippingMarkYesNo.title = Do you want to add a shipping mark?
 item.packages.index.addShippingMarkYesNo.heading = Do you want to add a shipping mark?
 item.packages.index.addShippingMarkYesNo.paragraph = This tells carriers what type of product is inside the package and helps consignees identify the order once it’s been delivered.

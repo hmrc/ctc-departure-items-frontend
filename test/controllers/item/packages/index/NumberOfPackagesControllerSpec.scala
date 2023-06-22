@@ -107,6 +107,24 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
       redirectLocation(result).value mustEqual onwardRoute.url
     }
 
+    "must redirect to information page when 0 is submitted" in {
+      val userAnswers = emptyUserAnswers.setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+
+      setExistingUserAnswers(userAnswers)
+
+      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+
+      val request = FakeRequest(POST, numberOfPackagesRoute)
+        .withFormUrlEncodedBody(("value", "0"))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual
+        routes.BeforeYouContinueController.onPageLoad(lrn, mode, itemIndex, packageIndex).url
+    }
+
     "must return a Bad Request and errors when invalid data is submitted" in {
       val userAnswers = emptyUserAnswers.setValue(PackageTypePage(itemIndex, packageIndex), packageType)
 

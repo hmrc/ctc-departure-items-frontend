@@ -21,6 +21,8 @@ import play.api.mvc.PathBindable
 case class Index(position: Int) {
   val display: Int     = position + 1
   def isFirst: Boolean = position == 0
+
+  override def toString: String = display.toString
 }
 
 object Index {
