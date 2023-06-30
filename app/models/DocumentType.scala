@@ -16,12 +16,22 @@
 
 package models
 
-sealed trait DocumentType
+sealed trait DocumentType {
+  val display: String
+}
 
 object DocumentType extends EnumerableType[DocumentType] {
-  case object Support extends DocumentType
-  case object Transport extends DocumentType
-  case object Previous extends DocumentType
 
+  case object Support extends DocumentType {
+    val display = "Supporting"
+  }
+
+  case object Transport extends DocumentType {
+    val display = "Transport"
+  }
+
+  case object Previous extends DocumentType {
+    val display = "Previous"
+  }
   override val values: Seq[DocumentType] = Seq(Support, Transport, Previous)
 }
