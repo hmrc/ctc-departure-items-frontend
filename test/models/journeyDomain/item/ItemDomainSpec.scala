@@ -73,8 +73,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
              |      {
              |        "identificationNumber" : "TransportSeal1"
              |      }
-             |     ],
-             |     "uuid": "$uuid"
+             |    ],
+             |    "uuid": "$uuid"
              |  }
              |]
              |""".stripMargin)
