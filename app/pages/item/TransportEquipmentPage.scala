@@ -25,12 +25,18 @@ import play.api.mvc.Call
 
 import java.util.UUID
 
-case class TransportEquipmentPage(itemIndex: Index) extends QuestionPage[UUID] {
+sealed abstract class BaseTransportEquipmentPage(itemIndex: Index) extends QuestionPage[UUID] {
 
   override def path: JsPath = ItemSection(itemIndex).path \ toString
 
-  override def toString: String = "transportEquipment"
-
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.TransportEquipmentController.onPageLoad(userAnswers.lrn, mode, itemIndex))
+}
+
+case class TransportEquipmentPage(itemIndex: Index) extends BaseTransportEquipmentPage(itemIndex) {
+  override def toString: String = "transportEquipment"
+}
+
+case class InferredTransportEquipmentPage(itemIndex: Index) extends BaseTransportEquipmentPage(itemIndex) {
+  override def toString: String = "inferredTransportEquipment"
 }
