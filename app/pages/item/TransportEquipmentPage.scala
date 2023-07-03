@@ -24,6 +24,7 @@ import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 import java.util.UUID
+import scala.util.Try
 
 sealed abstract class BaseTransportEquipmentPage(itemIndex: Index) extends QuestionPage[UUID] {
 
@@ -35,6 +36,9 @@ sealed abstract class BaseTransportEquipmentPage(itemIndex: Index) extends Quest
 
 case class TransportEquipmentPage(itemIndex: Index) extends BaseTransportEquipmentPage(itemIndex) {
   override def toString: String = "transportEquipment"
+
+  override def cleanup(value: Option[UUID], userAnswers: UserAnswers): Try[UserAnswers] =
+    userAnswers.remove(InferredTransportEquipmentPage(itemIndex))
 }
 
 case class InferredTransportEquipmentPage(itemIndex: Index) extends BaseTransportEquipmentPage(itemIndex) {

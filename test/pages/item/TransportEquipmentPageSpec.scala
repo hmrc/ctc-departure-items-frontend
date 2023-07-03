@@ -16,6 +16,7 @@
 
 package pages.item
 
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 import java.util.UUID
@@ -29,5 +30,19 @@ class TransportEquipmentPageSpec extends PageBehaviours {
     beSettable[UUID](TransportEquipmentPage(itemIndex))
 
     beRemovable[UUID](TransportEquipmentPage(itemIndex))
+
+    "cleanup" - {
+      "must remove inferred value" in {
+        forAll(arbitrary[UUID]) {
+          uuid =>
+            val userAnswers = emptyUserAnswers
+              .setValue(InferredTransportEquipmentPage(itemIndex), uuid)
+
+            val result = userAnswers.setValue(TransportEquipmentPage(itemIndex), uuid)
+
+            result.get(InferredTransportEquipmentPage(itemIndex)) must not be defined
+        }
+      }
+    }
   }
 }
