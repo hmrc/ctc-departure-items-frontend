@@ -31,49 +31,86 @@ import scala.concurrent.Future
 
 class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with WireMockServerHandler with ScalaCheckPropertyChecks {
 
-  private val baseUrl = "test-only/transit-movements-trader-reference-data"
+  private val baseUrl = "customs-reference-data/test-only"
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder = super
     .guiceApplicationBuilder()
     .configure(
-      conf = "microservice.services.referenceData.port" -> server.port()
+      conf = "microservice.services.customsReferenceData.port" -> server.port()
     )
 
   private lazy val connector: ReferenceDataConnector = app.injector.instanceOf[ReferenceDataConnector]
 
   private val countriesResponseJson: String =
-    """
-      |[
-      | {
-      |   "code":"GB",
-      |   "description":"United Kingdom"
-      | },
-      | {
-      |   "code":"AD",
-      |   "description":"Andorra"
-      | }
-      |]
-      |""".stripMargin
+    s"""
+       |{
+       |  "_links": {
+       |    "self": {
+       |      "href": "/customs-reference-data/lists/CountryCodesFullList"
+       |    }
+       |  },
+       |  "meta": {
+       |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+       |    "snapshotDate": "2023-01-01"
+       |  },
+       |  "id": "CountryCodesFullList",
+       |  "data": [
+       |    {
+       |      "activeFrom": "2023-01-23",
+       |      "code": "GB",
+       |      "state": "valid",
+       |      "description": "United Kingdom"
+       |    },
+       |    {
+       |      "activeFrom": "2023-01-23",
+       |      "code": "AD",
+       |      "state": "valid",
+       |      "description": "Andorra"
+       |    }
+       |  ]
+       |}
+       |""".stripMargin
 
-  private val packageTypeJson: String =
-    """
-      |[
+  private def packageTypeJson(listName: String): String =
+    s"""
+      |{
+      |  "_links": {
+      |    "self": {
+      |      "href": "/customs-reference-data/lists/$listName"
+      |    }
+      |  },
+      |  "meta": {
+      |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+      |    "snapshotDate": "2023-01-01"
+      |  },
+      |  "id": "$listName",
+      |  "data": [
       | {
       |    "code": "VA",
-      |    "description": "Vat",
-      |    "type": "Other"
+      |    "description": "Vat"
       |  },
       |  {
       |    "code": "UC",
-      |    "description": "Uncaged",
-      |    "type": "Other"
+      |    "description": "Uncaged"
       |  }
       |]
+      |}
       |""".stripMargin
 
   private val additionalReferenceJson: String =
     """
-      |[
+      |{
+      |  "_links": {
+      |    "self": {
+      |      "href": "/customs-reference-data/lists/AdditionalReference"
+      |    }
+      |  },
+      |  "meta": {
+      |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+      |    "snapshotDate": "2023-01-01"
+      |  },
+      |  "id": "AdditionalReference",
+      |  "data": [
       | {
       |    "documentType": "documentType1",
       |    "description": "desc1"
@@ -83,11 +120,23 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       |    "description": "desc2"
       |  }
       |]
+      |}
       |""".stripMargin
 
   private val additionalInformationJson: String =
     """
-      |[
+      |{
+      |  "_links": {
+      |    "self": {
+      |      "href": "/customs-reference-data/lists/AdditionalInformation"
+      |    }
+      |  },
+      |  "meta": {
+      |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+      |    "snapshotDate": "2023-01-01"
+      |  },
+      |  "id": "AdditionalInformation",
+      |  "data": [
       | {
       |    "code": "additionalInfoCode1",
       |    "description": "additionalInfoDesc1"
@@ -97,6 +146,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       |    "description": "additionalInfoDesc2"
       |  }
       |]
+      |}
       |""".stripMargin
 
   "Reference Data" - {
@@ -104,7 +154,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
     "getCountries" - {
       "must return Seq of Country when successful" in {
         server.stubFor(
-          get(urlEqualTo(s"/$baseUrl/countries?customsOfficeRole=ANY&exclude=IT&exclude=DE&membership=ctc"))
+          get(urlEqualTo(s"/$baseUrl/lists/CountryCodesFullList"))
             .willReturn(okJson(countriesResponseJson))
         )
 
@@ -113,18 +163,11 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
           Country(CountryCode("AD"), "Andorra")
         )
 
-        val queryParameters = Seq(
-          "customsOfficeRole" -> "ANY",
-          "exclude"           -> "IT",
-          "exclude"           -> "DE",
-          "membership"        -> "ctc"
-        )
-
-        connector.getCountries(queryParameters).futureValue mustEqual expectedResult
+        connector.getCountries.futureValue mustEqual expectedResult
       }
 
       "must return an exception when an error response is returned" in {
-        checkErrorResponse(s"/$baseUrl/countries?customsOfficeRole=ANY", connector.getCountries(Nil))
+        checkErrorResponse(s"/$baseUrl/lists/CountryCodesFullList", connector.getCountries)
       }
     }
 
@@ -132,8 +175,8 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
       "must return list of package types when successful" in {
         server.stubFor(
-          get(urlEqualTo(s"/$baseUrl/kinds-of-package"))
-            .willReturn(okJson(packageTypeJson))
+          get(urlEqualTo(s"/$baseUrl/lists/KindOfPackages"))
+            .willReturn(okJson(packageTypeJson("KindOfPackages")))
         )
 
         val expectResult = Seq(
@@ -141,12 +184,58 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
           PackageType("UC", Some("Uncaged"), PackingType.Other)
         )
 
-        connector.getPackageTypes().futureValue mustEqual expectResult
+        connector.getPackageTypes.futureValue mustEqual expectResult
       }
 
       "must return an exception when an error response is returned" in {
 
-        checkErrorResponse(s"/$baseUrl/kinds-of-package", connector.getPackageTypes())
+        checkErrorResponse(s"/$baseUrl/lists/KindOfPackages", connector.getPackageTypes())
+      }
+
+    }
+
+    "getPackageTypesBulk" - {
+
+      "must return list of package types when successful" in {
+        server.stubFor(
+          get(urlEqualTo(s"/$baseUrl/lists/KindOfPackagesBulk"))
+            .willReturn(okJson(packageTypeJson("KindOfPackagesBulk")))
+        )
+
+        val expectResult = Seq(
+          PackageType("VA", Some("Vat"), PackingType.Bulk),
+          PackageType("UC", Some("Uncaged"), PackingType.Bulk)
+        )
+
+        connector.getPackageTypesBulk().futureValue mustEqual expectResult
+      }
+
+      "must return an exception when an error response is returned" in {
+
+        checkErrorResponse(s"/$baseUrl/lists/KindOfPackagesBulk", connector.getPackageTypesBulk())
+      }
+
+    }
+
+    "getPackageTypesUnpacked" - {
+
+      "must return list of package types when successful" in {
+        server.stubFor(
+          get(urlEqualTo(s"/$baseUrl/lists/KindOfPackagesUnpacked"))
+            .willReturn(okJson(packageTypeJson("KindOfPackagesUnpacked")))
+        )
+
+        val expectResult = Seq(
+          PackageType("VA", Some("Vat"), PackingType.Unpacked),
+          PackageType("UC", Some("Uncaged"), PackingType.Unpacked)
+        )
+
+        connector.getPackageTypesUnpacked().futureValue mustEqual expectResult
+      }
+
+      "must return an exception when an error response is returned" in {
+
+        checkErrorResponse(s"/$baseUrl/lists/KindOfPackagesUnpacked", connector.getPackageTypesUnpacked())
       }
 
     }
@@ -154,7 +243,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
     "getAdditionalReferences" - {
       "must return Seq of AdditionalReference when successful" in {
         server.stubFor(
-          get(urlEqualTo(s"/$baseUrl/additional-references"))
+          get(urlEqualTo(s"/$baseUrl/lists/AdditionalReference"))
             .willReturn(okJson(additionalReferenceJson))
         )
 
@@ -166,13 +255,18 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         connector.getAdditionalReferences().futureValue mustEqual expectedResult
       }
 
+      "must return an exception when an error response is returned" in {
+
+        checkErrorResponse(s"/$baseUrl/lists/AdditionalReference", connector.getAdditionalReferences())
+      }
+
     }
 
     "getAdditionalInformationTypes" - {
 
       "must return list of additional information types when successful" in {
         server.stubFor(
-          get(urlEqualTo(s"/$baseUrl/additional-information"))
+          get(urlEqualTo(s"/$baseUrl/lists/AdditionalInformation"))
             .willReturn(okJson(additionalInformationJson))
         )
 
@@ -186,7 +280,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
       "must return an exception when an error response is returned" in {
 
-        checkErrorResponse(s"/$baseUrl/additional-information", connector.getAdditionlInformationTypes())
+        checkErrorResponse(s"/$baseUrl/lists/AdditionalInformation", connector.getAdditionlInformationTypes())
       }
 
     }
