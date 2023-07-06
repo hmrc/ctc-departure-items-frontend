@@ -32,15 +32,25 @@ sealed abstract class BaseTransportEquipmentPage(itemIndex: Index) extends Quest
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.TransportEquipmentController.onPageLoad(userAnswers.lrn, mode, itemIndex))
+
+  def cleanup(userAnswers: UserAnswers): Try[UserAnswers]
+
+  override def cleanup(value: Option[UUID], userAnswers: UserAnswers): Try[UserAnswers] = value match {
+    case Some(_) => cleanup(userAnswers)
+    case None    => super.cleanup(value, userAnswers)
+  }
 }
 
 case class TransportEquipmentPage(itemIndex: Index) extends BaseTransportEquipmentPage(itemIndex) {
   override def toString: String = "transportEquipment"
 
-  override def cleanup(value: Option[UUID], userAnswers: UserAnswers): Try[UserAnswers] =
+  override def cleanup(userAnswers: UserAnswers): Try[UserAnswers] =
     userAnswers.remove(InferredTransportEquipmentPage(itemIndex))
 }
 
 case class InferredTransportEquipmentPage(itemIndex: Index) extends BaseTransportEquipmentPage(itemIndex) {
   override def toString: String = "inferredTransportEquipment"
+
+  override def cleanup(userAnswers: UserAnswers): Try[UserAnswers] =
+    userAnswers.remove(TransportEquipmentPage(itemIndex))
 }

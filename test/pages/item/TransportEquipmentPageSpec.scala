@@ -46,3 +46,29 @@ class TransportEquipmentPageSpec extends PageBehaviours {
     }
   }
 }
+
+class InferredTransportEquipmentPageSpec extends PageBehaviours {
+
+  "InferredTransportEquipmentPage" - {
+
+    beRetrievable[UUID](InferredTransportEquipmentPage(itemIndex))
+
+    beSettable[UUID](InferredTransportEquipmentPage(itemIndex))
+
+    beRemovable[UUID](InferredTransportEquipmentPage(itemIndex))
+
+    "cleanup" - {
+      "must remove non-inferred value" in {
+        forAll(arbitrary[UUID]) {
+          uuid =>
+            val userAnswers = emptyUserAnswers
+              .setValue(TransportEquipmentPage(itemIndex), uuid)
+
+            val result = userAnswers.setValue(InferredTransportEquipmentPage(itemIndex), uuid)
+
+            result.get(TransportEquipmentPage(itemIndex)) must not be defined
+        }
+      }
+    }
+  }
+}
