@@ -275,12 +275,12 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
           AdditionalInformation("additionalInfoCode2", "additionalInfoDesc2")
         )
 
-        connector.getAdditionlInformationTypes().futureValue mustEqual expectResult
+        connector.getAdditionalInformationTypes().futureValue mustEqual expectResult
       }
 
       "must return an exception when an error response is returned" in {
 
-        checkErrorResponse(s"/$baseUrl/lists/AdditionalInformation", connector.getAdditionlInformationTypes())
+        checkErrorResponse(s"/$baseUrl/lists/AdditionalInformation", connector.getAdditionalInformationTypes())
       }
 
     }

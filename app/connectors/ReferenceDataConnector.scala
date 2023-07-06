@@ -55,7 +55,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http.GET[Seq[AdditionalReference]](serviceUrl, headers = version2Header)
   }
 
-  def getAdditionlInformationTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[AdditionalInformation]] = {
+  def getAdditionalInformationTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[AdditionalInformation]] = {
     val serviceUrl = s"${config.referenceDataUrl}/lists/AdditionalInformation"
     http.GET[Seq[AdditionalInformation]](serviceUrl, headers = version2Header)
   }
