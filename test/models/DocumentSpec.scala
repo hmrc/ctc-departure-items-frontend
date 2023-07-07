@@ -205,7 +205,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
             uuid = uuid
           )
 
-          document.toString mustBe s"($code) $description - $referenceNumber"
+          document.toString mustBe s"${`type`.display} - ($code) $description - $referenceNumber"
       }
     }
 
@@ -221,7 +221,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
             uuid = uuid
           )
 
-          document.toString mustBe s"$code - $referenceNumber"
+          document.toString mustBe s"${`type`.display} - $code - $referenceNumber"
       }
     }
   }
