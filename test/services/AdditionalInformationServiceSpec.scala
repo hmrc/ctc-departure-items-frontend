@@ -60,13 +60,13 @@ class AdditionalInformationServiceSpec extends SpecBase with BeforeAndAfterEach 
     "getAdditionalInformationTypes" - {
       "must return a list of sorted additional information types, filtering out code 30600" in {
 
-        when(mockRefDataConnector.getAdditionlInformationTypes()(any(), any()))
+        when(mockRefDataConnector.getAdditionalInformationTypes()(any(), any()))
           .thenReturn(Future.successful(additionalInformationTypes))
 
         service.getAdditionalInformationTypes().futureValue mustBe
           SelectableList(Seq(additionalInformation2, additionalInformation1))
 
-        verify(mockRefDataConnector).getAdditionlInformationTypes()(any(), any())
+        verify(mockRefDataConnector).getAdditionalInformationTypes()(any(), any())
       }
     }
   }

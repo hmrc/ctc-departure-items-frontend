@@ -27,11 +27,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class CountriesService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
 
   def getCountries()(implicit hc: HeaderCarrier): Future[SelectableList[Country]] =
-    getCountries(Nil)
-
-  private def getCountries(queryParameters: Seq[(String, String)])(implicit hc: HeaderCarrier): Future[SelectableList[Country]] =
-    referenceDataConnector
-      .getCountries(queryParameters)
+    referenceDataConnector.getCountries
       .map(sort)
 
   private def sort(countries: Seq[Country]): SelectableList[Country] =

@@ -17,37 +17,70 @@
 package connectors
 
 import config.FrontendAppConfig
+import models.PackingType.{Bulk, Other, Unpacked}
 import models.reference._
+import play.api.Logging
+import play.api.http.Status.{NOT_FOUND, NO_CONTENT, OK}
+import play.api.libs.json.Reads
 import sttp.model.HeaderNames
-import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpResponse}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpClient) {
+class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpClient) extends Logging {
 
-  def getCountries(queryParameters: Seq[(String, String)])(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Country]] = {
-    val serviceUrl = s"${config.referenceDataUrl}/countries"
-    http.GET[Seq[Country]](serviceUrl, queryParameters, headers = version2Header)
+  def getCountries()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Country]] = {
+    val serviceUrl = s"${config.referenceDataUrl}/lists/CountryCodesFullList"
+    http.GET[Seq[Country]](serviceUrl, headers = version2Header)
   }
 
   def getPackageTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[PackageType]] = {
-    val serviceUrl = s"${config.referenceDataUrl}/kinds-of-package"
-    http.GET[Seq[PackageType]](serviceUrl, headers = version2Header)
+    val serviceUrl = s"${config.referenceDataUrl}/lists/KindOfPackages"
+    http.GET[Seq[PackageType]](serviceUrl, headers = version2Header)(PackageType.httpReads(Other), hc, ec)
+  }
+
+  def getPackageTypesBulk()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[PackageType]] = {
+    val serviceUrl = s"${config.referenceDataUrl}/lists/KindOfPackagesBulk"
+    http.GET[Seq[PackageType]](serviceUrl, headers = version2Header)(PackageType.httpReads(Bulk), hc, ec)
+  }
+
+  def getPackageTypesUnpacked()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[PackageType]] = {
+    val serviceUrl = s"${config.referenceDataUrl}/lists/KindOfPackagesUnpacked"
+    http.GET[Seq[PackageType]](serviceUrl, headers = version2Header)(PackageType.httpReads(Unpacked), hc, ec)
   }
 
   def getAdditionalReferences()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[AdditionalReference]] = {
-    val serviceUrl = s"${config.referenceDataUrl}/additional-references"
+    val serviceUrl = s"${config.referenceDataUrl}/lists/AdditionalReference"
     http.GET[Seq[AdditionalReference]](serviceUrl, headers = version2Header)
   }
 
-  def getAdditionlInformationTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[AdditionalInformation]] = {
-    val serviceUrl = s"${config.referenceDataUrl}/additional-information"
+  def getAdditionalInformationTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[AdditionalInformation]] = {
+    val serviceUrl = s"${config.referenceDataUrl}/lists/AdditionalInformation"
     http.GET[Seq[AdditionalInformation]](serviceUrl, headers = version2Header)
   }
 
   private def version2Header: Seq[(String, String)] = Seq(
     HeaderNames.Accept -> "application/vnd.hmrc.2.0+json"
   )
+
+  implicit def responseHandlerGeneric[A](implicit reads: Reads[A]): HttpReads[Seq[A]] =
+    (_: String, _: String, response: HttpResponse) => {
+      response.status match {
+        case OK =>
+          val referenceData = (response.json \ "data").getOrElse(
+            throw new IllegalStateException("[ReferenceDataConnector][responseHandlerGeneric] Reference data could not be parsed")
+          )
+
+          referenceData.as[Seq[A]]
+        case NO_CONTENT =>
+          Nil
+        case NOT_FOUND =>
+          logger.warn("[ReferenceDataConnector][responseHandlerGeneric] Reference data call returned NOT_FOUND")
+          throw new IllegalStateException("[ReferenceDataConnector][responseHandlerGeneric] Reference data could not be found")
+        case other =>
+          logger.warn(s"[ReferenceDataConnector][responseHandlerGeneric] Invalid downstream status $other")
+          throw new IllegalStateException(s"[ReferenceDataConnector][responseHandlerGeneric] Invalid Downstream Status $other")
+      }
+    }
 }
