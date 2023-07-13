@@ -125,3 +125,8 @@ GET        /:itemIndex/transport-equipment/:lrn                             cont
 POST       /:itemIndex/transport-equipment/:lrn                             controllers.item.TransportEquipmentController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
 GET        /:itemIndex/change-transport-equipment/:lrn                      controllers.item.TransportEquipmentController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
 POST       /:itemIndex/change-transport-equipment/:lrn                      controllers.item.TransportEquipmentController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+
+GET        /:itemIndex/payment-method/:lrn                                  controllers.item.TransportMethodOfPaymentController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+POST       /:itemIndex/payment-method/:lrn                                  controllers.item.TransportMethodOfPaymentController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+GET        /:itemIndex/payment-method/:lrn                                  controllers.item.TransportMethodOfPaymentController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+POST       /:itemIndex/payment-method/:lrn                                  controllers.item.TransportMethodOfPaymentController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
