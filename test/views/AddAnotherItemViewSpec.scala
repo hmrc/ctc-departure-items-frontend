@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.item
+package views
 
 import forms.AddAnotherFormProvider
 import org.scalacheck.Arbitrary.arbitrary

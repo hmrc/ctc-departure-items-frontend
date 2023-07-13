@@ -27,7 +27,7 @@ case class AddTransportChargesYesNoPage(itemIndex: Index) extends QuestionPage[B
 
   override def path: JsPath = ItemSection(itemIndex).path \ toString
 
-  override def toString: String = "transportCharges"
+  override def toString: String = "addTransportChargesYesNo"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.AddTransportChargesYesNoController.onPageLoad(userAnswers.lrn, mode, itemIndex))
