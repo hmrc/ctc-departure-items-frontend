@@ -14,21 +14,16 @@
  * limitations under the License.
  */
 
-package forms
+package models
 
-import forms.mappings.Mappings
-import models.Enumerable
-import play.api.data.Form
+import scala.language.implicitConversions
 
-import javax.inject.Inject
+trait DynamicEnumerableType[T] extends Enumerable.Implicits {
 
-class EnumerableFormProvider @Inject() extends Mappings {
-
-  def apply[T](prefix: String)(implicit et: Enumerable[T]): Form[T] =
-    Form(
-      "value" -> enumerable[T](s"$prefix.error.required")
+  implicit def enumerable(values: Seq[T]): Enumerable[T] =
+    Enumerable(
+      values.map(
+        v => v.toString -> v
+      ): _*
     )
-
-  def apply[T](prefix: String, values: Seq[T])(implicit et: Seq[T] => Enumerable[T]): Form[T] =
-    apply(prefix)(et(values))
 }

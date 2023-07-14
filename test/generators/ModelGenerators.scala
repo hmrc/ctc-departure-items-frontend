@@ -31,9 +31,12 @@ import java.util.UUID
 trait ModelGenerators {
   self: Generators =>
 
-  implicit lazy val arbitraryTransportMethodOfPayment: Arbitrary[models.item.TransportMethodOfPayment] =
+  implicit lazy val arbitraryMethodOfPayment: Arbitrary[MethodOfPayment] =
     Arbitrary {
-      Gen.oneOf(models.item.TransportMethodOfPayment.values)
+      for {
+        code        <- nonEmptyString
+        description <- nonEmptyString
+      } yield MethodOfPayment(code, description)
     }
 
   implicit lazy val arbitrarySupplyChainActorType: Arbitrary[SupplyChainActorType] =

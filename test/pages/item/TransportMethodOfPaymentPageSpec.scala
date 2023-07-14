@@ -16,17 +16,17 @@
 
 package pages.item
 
-import models.item.TransportMethodOfPayment
+import models.reference.MethodOfPayment
 import pages.behaviours.PageBehaviours
 
 class TransportMethodOfPaymentPageSpec extends PageBehaviours {
 
   "TransportMethodOfPaymentPage" - {
 
-    beRetrievable[TransportMethodOfPayment](TransportMethodOfPaymentPage(index))
+    beRetrievable[MethodOfPayment](TransportMethodOfPaymentPage(index))
 
-    beSettable[TransportMethodOfPayment](TransportMethodOfPaymentPage(index))
+    beSettable[MethodOfPayment](TransportMethodOfPaymentPage(index))
 
-    beRemovable[TransportMethodOfPayment](TransportMethodOfPaymentPage(index))
+    beRemovable[MethodOfPayment](TransportMethodOfPaymentPage(index))
   }
 }

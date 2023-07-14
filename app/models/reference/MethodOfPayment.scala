@@ -14,21 +14,20 @@
  * limitations under the License.
  */
 
-package forms
+package models.reference
 
-import forms.mappings.Mappings
-import models.Enumerable
-import play.api.data.Form
+import models.{DynamicEnumerableType, Radioable}
+import play.api.libs.json.{Format, Json}
 
-import javax.inject.Inject
+case class MethodOfPayment(code: String, description: String) extends Radioable[MethodOfPayment] {
 
-class EnumerableFormProvider @Inject() extends Mappings {
+  override def toString: String = description
 
-  def apply[T](prefix: String)(implicit et: Enumerable[T]): Form[T] =
-    Form(
-      "value" -> enumerable[T](s"$prefix.error.required")
-    )
+  override val messageKeyPrefix: String = MethodOfPayment.messageKeyPrefix
+}
 
-  def apply[T](prefix: String, values: Seq[T])(implicit et: Seq[T] => Enumerable[T]): Form[T] =
-    apply(prefix)(et(values))
+object MethodOfPayment extends DynamicEnumerableType[MethodOfPayment] {
+  implicit val format: Format[MethodOfPayment] = Json.format[MethodOfPayment]
+
+  val messageKeyPrefix = "methodOfPayment"
 }

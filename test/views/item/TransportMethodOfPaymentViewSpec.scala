@@ -17,27 +17,31 @@
 package views.item
 
 import forms.EnumerableFormProvider
+import generators.Generators
 import models.NormalMode
-import models.item.TransportMethodOfPayment
+import models.reference.MethodOfPayment
+import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import views.behaviours.RadioViewBehaviours
 import views.html.item.TransportMethodOfPaymentView
 
-class TransportMethodOfPaymentViewSpec extends RadioViewBehaviours[TransportMethodOfPayment] {
+class TransportMethodOfPaymentViewSpec extends RadioViewBehaviours[MethodOfPayment] with Generators {
+  private val mop1                         = arbitrary[MethodOfPayment].sample.value
+  private val mop2                         = arbitrary[MethodOfPayment].sample.value
+  private val mops                         = Seq(mop1, mop2)
+  override def form: Form[MethodOfPayment] = new EnumerableFormProvider()(prefix, values)
 
-  override def form: Form[TransportMethodOfPayment] = new EnumerableFormProvider()(prefix)
-
-  override def applyView(form: Form[TransportMethodOfPayment]): HtmlFormat.Appendable =
+  override def applyView(form: Form[MethodOfPayment]): HtmlFormat.Appendable =
     injector.instanceOf[TransportMethodOfPaymentView].apply(form, lrn, values, NormalMode, index)(fakeRequest, messages)
 
   override val prefix: String = "item.transportMethodOfPayment"
 
-  override def radioItems(fieldId: String, checkedValue: Option[TransportMethodOfPayment] = None): Seq[RadioItem] =
+  override def radioItems(fieldId: String, checkedValue: Option[MethodOfPayment] = None): Seq[RadioItem] =
     values.toRadioItems(fieldId, checkedValue)
 
-  override def values: Seq[TransportMethodOfPayment] = TransportMethodOfPayment.values
+  override def values: Seq[MethodOfPayment] = mops
 
   behave like pageWithTitle()
 

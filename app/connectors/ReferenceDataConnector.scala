@@ -60,6 +60,11 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http.GET[Seq[AdditionalInformation]](serviceUrl, headers = version2Header)
   }
 
+  def getMethodOfPaymentTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[MethodOfPayment]] = {
+    val serviceUrl = s"${config.referenceDataUrl}/lists/MethodOfPayment"
+    http.GET[Seq[MethodOfPayment]](serviceUrl, headers = version2Header)
+  }
+
   private def version2Header: Seq[(String, String)] = Seq(
     HeaderNames.Accept -> "application/vnd.hmrc.2.0+json"
   )

@@ -474,7 +474,5 @@ item.addTransportChargesYesNo.error.required = Select yes if you want to add a m
 item.transportMethodOfPayment.title = Which method of payment do you want to use for transport charges?
 item.transportMethodOfPayment.heading = Which method of payment do you want to use for transport charges?
 item.transportMethodOfPayment.caption = Item {0} - Transport charges
-item.transportMethodOfPayment.payment = Payment in cash
-item.transportMethodOfPayment.option2 = Payment by credit card
 item.transportMethodOfPayment.checkYourAnswersLabel = Which method of payment do you want to use for transport charges?
 item.transportMethodOfPayment.error.required = Select  Which method of payment do you want to use for transport charges?
