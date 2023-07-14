@@ -149,6 +149,32 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       |}
       |""".stripMargin
 
+  private val methodOfPaymentJson: String =
+    """
+      |{
+      |  "_links": {
+      |    "self": {
+      |      "href": "/customs-reference-data/lists/MethodOfPayment"
+      |    }
+      |  },
+      |  "meta": {
+      |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+      |    "snapshotDate": "2023-01-01"
+      |  },
+      |  "id": "MethodOfPayment",
+      |  "data": [
+      | {
+      |    "code": "A",
+      |    "description": "Payment By Card"
+      |  },
+      |  {
+      |    "code": "B",
+      |    "description": "PayPal"
+      |  }
+      |]
+      |}
+      |""".stripMargin
+
   "Reference Data" - {
 
     "getCountries" - {
@@ -283,6 +309,26 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         checkErrorResponse(s"/$baseUrl/lists/AdditionalInformation", connector.getAdditionalInformationTypes())
       }
 
+    }
+
+    "getMethodOfPaymentTypes" - {
+      "must return Seq of MethodOfPayments when successful" in {
+        server.stubFor(
+          get(urlEqualTo(s"/$baseUrl/lists/MethodOfPayment"))
+            .willReturn(okJson(methodOfPaymentJson))
+        )
+
+        val expectedResult: Seq[MethodOfPayment] = Seq(
+          MethodOfPayment("A", "Payment By Card"),
+          MethodOfPayment("B", "PayPal")
+        )
+
+        connector.getMethodOfPaymentTypes().futureValue mustEqual expectedResult
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(s"/$baseUrl/lists/MethodOfPayment", connector.getMethodOfPaymentTypes())
+      }
     }
 
   }
