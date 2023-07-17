@@ -20,13 +20,13 @@ import controllers.item.routes
 import models.reference.MethodOfPayment
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.Item
+import pages.sections.ItemSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case class TransportMethodOfPaymentPage(itemIndex: Index) extends QuestionPage[MethodOfPayment] {
 
-  override def path: JsPath = Item.path \ toString
+  override def path: JsPath = ItemSection(itemIndex).path \ toString
 
   override def toString: String = "methodOfPayment"
 
