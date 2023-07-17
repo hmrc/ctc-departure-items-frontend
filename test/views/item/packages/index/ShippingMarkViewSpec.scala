@@ -16,7 +16,7 @@
 
 package views.item.packages.index
 
-import forms.Constants.maxShippingMarkLength
+import base.SpecBase
 import forms.item.packages.ShippingMarkFormProvider
 import models.NormalMode
 import play.api.data.Form
@@ -24,14 +24,16 @@ import play.twirl.api.HtmlFormat
 import views.behaviours.CharacterCountViewBehaviours
 import views.html.item.packages.index.ShippingMarkView
 
-class ShippingMarkViewSpec extends CharacterCountViewBehaviours {
+class ShippingMarkViewSpec extends SpecBase with CharacterCountViewBehaviours {
 
   override val prefix: String = "item.packages.index.shippingMark"
 
-  override def form: Form[String] = new ShippingMarkFormProvider()(prefix)
+  private val formProvider = new ShippingMarkFormProvider()(phaseConfig)
+
+  override def form: Form[String] = formProvider(prefix)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[ShippingMarkView].apply(form, lrn, NormalMode, itemIndex, packageIndex)(fakeRequest, messages)
+    injector.instanceOf[ShippingMarkView].apply(form, lrn, NormalMode, itemIndex, packageIndex)(fakeRequest, messages, phaseConfig)
 
   behave like pageWithTitle()
 
@@ -41,7 +43,7 @@ class ShippingMarkViewSpec extends CharacterCountViewBehaviours {
 
   behave like pageWithHeading()
 
-  behave like pageWithCharacterCount(maxShippingMarkLength)
+  behave like pageWithCharacterCount(phaseConfig.maxShippingMarkLength)
 
   behave like pageWithSubmitButton("Save and continue")
 }

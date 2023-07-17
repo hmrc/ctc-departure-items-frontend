@@ -58,7 +58,7 @@ class ShippingMarkControllerSpec extends SpecBase with AppWithDefaultMockFixture
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, mode, itemIndex, packageIndex)(request, messages).toString
+        view(form, lrn, mode, itemIndex, packageIndex)(request, messages, phaseConfig).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -77,7 +77,7 @@ class ShippingMarkControllerSpec extends SpecBase with AppWithDefaultMockFixture
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, mode, itemIndex, packageIndex)(request, messages).toString
+        view(filledForm, lrn, mode, itemIndex, packageIndex)(request, messages, phaseConfig).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -112,7 +112,7 @@ class ShippingMarkControllerSpec extends SpecBase with AppWithDefaultMockFixture
       val view = injector.instanceOf[ShippingMarkView]
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, mode, itemIndex, packageIndex)(request, messages).toString
+        view(filledForm, lrn, mode, itemIndex, packageIndex)(request, messages, phaseConfig).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

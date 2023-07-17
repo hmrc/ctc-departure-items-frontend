@@ -16,49 +16,71 @@
 
 package forms.item.packages
 
-import forms.Constants.maxShippingMarkLength
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.behaviours.StringFieldBehaviours
 import models.domain.StringFieldRegex.stringFieldRegex
 import org.scalacheck.Gen
-import play.api.data.FormError
+import play.api.data.{Form, FormError}
+import play.api.test.Helpers.running
 
-class ShippingMarkFormProviderSpec extends StringFieldBehaviours {
+class ShippingMarkFormProviderSpec extends SpecBase with StringFieldBehaviours with AppWithDefaultMockFixtures {
 
   private val prefix = Gen.alphaNumStr.sample.value
   val requiredKey    = s"$prefix.error.required"
   val invalidKey     = s"$prefix.error.invalidCharacters"
   val lengthKey      = s"$prefix.error.length"
 
-  val form = new ShippingMarkFormProvider()(prefix)
+  private val maxShippingMarkLengthTransitionLength: Int = 42
+
+  private val maxShippingMarkLengthPostTransitionLength: Int = 512
 
   ".value" - {
 
-    val fieldName = "value"
+    def runTests(form: Form[String], maxShippingMarkLength: Int): Unit = {
 
-    behave like fieldThatBindsValidData(
-      form,
-      fieldName,
-      stringsWithMaxLength(maxShippingMarkLength)
-    )
+      val fieldName = "value"
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
+      behave like fieldThatBindsValidData(
+        form,
+        fieldName,
+        stringsWithMaxLength(maxShippingMarkLength)
+      )
 
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxShippingMarkLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxShippingMarkLength))
-    )
+      behave like mandatoryField(
+        form,
+        fieldName,
+        requiredError = FormError(fieldName, requiredKey)
+      )
 
-    behave like fieldWithInvalidCharacters(
-      form,
-      fieldName,
-      error = FormError(fieldName, invalidKey, Seq(stringFieldRegex.regex)),
-      maxShippingMarkLength
-    )
+      behave like fieldWithMaxLength(
+        form,
+        fieldName,
+        maxLength = maxShippingMarkLength,
+        lengthError = FormError(fieldName, lengthKey, Seq(maxShippingMarkLength))
+      )
+
+      behave like fieldWithInvalidCharacters(
+        form,
+        fieldName,
+        error = FormError(fieldName, invalidKey, Seq(stringFieldRegex.regex)),
+        maxShippingMarkLength
+      )
+    }
+
+    "during transition" - {
+      val app = transitionApplicationBuilder().build()
+      running(app) {
+        val form = app.injector.instanceOf[ShippingMarkFormProvider].apply(prefix)
+        runTests(form, maxShippingMarkLengthTransitionLength)
+      }
+    }
+
+    "post transition" - {
+      val app = postTransitionApplicationBuilder().build()
+      running(app) {
+        val form = app.injector.instanceOf[ShippingMarkFormProvider].apply(prefix)
+        runTests(form, maxShippingMarkLengthPostTransitionLength)
+      }
+    }
   }
 }

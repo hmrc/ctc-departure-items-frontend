@@ -22,14 +22,17 @@ import models.Phase.{PostTransition, Transition}
 trait PhaseConfig {
   val phase: Phase
   val maxItemDescriptionLength: Int
+  val maxShippingMarkLength: Int
 }
 
 class TransitionConfig() extends PhaseConfig {
   override val phase: Phase                  = Transition
   override val maxItemDescriptionLength: Int = 280
+  override val maxShippingMarkLength: Int    = 42
 }
 
 class PostTransitionConfig() extends PhaseConfig {
   override val phase: Phase                  = PostTransition
   override val maxItemDescriptionLength: Int = 512
+  override val maxShippingMarkLength: Int    = 512
 }
