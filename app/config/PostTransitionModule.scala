@@ -18,6 +18,9 @@ package config
 
 class PostTransitionModule extends Module {
 
-  override def configure(): Unit =
+  override def configure(): Unit = {
     super.configure()
+
+    bind(classOf[PhaseConfig]).to(classOf[PostTransitionConfig])
+  }
 }

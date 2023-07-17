@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package config
+package models
 
-class TransitionModule extends Module {
+sealed trait Phase
 
-  override def configure(): Unit = {
-    super.configure()
+object Phase {
 
-    bind(classOf[PhaseConfig]).to(classOf[TransitionConfig])
-  }
+  case object Transition extends Phase
+  case object PostTransition extends Phase
 }

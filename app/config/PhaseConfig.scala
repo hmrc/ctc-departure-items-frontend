@@ -16,11 +16,18 @@
 
 package config
 
-class TransitionModule extends Module {
+import models.Phase
+import models.Phase.{PostTransition, Transition}
 
-  override def configure(): Unit = {
-    super.configure()
+trait PhaseConfig {
+  // we can put things like form validation values in here (regex, length etc.)
+  val phase: Phase
+}
 
-    bind(classOf[PhaseConfig]).to(classOf[TransitionConfig])
-  }
+class TransitionConfig() extends PhaseConfig {
+  override val phase: Phase = Transition
+}
+
+class PostTransitionConfig() extends PhaseConfig {
+  override val phase: Phase = PostTransition
 }
