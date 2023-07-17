@@ -20,14 +20,16 @@ import models.Phase
 import models.Phase.{PostTransition, Transition}
 
 trait PhaseConfig {
-  // we can put things like form validation values in here (regex, length etc.)
   val phase: Phase
+  val maxItemDescriptionLength: Int
 }
 
 class TransitionConfig() extends PhaseConfig {
-  override val phase: Phase = Transition
+  override val phase: Phase                  = Transition
+  override val maxItemDescriptionLength: Int = 280
 }
 
 class PostTransitionConfig() extends PhaseConfig {
-  override val phase: Phase = PostTransition
+  override val phase: Phase                  = PostTransition
+  override val maxItemDescriptionLength: Int = 512
 }

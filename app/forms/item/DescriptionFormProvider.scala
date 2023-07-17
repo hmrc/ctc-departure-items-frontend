@@ -16,14 +16,14 @@
 
 package forms.item
 
-import forms.Constants.maxItemDescriptionLength
+import config.PhaseConfig
 import forms.mappings.Mappings
 import models.domain.StringFieldRegex.stringFieldRegex
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class DescriptionFormProvider @Inject() extends Mappings {
+class DescriptionFormProvider @Inject() (implicit phaseConfig: PhaseConfig) extends Mappings {
 
   def apply(prefix: String, args: Any*): Form[String] =
     Form(
@@ -31,7 +31,7 @@ class DescriptionFormProvider @Inject() extends Mappings {
         .verifying(
           forms.StopOnFirstFail[String](
             regexp(stringFieldRegex, s"$prefix.error.invalidCharacters"),
-            maxLength(maxItemDescriptionLength, s"$prefix.error.length")
+            maxLength(phaseConfig.maxItemDescriptionLength, s"$prefix.error.length")
           )
         )
     )
