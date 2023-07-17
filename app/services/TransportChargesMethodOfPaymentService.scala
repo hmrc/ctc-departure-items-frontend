@@ -24,9 +24,9 @@ import uk.gov.hmrc.http.HeaderCarrier
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class MethodOfPaymentService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
+class TransportChargesMethodOfPaymentService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
 
-  def getMethodOfPaymentTypes()(implicit hc: HeaderCarrier): Future[Seq[MethodOfPayment]] =
+  def getTransportChargesMethodOfPaymentTypes()(implicit hc: HeaderCarrier): Future[Seq[MethodOfPayment]] =
     referenceDataConnector
-      .getMethodOfPaymentTypes()
+      .getTransportChargesMethodOfPaymentTypes()
 }

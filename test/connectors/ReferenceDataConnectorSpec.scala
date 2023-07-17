@@ -154,7 +154,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       |{
       |  "_links": {
       |    "self": {
-      |      "href": "/customs-reference-data/lists/MethodOfPayment"
+      |      "href": "/customs-reference-data/lists/TransportChargesMethodOfPayment"
       |    }
       |  },
       |  "meta": {
@@ -323,11 +323,11 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
           MethodOfPayment("B", "PayPal")
         )
 
-        connector.getMethodOfPaymentTypes().futureValue mustEqual expectedResult
+        connector.getTransportChargesMethodOfPaymentTypes().futureValue mustEqual expectedResult
       }
 
       "must return an exception when an error response is returned" in {
-        checkErrorResponse(s"/$baseUrl/lists/MethodOfPayment", connector.getMethodOfPaymentTypes())
+        checkErrorResponse(s"/$baseUrl/lists/MethodOfPayment", connector.getTransportChargesMethodOfPaymentTypes())
       }
     }
 

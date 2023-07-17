@@ -60,8 +60,8 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http.GET[Seq[AdditionalInformation]](serviceUrl, headers = version2Header)
   }
 
-  def getMethodOfPaymentTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[MethodOfPayment]] = {
-    val serviceUrl = s"${config.referenceDataUrl}/lists/MethodOfPayment"
+  def getTransportChargesMethodOfPaymentTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[MethodOfPayment]] = {
+    val serviceUrl = s"${config.referenceDataUrl}/lists/TransportChargesMethodOfPayment"
     http.GET[Seq[MethodOfPayment]](serviceUrl, headers = version2Header)
   }
 

@@ -31,31 +31,31 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.item.TransportMethodOfPaymentView
 import org.scalacheck.Arbitrary.arbitrary
-import services.MethodOfPaymentService
+import services.TransportChargesMethodOfPaymentService
 
 import scala.concurrent.Future
 
 class TransportMethodOfPaymentControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val mop1                                               = arbitrary[MethodOfPayment].sample.value
-  private val mop2                                               = arbitrary[MethodOfPayment].sample.value
-  private val mops                                               = Seq(mop1, mop2)
-  private val formProvider                                       = new EnumerableFormProvider()
-  private val form                                               = formProvider("transportMethodOfPayment", mops)
-  private val mode                                               = NormalMode
-  private lazy val transportMethodOfPaymentRoute                 = routes.TransportMethodOfPaymentController.onPageLoad(lrn, mode, index).url
-  private val mockMethodOfPaymentService: MethodOfPaymentService = mock[MethodOfPaymentService]
+  private val mop1                                                               = arbitrary[MethodOfPayment].sample.value
+  private val mop2                                                               = arbitrary[MethodOfPayment].sample.value
+  private val mops                                                               = Seq(mop1, mop2)
+  private val formProvider                                                       = new EnumerableFormProvider()
+  private val form                                                               = formProvider("transportMethodOfPayment", mops)
+  private val mode                                                               = NormalMode
+  private lazy val transportMethodOfPaymentRoute                                 = routes.TransportMethodOfPaymentController.onPageLoad(lrn, mode, index).url
+  private val mockMethodOfPaymentService: TransportChargesMethodOfPaymentService = mock[TransportChargesMethodOfPaymentService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[ItemNavigatorProvider]).toInstance(fakeItemNavigatorProvider))
-      .overrides(bind(classOf[MethodOfPaymentService]).toInstance(mockMethodOfPaymentService))
+      .overrides(bind(classOf[TransportChargesMethodOfPaymentService]).toInstance(mockMethodOfPaymentService))
 
   "TransportMethodOfPayment Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      when(mockMethodOfPaymentService.getMethodOfPaymentTypes()(any())).thenReturn(Future.successful(mops))
+      when(mockMethodOfPaymentService.getTransportChargesMethodOfPaymentTypes()(any())).thenReturn(Future.successful(mops))
 
       setExistingUserAnswers(emptyUserAnswers)
 
@@ -72,7 +72,7 @@ class TransportMethodOfPaymentControllerSpec extends SpecBase with AppWithDefaul
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      when(mockMethodOfPaymentService.getMethodOfPaymentTypes()(any())).thenReturn(Future.successful(mops))
+      when(mockMethodOfPaymentService.getTransportChargesMethodOfPaymentTypes()(any())).thenReturn(Future.successful(mops))
 
       val userAnswers = emptyUserAnswers.setValue(TransportMethodOfPaymentPage(index), mop1)
       setExistingUserAnswers(userAnswers)
@@ -92,7 +92,7 @@ class TransportMethodOfPaymentControllerSpec extends SpecBase with AppWithDefaul
     }
 
     "must redirect to the next page when valid data is submitted" in {
-      when(mockMethodOfPaymentService.getMethodOfPaymentTypes()(any())).thenReturn(Future.successful(mops))
+      when(mockMethodOfPaymentService.getTransportChargesMethodOfPaymentTypes()(any())).thenReturn(Future.successful(mops))
 
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
@@ -111,7 +111,7 @@ class TransportMethodOfPaymentControllerSpec extends SpecBase with AppWithDefaul
     "must return a Bad Request and errors when invalid data is submitted" in {
 
       setExistingUserAnswers(emptyUserAnswers)
-      when(mockMethodOfPaymentService.getMethodOfPaymentTypes()(any())).thenReturn(Future.successful(mops))
+      when(mockMethodOfPaymentService.getTransportChargesMethodOfPaymentTypes()(any())).thenReturn(Future.successful(mops))
 
       val request   = FakeRequest(POST, transportMethodOfPaymentRoute).withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))

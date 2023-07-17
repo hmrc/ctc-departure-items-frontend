@@ -27,7 +27,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.MethodOfPaymentService
+import services.TransportChargesMethodOfPaymentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.item.TransportMethodOfPaymentView
 
@@ -42,7 +42,7 @@ class TransportMethodOfPaymentController @Inject() (
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: TransportMethodOfPaymentView,
-  methodOfPaymentService: MethodOfPaymentService
+  methodOfPaymentService: TransportChargesMethodOfPaymentService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -52,7 +52,7 @@ class TransportMethodOfPaymentController @Inject() (
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      methodOfPaymentService.getMethodOfPaymentTypes().map {
+      methodOfPaymentService.getTransportChargesMethodOfPaymentTypes().map {
         methodOfPayment =>
           val preparedForm = request.userAnswers.get(TransportMethodOfPaymentPage(itemIndex)) match {
             case None        => form(methodOfPayment)
@@ -65,7 +65,7 @@ class TransportMethodOfPaymentController @Inject() (
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      methodOfPaymentService.getMethodOfPaymentTypes().flatMap {
+      methodOfPaymentService.getTransportChargesMethodOfPaymentTypes().flatMap {
         methodOfPayment =>
           form(methodOfPayment)
             .bindFromRequest()
