@@ -24,7 +24,7 @@ import models.reference.TransportChargesMethodOfPayment
 import navigation.ItemNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.item.TransportMethodOfPaymentPage
+import pages.item.TransportChargesMethodOfPaymentPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -35,7 +35,7 @@ import services.TransportChargesMethodOfPaymentService
 
 import scala.concurrent.Future
 
-class TransportMethodOfPaymentControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+class TransportChargesMethodOfPaymentControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val mop1                                                               = arbitrary[TransportChargesMethodOfPayment].sample.value
   private val mop2                                                               = arbitrary[TransportChargesMethodOfPayment].sample.value
@@ -43,7 +43,7 @@ class TransportMethodOfPaymentControllerSpec extends SpecBase with AppWithDefaul
   private val formProvider                                                       = new EnumerableFormProvider()
   private val form                                                               = formProvider("transportMethodOfPayment", mops)
   private val mode                                                               = NormalMode
-  private lazy val transportMethodOfPaymentRoute                                 = routes.TransportMethodOfPaymentController.onPageLoad(lrn, mode, index).url
+  private lazy val transportMethodOfPaymentRoute                                 = routes.TransportChargesMethodOfPaymentController.onPageLoad(lrn, mode, index).url
   private val mockMethodOfPaymentService: TransportChargesMethodOfPaymentService = mock[TransportChargesMethodOfPaymentService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
@@ -74,7 +74,7 @@ class TransportMethodOfPaymentControllerSpec extends SpecBase with AppWithDefaul
     "must populate the view correctly on a GET when the question has previously been answered" in {
       when(mockMethodOfPaymentService.getTransportChargesMethodOfPaymentTypes()(any())).thenReturn(Future.successful(mops))
 
-      val userAnswers = emptyUserAnswers.setValue(TransportMethodOfPaymentPage(index), mop1)
+      val userAnswers = emptyUserAnswers.setValue(TransportChargesMethodOfPaymentPage(index), mop1)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, transportMethodOfPaymentRoute)

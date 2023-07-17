@@ -23,10 +23,10 @@ class TransportTransportChargesMethodOfPaymentPageSpec extends PageBehaviours {
 
   "TransportMethodOfPaymentPage" - {
 
-    beRetrievable[TransportChargesMethodOfPayment](TransportMethodOfPaymentPage(index))
+    beRetrievable[TransportChargesMethodOfPayment](TransportChargesMethodOfPaymentPage(index))
 
-    beSettable[TransportChargesMethodOfPayment](TransportMethodOfPaymentPage(index))
+    beSettable[TransportChargesMethodOfPayment](TransportChargesMethodOfPaymentPage(index))
 
-    beRemovable[TransportChargesMethodOfPayment](TransportMethodOfPaymentPage(index))
+    beRemovable[TransportChargesMethodOfPayment](TransportChargesMethodOfPaymentPage(index))
   }
 }

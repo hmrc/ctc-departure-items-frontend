@@ -24,12 +24,12 @@ import pages.sections.ItemSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class TransportMethodOfPaymentPage(itemIndex: Index) extends QuestionPage[TransportChargesMethodOfPayment] {
+case class TransportChargesMethodOfPaymentPage(itemIndex: Index) extends QuestionPage[TransportChargesMethodOfPayment] {
 
   override def path: JsPath = ItemSection(itemIndex).path \ toString
 
   override def toString: String = "methodOfPayment"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.TransportMethodOfPaymentController.onPageLoad(userAnswers.lrn, mode, itemIndex))
+    Some(routes.TransportChargesMethodOfPaymentController.onPageLoad(userAnswers.lrn, mode, itemIndex))
 }

@@ -16,7 +16,7 @@
 
 @import controllers.item.routes
 @import models.LocalReferenceNumber
-@import models.reference.MethodOfPayment
+@import models.reference.TransportChargesMethodOfPayment
 @import views.html.components.{Button, ErrorSummary, InputRadio}
 @import viewmodels.components.InputRadioViewModel
 @import viewmodels.components.InputRadioViewModel._
@@ -29,7 +29,7 @@
     button: Button
 )
 
-@(form: Form[MethodOfPayment], lrn: LocalReferenceNumber, values: Seq[MethodOfPayment], mode: Mode, itemIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[TransportChargesMethodOfPayment], lrn: LocalReferenceNumber, values: Seq[TransportChargesMethodOfPayment], mode: Mode, itemIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("item.transportMethodOfPayment.title"),
@@ -37,7 +37,7 @@
     lrn = lrn
 ) {
 
-    @formHelper(action = routes.TransportMethodOfPaymentController.onSubmit(lrn, mode, itemIndex), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.TransportChargesMethodOfPaymentController.onSubmit(lrn, mode, itemIndex), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

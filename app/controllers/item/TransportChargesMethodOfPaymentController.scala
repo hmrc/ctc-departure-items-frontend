@@ -22,7 +22,7 @@ import forms.EnumerableFormProvider
 import models.reference.TransportChargesMethodOfPayment
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
-import pages.item.TransportMethodOfPaymentPage
+import pages.item.TransportChargesMethodOfPaymentPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -34,7 +34,7 @@ import views.html.item.TransportMethodOfPaymentView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TransportMethodOfPaymentController @Inject() (
+class TransportChargesMethodOfPaymentController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: ItemNavigatorProvider,
@@ -54,7 +54,7 @@ class TransportMethodOfPaymentController @Inject() (
     implicit request =>
       methodOfPaymentService.getTransportChargesMethodOfPaymentTypes().map {
         methodOfPayment =>
-          val preparedForm = request.userAnswers.get(TransportMethodOfPaymentPage(itemIndex)) match {
+          val preparedForm = request.userAnswers.get(TransportChargesMethodOfPaymentPage(itemIndex)) match {
             case None        => form(methodOfPayment)
             case Some(value) => form(methodOfPayment).fill(value)
           }
@@ -73,7 +73,7 @@ class TransportMethodOfPaymentController @Inject() (
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, methodOfPayment, mode, itemIndex))),
               value => {
                 implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
-                TransportMethodOfPaymentPage(itemIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+                TransportChargesMethodOfPaymentPage(itemIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
               }
             )
       }
