@@ -31,8 +31,8 @@ case class Document(
 ) extends Selectable {
 
   override def toString: String = description match {
-    case Some(value) => s"($code) $value - $referenceNumber"
-    case None        => s"$code - $referenceNumber"
+    case Some(value) => s"${`type`.display} - ($code) $value - $referenceNumber"
+    case None        => s"${`type`.display} - $code - $referenceNumber"
   }
 
   override val value: String = this.toString

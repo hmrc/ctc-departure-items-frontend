@@ -27,9 +27,11 @@ import scala.concurrent.{ExecutionContext, Future}
 class PackagesService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
 
   def getPackageTypes()(implicit hc: HeaderCarrier): Future[PackageTypeList] =
-    referenceDataConnector
-      .getPackageTypes()
-      .map(sort)
+    for {
+      other    <- referenceDataConnector.getPackageTypes()
+      bulk     <- referenceDataConnector.getPackageTypesBulk()
+      unpacked <- referenceDataConnector.getPackageTypesUnpacked()
+    } yield sort(other ++ bulk ++ unpacked)
 
   private def sort(packageTypes: Seq[PackageType]): PackageTypeList =
     PackageTypeList(packageTypes.sortBy(_.description.map(_.toLowerCase)))

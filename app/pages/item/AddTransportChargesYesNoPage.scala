@@ -14,24 +14,21 @@
  * limitations under the License.
  */
 
-package models
+package pages.item
 
-sealed trait DocumentType {
-  val display: String
-}
+import controllers.item.routes
+import models.{Index, Mode, UserAnswers}
+import pages.QuestionPage
+import pages.sections.ItemSection
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-object DocumentType extends EnumerableType[DocumentType] {
+case class AddTransportChargesYesNoPage(itemIndex: Index) extends QuestionPage[Boolean] {
 
-  case object Support extends DocumentType {
-    val display = "Supporting"
-  }
+  override def path: JsPath = ItemSection(itemIndex).path \ toString
 
-  case object Transport extends DocumentType {
-    val display = "Transport"
-  }
+  override def toString: String = "addTransportChargesYesNo"
 
-  case object Previous extends DocumentType {
-    val display = "Previous"
-  }
-  override val values: Seq[DocumentType] = Seq(Support, Transport, Previous)
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.AddTransportChargesYesNoController.onPageLoad(userAnswers.lrn, mode, itemIndex))
 }

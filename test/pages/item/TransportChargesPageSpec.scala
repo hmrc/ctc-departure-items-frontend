@@ -14,24 +14,18 @@
  * limitations under the License.
  */
 
-package models
+package pages.item
 
-sealed trait DocumentType {
-  val display: String
-}
+import pages.behaviours.PageBehaviours
 
-object DocumentType extends EnumerableType[DocumentType] {
+class TransportChargesPageSpec extends PageBehaviours {
 
-  case object Support extends DocumentType {
-    val display = "Supporting"
+  "AddTransportChargesYesNoPage" - {
+
+    beRetrievable[Boolean](AddTransportChargesYesNoPage(index))
+
+    beSettable[Boolean](AddTransportChargesYesNoPage(index))
+
+    beRemovable[Boolean](AddTransportChargesYesNoPage(index))
   }
-
-  case object Transport extends DocumentType {
-    val display = "Transport"
-  }
-
-  case object Previous extends DocumentType {
-    val display = "Previous"
-  }
-  override val values: Seq[DocumentType] = Seq(Support, Transport, Previous)
 }

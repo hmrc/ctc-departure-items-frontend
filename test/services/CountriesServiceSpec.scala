@@ -21,7 +21,7 @@ import connectors.ReferenceDataConnector
 import generators.Generators
 import models.SelectableList
 import models.reference.{Country, CountryCode}
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
 
@@ -48,13 +48,13 @@ class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach with Generat
     "getCountries" - {
       "must return a list of sorted countries" in {
 
-        when(mockRefDataConnector.getCountries(any())(any(), any()))
+        when(mockRefDataConnector.getCountries()(any(), any()))
           .thenReturn(Future.successful(countries))
 
         service.getCountries().futureValue mustBe
           SelectableList(Seq(country2, country3, country1))
 
-        verify(mockRefDataConnector).getCountries(eqTo(Nil))(any(), any())
+        verify(mockRefDataConnector).getCountries()(any(), any())
       }
     }
   }
