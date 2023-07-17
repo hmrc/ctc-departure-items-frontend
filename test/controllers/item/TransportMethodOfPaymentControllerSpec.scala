@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.EnumerableFormProvider
 import generators.Generators
 import models.NormalMode
-import models.reference.MethodOfPayment
+import models.reference.TransportChargesMethodOfPayment
 import navigation.ItemNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -37,8 +37,8 @@ import scala.concurrent.Future
 
 class TransportMethodOfPaymentControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val mop1                                                               = arbitrary[MethodOfPayment].sample.value
-  private val mop2                                                               = arbitrary[MethodOfPayment].sample.value
+  private val mop1                                                               = arbitrary[TransportChargesMethodOfPayment].sample.value
+  private val mop2                                                               = arbitrary[TransportChargesMethodOfPayment].sample.value
   private val mops                                                               = Seq(mop1, mop2)
   private val formProvider                                                       = new EnumerableFormProvider()
   private val form                                                               = formProvider("transportMethodOfPayment", mops)

@@ -23,14 +23,14 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
 
-class MethodOfPaymentSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
+class TransportChargesMethodOfPaymentSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
 
   "MethodOfPayment" - {
 
     "must serialise" in {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (code, description) =>
-          val methodOfPayment = MethodOfPayment(code, description)
+          val methodOfPayment = TransportChargesMethodOfPayment(code, description)
           Json.toJson(methodOfPayment) mustBe Json.parse(s"""
                |{
                |  "code": "$code",
@@ -43,7 +43,7 @@ class MethodOfPaymentSpec extends AnyFreeSpec with Matchers with ScalaCheckPrope
     "must deserialise" in {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (code, description) =>
-          val methodOfPayment = MethodOfPayment(code, description)
+          val methodOfPayment = TransportChargesMethodOfPayment(code, description)
           Json
             .parse(s"""
                  |{
@@ -51,14 +51,14 @@ class MethodOfPaymentSpec extends AnyFreeSpec with Matchers with ScalaCheckPrope
                  |  "description": "$description"
                  |}
                  |""".stripMargin)
-            .as[MethodOfPayment] mustBe methodOfPayment
+            .as[TransportChargesMethodOfPayment] mustBe methodOfPayment
       }
     }
 
     "must format as string" in {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (code, description) =>
-          val methodOfPayment = MethodOfPayment(code, description)
+          val methodOfPayment = TransportChargesMethodOfPayment(code, description)
           methodOfPayment.toString mustBe description
       }
     }

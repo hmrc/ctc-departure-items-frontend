@@ -314,20 +314,20 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
     "getMethodOfPaymentTypes" - {
       "must return Seq of MethodOfPayments when successful" in {
         server.stubFor(
-          get(urlEqualTo(s"/$baseUrl/lists/MethodOfPayment"))
+          get(urlEqualTo(s"/$baseUrl/lists/TransportChargesMethodOfPayment"))
             .willReturn(okJson(methodOfPaymentJson))
         )
 
-        val expectedResult: Seq[MethodOfPayment] = Seq(
-          MethodOfPayment("A", "Payment By Card"),
-          MethodOfPayment("B", "PayPal")
+        val expectedResult: Seq[TransportChargesMethodOfPayment] = Seq(
+          TransportChargesMethodOfPayment("A", "Payment By Card"),
+          TransportChargesMethodOfPayment("B", "PayPal")
         )
 
         connector.getTransportChargesMethodOfPaymentTypes().futureValue mustEqual expectedResult
       }
 
       "must return an exception when an error response is returned" in {
-        checkErrorResponse(s"/$baseUrl/lists/MethodOfPayment", connector.getTransportChargesMethodOfPaymentTypes())
+        checkErrorResponse(s"/$baseUrl/lists/TransportChargesMethodOfPayment", connector.getTransportChargesMethodOfPaymentTypes())
       }
     }
 

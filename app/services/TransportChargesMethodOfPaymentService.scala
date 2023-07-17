@@ -18,7 +18,7 @@ package services
 
 import connectors.ReferenceDataConnector
 import models.SelectableList
-import models.reference.{AdditionalInformation, MethodOfPayment}
+import models.reference.{AdditionalInformation, TransportChargesMethodOfPayment}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -26,7 +26,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class TransportChargesMethodOfPaymentService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
 
-  def getTransportChargesMethodOfPaymentTypes()(implicit hc: HeaderCarrier): Future[Seq[MethodOfPayment]] =
+  def getTransportChargesMethodOfPaymentTypes()(implicit hc: HeaderCarrier): Future[Seq[TransportChargesMethodOfPayment]] =
     referenceDataConnector
       .getTransportChargesMethodOfPaymentTypes()
 }

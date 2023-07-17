@@ -19,7 +19,7 @@ package controllers.item
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
-import models.reference.MethodOfPayment
+import models.reference.TransportChargesMethodOfPayment
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
 import pages.item.TransportMethodOfPaymentPage
@@ -47,7 +47,7 @@ class TransportMethodOfPaymentController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(methodOfPayment: Seq[MethodOfPayment]): Form[MethodOfPayment] =
+  private def form(methodOfPayment: Seq[TransportChargesMethodOfPayment]): Form[TransportChargesMethodOfPayment] =
     formProvider("methodOfPayment", methodOfPayment)
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {

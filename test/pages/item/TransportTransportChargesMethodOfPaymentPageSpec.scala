@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package models.reference
+package pages.item
 
-import models.{DynamicEnumerableType, Radioable}
-import play.api.libs.json.{Format, Json}
+import models.reference.TransportChargesMethodOfPayment
+import pages.behaviours.PageBehaviours
 
-case class MethodOfPayment(code: String, description: String) extends Radioable[MethodOfPayment] {
+class TransportTransportChargesMethodOfPaymentPageSpec extends PageBehaviours {
 
-  override def toString: String = description
+  "TransportMethodOfPaymentPage" - {
 
-  override val messageKeyPrefix: String = MethodOfPayment.messageKeyPrefix
-}
+    beRetrievable[TransportChargesMethodOfPayment](TransportMethodOfPaymentPage(index))
 
-object MethodOfPayment extends DynamicEnumerableType[MethodOfPayment] {
-  implicit val format: Format[MethodOfPayment] = Json.format[MethodOfPayment]
+    beSettable[TransportChargesMethodOfPayment](TransportMethodOfPaymentPage(index))
 
-  val messageKeyPrefix = "methodOfPayment"
+    beRemovable[TransportChargesMethodOfPayment](TransportMethodOfPaymentPage(index))
+  }
 }
