@@ -16,7 +16,7 @@
 
 package views.item.additionalReference.index
 
-import forms.Constants.maxAdditionalReferenceNumLength
+import base.SpecBase
 import forms.item.additionalReference.AdditionalReferenceNumberFormProvider
 import generators.Generators
 import models.NormalMode
@@ -27,18 +27,20 @@ import viewmodels.item.additionalReference.AdditionalReferenceNumberViewModel
 import views.behaviours.CharacterCountViewBehaviours
 import views.html.item.additionalReference.index.AdditionalReferenceNumberView
 
-class AdditionalReferenceNumberViewSpec extends CharacterCountViewBehaviours with Generators {
+class AdditionalReferenceNumberViewSpec extends SpecBase with CharacterCountViewBehaviours with Generators {
 
   override val prefix: String = "item.additionalReference.index.additionalReferenceNumber"
 
   private val viewModel = arbitrary[AdditionalReferenceNumberViewModel].sample.value
 
-  override def form: Form[String] = new AdditionalReferenceNumberFormProvider()(prefix, viewModel.otherAdditionalReferenceNumbers)
+  private val formProvider = new AdditionalReferenceNumberFormProvider()(phaseConfig)
+
+  override def form: Form[String] = formProvider(prefix, viewModel.otherAdditionalReferenceNumbers)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
     injector
       .instanceOf[AdditionalReferenceNumberView]
-      .apply(form, lrn, NormalMode, itemIndex, additionalReferenceIndex, viewModel.isReferenceNumberRequired)(fakeRequest, messages)
+      .apply(form, lrn, NormalMode, itemIndex, additionalReferenceIndex, viewModel.isReferenceNumberRequired)(fakeRequest, messages, phaseConfig)
 
   behave like pageWithTitle()
 
@@ -48,9 +50,9 @@ class AdditionalReferenceNumberViewSpec extends CharacterCountViewBehaviours wit
 
   behave like pageWithHeading()
 
-  behave like pageWithHint(s"You can enter up to $maxAdditionalReferenceNumLength characters")
+  behave like pageWithHint(s"You can enter up to ${phaseConfig.maxAdditionalReferenceNumLength} characters")
 
-  behave like pageWithCharacterCount(maxAdditionalReferenceNumLength)
+  behave like pageWithCharacterCount(phaseConfig.maxAdditionalReferenceNumLength)
 
   behave like pageWithSubmitButton("Save and continue")
 
@@ -60,7 +62,7 @@ class AdditionalReferenceNumberViewSpec extends CharacterCountViewBehaviours wit
     "must render paragraph" - {
       val view = injector
         .instanceOf[AdditionalReferenceNumberView]
-        .apply(form, lrn, NormalMode, itemIndex, additionalReferenceIndex, isRequired = true)(fakeRequest, messages)
+        .apply(form, lrn, NormalMode, itemIndex, additionalReferenceIndex, isRequired = true)(fakeRequest, messages, phaseConfig)
 
       val doc = parseView(view)
 
@@ -76,7 +78,7 @@ class AdditionalReferenceNumberViewSpec extends CharacterCountViewBehaviours wit
     "must not render paragraph" - {
       val view = injector
         .instanceOf[AdditionalReferenceNumberView]
-        .apply(form, lrn, NormalMode, itemIndex, additionalReferenceIndex, isRequired = false)(fakeRequest, messages)
+        .apply(form, lrn, NormalMode, itemIndex, additionalReferenceIndex, isRequired = false)(fakeRequest, messages, phaseConfig)
 
       val doc = parseView(view)
 

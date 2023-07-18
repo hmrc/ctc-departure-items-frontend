@@ -16,14 +16,14 @@
 
 package forms.item.additionalReference
 
-import forms.Constants.maxAdditionalReferenceNumLength
+import config.PhaseConfig
 import forms.mappings.Mappings
 import models.domain.StringFieldRegex.stringFieldRegex
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class AdditionalReferenceNumberFormProvider @Inject() extends Mappings {
+class AdditionalReferenceNumberFormProvider @Inject() (implicit phaseConfig: PhaseConfig) extends Mappings {
 
   def apply(prefix: String, otherAdditionalReferenceNumbers: Seq[String]): Form[String] =
     Form(
@@ -31,7 +31,7 @@ class AdditionalReferenceNumberFormProvider @Inject() extends Mappings {
         .verifying(
           forms.StopOnFirstFail[String](
             regexp(stringFieldRegex, s"$prefix.error.invalidCharacters"),
-            maxLength(maxAdditionalReferenceNumLength, s"$prefix.error.length"),
+            maxLength(phaseConfig.maxAdditionalReferenceNumLength, s"$prefix.error.length"),
             notInList(otherAdditionalReferenceNumbers, s"$prefix.error.unique")
           )
         )
