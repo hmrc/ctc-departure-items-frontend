@@ -16,9 +16,9 @@
 
 package controllers.item.packages.index
 
+import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.Constants.maxNumberOfPackages
 import forms.IntFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{PackageNavigatorProvider, UserAnswersNavigator}
@@ -41,7 +41,7 @@ class NumberOfPackagesController @Inject() (
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: NumberOfPackagesView
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -50,7 +50,7 @@ class NumberOfPackagesController @Inject() (
     .andThen(getMandatoryPage(PackageTypePage(itemIndex, packageIndex))) {
       implicit request =>
         val packageType = request.arg.toString
-        val form        = formProvider("item.packages.index.numberOfPackages", maxNumberOfPackages, Seq(packageType))
+        val form        = formProvider("item.packages.index.numberOfPackages", phaseConfig.maxNumberOfPackages, Seq(packageType))
         val preparedForm = request.userAnswers.get(NumberOfPackagesPage(itemIndex, packageIndex)) match {
           case None        => form
           case Some(value) => form.fill(value)
@@ -64,7 +64,7 @@ class NumberOfPackagesController @Inject() (
     .async {
       implicit request =>
         val packageType = request.arg.toString
-        val form        = formProvider("item.packages.index.numberOfPackages", maxNumberOfPackages, Seq(packageType))
+        val form        = formProvider("item.packages.index.numberOfPackages", phaseConfig.maxNumberOfPackages, Seq(packageType))
         form
           .bindFromRequest()
           .fold(

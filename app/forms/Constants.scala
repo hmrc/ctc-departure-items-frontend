@@ -23,7 +23,6 @@ object Constants {
   lazy val exactCUSCodeLength: Int                  = 9
   lazy val exactCombinedNomenclatureCodeLength: Int = 2
   lazy val exactUNNumberLength: Int                 = 4
-  lazy val maxNumberOfPackages: Int                 = 99999999
   lazy val maxAdditionalInformationLength: Int      = 512
   lazy val maxEoriNumberLength: Int                 = 17
 }
