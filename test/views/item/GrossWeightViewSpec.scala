@@ -16,6 +16,7 @@
 
 package views.item
 
+import base.SpecBase
 import forms.BigDecimalFormProvider
 import models.NormalMode
 import org.scalacheck.Arbitrary
@@ -25,14 +26,16 @@ import viewmodels.InputSize
 import views.behaviours.InputTextViewBehaviours
 import views.html.item.GrossWeightView
 
-class GrossWeightViewSpec extends InputTextViewBehaviours[BigDecimal] {
+class GrossWeightViewSpec extends SpecBase with InputTextViewBehaviours[BigDecimal] {
 
   override val prefix: String = "item.grossWeight"
 
-  override def form: Form[BigDecimal] = new BigDecimalFormProvider()(prefix)
+  private val decimalPlace: Int       = positiveInts.sample.value
+  private val characterCount: Int     = positiveInts.sample.value
+  override def form: Form[BigDecimal] = new BigDecimalFormProvider()(prefix, decimalPlace, characterCount)
 
   override def applyView(form: Form[BigDecimal]): HtmlFormat.Appendable =
-    injector.instanceOf[GrossWeightView].apply(form, lrn, NormalMode, itemIndex)(fakeRequest, messages)
+    injector.instanceOf[GrossWeightView].apply(form, lrn, NormalMode, itemIndex)(fakeRequest, messages, phaseConfig)
 
   implicit override val arbitraryT: Arbitrary[BigDecimal] = Arbitrary(positiveBigDecimals)
 
@@ -46,7 +49,7 @@ class GrossWeightViewSpec extends InputTextViewBehaviours[BigDecimal] {
 
   behave like pageWithContent("p", "This is the combined weight of the item’s goods and packaging.")
 
-  behave like pageWithHint("Enter the weight in kilograms (kg), up to 6 decimal places.")
+  behave like pageWithHint(s"Enter the weight in kilograms (kg), up to ${phaseConfig.decimalPlaces} decimal places.")
 
   behave like pageWithInputText(Some(InputSize.Width20))
 

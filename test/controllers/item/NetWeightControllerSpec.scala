@@ -18,6 +18,7 @@ package controllers.item
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.NetWeightFormProvider
+import generators.Generators
 import models.NormalMode
 import navigation.ItemNavigatorProvider
 import org.mockito.ArgumentMatchers.any
@@ -31,11 +32,13 @@ import views.html.item.NetWeightView
 
 import scala.concurrent.Future
 
-class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
+  private val decimalPlace        = positiveInts.sample.value
+  private val characterCount      = positiveInts.sample.value
   private val formProvider        = new NetWeightFormProvider()
   private val grossWeight         = BigDecimal(2)
-  private val form                = formProvider("item.netWeight", grossWeight)
+  private val form                = formProvider("item.netWeight", grossWeight, decimalPlace, characterCount)
   private val mode                = NormalMode
   private val validAnswer         = BigDecimal(1)
   private lazy val netWeightRoute = routes.NetWeightController.onPageLoad(lrn, mode, itemIndex).url
@@ -62,7 +65,7 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, mode, itemIndex)(request, messages).toString
+        view(form, lrn, mode, itemIndex)(request, messages, phaseConfig).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -83,7 +86,7 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, mode, itemIndex)(request, messages).toString
+        view(filledForm, lrn, mode, itemIndex)(request, messages, phaseConfig).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -122,7 +125,7 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
       val view = injector.instanceOf[NetWeightView]
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, mode, itemIndex)(request, messages).toString
+        view(filledForm, lrn, mode, itemIndex)(request, messages, phaseConfig).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

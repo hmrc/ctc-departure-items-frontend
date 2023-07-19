@@ -25,6 +25,8 @@ trait PhaseConfig {
   val maxShippingMarkLength: Int
   val maxAdditionalReferenceNumLength: Int
   val maxNumberOfPackages: Int
+  val decimalPlaces: Int
+  val characterCount: Int
 }
 
 class TransitionConfig() extends PhaseConfig {
@@ -33,6 +35,8 @@ class TransitionConfig() extends PhaseConfig {
   override val maxShippingMarkLength: Int           = 42
   override val maxAdditionalReferenceNumLength: Int = 35
   override val maxNumberOfPackages: Int             = 99999
+  override val decimalPlaces: Int                   = 3
+  override val characterCount: Int                  = 11
 }
 
 class PostTransitionConfig() extends PhaseConfig {
@@ -41,4 +45,6 @@ class PostTransitionConfig() extends PhaseConfig {
   override val maxShippingMarkLength: Int           = 512
   override val maxAdditionalReferenceNumLength: Int = 70
   override val maxNumberOfPackages: Int             = 99999999
+  override val decimalPlaces: Int                   = 6
+  override val characterCount: Int                  = 16
 }

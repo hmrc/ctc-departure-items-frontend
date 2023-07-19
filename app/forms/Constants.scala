@@ -25,4 +25,6 @@ object Constants {
   lazy val exactUNNumberLength: Int                 = 4
   lazy val maxAdditionalInformationLength: Int      = 512
   lazy val maxEoriNumberLength: Int                 = 17
+  lazy val supplementaryUnitsDecimalPlaces: Int     = 6
+  lazy val supplementaryUnitsCharacterCount: Int    = 16
 }

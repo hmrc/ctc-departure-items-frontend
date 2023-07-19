@@ -18,6 +18,7 @@ package controllers.item
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.BigDecimalFormProvider
+import generators.Generators
 import models.NormalMode
 import navigation.ItemNavigatorProvider
 import org.mockito.ArgumentMatchers.any
@@ -31,10 +32,12 @@ import views.html.item.GrossWeightView
 
 import scala.concurrent.Future
 
-class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
+  private val decimalPlace          = positiveInts.sample.value
+  private val characterCount        = positiveInts.sample.value
   private val formProvider          = new BigDecimalFormProvider()
-  private val form                  = formProvider("item.grossWeight")
+  private val form                  = formProvider("item.grossWeight", decimalPlace, characterCount)
   private val mode                  = NormalMode
   private val validAnswer           = BigDecimal(1)
   private lazy val grossWeightRoute = routes.GrossWeightController.onPageLoad(lrn, mode, itemIndex).url
@@ -59,7 +62,7 @@ class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, mode, itemIndex)(request, messages).toString
+        view(form, lrn, mode, itemIndex)(request, messages, phaseConfig).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -78,7 +81,7 @@ class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, mode, itemIndex)(request, messages).toString
+        view(filledForm, lrn, mode, itemIndex)(request, messages, phaseConfig).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -113,7 +116,7 @@ class GrossWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       val view = injector.instanceOf[GrossWeightView]
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, mode, itemIndex)(request, messages).toString
+        view(filledForm, lrn, mode, itemIndex)(request, messages, phaseConfig).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
