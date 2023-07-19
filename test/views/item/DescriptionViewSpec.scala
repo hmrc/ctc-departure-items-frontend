@@ -31,7 +31,7 @@ class DescriptionViewSpec extends SpecBase with CharacterCountViewBehaviours {
   override def form: Form[String] = formProvider(prefix, itemIndex.display)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[DescriptionView].apply(form, lrn, NormalMode, itemIndex)(fakeRequest, messages, phaseConfig)
+    injector.instanceOf[DescriptionView].apply(form, lrn, NormalMode, itemIndex)(fakeRequest, messages)
 
   override val prefix: String = "item.description"
 

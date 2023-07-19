@@ -26,10 +26,11 @@
     formHelper: FormWithCSRF,
     inputText: InputText,
     errorSummary: ErrorSummary,
-    button: Button
+    button: Button,
+    phaseConfig: PhaseConfig
 )
 
-@(form: Form[BigDecimal], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index)(implicit request: Request[_], messages: Messages, phaseConfig: PhaseConfig)
+@(form: Form[BigDecimal], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("item.grossWeight.title"),

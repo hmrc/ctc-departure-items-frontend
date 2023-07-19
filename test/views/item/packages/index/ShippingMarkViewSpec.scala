@@ -33,7 +33,7 @@ class ShippingMarkViewSpec extends SpecBase with CharacterCountViewBehaviours {
   override def form: Form[String] = formProvider(prefix)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[ShippingMarkView].apply(form, lrn, NormalMode, itemIndex, packageIndex)(fakeRequest, messages, phaseConfig)
+    injector.instanceOf[ShippingMarkView].apply(form, lrn, NormalMode, itemIndex, packageIndex)(fakeRequest, messages)
 
   behave like pageWithTitle()
 

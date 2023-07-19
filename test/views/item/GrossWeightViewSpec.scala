@@ -35,7 +35,7 @@ class GrossWeightViewSpec extends SpecBase with InputTextViewBehaviours[BigDecim
   override def form: Form[BigDecimal] = new BigDecimalFormProvider()(prefix, decimalPlace, characterCount)
 
   override def applyView(form: Form[BigDecimal]): HtmlFormat.Appendable =
-    injector.instanceOf[GrossWeightView].apply(form, lrn, NormalMode, itemIndex)(fakeRequest, messages, phaseConfig)
+    injector.instanceOf[GrossWeightView].apply(form, lrn, NormalMode, itemIndex)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[BigDecimal] = Arbitrary(positiveBigDecimals)
 

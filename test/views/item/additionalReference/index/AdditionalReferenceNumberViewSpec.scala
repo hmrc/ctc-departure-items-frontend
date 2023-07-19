@@ -40,7 +40,7 @@ class AdditionalReferenceNumberViewSpec extends SpecBase with CharacterCountView
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
     injector
       .instanceOf[AdditionalReferenceNumberView]
-      .apply(form, lrn, NormalMode, itemIndex, additionalReferenceIndex, viewModel.isReferenceNumberRequired)(fakeRequest, messages, phaseConfig)
+      .apply(form, lrn, NormalMode, itemIndex, additionalReferenceIndex, viewModel.isReferenceNumberRequired)(fakeRequest, messages)
 
   behave like pageWithTitle()
 
@@ -62,7 +62,7 @@ class AdditionalReferenceNumberViewSpec extends SpecBase with CharacterCountView
     "must render paragraph" - {
       val view = injector
         .instanceOf[AdditionalReferenceNumberView]
-        .apply(form, lrn, NormalMode, itemIndex, additionalReferenceIndex, isRequired = true)(fakeRequest, messages, phaseConfig)
+        .apply(form, lrn, NormalMode, itemIndex, additionalReferenceIndex, isRequired = true)(fakeRequest, messages)
 
       val doc = parseView(view)
 
@@ -78,7 +78,7 @@ class AdditionalReferenceNumberViewSpec extends SpecBase with CharacterCountView
     "must not render paragraph" - {
       val view = injector
         .instanceOf[AdditionalReferenceNumberView]
-        .apply(form, lrn, NormalMode, itemIndex, additionalReferenceIndex, isRequired = false)(fakeRequest, messages, phaseConfig)
+        .apply(form, lrn, NormalMode, itemIndex, additionalReferenceIndex, isRequired = false)(fakeRequest, messages)
 
       val doc = parseView(view)
 
