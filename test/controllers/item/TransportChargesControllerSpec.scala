@@ -35,7 +35,7 @@ import scala.concurrent.Future
 class TransportChargesControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
 
   private val formProvider               = new YesNoFormProvider()
-  private val form                       = formProvider("items.transportCharges")
+  private val form                       = formProvider("item.addTransportChargesYesNo")
   private val mode                       = NormalMode
   private lazy val transportChargesRoute = routes.AddTransportChargesYesNoController.onPageLoad(lrn, mode, index).url
 
