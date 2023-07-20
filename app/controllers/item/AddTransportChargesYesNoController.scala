@@ -43,7 +43,7 @@ class AddTransportChargesYesNoController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("items.transportCharges")
+  private val form = formProvider("item.addTransportChargesYesNo")
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
