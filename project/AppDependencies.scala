@@ -12,7 +12,7 @@ object AppDependencies {
     "uk.gov.hmrc"       %% "bootstrap-frontend-play-28"     % bootstrapVersion,
     "org.typelevel"     %% "cats-core"                      % "2.9.0",
     "com.chuusai"       %% "shapeless"                      % "2.3.10",
-    "uk.gov.hmrc"       %% "play-allowlist-filter"          % "1.2.0",
+    "uk.gov.hmrc"       %% "play-allowlist-filter-play-28"  % "1.2.0",
     "org.apache.commons" % "commons-text"                   % "1.10.0"
   )
 
