@@ -41,7 +41,7 @@ class TransportChargesMethodOfPaymentControllerSpec extends SpecBase with AppWit
   private val mop2                                                               = arbitrary[TransportChargesMethodOfPayment].sample.value
   private val mops                                                               = Seq(mop1, mop2)
   private val formProvider                                                       = new EnumerableFormProvider()
-  private val form                                                               = formProvider("transportMethodOfPayment", mops)
+  private val form                                                               = formProvider("item.transportMethodOfPayment", mops)
   private val mode                                                               = NormalMode
   private lazy val transportMethodOfPaymentRoute                                 = routes.TransportChargesMethodOfPaymentController.onPageLoad(lrn, mode, index).url
   private val mockMethodOfPaymentService: TransportChargesMethodOfPaymentService = mock[TransportChargesMethodOfPaymentService]

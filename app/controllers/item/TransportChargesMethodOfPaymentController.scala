@@ -48,7 +48,7 @@ class TransportChargesMethodOfPaymentController @Inject() (
     with I18nSupport {
 
   private def form(methodOfPayment: Seq[TransportChargesMethodOfPayment]): Form[TransportChargesMethodOfPayment] =
-    formProvider("methodOfPayment", methodOfPayment)
+    formProvider("item.transportMethodOfPayment", methodOfPayment)
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
