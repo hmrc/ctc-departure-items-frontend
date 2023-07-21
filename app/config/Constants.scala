@@ -18,8 +18,9 @@ package config
 
 object Constants {
   val GB = "GB"
-  val XI = "XI"
-  val AD = "AD"
+
+  val T   = "T"
+  val TIR = "TIR"
 
   val C651 = "C651"
   val C658 = "C658"

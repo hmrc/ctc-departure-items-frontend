@@ -17,9 +17,9 @@
 package models.journeyDomain.item
 
 import cats.implicits._
-import config.Constants.GB
-import models.DeclarationType._
+import config.Constants._
 import models.DocumentType.Previous
+import models._
 import models.journeyDomain.item.additionalInformation.AdditionalInformationListDomain
 import models.journeyDomain.item.additionalReferences.AdditionalReferencesDomain
 import models.journeyDomain.item.dangerousGoods.DangerousGoodsListDomain
@@ -28,7 +28,6 @@ import models.journeyDomain.item.packages.PackagesDomain
 import models.journeyDomain.item.supplyChainActors.SupplyChainActorsDomain
 import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, JsArrayGettableAsReaderOps, Stage, UserAnswersReader}
 import models.reference.Country
-import models._
 import pages.external._
 import pages.item._
 import pages.sections.external.{DocumentsSection, TransportEquipmentsSection}
@@ -185,7 +184,7 @@ object ItemDomain {
       transitOperationDeclarationType <- TransitOperationDeclarationTypePage.reader
       isGBOfficeOfDeparture           <- CustomsOfficeOfDeparturePage.reader.map(_.startsWith(GB))
       itemDeclarationType             <- DeclarationTypePage(itemIndex).optionalReader
-      isT2OrT2FItemDeclarationType = itemDeclarationType.exists(_.isOneOf(T2, T2F))
+      isT2OrT2FItemDeclarationType = itemDeclarationType.exists(_.isOneOf(DeclarationType.T2, DeclarationType.T2F))
       documents <- DocumentsSection.arrayReader.map(_.validateAsListOf[Document])
       consignmentLevelPreviousDocumentPresent = documents.exists(
         x => x.attachToAllItems && x.`type` == Previous

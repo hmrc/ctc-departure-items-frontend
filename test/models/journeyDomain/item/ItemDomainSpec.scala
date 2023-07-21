@@ -17,9 +17,8 @@
 package models.journeyDomain.item
 
 import base.SpecBase
-import config.Constants.GB
+import config.Constants._
 import generators.Generators
-import models.DeclarationType._
 import models.journeyDomain.item.additionalInformation.{AdditionalInformationDomain, AdditionalInformationListDomain}
 import models.journeyDomain.item.additionalReferences.{AdditionalReferenceDomain, AdditionalReferencesDomain}
 import models.journeyDomain.item.dangerousGoods.{DangerousGoodsDomain, DangerousGoodsListDomain}
@@ -128,7 +127,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
     "declarationTypeReader" - {
       "can be read from user answers" - {
         "when declaration type is not T" in {
-          forAll(arbitrary[DeclarationType](arbitraryNonTDeclarationType)) {
+          forAll(arbitrary[String](arbitraryNonTDeclarationType)) {
             declarationType =>
               val userAnswers = emptyUserAnswers
                 .setValue(TransitOperationDeclarationTypePage, declarationType)
@@ -147,7 +146,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
           forAll(arbitrary[DeclarationType]) {
             declarationType =>
               val userAnswers = emptyUserAnswers
-                .setValue(TransitOperationDeclarationTypePage, DeclarationType.T)
+                .setValue(TransitOperationDeclarationTypePage, T)
                 .setValue(DeclarationTypePage(itemIndex), declarationType)
 
               val expectedResult = Some(declarationType)
@@ -165,7 +164,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         "when transit operation declaration type is T" - {
           "and declaration type is unanswered" in {
             val userAnswers = emptyUserAnswers
-              .setValue(TransitOperationDeclarationTypePage, DeclarationType.T)
+              .setValue(TransitOperationDeclarationTypePage, T)
 
             val result: EitherType[Option[DeclarationType]] = UserAnswersReader[Option[DeclarationType]](
               ItemDomain.declarationTypeReader(itemIndex)
@@ -180,7 +179,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
     "countryOfDispatchReader" - {
       "can be read from user answers" - {
         "when transit operation declaration type is not TIR" in {
-          forAll(arbitrary[DeclarationType](arbitraryNonTIRDeclarationType)) {
+          forAll(arbitrary[String](arbitraryNonTIRDeclarationType)) {
             declarationType =>
               val userAnswers = emptyUserAnswers
                 .setValue(TransitOperationDeclarationTypePage, declarationType)
@@ -200,7 +199,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
             forAll(arbitrary[Country]) {
               country =>
                 val userAnswers = emptyUserAnswers
-                  .setValue(TransitOperationDeclarationTypePage, DeclarationType.TIR)
+                  .setValue(TransitOperationDeclarationTypePage, TIR)
                   .setValue(ConsignmentCountryOfDispatchPage, country)
 
                 val expectedResult = None
@@ -217,7 +216,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
             forAll(arbitrary[Country]) {
               country =>
                 val userAnswers = emptyUserAnswers
-                  .setValue(TransitOperationDeclarationTypePage, DeclarationType.TIR)
+                  .setValue(TransitOperationDeclarationTypePage, TIR)
                   .setValue(CountryOfDispatchPage(itemIndex), country)
 
                 val expectedResult = Some(country)
@@ -236,7 +235,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         "when transit operation declaration type is TIR" - {
           "and consignment country of dispatch is undefined" in {
             val userAnswers = emptyUserAnswers
-              .setValue(TransitOperationDeclarationTypePage, DeclarationType.TIR)
+              .setValue(TransitOperationDeclarationTypePage, TIR)
 
             val result: EitherType[Option[Country]] = UserAnswersReader[Option[Country]](
               ItemDomain.countryOfDispatchReader(itemIndex)
@@ -254,7 +253,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
           forAll(arbitrary[Country]) {
             country =>
               val userAnswers = emptyUserAnswers
-                .setValue(TransitOperationDeclarationTypePage, DeclarationType.TIR)
+                .setValue(TransitOperationDeclarationTypePage, TIR)
                 .setValue(ConsignmentCountryOfDestinationPage, country)
 
               val expectedResult = None
@@ -271,7 +270,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
           forAll(arbitrary[Country]) {
             country =>
               val userAnswers = emptyUserAnswers
-                .setValue(TransitOperationDeclarationTypePage, DeclarationType.TIR)
+                .setValue(TransitOperationDeclarationTypePage, TIR)
                 .setValue(CountryOfDestinationPage(itemIndex), country)
 
               val expectedResult = Some(country)
@@ -288,7 +287,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
       "can not be read from user answers" - {
         "when consignment country of destination is undefined" in {
           val userAnswers = emptyUserAnswers
-            .setValue(TransitOperationDeclarationTypePage, DeclarationType.TIR)
+            .setValue(TransitOperationDeclarationTypePage, TIR)
 
           val result: EitherType[Option[Country]] = UserAnswersReader[Option[Country]](
             ItemDomain.countryOfDestinationReader(itemIndex)
@@ -894,9 +893,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
       )
       val nonGgbCustomsOfficeGen = nonEmptyString.retryUntil(!_.startsWith(GB))
 
-      val genForT2OrT2F    = Gen.oneOf(T2, T2F)
-      val genForNonT2OrT2F = Gen.oneOf(T1, TIR, T)
-      val genForNonT       = Gen.oneOf(T2, T2F, TIR, T1)
+      val genForT2OrT2F    = Gen.oneOf(DeclarationType.T2, DeclarationType.T2F)
+      val genForNonT2OrT2F = Gen.oneOf(DeclarationType.T1, DeclarationType.TIR, DeclarationType.T)
+      val genForNonT       = arbitrary[String](arbitraryNonTDeclarationType)
 
       "can be read from user answers" - {
         "when T declaration type, T2/T2F item declaration type, GB office of departure and consignment-level previous document is present" - {
@@ -924,7 +923,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                 val userAnswers = emptyUserAnswers
                   .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
-                  .setValue(TransitOperationDeclarationTypePage, DeclarationType.T)
+                  .setValue(TransitOperationDeclarationTypePage, T)
                   .setValue(DeclarationTypePage(itemIndex), declarationType)
                   .setValue(DocumentsSection, documents)
                   .setValue(AddDocumentsYesNoPage(itemIndex), true)
@@ -970,7 +969,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                 val userAnswers = emptyUserAnswers
                   .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
-                  .setValue(TransitOperationDeclarationTypePage, DeclarationType.T)
+                  .setValue(TransitOperationDeclarationTypePage, T)
                   .setValue(DeclarationTypePage(itemIndex), declarationType)
                   .setValue(DocumentsSection, documents)
                   .setValue(AddDocumentsYesNoPage(itemIndex), false)
@@ -1059,7 +1058,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               val userAnswers = emptyUserAnswers
                 .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
-                .setValue(TransitOperationDeclarationTypePage, DeclarationType.T)
+                .setValue(TransitOperationDeclarationTypePage, T)
                 .setValue(DeclarationTypePage(itemIndex), declarationType)
                 .setValue(DocumentsSection, documents)
 

@@ -54,14 +54,14 @@ trait ModelGenerators {
       Gen.oneOf(DeclarationType.values)
     }
 
-  lazy val arbitraryNonTDeclarationType: Arbitrary[DeclarationType] =
+  lazy val arbitraryNonTDeclarationType: Arbitrary[String] =
     Arbitrary {
-      Gen.oneOf(DeclarationType.values.filterNot(_ == DeclarationType.T))
+      Gen.oneOf("T1", "T2", "T2F", "TIR")
     }
 
-  lazy val arbitraryNonTIRDeclarationType: Arbitrary[DeclarationType] =
+  lazy val arbitraryNonTIRDeclarationType: Arbitrary[String] =
     Arbitrary {
-      Gen.oneOf(DeclarationType.values.filterNot(_ == DeclarationType.TIR))
+      Gen.oneOf("T", "T1", "T2", "T2F")
     }
 
   implicit lazy val arbitraryTransportEquipment: Arbitrary[TransportEquipment] =
