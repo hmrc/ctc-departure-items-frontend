@@ -33,6 +33,8 @@ class AddConsigneeEoriNumberYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithBackLink()
 
+  behave like pageWithSectionCaption(s"Item ${itemIndex.display} - Consignee")
+
   behave like pageWithHeading()
 
   behave like pageWithRadioItems()

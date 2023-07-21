@@ -477,7 +477,10 @@ item.transportMethodOfPayment.caption = Item {0} - Transport charges
 item.transportMethodOfPayment.checkYourAnswersLabel = Which method of payment do you want to use for transport charges?
 item.transportMethodOfPayment.error.required = Select which method of payment you want to use for transport charges
 
-item.consignee.addConsigneeEoriNumberYesNo.title = AddConsigneeEoriNumberYesNo
-item.consignee.addConsigneeEoriNumberYesNo.heading = AddConsigneeEoriNumberYesNo
-item.consignee.addConsigneeEoriNumberYesNo.checkYourAnswersLabel = AddConsigneeEoriNumberYesNo
-item.consignee.addConsigneeEoriNumberYesNo.error.required = Select yes if AddConsigneeEoriNumberYesNo
+item.consignee.caption = Item {0} - Consignee
+
+item.consignee.addConsigneeEoriNumberYesNo.title = Do you know the consignee’s EORI number or Trader Identification Number (TIN) for this item?
+item.consignee.addConsigneeEoriNumberYesNo.heading = Do you know the consignee’s EORI number or Trader Identification Number (TIN) for this item?
+item.consignee.addConsigneeEoriNumberYesNo.checkYourAnswersLabel = Do you know the consignee’s EORI number or Trader Identification Number (TIN) for this item?
+item.consignee.addConsigneeEoriNumberYesNo.error.required = Select yes if you know the consignee’s EORI number or Trader Identification Number (TIN) for this item
+

@@ -42,7 +42,8 @@
         @inputYesNo(
             field = form("value"),
             yesNoType = OrdinaryYesNo(
-                heading = messages("item.consignee.addConsigneeEoriNumberYesNo.heading")
+                heading = messages("item.consignee.addConsigneeEoriNumberYesNo.heading"),
+                caption = Some(messages("item.consignee.caption", itemIndex.display))
             )
         )
 
