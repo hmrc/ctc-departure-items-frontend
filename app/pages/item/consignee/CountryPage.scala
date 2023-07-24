@@ -17,18 +17,19 @@
 package pages.item.consignee
 
 import controllers.item.consignee.routes
+import models.reference.Country
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.consigneeSection.ConsigneeSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class NamePage(itemIndex: Index) extends QuestionPage[String] {
+case class CountryPage(itemIndex: Index) extends QuestionPage[Country] {
 
   override def path: JsPath = ConsigneeSection(itemIndex).path \ toString
 
-  override def toString: String = "name"
+  override def toString: String = "country"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.NameController.onPageLoad(userAnswers.lrn, mode, itemIndex))
+    Some(routes.CountryController.onPageLoad(userAnswers.lrn, mode, itemIndex))
 }

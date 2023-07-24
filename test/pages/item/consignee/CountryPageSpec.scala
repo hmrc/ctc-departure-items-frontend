@@ -16,19 +16,17 @@
 
 package pages.item.consignee
 
-import controllers.item.consignee.routes
-import models.{Index, Mode, UserAnswers}
-import pages.QuestionPage
-import pages.sections.consigneeSection.ConsigneeSection
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import models.reference.Country
+import pages.behaviours.PageBehaviours
 
-case class NamePage(itemIndex: Index) extends QuestionPage[String] {
+class CountryPageSpec extends PageBehaviours {
 
-  override def path: JsPath = ConsigneeSection(itemIndex).path \ toString
+  "CountryPage" - {
 
-  override def toString: String = "name"
+    beRetrievable[Country](CountryPage(itemIndex))
 
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.NameController.onPageLoad(userAnswers.lrn, mode, itemIndex))
+    beSettable[Country](CountryPage(itemIndex))
+
+    beRemovable[Country](CountryPage(itemIndex))
+  }
 }
