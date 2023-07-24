@@ -484,3 +484,8 @@ item.consignee.addConsigneeEoriNumberYesNo.heading = Do you know the consignee�
 item.consignee.addConsigneeEoriNumberYesNo.checkYourAnswersLabel = Do you know the consignee’s EORI number or Trader Identification Number (TIN) for this item?
 item.consignee.addConsigneeEoriNumberYesNo.error.required = Select yes if you know the consignee’s EORI number or Trader Identification Number (TIN) for this item
 
+item.consignee.identificationNumber.title = IdentificationNumber
+item.consignee.identificationNumber.heading = IdentificationNumber
+item.consignee.identificationNumber.checkYourAnswersLabel = IdentificationNumber
+item.consignee.identificationNumber.error.required = Enter IdentificationNumber
+item.consignee.identificationNumber.error.length = IdentificationNumber must be 100 characters or less

@@ -1,5 +1,10 @@
 
-GET        /:itemIndex/consignee/add-eori-tin/:lrn                        controllers.item.consignee.AddConsigneeEoriNumberYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
-POST       /:itemIndex/consignee/add-eori-tin/:lrn                        controllers.item.consignee.AddConsigneeEoriNumberYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
-GET        /:itemIndex/consignee/change-add-eori-tin/:lrn                 controllers.item.consignee.AddConsigneeEoriNumberYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
-POST       /:itemIndex/consignee/change-add-eori-tin/:lrn                 controllers.item.consignee.AddConsigneeEoriNumberYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+GET        /:itemIndex/consignee/add-eori-tin/:lrn                                  controllers.item.consignee.AddConsigneeEoriNumberYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+POST       /:itemIndex/consignee/add-eori-tin/:lrn                                  controllers.item.consignee.AddConsigneeEoriNumberYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+GET        /:itemIndex/consignee/change-add-eori-tin/:lrn                           controllers.item.consignee.AddConsigneeEoriNumberYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+POST       /:itemIndex/consignee/change-add-eori-tin/:lrn                           controllers.item.consignee.AddConsigneeEoriNumberYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+
+GET        /:itemIndex/item/consignee/identificationnumber/:lrn                     controllers.item.consignee.IdentificationNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+POST       /:itemIndex/item/consignee/identificationnumber/:lrn                     controllers.item.consignee.IdentificationNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+GET        /:itemIndex/item/consignee/change-identificationnumber/:lrn              controllers.item.consignee.IdentificationNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+POST       /:itemIndex/item/consignee/change-identificationnumber/:lrn              controllers.item.consignee.IdentificationNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
