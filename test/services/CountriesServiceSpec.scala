@@ -33,10 +33,11 @@ class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach with Generat
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
   private val service                                      = new CountriesService(mockRefDataConnector)
 
-  private val country1: Country = Country(CountryCode("GB"), "United Kingdom")
-  private val country2: Country = Country(CountryCode("FR"), "France")
-  private val country3: Country = Country(CountryCode("ES"), "Spain")
-  private val countries         = Seq(country1, country2, country3)
+  private val country1: Country               = Country(CountryCode("GB"), "United Kingdom")
+  private val country2: Country               = Country(CountryCode("FR"), "France")
+  private val country3: Country               = Country(CountryCode("ES"), "Spain")
+  private val countries                       = Seq(country1, country2, country3)
+  private val countryCodes: Seq[CountryCode]  = countries.map(_.code)
 
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)
@@ -55,6 +56,41 @@ class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach with Generat
           SelectableList(Seq(country2, country3, country1))
 
         verify(mockRefDataConnector).getCountries()(any(), any())
+      }
+    }
+
+    "getCountriesWithoutZip" - {
+      "must return a list of country codes" in {
+
+        when(mockRefDataConnector.getCountriesWithoutZip()(any(), any()))
+          .thenReturn(Future.successful(countryCodes))
+
+        service.getCountriesWithoutZip().futureValue mustBe countryCodes
+
+        verify(mockRefDataConnector).getCountriesWithoutZip()(any(), any())
+      }
+    }
+
+    "doesCountryRequireZip" - {
+
+      "must return true when country is in list" in {
+
+        when(mockRefDataConnector.getCountriesWithoutZip()(any(), any()))
+          .thenReturn(Future.successful(countryCodes))
+
+        service.doesCountryRequireZip(countries.head).futureValue mustBe true
+
+        verify(mockRefDataConnector).getCountriesWithoutZip()(any(), any())
+      }
+
+      "must return false when country is not in list" in {
+
+        when(mockRefDataConnector.getCountriesWithoutZip()(any(), any()))
+          .thenReturn(Future.successful(countryCodes))
+
+        service.doesCountryRequireZip(Country(CountryCode("ZZ"), "invalid")).futureValue mustBe true
+
+        verify(mockRefDataConnector).getCountriesWithoutZip()(any(), any())
       }
     }
   }

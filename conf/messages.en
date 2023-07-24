@@ -499,3 +499,16 @@ item.consignee.name.hint = Enter the full name of the individual or organisation
 item.consignee.name.error.required = Enter the full name of the individual or organisation.
 item.consignee.name.error.invalid = The consignee’s name must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
 item.consignee.name.error.length = The consignee’s name must be 35 characters or less
+
+item.consignee.address.title = Address
+item.consignee.address.heading = Address
+item.consignee.address.addressLine1 = Address line 1
+item.consignee.address.addressLine2 = Address line 2
+item.consignee.address.postalCode = Postal code
+item.consignee.address.country = Country
+item.consignee.address.checkYourAnswersLabel = Address
+item.consignee.address.error.postcode.invalid = The postcode of {0}’s address must only include letters a to z, numbers 0 to 9 and spaces
+item.consignee.address.error.postcode.invalidFormat = Enter the postcode of {0}’s address in the right format, like AB1 1AB
+item.consignee.address.error.invalid = The {0} of {1}’s address must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
+item.consignee.address.error.required = Enter the {0} of {1}’s address
+item.consignee.address.error.length = The {0} of {1}’s address must be 35 characters or less

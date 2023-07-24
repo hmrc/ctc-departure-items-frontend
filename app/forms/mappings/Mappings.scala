@@ -27,7 +27,7 @@ import java.time.LocalDate
 
 trait Mappings extends Formatters with Constraints {
 
-  protected def text(errorKey: String = "error.required", args: Seq[String] = Seq.empty): FieldMapping[String] =
+  protected def text(errorKey: String = "error.required", args: Seq[Any] = Seq.empty): FieldMapping[String] =
     of(stringFormatter(errorKey, args))
 
   protected def textWithSpacesRemoved(errorKey: String = "error.required"): FieldMapping[String] =

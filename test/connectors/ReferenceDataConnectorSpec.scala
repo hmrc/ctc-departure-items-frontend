@@ -197,6 +197,26 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       }
     }
 
+    "getCountriesWithoutZip" - {
+      "must return Seq of Country when successful" in {
+        server.stubFor(
+          get(urlEqualTo(s"/$baseUrl/lists/country-without-zip"))
+            .willReturn(okJson(countriesResponseJson))
+        )
+
+        val expectedResult: Seq[CountryCode] = Seq(
+          CountryCode("GB"),
+          CountryCode("AD")
+        )
+
+        connector.getCountriesWithoutZip.futureValue mustEqual expectedResult
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(s"/$baseUrl/lists/country-without-zip", connector.getCountriesWithoutZip)
+      }
+    }
+
     "getPackageTypes" - {
 
       "must return list of package types when successful" in {
