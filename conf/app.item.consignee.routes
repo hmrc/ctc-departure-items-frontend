@@ -8,3 +8,8 @@ GET        /:itemIndex/consignee/eori-tin/:lrn              controllers.item.con
 POST       /:itemIndex/consignee/eori-tin/:lrn              controllers.item.consignee.IdentificationNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
 GET        /:itemIndex/consignee/change-eori-tin/:lrn       controllers.item.consignee.IdentificationNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
 POST       /:itemIndex/consignee/change-eori-tin/:lrn       controllers.item.consignee.IdentificationNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+
+GET        /:itemIndex/consignee/name/:lrn                  controllers.item.consignee.NameController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+POST       /:itemIndex/consignee/name/:lrn                  controllers.item.consignee.NameController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+GET        /:itemIndex/consignee/change-name/:lrn           controllers.item.consignee.NameController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+POST       /:itemIndex/consignee/change-name/:lrn           controllers.item.consignee.NameController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)

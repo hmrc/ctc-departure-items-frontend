@@ -491,3 +491,9 @@ item.consignee.identificationNumber.hint = This can be up to 17 characters long 
 item.consignee.identificationNumber.error.required = Enter the consignee’s EORI number or Trader Identification Number (TIN)
 item.consignee.identificationNumber.error.invalidCharacters = The consignee’s EORI number or Trader Identification Number (TIN) must only include letters a to z and numbers 0 to 9
 item.consignee.identificationNumber.error.length = The consignee’s EORI number or Trader Identification Number (TIN) must be 17 characters or less
+
+item.consignee.name.title = name
+item.consignee.name.heading = name
+item.consignee.name.checkYourAnswersLabel = name
+item.consignee.name.error.required = Enter name
+item.consignee.name.error.length = name must be 100 characters or less
