@@ -19,7 +19,6 @@ package pages.item.consignee
 import controllers.item.consignee.routes
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.PreTaskListSection
 import pages.sections.consigneeSection.ConsigneeSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
