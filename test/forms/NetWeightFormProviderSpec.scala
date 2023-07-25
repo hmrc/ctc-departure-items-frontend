@@ -16,11 +16,12 @@
 
 package forms
 
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.behaviours.BigDecimalFieldBehaviours
 import org.scalacheck.Gen
 import play.api.data.FormError
 
-class NetWeightFormProviderSpec extends BigDecimalFieldBehaviours {
+class NetWeightFormProviderSpec extends BigDecimalFieldBehaviours with SpecBase with AppWithDefaultMockFixtures {
 
   private val prefix      = Gen.alphaNumStr.sample.value
   private val grossWeight = BigDecimal("5000")
@@ -29,48 +30,98 @@ class NetWeightFormProviderSpec extends BigDecimalFieldBehaviours {
 
   val generatedBigDecimal: Gen[BigDecimal] = Gen.choose(BigDecimal(1), maxValue)
 
-  val form = new NetWeightFormProvider()(prefix, grossWeight)
+  "TransitionAccessCodeFormProvider" - {
 
-  ".value" - {
+    val app = transitionApplicationBuilder().build()
+    ".value" - {
+      val form = app.injector.instanceOf[NetWeightFormProvider].apply(prefix, grossWeight)
 
-    val fieldName = "value"
+      val fieldName = "value"
 
-    behave like fieldThatBindsValidData(
-      form,
-      fieldName,
-      generatedBigDecimal.toString
-    )
+      behave like fieldThatBindsValidData(
+        form,
+        fieldName,
+        generatedBigDecimal.toString
+      )
 
-    behave like bigDecimalField(
-      form,
-      fieldName,
-      invalidCharactersError = FormError(fieldName, s"$prefix.error.invalidCharacters"),
-      invalidFormatError = FormError(fieldName, s"$prefix.error.invalidFormat"),
-      invalidValueError = FormError(fieldName, s"$prefix.error.invalidValue")
-    )
+      behave like bigDecimalField(
+        form,
+        fieldName,
+        invalidCharactersError = FormError(fieldName, s"$prefix.error.invalidCharacters"),
+        invalidFormatError = FormError(fieldName, s"$prefix.error.invalidFormat"),
+        invalidValueError = FormError(fieldName, s"$prefix.error.invalidValue")
+      )
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
+      behave like mandatoryField(
+        form,
+        fieldName,
+        requiredError = FormError(fieldName, requiredKey)
+      )
 
-    "must not bind a value greater than the gross weight" in {
-      val value  = grossWeight + 1
-      val result = form.bind(Map(fieldName -> value.toString)).apply(fieldName)
-      result.errors must contain only FormError(fieldName, maxErrorKey, Seq(grossWeight))
+      "must bind a value greater than the gross weight" in {
+        val value  = grossWeight + 1
+        val result = form.bind(Map(fieldName -> value.toString)).apply(fieldName)
+        result.value.value mustBe value.toString
+      }
+
+      "must bind a value equal to the gross weight" in {
+        val value  = grossWeight
+        val result = form.bind(Map(fieldName -> value.toString)).apply(fieldName)
+        result.value.value mustBe value.toString
+      }
+
+      "must bind a value less than the gross weight" in {
+        val value  = grossWeight - 1
+        val result = form.bind(Map(fieldName -> value.toString)).apply(fieldName)
+        result.value.value mustBe value.toString
+      }
     }
+  }
+  "PostTransitionAccessCodeFormProvider" - {
 
-    "must bind a value equal to the gross weight" in {
-      val value  = grossWeight
-      val result = form.bind(Map(fieldName -> value.toString)).apply(fieldName)
-      result.value.value mustBe value.toString
-    }
+    val app = postTransitionApplicationBuilder().build()
+    ".value" - {
+      val form = app.injector.instanceOf[NetWeightFormProvider].apply(prefix, grossWeight)
 
-    "must bind a value less than the gross weight" in {
-      val value  = grossWeight - 1
-      val result = form.bind(Map(fieldName -> value.toString)).apply(fieldName)
-      result.value.value mustBe value.toString
+      val fieldName = "value"
+
+      behave like fieldThatBindsValidData(
+        form,
+        fieldName,
+        generatedBigDecimal.toString
+      )
+
+      behave like bigDecimalField(
+        form,
+        fieldName,
+        invalidCharactersError = FormError(fieldName, s"$prefix.error.invalidCharacters"),
+        invalidFormatError = FormError(fieldName, s"$prefix.error.invalidFormat"),
+        invalidValueError = FormError(fieldName, s"$prefix.error.invalidValue")
+      )
+
+      behave like mandatoryField(
+        form,
+        fieldName,
+        requiredError = FormError(fieldName, requiredKey)
+      )
+
+      "must not bind a value greater than the gross weight" in {
+        val value  = grossWeight + 1
+        val result = form.bind(Map(fieldName -> value.toString)).apply(fieldName)
+        result.errors must contain only FormError(fieldName, maxErrorKey, Seq(grossWeight))
+      }
+
+      "must bind a value equal to the gross weight" in {
+        val value  = grossWeight
+        val result = form.bind(Map(fieldName -> value.toString)).apply(fieldName)
+        result.value.value mustBe value.toString
+      }
+
+      "must bind a value less than the gross weight" in {
+        val value  = grossWeight - 1
+        val result = form.bind(Map(fieldName -> value.toString)).apply(fieldName)
+        result.value.value mustBe value.toString
+      }
     }
   }
 }
