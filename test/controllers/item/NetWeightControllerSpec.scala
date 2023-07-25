@@ -33,7 +33,7 @@ import scala.concurrent.Future
 
 class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val formProvider        = new NetWeightFormProvider()
+  private val formProvider        = app.injector.instanceOf[NetWeightFormProvider]
   private val grossWeight         = BigDecimal(2)
   private val form                = formProvider("item.netWeight", grossWeight)
   private val mode                = NormalMode

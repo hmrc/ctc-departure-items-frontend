@@ -16,7 +16,7 @@
 
 package controllers.item.documents.index
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import controllers.actions._
 import controllers.item.documents.routes
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
@@ -44,7 +44,7 @@ class RemoveDocumentController @Inject() (
   view: RemoveDocumentView,
   service: DocumentsService,
   config: FrontendAppConfig
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
