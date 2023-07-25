@@ -16,6 +16,7 @@
 
 package base
 
+import config.{PostTransitionModule, TransitionModule}
 import controllers.actions._
 import models.{Index, Mode, UserAnswers}
 import navigation._
@@ -91,6 +92,18 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
     (mode: Mode, itemIndex: Index, additionalInformationIndex: Index) =>
       new FakeAdditionalInformationNavigator(onwardRoute, mode, itemIndex, additionalInformationIndex)
 
+  private def defaultApplicationBuilder(): GuiceApplicationBuilder =
+    new GuiceApplicationBuilder()
+      .overrides(
+        bind[DataRequiredAction].to[DataRequiredActionImpl],
+        bind[IdentifierAction].to[FakeIdentifierAction],
+        bind[LockActionProvider].toInstance(mockLockActionProvider),
+        bind[SessionRepository].toInstance(mockSessionRepository),
+        bind[DataRetrievalActionProvider].toInstance(mockDataRetrievalActionProvider),
+        bind[DependentTasksAction].to[FakeDependentTasksAction],
+        bind[LockService].toInstance(mockLockService)
+      )
+
   def guiceApplicationBuilder(): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .overrides(
@@ -102,4 +115,14 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[DependentTasksAction].to[FakeDependentTasksAction],
         bind[LockService].toInstance(mockLockService)
       )
+
+  protected def transitionApplicationBuilder(): GuiceApplicationBuilder =
+    defaultApplicationBuilder()
+      .disable[PostTransitionModule]
+      .bindings(new TransitionModule)
+
+  protected def postTransitionApplicationBuilder(): GuiceApplicationBuilder =
+    defaultApplicationBuilder()
+      .disable[TransitionModule]
+      .bindings(new PostTransitionModule)
 }

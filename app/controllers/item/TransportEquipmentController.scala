@@ -16,6 +16,7 @@
 
 package controllers.item
 
+import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.SelectableFormProvider
@@ -45,7 +46,7 @@ class TransportEquipmentController @Inject() (
   service: TransportEquipmentService,
   val controllerComponents: MessagesControllerComponents,
   view: TransportEquipmentView
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport
     with Logging {

@@ -16,7 +16,7 @@
 
 package controllers.item.documents.index
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.DocumentFormProvider
@@ -44,7 +44,7 @@ class DocumentController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: DocumentView,
   config: FrontendAppConfig
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport
     with Logging {

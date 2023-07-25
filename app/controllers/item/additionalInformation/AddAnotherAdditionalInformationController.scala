@@ -16,7 +16,7 @@
 
 package controllers.item.additionalInformation
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import controllers.actions._
 import forms.AddAnotherFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
@@ -41,7 +41,7 @@ class AddAnotherAdditionalInformationController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherAdditionalInformationView,
   viewModelProvider: AddAnotherAdditionalInformationViewModelProvider
-)(implicit config: FrontendAppConfig)
+)(implicit config: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 

@@ -18,6 +18,7 @@ package models.journeyDomain.item
 
 import cats.implicits._
 import config.Constants.GB
+import config.PhaseConfig
 import models.DeclarationType._
 import models.DocumentType.Previous
 import models.journeyDomain.item.additionalInformation.AdditionalInformationListDomain
@@ -69,7 +70,7 @@ case class ItemDomain(
 
 object ItemDomain {
 
-  implicit def userAnswersReader(itemIndex: Index): UserAnswersReader[ItemDomain] =
+  implicit def userAnswersReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[ItemDomain] =
     (
       DescriptionPage(itemIndex).reader,
       transportEquipmentReader(itemIndex),
@@ -158,7 +159,7 @@ object ItemDomain {
     AddDangerousGoodsYesNoPage(itemIndex)
       .filterOptionalDependent(identity)(DangerousGoodsListDomain.userAnswersReader(itemIndex))
 
-  def netWeightReader(itemIndex: Index): UserAnswersReader[Option[BigDecimal]] =
+  def netWeightReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[Option[BigDecimal]] =
     ApprovedOperatorPage.optionalReader.flatMap {
       case Some(true) =>
         none[BigDecimal].pure[UserAnswersReader]

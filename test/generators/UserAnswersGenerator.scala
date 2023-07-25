@@ -16,6 +16,7 @@
 
 package generators
 
+import config.PhaseConfig
 import models.journeyDomain.item.ItemDomain
 import models.journeyDomain.item.additionalInformation.AdditionalInformationDomain
 import models.journeyDomain.item.additionalReferences.AdditionalReferenceDomain
@@ -27,11 +28,12 @@ import models.journeyDomain.{ItemsDomain, ReaderError, UserAnswersReader}
 import models.{EoriNumber, Index, LocalReferenceNumber, RichJsObject, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
+import config.PhaseConfig
 
 trait UserAnswersGenerator extends UserAnswersEntryGenerators {
   self: Generators =>
 
-  implicit lazy val arbitraryUserAnswers: Arbitrary[UserAnswers] =
+  implicit def arbitraryUserAnswers(implicit phaseConfig: PhaseConfig): Arbitrary[UserAnswers] =
     Arbitrary {
       for {
         lrn        <- arbitrary[LocalReferenceNumber]
@@ -62,10 +64,10 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators {
     rec(initialUserAnswers)
   }
 
-  def arbitraryItemsAnswers(userAnswers: UserAnswers): Gen[UserAnswers] =
+  def arbitraryItemsAnswers(userAnswers: UserAnswers)(implicit phaseConfig: PhaseConfig): Gen[UserAnswers] =
     buildUserAnswers[ItemsDomain](userAnswers)
 
-  def arbitraryItemAnswers(userAnswers: UserAnswers, index: Index): Gen[UserAnswers] =
+  def arbitraryItemAnswers(userAnswers: UserAnswers, index: Index)(implicit phaseConfig: PhaseConfig): Gen[UserAnswers] =
     buildUserAnswers[ItemDomain](userAnswers)(ItemDomain.userAnswersReader(index))
 
   def arbitraryDangerousGoodsAnswers(userAnswers: UserAnswers, itemIndex: Index, dangerousGoodsIndex: Index): Gen[UserAnswers] =

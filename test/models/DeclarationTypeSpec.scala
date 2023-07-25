@@ -16,6 +16,7 @@
 
 package models
 
+import base.SpecBase
 import generators.Generators
 import models.DeclarationType._
 import org.scalacheck.Arbitrary.arbitrary
@@ -26,7 +27,7 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{JsError, JsString, Json}
 
-class DeclarationTypeSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues with Generators {
+class DeclarationTypeSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues with Generators with SpecBase {
 
   "DeclarationType" - {
 
