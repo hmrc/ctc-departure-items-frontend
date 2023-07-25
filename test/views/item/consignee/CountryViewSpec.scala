@@ -20,17 +20,19 @@ import forms.SelectableFormProvider
 import views.behaviours.InputSelectViewBehaviours
 import models.{NormalMode, SelectableList}
 import models.reference.Country
-import org.scalacheck.Arbitrary
+import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.html.item.consignee.CountryView
 
 class CountryViewSpec extends InputSelectViewBehaviours[Country] {
 
+  private val name = Gen.alphaNumStr.sample.value
+
   override def form: Form[Country] = new SelectableFormProvider()(prefix, SelectableList(values))
 
   override def applyView(form: Form[Country]): HtmlFormat.Appendable =
-    injector.instanceOf[CountryView].apply(form, lrn, values, NormalMode, itemIndex)(fakeRequest, messages)
+    injector.instanceOf[CountryView].apply(form, lrn, values, NormalMode, itemIndex, name)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[Country] = arbitraryCountry
 
@@ -40,11 +42,11 @@ class CountryViewSpec extends InputSelectViewBehaviours[Country] {
 
   behave like pageWithBackLink()
 
-  behave like pageWithHeading()
+  behave like pageWithHeading(name)
 
   behave like pageWithSelect()
 
-  behave like pageWithHint("Country hint")
+  behave like pageWithHint("Enter the country, like Italy or Spain.")
 
   behave like pageWithSubmitButton("Save and continue")
 }

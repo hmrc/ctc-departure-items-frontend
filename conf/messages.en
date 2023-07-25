@@ -500,11 +500,10 @@ item.consignee.name.error.required = Enter the full name of the individual or or
 item.consignee.name.error.invalid = The consignee’s name must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
 item.consignee.name.error.length = The consignee’s name must be 35 characters or less
 
-item.consignee.country.title = Country
-item.consignee.country.heading = Country
-item.consignee.country.hint = Country hint
-item.consignee.country.label = Country label
+item.consignee.country.title = Which country is the consignee based in?
+item.consignee.country.heading = Which country is {0} based in?
+item.consignee.country.hint = Enter the country, like Italy or Spain.
 item.consignee.country.placeholder = Select a country
-item.consignee.country.change.hidden = Country
-item.consignee.country.checkYourAnswersLabel = Country
-item.consignee.country.error.required = Select the country
+item.consignee.country.change.hidden = consignee’s country
+item.consignee.country.checkYourAnswersLabel = Consignee’s country
+item.consignee.country.error.required = Enter which country {0} is based in

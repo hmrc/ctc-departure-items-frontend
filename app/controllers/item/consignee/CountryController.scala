@@ -21,7 +21,7 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.SelectableFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
-import pages.item.consignee.CountryPage
+import pages.item.consignee.{CountryPage, NamePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -40,6 +40,7 @@ class CountryController @Inject() (
   formProvider: SelectableFormProvider,
   service: CountriesService,
   val controllerComponents: MessagesControllerComponents,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   view: CountryView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
@@ -47,34 +48,42 @@ class CountryController @Inject() (
 
   private val prefix: String = "item.consignee.country"
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
-    implicit request =>
-      service.getCountries.map {
-        countryList =>
-          val form = formProvider(prefix, countryList)
-          val preparedForm = request.userAnswers.get(CountryPage(itemIndex)) match {
-            case None        => form
-            case Some(value) => form.fill(value)
-          }
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions
+    .requireData(lrn)
+    .andThen(getMandatoryPage(NamePage(itemIndex)))
+    .async {
+      implicit request =>
+        val name = request.arg
+        service.getCountries.map {
+          countryList =>
+            val form = formProvider(prefix, countryList, name)
+            val preparedForm = request.userAnswers.get(CountryPage(itemIndex)) match {
+              case None        => form
+              case Some(value) => form.fill(value)
+            }
 
-          Ok(view(preparedForm, lrn, countryList.values, mode, itemIndex))
-      }
-  }
+            Ok(view(preparedForm, lrn, countryList.values, mode, itemIndex, name))
+        }
+    }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
-    implicit request =>
-      service.getCountries.flatMap {
-        countryList =>
-          val form = formProvider(prefix, countryList)
-          form
-            .bindFromRequest()
-            .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, countryList.values, mode, itemIndex))),
-              value => {
-                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
-                CountryPage(itemIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
-              }
-            )
-      }
-  }
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions
+    .requireData(lrn)
+    .andThen(getMandatoryPage(NamePage(itemIndex)))
+    .async {
+      implicit request =>
+        val name = request.arg
+        service.getCountries.flatMap {
+          countryList =>
+            val form = formProvider(prefix, countryList, name)
+            form
+              .bindFromRequest()
+              .fold(
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, countryList.values, mode, itemIndex, name))),
+                value => {
+                  implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
+                  CountryPage(itemIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+                }
+              )
+        }
+    }
 }

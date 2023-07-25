@@ -31,7 +31,7 @@
     button: Button
 )
 
-@(form: Form[Country], lrn: LocalReferenceNumber, countries: Seq[Country], mode: Mode, itemIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[Country], lrn: LocalReferenceNumber, countries: Seq[Country], mode: Mode, itemIndex: Index, name: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("item.consignee.country.title"),
@@ -46,7 +46,7 @@
         @inputSelect(
             field = form("value"),
             selectType = OrdinarySelect(
-                heading = messages("item.consignee.country.heading")
+                heading = messages("item.consignee.country.heading", name)
             ),
             hint = Some(messages("item.consignee.country.hint")),
             selectItems = countries.toSelectItems(form.value),
