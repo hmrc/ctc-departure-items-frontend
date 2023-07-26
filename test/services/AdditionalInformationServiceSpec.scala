@@ -31,7 +31,7 @@ import scala.concurrent.Future
 class AdditionalInformationServiceSpec extends SpecBase with BeforeAndAfterEach with Generators {
 
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
-  private val service                                      = new AdditionalInformationService(mockRefDataConnector)
+  private val service                                      = new AdditionalInformationService()
 
   private val additionalInformation1: AdditionalInformation = AdditionalInformation(
     code = "20100",

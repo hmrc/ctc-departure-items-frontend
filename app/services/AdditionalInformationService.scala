@@ -16,8 +16,9 @@
 
 package services
 
+import config.PhaseConfig
 import connectors.ReferenceDataConnector
-import models.SelectableList
+import models.{Phase, SelectableList}
 import models.reference.AdditionalInformation
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -26,13 +27,24 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AdditionalInformationService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
 
-  def getAdditionalInformationTypes()(implicit hc: HeaderCarrier): Future[SelectableList[AdditionalInformation]] =
+  private def getPostTransitionAdditionalInformationTypes()(implicit hc: HeaderCarrier): Future[SelectableList[AdditionalInformation]] =
     referenceDataConnector
       .getAdditionalInformationTypes()
       .map {
         _.filter(_.code != "30600")
       }
       .map(sort)
+
+  private def getTransitionAdditionalInformationTypes()(implicit hc: HeaderCarrier): Future[SelectableList[AdditionalInformation]] =
+    referenceDataConnector
+      .getAdditionalInformationTypes()
+      .map(sort)
+
+  def getAdditionalInformationTypes(implicit phaseConfig: PhaseConfig, headerCarrier: HeaderCarrier): Future[SelectableList[AdditionalInformation]] =
+    phaseConfig.phase match {
+      case Phase.Transition     => getTransitionAdditionalInformationTypes
+      case Phase.PostTransition => getPostTransitionAdditionalInformationTypes
+    }
 
   private def sort(additionalInformationTypes: Seq[AdditionalInformation]): SelectableList[AdditionalInformation] =
     SelectableList(additionalInformationTypes.sortBy(_.description.toLowerCase))
