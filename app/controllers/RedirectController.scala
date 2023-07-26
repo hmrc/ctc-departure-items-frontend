@@ -16,7 +16,6 @@
 
 package controllers
 
-import config.PhaseConfig
 import controllers.actions.Actions
 import models.{LocalReferenceNumber, NormalMode}
 import navigation.ItemsNavigatorProvider

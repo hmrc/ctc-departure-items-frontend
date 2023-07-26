@@ -37,8 +37,10 @@ trait PackageNavigatorProvider {
   def apply(mode: Mode, itemIndex: Index, packageIndex: Index): UserAnswersNavigator
 }
 
-class PackageNavigator(override val mode: Mode, itemIndex: Index, packageIndex: Index)(implicit override val config: FrontendAppConfig)
-    extends UserAnswersNavigator {
+class PackageNavigator(override val mode: Mode, itemIndex: Index, packageIndex: Index)(implicit
+  override val config: FrontendAppConfig,
+  phaseConfig: PhaseConfig
+) extends UserAnswersNavigator {
 
   override type T = PackageDomain
 
