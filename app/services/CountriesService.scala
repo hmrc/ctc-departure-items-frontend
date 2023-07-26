@@ -30,6 +30,11 @@ class CountriesService @Inject() (referenceDataConnector: ReferenceDataConnector
     referenceDataConnector.getCountries
       .map(sort)
 
+  def getCountryCodesForAddress()(implicit hc: HeaderCarrier): Future[SelectableList[Country]] =
+    referenceDataConnector
+      .getCountryCodesForAddress()
+      .map(sort)
+
   private def sort(countries: Seq[Country]): SelectableList[Country] =
     SelectableList(countries.sortBy(_.description.toLowerCase))
 }

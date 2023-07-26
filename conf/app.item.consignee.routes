@@ -13,3 +13,8 @@ GET        /:itemIndex/consignee/name/:lrn                  controllers.item.con
 POST       /:itemIndex/consignee/name/:lrn                  controllers.item.consignee.NameController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
 GET        /:itemIndex/consignee/change-name/:lrn           controllers.item.consignee.NameController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
 POST       /:itemIndex/consignee/change-name/:lrn           controllers.item.consignee.NameController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+
+GET        /:itemIndex/consignee/country/:lrn               controllers.item.consignee.CountryController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+POST       /:itemIndex/consignee/country/:lrn               controllers.item.consignee.CountryController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+GET        /:itemIndex/consignee/change-country/:lrn        controllers.item.consignee.CountryController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+POST       /:itemIndex/consignee/change-country/:lrn        controllers.item.consignee.CountryController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
