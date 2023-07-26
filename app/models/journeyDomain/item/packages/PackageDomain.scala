@@ -55,9 +55,8 @@ object PackageDomain {
       val isTransition = phaseConfig.phase == Phase.Transition
 
       (isTransition, isPackingTypeInCL182, isPackingTypeInCL181) match {
-        case (_, true, _)         => NumberOfPackagesPage(itemIndex, packageIndex).reader.map(Some(_))
-        case (true, false, false) => NumberOfPackagesPage(itemIndex, packageIndex).reader.map(Some(_))
-        case _                    => UserAnswersReader(None)
+        case (_, true, _) | (true, false, false) => NumberOfPackagesPage(itemIndex, packageIndex).reader.map(Some(_))
+        case _                                   => UserAnswersReader(None)
       }
     }
 
