@@ -17,8 +17,7 @@
 package services
 
 import connectors.ReferenceDataConnector
-import models.SelectableList
-import models.reference.{AdditionalInformation, TransportChargesMethodOfPayment}
+import models.reference.TransportChargesMethodOfPayment
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject

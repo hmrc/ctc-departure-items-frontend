@@ -19,7 +19,6 @@ package forms
 import config.PhaseConfig
 import forms.mappings.Mappings
 import play.api.data.Form
-import play.api.data.validation.Constraint
 
 import javax.inject.Inject
 
