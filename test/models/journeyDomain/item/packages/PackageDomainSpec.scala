@@ -17,9 +17,12 @@
 package models.journeyDomain.item.packages
 
 import base.SpecBase
+import config.PhaseConfig
 import generators.Generators
+import models.Phase
 import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.reference.PackageType
+import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.item.packages.index._
@@ -27,180 +30,399 @@ import pages.item.packages.index._
 class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   "Package Domain" - {
+    val mockTransitionPhaseConfig = mock[PhaseConfig]
+    when(mockTransitionPhaseConfig.phase).thenReturn(Phase.Transition)
+
+    val mockPostTransitionPhaseConfig = mock[PhaseConfig]
+    when(mockPostTransitionPhaseConfig.phase).thenReturn(Phase.PostTransition)
 
     "can be read from user answers" - {
-      "when package type is Unpacked" in {
-        forAll(arbitrary[PackageType](arbitraryUnpackedPackageType), arbitrary[Int], nonEmptyString) {
-          (packageType, numberOfPackages, shippingMark) =>
-            val userAnswers = emptyUserAnswers
-              .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
-              .setValue(NumberOfPackagesPage(itemIndex, packageIndex), numberOfPackages)
-              .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
-              .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
 
-            val expectedResult = PackageDomain(
-              `type` = packageType,
-              numberOfPackages = Some(numberOfPackages),
-              shippingMark = Some(shippingMark)
-            )(itemIndex, packageIndex)
+      "when in transition" - {
 
-            val result: EitherType[PackageDomain] = UserAnswersReader[PackageDomain](
-              PackageDomain.userAnswersReader(itemIndex, packageIndex)
-            ).run(userAnswers)
+        "when package type is unpacked" in {
 
-            result.value mustBe expectedResult
+          forAll(arbitrary[PackageType](arbitraryUnpackedPackageType), arbitrary[Int], nonEmptyString) {
+            (packageType, numberOfPackages, shippingMark) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+                .setValue(NumberOfPackagesPage(itemIndex, packageIndex), numberOfPackages)
+                .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
+                .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
+
+              val expectedResult = PackageDomain(
+                `type` = packageType,
+                numberOfPackages = Some(numberOfPackages),
+                shippingMark = Some(shippingMark)
+              )(itemIndex, packageIndex)
+
+              val result: EitherType[PackageDomain] = UserAnswersReader[PackageDomain](
+                PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockTransitionPhaseConfig)
+              ).run(userAnswers)
+
+              result.value mustBe expectedResult
+          }
+
+        }
+
+        "when package type is Bulk" in {
+          forAll(arbitrary[PackageType](arbitraryBulkPackageType), arbitrary[Int], nonEmptyString) {
+            (packageType, numberOfPackages, shippingMark) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+                .setValue(NumberOfPackagesPage(itemIndex, packageIndex), numberOfPackages)
+                .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
+                .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
+
+              val expectedResult = PackageDomain(
+                `type` = packageType,
+                numberOfPackages = None,
+                shippingMark = Some(shippingMark)
+              )(itemIndex, packageIndex)
+
+              val result: EitherType[PackageDomain] = UserAnswersReader[PackageDomain](
+                PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockTransitionPhaseConfig)
+              ).run(userAnswers)
+
+              result.value mustBe expectedResult
+          }
+        }
+
+        "when package type is Other" in {
+          forAll(arbitrary[PackageType](arbitraryOtherPackageType), nonEmptyString) {
+            (packageType, shippingMark) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+                .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
+
+              val expectedResult = PackageDomain(
+                `type` = packageType,
+                numberOfPackages = None,
+                shippingMark = Some(shippingMark)
+              )(itemIndex, packageIndex)
+
+              val result: EitherType[PackageDomain] = UserAnswersReader[PackageDomain](
+                PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockTransitionPhaseConfig)
+              ).run(userAnswers)
+
+              result.value mustBe expectedResult
+          }
         }
       }
 
-      "when package type is Bulk" in {
-        forAll(arbitrary[PackageType](arbitraryBulkPackageType), nonEmptyString) {
-          (packageType, shippingMark) =>
-            val userAnswers = emptyUserAnswers
-              .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
-              .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
-              .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
+      "when in post-transition" - {
+        "when package type is Unpacked" in {
+          forAll(arbitrary[PackageType](arbitraryUnpackedPackageType), arbitrary[Int], nonEmptyString) {
+            (packageType, numberOfPackages, shippingMark) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+                .setValue(NumberOfPackagesPage(itemIndex, packageIndex), numberOfPackages)
+                .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
+                .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
 
-            val expectedResult = PackageDomain(
-              `type` = packageType,
-              numberOfPackages = None,
-              shippingMark = Some(shippingMark)
-            )(itemIndex, packageIndex)
+              val expectedResult = PackageDomain(
+                `type` = packageType,
+                numberOfPackages = Some(numberOfPackages),
+                shippingMark = Some(shippingMark)
+              )(itemIndex, packageIndex)
 
-            val result: EitherType[PackageDomain] = UserAnswersReader[PackageDomain](
-              PackageDomain.userAnswersReader(itemIndex, packageIndex)
-            ).run(userAnswers)
+              val result: EitherType[PackageDomain] = UserAnswersReader[PackageDomain](
+                PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockPostTransitionPhaseConfig)
+              ).run(userAnswers)
 
-            result.value mustBe expectedResult
+              result.value mustBe expectedResult
+          }
         }
-      }
 
-      "when package type is Other" in {
-        forAll(arbitrary[PackageType](arbitraryOtherPackageType), nonEmptyString) {
-          (packageType, shippingMark) =>
-            val userAnswers = emptyUserAnswers
-              .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
-              .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
+        "when package type is Bulk" in {
+          forAll(arbitrary[PackageType](arbitraryBulkPackageType), nonEmptyString) {
+            (packageType, shippingMark) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+                .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
+                .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
 
-            val expectedResult = PackageDomain(
-              `type` = packageType,
-              numberOfPackages = None,
-              shippingMark = Some(shippingMark)
-            )(itemIndex, packageIndex)
+              val expectedResult = PackageDomain(
+                `type` = packageType,
+                numberOfPackages = None,
+                shippingMark = Some(shippingMark)
+              )(itemIndex, packageIndex)
 
-            val result: EitherType[PackageDomain] = UserAnswersReader[PackageDomain](
-              PackageDomain.userAnswersReader(itemIndex, packageIndex)
-            ).run(userAnswers)
+              val result: EitherType[PackageDomain] = UserAnswersReader[PackageDomain](
+                PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockPostTransitionPhaseConfig)
+              ).run(userAnswers)
 
-            result.value mustBe expectedResult
+              result.value mustBe expectedResult
+          }
+        }
+
+        "when package type is Other" in {
+          forAll(arbitrary[PackageType](arbitraryOtherPackageType), nonEmptyString) {
+            (packageType, shippingMark) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+                .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
+
+              val expectedResult = PackageDomain(
+                `type` = packageType,
+                numberOfPackages = None,
+                shippingMark = Some(shippingMark)
+              )(itemIndex, packageIndex)
+
+              val result: EitherType[PackageDomain] = UserAnswersReader[PackageDomain](
+                PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockPostTransitionPhaseConfig)
+              ).run(userAnswers)
+
+              result.value mustBe expectedResult
+          }
         }
       }
     }
 
     "cannot be read from user answers" - {
-      "when package type is not answered" in {
-        val result: EitherType[PackageDomain] = UserAnswersReader[PackageDomain](
-          PackageDomain.userAnswersReader(itemIndex, packageIndex)
-        ).run(emptyUserAnswers)
 
-        result.left.value.page mustBe PackageTypePage(itemIndex, packageIndex)
+      "when in transition" - {
+        "when package type is not answered" in {
+          val result: EitherType[PackageDomain] = UserAnswersReader[PackageDomain](
+            PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockTransitionPhaseConfig)
+          ).run(emptyUserAnswers)
+
+          result.left.value.page mustBe PackageTypePage(itemIndex, packageIndex)
+        }
+
+        "when package type is Unpacked" - {
+          "and number of packages is not answered" in {
+            forAll(arbitrary[PackageType](arbitraryUnpackedPackageType)) {
+              packageType =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+
+                val result: EitherType[PackageDomain] = UserAnswersReader[PackageDomain](
+                  PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockTransitionPhaseConfig)
+                ).run(userAnswers)
+
+                result.left.value.page mustBe NumberOfPackagesPage(itemIndex, packageIndex)
+            }
+          }
+
+          "and add shipping mark yes/no is not answered" in {
+            forAll(arbitrary[PackageType](arbitraryUnpackedPackageType), arbitrary[Int]) {
+              (packageType, numberOfPackages) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+                  .setValue(NumberOfPackagesPage(itemIndex, packageIndex), numberOfPackages)
+
+                val result: EitherType[PackageDomain] = UserAnswersReader[PackageDomain](
+                  PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockTransitionPhaseConfig)
+                ).run(userAnswers)
+
+                result.left.value.page mustBe AddShippingMarkYesNoPage(itemIndex, packageIndex)
+            }
+          }
+
+          "and shipping mark is not answered" in {
+            forAll(arbitrary[PackageType](arbitraryUnpackedPackageType), arbitrary[Int]) {
+              (packageType, numberOfPackages) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+                  .setValue(NumberOfPackagesPage(itemIndex, packageIndex), numberOfPackages)
+                  .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
+
+                val result: EitherType[PackageDomain] = UserAnswersReader[PackageDomain](
+                  PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockTransitionPhaseConfig)
+                ).run(userAnswers)
+
+                result.left.value.page mustBe ShippingMarkPage(itemIndex, packageIndex)
+            }
+          }
+        }
+
+        "when package type is Bulk" - {
+
+          "and add shipping mark yes/no is not answered" in {
+            forAll(arbitrary[PackageType](arbitraryBulkPackageType)) {
+              packageType =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+
+                val result: EitherType[PackageDomain] = UserAnswersReader[PackageDomain](
+                  PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockTransitionPhaseConfig)
+                ).run(userAnswers)
+
+                result.left.value.page mustBe AddShippingMarkYesNoPage(itemIndex, packageIndex)
+            }
+          }
+
+          "and shipping mark is not answered" in {
+            forAll(arbitrary[PackageType](arbitraryBulkPackageType)) {
+              packageType =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+                  .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
+
+                val result: EitherType[PackageDomain] = UserAnswersReader[PackageDomain](
+                  PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockTransitionPhaseConfig)
+                ).run(userAnswers)
+
+                result.left.value.page mustBe ShippingMarkPage(itemIndex, packageIndex)
+            }
+          }
+        }
+
+        "when package type is Other" - {
+
+          "and number of packages is not answered" in {
+            forAll(arbitrary[PackageType](arbitraryOtherPackageType)) {
+              packageType =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+
+                val result: EitherType[PackageDomain] = UserAnswersReader[PackageDomain](
+                  PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockTransitionPhaseConfig)
+                ).run(userAnswers)
+
+                result.left.value.page mustBe ShippingMarkPage(itemIndex, packageIndex)
+            }
+          }
+
+          "and add shipping mark is not answered" in {
+            forAll(arbitrary[PackageType](arbitraryOtherPackageType), arbitrary[Int]) {
+              (packageType, numberOfPackages) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+                  .setValue(NumberOfPackagesPage(itemIndex, packageIndex), numberOfPackages)
+
+                val result: EitherType[PackageDomain] = UserAnswersReader[PackageDomain](
+                  PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockTransitionPhaseConfig)
+                ).run(userAnswers)
+
+                result.left.value.page mustBe NumberOfPackagesPage(itemIndex, packageIndex)
+            }
+          }
+
+          "and shipping mark is not answered" in {
+            forAll(arbitrary[PackageType](arbitraryOtherPackageType), arbitrary[Int]) {
+              (packageType, numberOfPackages) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+                  .setValue(NumberOfPackagesPage(itemIndex, packageIndex), numberOfPackages)
+                  .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
+
+                val result: EitherType[PackageDomain] = UserAnswersReader[PackageDomain](
+                  PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockTransitionPhaseConfig)
+                ).run(userAnswers)
+
+                result.left.value.page mustBe AddShippingMarkYesNoPage(itemIndex, packageIndex)
+            }
+          }
+        }
       }
 
-      "when package type is Unpacked" - {
-        "and number of packages is not answered" in {
-          forAll(arbitrary[PackageType](arbitraryUnpackedPackageType)) {
-            packageType =>
-              val userAnswers = emptyUserAnswers
-                .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+      "when in post-transition" - {
+        "when package type is not answered" in {
+          val result: EitherType[PackageDomain] = UserAnswersReader[PackageDomain](
+            PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockPostTransitionPhaseConfig)
+          ).run(emptyUserAnswers)
 
-              val result: EitherType[PackageDomain] = UserAnswersReader[PackageDomain](
-                PackageDomain.userAnswersReader(itemIndex, packageIndex)
-              ).run(userAnswers)
+          result.left.value.page mustBe PackageTypePage(itemIndex, packageIndex)
+        }
 
-              result.left.value.page mustBe NumberOfPackagesPage(itemIndex, packageIndex)
+        "when package type is Unpacked" - {
+          "and number of packages is not answered" in {
+            forAll(arbitrary[PackageType](arbitraryUnpackedPackageType)) {
+              packageType =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+
+                val result: EitherType[PackageDomain] = UserAnswersReader[PackageDomain](
+                  PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockPostTransitionPhaseConfig)
+                ).run(userAnswers)
+
+                result.left.value.page mustBe NumberOfPackagesPage(itemIndex, packageIndex)
+            }
+          }
+
+          "and add shipping mark yes/no is not answered" in {
+            forAll(arbitrary[PackageType](arbitraryUnpackedPackageType), arbitrary[Int]) {
+              (packageType, numberOfPackages) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+                  .setValue(NumberOfPackagesPage(itemIndex, packageIndex), numberOfPackages)
+
+                val result: EitherType[PackageDomain] = UserAnswersReader[PackageDomain](
+                  PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockPostTransitionPhaseConfig)
+                ).run(userAnswers)
+
+                result.left.value.page mustBe AddShippingMarkYesNoPage(itemIndex, packageIndex)
+            }
+          }
+
+          "and shipping mark is not answered" in {
+            forAll(arbitrary[PackageType](arbitraryUnpackedPackageType), arbitrary[Int]) {
+              (packageType, numberOfPackages) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+                  .setValue(NumberOfPackagesPage(itemIndex, packageIndex), numberOfPackages)
+                  .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
+
+                val result: EitherType[PackageDomain] = UserAnswersReader[PackageDomain](
+                  PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockPostTransitionPhaseConfig)
+                ).run(userAnswers)
+
+                result.left.value.page mustBe ShippingMarkPage(itemIndex, packageIndex)
+            }
           }
         }
 
-        "and add shipping mark yes/no is not answered" in {
-          forAll(arbitrary[PackageType](arbitraryUnpackedPackageType), arbitrary[Int]) {
-            (packageType, numberOfPackages) =>
-              val userAnswers = emptyUserAnswers
-                .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
-                .setValue(NumberOfPackagesPage(itemIndex, packageIndex), numberOfPackages)
+        "when package type is Bulk" - {
 
-              val result: EitherType[PackageDomain] = UserAnswersReader[PackageDomain](
-                PackageDomain.userAnswersReader(itemIndex, packageIndex)
-              ).run(userAnswers)
+          "and add shipping mark yes/no is not answered" in {
+            forAll(arbitrary[PackageType](arbitraryBulkPackageType)) {
+              packageType =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
 
-              result.left.value.page mustBe AddShippingMarkYesNoPage(itemIndex, packageIndex)
+                val result: EitherType[PackageDomain] = UserAnswersReader[PackageDomain](
+                  PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockPostTransitionPhaseConfig)
+                ).run(userAnswers)
+
+                result.left.value.page mustBe AddShippingMarkYesNoPage(itemIndex, packageIndex)
+            }
+          }
+
+          "and shipping mark is not answered" in {
+            forAll(arbitrary[PackageType](arbitraryBulkPackageType)) {
+              packageType =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+                  .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
+
+                val result: EitherType[PackageDomain] = UserAnswersReader[PackageDomain](
+                  PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockPostTransitionPhaseConfig)
+                ).run(userAnswers)
+
+                result.left.value.page mustBe ShippingMarkPage(itemIndex, packageIndex)
+            }
           }
         }
 
-        "and shipping mark is not answered" in {
-          forAll(arbitrary[PackageType](arbitraryUnpackedPackageType), arbitrary[Int]) {
-            (packageType, numberOfPackages) =>
-              val userAnswers = emptyUserAnswers
-                .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
-                .setValue(NumberOfPackagesPage(itemIndex, packageIndex), numberOfPackages)
-                .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
+        "when package type is Other" - {
 
-              val result: EitherType[PackageDomain] = UserAnswersReader[PackageDomain](
-                PackageDomain.userAnswersReader(itemIndex, packageIndex)
-              ).run(userAnswers)
+          "and shipping mark is not answered" in {
+            forAll(arbitrary[PackageType](arbitraryOtherPackageType)) {
+              packageType =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
 
-              result.left.value.page mustBe ShippingMarkPage(itemIndex, packageIndex)
-          }
-        }
-      }
+                val result: EitherType[PackageDomain] = UserAnswersReader[PackageDomain](
+                  PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockPostTransitionPhaseConfig)
+                ).run(userAnswers)
 
-      "when package type is Bulk" - {
-
-        "and add shipping mark yes/no is not answered" in {
-          forAll(arbitrary[PackageType](arbitraryBulkPackageType)) {
-            packageType =>
-              val userAnswers = emptyUserAnswers
-                .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
-
-              val result: EitherType[PackageDomain] = UserAnswersReader[PackageDomain](
-                PackageDomain.userAnswersReader(itemIndex, packageIndex)
-              ).run(userAnswers)
-
-              result.left.value.page mustBe AddShippingMarkYesNoPage(itemIndex, packageIndex)
-          }
-        }
-
-        "and shipping mark is not answered" in {
-          forAll(arbitrary[PackageType](arbitraryBulkPackageType)) {
-            packageType =>
-              val userAnswers = emptyUserAnswers
-                .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
-                .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
-
-              val result: EitherType[PackageDomain] = UserAnswersReader[PackageDomain](
-                PackageDomain.userAnswersReader(itemIndex, packageIndex)
-              ).run(userAnswers)
-
-              result.left.value.page mustBe ShippingMarkPage(itemIndex, packageIndex)
-          }
-        }
-      }
-
-      "when package type is Other" - {
-
-        "and shipping mark is not answered" in {
-          forAll(arbitrary[PackageType](arbitraryOtherPackageType)) {
-            packageType =>
-              val userAnswers = emptyUserAnswers
-                .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
-
-              val result: EitherType[PackageDomain] = UserAnswersReader[PackageDomain](
-                PackageDomain.userAnswersReader(itemIndex, packageIndex)
-              ).run(userAnswers)
-
-              result.left.value.page mustBe ShippingMarkPage(itemIndex, packageIndex)
+                result.left.value.page mustBe ShippingMarkPage(itemIndex, packageIndex)
+            }
           }
         }
       }
     }
   }
-
 }
