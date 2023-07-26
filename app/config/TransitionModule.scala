@@ -16,7 +16,7 @@
 
 package config
 
-import forms.{NetWeightFormProvider, TransitionNetWeightFormProvider}
+import forms.NetWeightFormProvider
 
 class TransitionModule extends Module {
 
@@ -24,6 +24,5 @@ class TransitionModule extends Module {
     super.configure()
 
     bind(classOf[PhaseConfig]).to(classOf[TransitionConfig])
-    bind(classOf[NetWeightFormProvider]).to(classOf[TransitionNetWeightFormProvider])
   }
 }

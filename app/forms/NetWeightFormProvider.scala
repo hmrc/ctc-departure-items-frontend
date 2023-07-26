@@ -18,13 +18,24 @@ package forms
 
 import config.PhaseConfig
 import forms.mappings.Mappings
+import models.Phase
 import play.api.data.Form
 
 import javax.inject.Inject
 
 abstract class NetWeightFormProvider(phaseConfig: PhaseConfig) extends Mappings {
 
-  def apply(prefix: String, grossWeight: BigDecimal): Form[BigDecimal] =
+  private def transitionForm(prefix: String): Form[BigDecimal] =
+    Form(
+      "value" -> bigDecimal(
+        s"$prefix.error.required",
+        s"$prefix.error.invalidCharacters",
+        s"$prefix.error.invalidFormat",
+        s"$prefix.error.invalidValue"
+      )
+    )
+
+  private def postTransitionForm(prefix: String, grossWeight: BigDecimal): Form[BigDecimal] =
     Form(
       "value" -> bigDecimal(
         s"$prefix.error.required",
@@ -35,24 +46,10 @@ abstract class NetWeightFormProvider(phaseConfig: PhaseConfig) extends Mappings 
         maximumValue(grossWeight, s"$prefix.error.maximum")
       )
     )
-}
 
-class TransitionNetWeightFormProvider @Inject() (phaseConfig: PhaseConfig) extends NetWeightFormProvider(phaseConfig) {
-
-  override def apply(prefix: String, grossWeight: BigDecimal): Form[BigDecimal] =
-    Form(
-      "value" -> bigDecimal(
-        s"$prefix.error.required",
-        s"$prefix.error.invalidCharacters",
-        s"$prefix.error.invalidFormat",
-        s"$prefix.error.invalidValue"
-      )
-    )
-}
-
-class PostTransitionTransitionNetWeightFormProvider @Inject() (phaseConfig: PhaseConfig) extends NetWeightFormProvider(phaseConfig) {
-
-  override def apply(prefix: String, grossWeight: BigDecimal): Form[BigDecimal] =
-    super.apply(prefix, grossWeight)
-
+  def apply(prefix: String, grossWeight: BigDecimal) =
+    phaseConfig.phase match {
+      case Phase.Transition     => transitionForm(prefix)
+      case Phase.PostTransition => postTransitionForm(prefix, grossWeight)
+    }
 }
