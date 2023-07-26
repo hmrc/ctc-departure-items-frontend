@@ -16,8 +16,6 @@
 
 package config
 
-import forms.NetWeightFormProvider
-
 class TransitionModule extends Module {
 
   override def configure(): Unit = {
