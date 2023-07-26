@@ -46,7 +46,8 @@
         @inputSelect(
             field = form("value"),
             selectType = OrdinarySelect(
-                heading = messages("item.consignee.country.heading", name)
+                heading = messages("item.consignee.country.heading", name),
+                caption = Some(messages("item.consignee.caption", itemIndex.display))
             ),
             hint = Some(messages("item.consignee.country.hint")),
             selectItems = countries.toSelectItems(form.value),

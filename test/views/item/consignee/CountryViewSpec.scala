@@ -42,6 +42,8 @@ class CountryViewSpec extends InputSelectViewBehaviours[Country] {
 
   behave like pageWithBackLink()
 
+  behave like pageWithSectionCaption(s"Item ${itemIndex.display} - Consignee")
+
   behave like pageWithHeading(name)
 
   behave like pageWithSelect()

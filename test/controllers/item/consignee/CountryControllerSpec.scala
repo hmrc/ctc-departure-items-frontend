@@ -36,17 +36,17 @@ import scala.concurrent.Future
 
 class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val country1 = arbitraryCountry.arbitrary.sample.get
-  private val country2 = arbitraryCountry.arbitrary.sample.get
+  private val country1    = arbitraryCountry.arbitrary.sample.get
+  private val country2    = arbitraryCountry.arbitrary.sample.get
   private val countryList = SelectableList(Seq(country1, country2))
-  private val name = Gen.alphaNumStr.sample.value
+  private val name        = Gen.alphaNumStr.sample.value
 
   private val formProvider = new SelectableFormProvider()
-  private val form = formProvider("item.consignee.country", countryList, name)
-  private val mode = NormalMode
+  private val form         = formProvider("item.consignee.country", countryList, name)
+  private val mode         = NormalMode
 
   private val mockCountriesService: CountriesService = mock[CountriesService]
-  private lazy val countryRoute = routes.CountryController.onPageLoad(lrn, mode, itemIndex).url
+  private lazy val countryRoute                      = routes.CountryController.onPageLoad(lrn, mode, itemIndex).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -121,7 +121,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
       when(mockCountriesService.getCountryCodesForAddress()(any())).thenReturn(Future.successful(countryList))
       setExistingUserAnswers(updatedUserAnswers)
 
-      val request = FakeRequest(POST, countryRoute).withFormUrlEncodedBody(("value", "invalid value"))
+      val request   = FakeRequest(POST, countryRoute).withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))
 
       val result = route(app, request).value
@@ -133,7 +133,6 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
       contentAsString(result) mustEqual
         view(boundForm, lrn, countryList.values, mode, itemIndex, name)(request, messages).toString
     }
-
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
 
