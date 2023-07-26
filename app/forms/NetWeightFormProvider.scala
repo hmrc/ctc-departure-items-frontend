@@ -23,7 +23,7 @@ import play.api.data.Form
 
 import javax.inject.Inject
 
-abstract class NetWeightFormProvider(phaseConfig: PhaseConfig) extends Mappings {
+class NetWeightFormProvider @Inject() (phaseConfig: PhaseConfig) extends Mappings {
 
   private def transitionForm(prefix: String): Form[BigDecimal] =
     Form(
@@ -47,7 +47,7 @@ abstract class NetWeightFormProvider(phaseConfig: PhaseConfig) extends Mappings 
       )
     )
 
-  def apply(prefix: String, grossWeight: BigDecimal) =
+  def apply(prefix: String, grossWeight: BigDecimal): Form[BigDecimal] =
     phaseConfig.phase match {
       case Phase.Transition     => transitionForm(prefix)
       case Phase.PostTransition => postTransitionForm(prefix, grossWeight)
