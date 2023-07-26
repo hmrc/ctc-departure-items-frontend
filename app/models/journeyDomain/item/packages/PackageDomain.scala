@@ -17,10 +17,11 @@
 package models.journeyDomain.item.packages
 
 import cats.implicits._
+import config.PhaseConfig
 import models.journeyDomain.Stage._
 import models.journeyDomain._
 import models.reference.PackageType
-import models.{Index, Mode, PackingType, UserAnswers}
+import models.{Index, Mode, PackingType, Phase, UserAnswers}
 import pages.item.packages.index._
 import play.api.mvc.Call
 
@@ -45,22 +46,33 @@ case class PackageDomain(
 
 object PackageDomain {
 
-  implicit def userAnswersReader(itemIndex: Index, packageIndex: Index): UserAnswersReader[PackageDomain] = {
-    lazy val shippingMarkReads = AddShippingMarkYesNoPage(itemIndex, packageIndex)
-      .filterOptionalDependent(identity)(ShippingMarkPage(itemIndex, packageIndex).reader)
+  implicit def userAnswersReader(itemIndex: Index, packageIndex: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[PackageDomain] = {
+    def shippingMarkReads(isPackingTypeInCL182: Boolean): UserAnswersReader[Option[String]] =
+      phaseConfig.phase match {
+        case Phase.Transition =>
+          isPackingTypeInCL182 match {
+            case true =>
+              AddShippingMarkYesNoPage(itemIndex, packageIndex)
+                .filterOptionalDependent(identity)(ShippingMarkPage(itemIndex, packageIndex).reader)
+            case false => ShippingMarkPage(itemIndex, packageIndex).reader.map(Some(_))
+          }
+        case Phase.PostTransition =>
+          AddShippingMarkYesNoPage(itemIndex, packageIndex)
+            .filterOptionalDependent(identity)(ShippingMarkPage(itemIndex, packageIndex).reader)
+      }
 
     PackageTypePage(itemIndex, packageIndex).reader.flatMap {
       case value @ PackageType(_, _, PackingType.Unpacked) =>
         (
           UserAnswersReader(value),
           NumberOfPackagesPage(itemIndex, packageIndex).reader.map(Some(_)),
-          shippingMarkReads
+          shippingMarkReads(true)
         ).tupled.map((PackageDomain.apply _).tupled).map(_(itemIndex, packageIndex))
       case value @ PackageType(_, _, PackingType.Bulk) =>
         (
           UserAnswersReader(value),
           UserAnswersReader(None),
-          shippingMarkReads
+          shippingMarkReads(false)
         ).tupled.map((PackageDomain.apply _).tupled).map(_(itemIndex, packageIndex))
       case value @ PackageType(_, _, PackingType.Other) =>
         (

@@ -16,7 +16,7 @@
 
 package utils.cyaHelpers.item.packages
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import controllers.item.packages.index.routes
 import models.journeyDomain.item.packages.PackageDomain
 import models.{Index, Mode, UserAnswers}
@@ -26,8 +26,11 @@ import play.api.i18n.Messages
 import utils.cyaHelpers.AnswersHelper
 import viewmodels.ListItem
 
-class PackageAnswersHelper(userAnswers: UserAnswers, mode: Mode, itemIndex: Index)(implicit messages: Messages, config: FrontendAppConfig)
-    extends AnswersHelper(userAnswers, mode) {
+class PackageAnswersHelper(userAnswers: UserAnswers, mode: Mode, itemIndex: Index)(implicit
+  messages: Messages,
+  config: FrontendAppConfig,
+  phaseConfig: PhaseConfig
+) extends AnswersHelper(userAnswers, mode) {
 
   def listItems: Seq[Either[ListItem, ListItem]] =
     buildListItems(PackagesSection(itemIndex)) {
