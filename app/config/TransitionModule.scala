@@ -16,11 +16,14 @@
 
 package config
 
+import services.{AdditionalInformationService, TransitionAdditionalInformationService}
+
 class TransitionModule extends Module {
 
   override def configure(): Unit = {
     super.configure()
 
     bind(classOf[PhaseConfig]).to(classOf[TransitionConfig])
+    bind(classOf[AdditionalInformationService]).to(classOf[TransitionAdditionalInformationService])
   }
 }
