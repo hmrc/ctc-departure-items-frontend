@@ -196,6 +196,25 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         checkErrorResponse(s"/$baseUrl/lists/CountryCodesFullList", connector.getCountries)
       }
     }
+    "getCountryCodesForAddress" - {
+      "must return Seq of Country when successful" in {
+        server.stubFor(
+          get(urlEqualTo(s"/$baseUrl/lists/CountryCodesForAddress"))
+            .willReturn(okJson(countriesResponseJson))
+        )
+
+        val expectedResult: Seq[Country] = Seq(
+          Country(CountryCode("GB"), "United Kingdom"),
+          Country(CountryCode("AD"), "Andorra")
+        )
+
+        connector.getCountryCodesForAddress.futureValue mustEqual expectedResult
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(s"/$baseUrl/lists/CountryCodesFullList", connector.getCountries)
+      }
+    }
 
     "getPackageTypes" - {
 

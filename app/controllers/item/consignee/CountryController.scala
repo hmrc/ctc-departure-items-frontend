@@ -54,7 +54,7 @@ class CountryController @Inject() (
     .async {
       implicit request =>
         val name = request.arg
-        service.getCountries.map {
+        service.getCountryCodesForAddress().map {
           countryList =>
             val form = formProvider(prefix, countryList, name)
             val preparedForm = request.userAnswers.get(CountryPage(itemIndex)) match {
@@ -72,7 +72,7 @@ class CountryController @Inject() (
     .async {
       implicit request =>
         val name = request.arg
-        service.getCountries.flatMap {
+        service.getCountryCodesForAddress().flatMap {
           countryList =>
             val form = formProvider(prefix, countryList, name)
             form

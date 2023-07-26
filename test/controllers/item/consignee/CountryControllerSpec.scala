@@ -22,13 +22,13 @@ import models.{NormalMode, SelectableList}
 import navigation.ItemNavigatorProvider
 import generators.Generators
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Gen
 import pages.item.consignee.{CountryPage, NamePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.{status, _}
 import services.CountriesService
 import views.html.item.consignee.CountryView
 
@@ -36,17 +36,17 @@ import scala.concurrent.Future
 
 class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val country1    = arbitraryCountry.arbitrary.sample.get
-  private val country2    = arbitraryCountry.arbitrary.sample.get
+  private val country1 = arbitraryCountry.arbitrary.sample.get
+  private val country2 = arbitraryCountry.arbitrary.sample.get
   private val countryList = SelectableList(Seq(country1, country2))
-  private val name        = Gen.alphaNumStr.sample.value
+  private val name = Gen.alphaNumStr.sample.value
 
   private val formProvider = new SelectableFormProvider()
-  private val form         = formProvider("item.consignee.country", countryList)
-  private val mode         = NormalMode
+  private val form = formProvider("item.consignee.country", countryList, name)
+  private val mode = NormalMode
 
   private val mockCountriesService: CountriesService = mock[CountriesService]
-  private lazy val countryRoute                      = routes.CountryController.onPageLoad(lrn, mode, itemIndex).url
+  private lazy val countryRoute = routes.CountryController.onPageLoad(lrn, mode, itemIndex).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -56,11 +56,16 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
   private val updatedUserAnswers = emptyUserAnswers.setValue(NamePage(itemIndex), name)
 
+  override def beforeEach(): Unit = {
+    reset(mockCountriesService)
+    super.beforeEach()
+  }
+
   "Country Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      when(mockCountriesService.getCountries()(any())).thenReturn(Future.successful(countryList))
+      when(mockCountriesService.getCountryCodesForAddress()(any())).thenReturn(Future.successful(countryList))
       setExistingUserAnswers(updatedUserAnswers)
 
       val request = FakeRequest(GET, countryRoute)
@@ -77,7 +82,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      when(mockCountriesService.getCountries()(any())).thenReturn(Future.successful(countryList))
+      when(mockCountriesService.getCountryCodesForAddress()(any())).thenReturn(Future.successful(countryList))
       val userAnswers = updatedUserAnswers.setValue(CountryPage(itemIndex), country1)
       setExistingUserAnswers(userAnswers)
 
@@ -97,7 +102,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
     "must redirect to the next page when valid data is submitted" in {
 
-      when(mockCountriesService.getCountries()(any())).thenReturn(Future.successful(countryList))
+      when(mockCountriesService.getCountryCodesForAddress()(any())).thenReturn(Future.successful(countryList))
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
       setExistingUserAnswers(updatedUserAnswers)
@@ -111,13 +116,12 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
       redirectLocation(result).value mustEqual onwardRoute.url
     }
-
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      when(mockCountriesService.getCountries()(any())).thenReturn(Future.successful(countryList))
+      when(mockCountriesService.getCountryCodesForAddress()(any())).thenReturn(Future.successful(countryList))
       setExistingUserAnswers(updatedUserAnswers)
 
-      val request   = FakeRequest(POST, countryRoute).withFormUrlEncodedBody(("value", "invalid value"))
+      val request = FakeRequest(POST, countryRoute).withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))
 
       val result = route(app, request).value
@@ -129,6 +133,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
       contentAsString(result) mustEqual
         view(boundForm, lrn, countryList.values, mode, itemIndex, name)(request, messages).toString
     }
+
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
 

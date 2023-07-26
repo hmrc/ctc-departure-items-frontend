@@ -57,5 +57,17 @@ class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach with Generat
         verify(mockRefDataConnector).getCountries()(any(), any())
       }
     }
+    "getCountryCodesForAddress" - {
+      "must return a list of countries" in {
+
+        when(mockRefDataConnector.getCountryCodesForAddress()(any(), any()))
+          .thenReturn(Future.successful(countries))
+
+        service.getCountryCodesForAddress().futureValue mustBe
+          SelectableList(Seq(country2, country3, country1))
+
+        verify(mockRefDataConnector).getCountryCodesForAddress()(any(), any())
+      }
+    }
   }
 }
