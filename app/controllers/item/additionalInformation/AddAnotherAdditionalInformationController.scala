@@ -16,7 +16,7 @@
 
 package controllers.item.additionalInformation
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import controllers.actions._
 import forms.AddAnotherFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
