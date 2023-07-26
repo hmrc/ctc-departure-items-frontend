@@ -40,7 +40,7 @@ class AddAnotherSupplyChainActorController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherSupplyChainActorView,
   viewModelProvider: AddAnotherSupplyChainActorViewModelProvider
-)(implicit config: FrontendAppConfig, phaseConfig: PhaseConfig)
+)(implicit config: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 
