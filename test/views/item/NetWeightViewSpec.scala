@@ -27,7 +27,7 @@ import views.html.item.NetWeightView
 
 class NetWeightViewSpec extends InputTextViewBehaviours[BigDecimal] {
 
-  override def form: Form[BigDecimal] = app.injector.instanceOf[NetWeightFormProvider].apply(prefix, grossWeight)
+  override def form: Form[BigDecimal] = new NetWeightFormProvider()(prefix, grossWeight)
 
   override def applyView(form: Form[BigDecimal]): HtmlFormat.Appendable =
     injector.instanceOf[NetWeightView].apply(form, lrn, NormalMode, itemIndex)(fakeRequest, messages)
