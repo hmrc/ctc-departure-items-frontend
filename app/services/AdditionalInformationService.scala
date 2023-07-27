@@ -31,7 +31,13 @@ sealed trait AdditionalInformationService {
 
   implicit val ec: ExecutionContext
 
-  def getAdditionalInformationTypes()(implicit phaseConfig: PhaseConfig, hc: HeaderCarrier): Future[SelectableList[AdditionalInformation]]
+  def predicate: AdditionalInformation => Boolean
+
+  def getAdditionalInformationTypes()(implicit phaseConfig: PhaseConfig, hc: HeaderCarrier): Future[SelectableList[AdditionalInformation]] =
+    referenceDataConnector
+      .getAdditionalInformationTypes()
+      .map(_.filter(predicate))
+      .map(sort)
 
   def sort(additionalInformationTypes: Seq[AdditionalInformation]): SelectableList[AdditionalInformation] =
     SelectableList(additionalInformationTypes.sortBy(_.description.toLowerCase))
@@ -42,22 +48,13 @@ class TransitionAdditionalInformationService @Inject() (
 )(implicit override val ec: ExecutionContext)
     extends AdditionalInformationService {
 
-  override def getAdditionalInformationTypes()(implicit phaseConfig: PhaseConfig, headerCarrier: HeaderCarrier): Future[SelectableList[AdditionalInformation]] =
-    referenceDataConnector
-      .getAdditionalInformationTypes()
-      .map(sort)
+  override def predicate: AdditionalInformation => Boolean = _ => true
 }
 
 class PostTransitionAdditionalInformationService @Inject() (
   override val referenceDataConnector: ReferenceDataConnector
 )(implicit override val ec: ExecutionContext)
     extends AdditionalInformationService {
+  override def predicate: AdditionalInformation => Boolean = _.code != "30600"
 
-  override def getAdditionalInformationTypes()(implicit phaseConfig: PhaseConfig, headerCarrier: HeaderCarrier): Future[SelectableList[AdditionalInformation]] =
-    referenceDataConnector
-      .getAdditionalInformationTypes()
-      .map {
-        _.filter(_.code != "30600")
-      }
-      .map(sort)
 }
