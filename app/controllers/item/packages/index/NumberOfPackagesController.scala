@@ -16,6 +16,7 @@
 
 package controllers.item.packages.index
 
+import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.Constants.maxNumberOfPackages
@@ -41,7 +42,7 @@ class NumberOfPackagesController @Inject() (
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: NumberOfPackagesView
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 

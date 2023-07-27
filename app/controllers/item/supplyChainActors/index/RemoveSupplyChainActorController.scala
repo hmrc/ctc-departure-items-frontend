@@ -16,6 +16,7 @@
 
 package controllers.item.supplyChainActors.index
 
+import config.PhaseConfig
 import controllers.actions._
 import controllers.item.supplyChainActors.routes
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
@@ -38,7 +39,7 @@ class RemoveSupplyChainActorController @Inject() (
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: RemoveSupplyChainActorView
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 

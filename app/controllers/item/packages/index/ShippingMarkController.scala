@@ -16,6 +16,7 @@
 
 package controllers.item.packages.index
 
+import config.PhaseConfig
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import controllers.actions._
 import forms.item.packages.ShippingMarkFormProvider
@@ -39,7 +40,7 @@ class ShippingMarkController @Inject() (
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: ShippingMarkView
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
