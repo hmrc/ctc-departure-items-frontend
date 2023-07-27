@@ -104,17 +104,8 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[LockService].toInstance(mockLockService)
       )
 
-  def guiceApplicationBuilder(): GuiceApplicationBuilder =
-    new GuiceApplicationBuilder()
-      .overrides(
-        bind[DataRequiredAction].to[DataRequiredActionImpl],
-        bind[IdentifierAction].to[FakeIdentifierAction],
-        bind[LockActionProvider].toInstance(mockLockActionProvider),
-        bind[SessionRepository].toInstance(mockSessionRepository),
-        bind[DataRetrievalActionProvider].toInstance(mockDataRetrievalActionProvider),
-        bind[DependentTasksAction].to[FakeDependentTasksAction],
-        bind[LockService].toInstance(mockLockService)
-      )
+  protected def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    defaultApplicationBuilder()
 
   protected def transitionApplicationBuilder(): GuiceApplicationBuilder =
     defaultApplicationBuilder()

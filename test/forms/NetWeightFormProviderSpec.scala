@@ -16,12 +16,11 @@
 
 package forms
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.behaviours.BigDecimalFieldBehaviours
 import org.scalacheck.Gen
 import play.api.data.FormError
 
-class NetWeightFormProviderSpec extends BigDecimalFieldBehaviours with SpecBase with AppWithDefaultMockFixtures {
+class NetWeightFormProviderSpec extends BigDecimalFieldBehaviours {
 
   private val prefix      = Gen.alphaNumStr.sample.value
   private val grossWeight = BigDecimal("5000")
@@ -30,9 +29,9 @@ class NetWeightFormProviderSpec extends BigDecimalFieldBehaviours with SpecBase 
 
   val generatedBigDecimal: Gen[BigDecimal] = Gen.choose(BigDecimal(1), maxValue)
 
+  val form = new NetWeightFormProvider()(prefix, grossWeight)
+
   ".value" - {
-    val app  = transitionApplicationBuilder().build()
-    val form = app.injector.instanceOf[NetWeightFormProvider].apply(prefix, grossWeight)
 
     val fieldName = "value"
 
