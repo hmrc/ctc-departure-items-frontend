@@ -16,14 +16,11 @@
 
 package config
 
-import forms.{NetWeightFormProvider, PostTransitionTransitionNetWeightFormProvider}
-
 class PostTransitionModule extends Module {
 
   override def configure(): Unit = {
     super.configure()
 
     bind(classOf[PhaseConfig]).to(classOf[PostTransitionConfig])
-    bind(classOf[NetWeightFormProvider]).to(classOf[PostTransitionTransitionNetWeightFormProvider])
   }
 }
