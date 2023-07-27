@@ -14,18 +14,13 @@
  * limitations under the License.
  */
 
-package services
+package config
 
-import connectors.ReferenceDataConnector
-import models.reference.TransportChargesMethodOfPayment
-import uk.gov.hmrc.http.HeaderCarrier
+class TransitionModule extends Module {
 
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+  override def configure(): Unit = {
+    super.configure()
 
-class TransportChargesMethodOfPaymentService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
-
-  def getTransportChargesMethodOfPaymentTypes()(implicit hc: HeaderCarrier): Future[Seq[TransportChargesMethodOfPayment]] =
-    referenceDataConnector
-      .getTransportChargesMethodOfPaymentTypes()
+    bind(classOf[PhaseConfig]).to(classOf[TransitionConfig])
+  }
 }

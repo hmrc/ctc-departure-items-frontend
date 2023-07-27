@@ -16,6 +16,7 @@
 
 package controllers.item
 
+import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.UCRFormProvider
@@ -39,7 +40,7 @@ class UniqueConsignmentReferenceController @Inject() (
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: UniqueConsignmentReferenceView
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 

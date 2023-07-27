@@ -14,18 +14,26 @@
  * limitations under the License.
  */
 
-package services
+package config
 
-import connectors.ReferenceDataConnector
-import models.reference.TransportChargesMethodOfPayment
-import uk.gov.hmrc.http.HeaderCarrier
+import models.Phase
+import models.Phase.{PostTransition, Transition}
 
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+trait PhaseConfig {
+  val phase: Phase
 
-class TransportChargesMethodOfPaymentService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
+  def amendMessageKey(key: String): String
 
-  def getTransportChargesMethodOfPaymentTypes()(implicit hc: HeaderCarrier): Future[Seq[TransportChargesMethodOfPayment]] =
-    referenceDataConnector
-      .getTransportChargesMethodOfPaymentTypes()
+}
+
+class TransitionConfig() extends PhaseConfig {
+  override val phase: Phase = Transition
+
+  override def amendMessageKey(key: String): String = s"$key.transition"
+}
+
+class PostTransitionConfig() extends PhaseConfig {
+  override val phase: Phase = PostTransition
+
+  override def amendMessageKey(key: String): String = s"$key.postTransition"
 }

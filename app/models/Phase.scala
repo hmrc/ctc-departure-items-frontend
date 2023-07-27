@@ -14,18 +14,12 @@
  * limitations under the License.
  */
 
-package services
+package models
 
-import connectors.ReferenceDataConnector
-import models.reference.TransportChargesMethodOfPayment
-import uk.gov.hmrc.http.HeaderCarrier
+sealed trait Phase
 
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+object Phase {
 
-class TransportChargesMethodOfPaymentService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
-
-  def getTransportChargesMethodOfPaymentTypes()(implicit hc: HeaderCarrier): Future[Seq[TransportChargesMethodOfPayment]] =
-    referenceDataConnector
-      .getTransportChargesMethodOfPaymentTypes()
+  case object Transition extends Phase
+  case object PostTransition extends Phase
 }

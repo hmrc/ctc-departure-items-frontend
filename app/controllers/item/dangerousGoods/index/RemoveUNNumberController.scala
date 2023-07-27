@@ -16,6 +16,7 @@
 
 package controllers.item.dangerousGoods.index
 
+import config.PhaseConfig
 import controllers.actions._
 import controllers.item.dangerousGoods.routes
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
@@ -42,7 +43,7 @@ class RemoveUNNumberController @Inject() (
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: RemoveUNNumberView
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
