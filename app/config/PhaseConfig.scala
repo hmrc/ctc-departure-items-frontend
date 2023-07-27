@@ -24,9 +24,6 @@ trait PhaseConfig {
 
   def amendMessageKey(key: String): String
 
-  def lengthError(prefix: String): String = amendMessageKey(s"$prefix.error.length")
-
-  def accessCodeHint: String = amendMessageKey("items.accessCode.hint")
 }
 
 class TransitionConfig() extends PhaseConfig {

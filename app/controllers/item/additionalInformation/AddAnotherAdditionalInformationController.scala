@@ -41,7 +41,7 @@ class AddAnotherAdditionalInformationController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherAdditionalInformationView,
   viewModelProvider: AddAnotherAdditionalInformationViewModelProvider
-)(implicit config: FrontendAppConfig)
+)(implicit config: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 

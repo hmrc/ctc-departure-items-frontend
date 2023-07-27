@@ -39,7 +39,7 @@ class AddAnotherPackageController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherPackageView,
   viewModelProvider: AddAnotherPackageViewModelProvider
-)(implicit config: FrontendAppConfig)
+)(implicit config: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 

@@ -16,7 +16,6 @@
 
 package config
 
-import forms.NetWeightFormProvider
 import services.{AdditionalInformationService, PostTransitionAdditionalInformationService}
 
 class PostTransitionModule extends Module {

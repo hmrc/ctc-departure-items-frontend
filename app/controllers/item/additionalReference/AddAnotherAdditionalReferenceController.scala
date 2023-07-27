@@ -41,7 +41,7 @@ class AddAnotherAdditionalReferenceController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherAdditionalReferenceView,
   viewModelProvider: AddAnotherAdditionalReferenceViewModelProvider
-)(implicit config: FrontendAppConfig)
+)(implicit config: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 

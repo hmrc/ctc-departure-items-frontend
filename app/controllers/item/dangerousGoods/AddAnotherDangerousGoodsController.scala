@@ -41,7 +41,7 @@ class AddAnotherDangerousGoodsController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherDangerousGoodsView,
   viewModelProvider: AddAnotherDangerousGoodsViewModelProvider
-)(implicit config: FrontendAppConfig)
+)(implicit config: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 

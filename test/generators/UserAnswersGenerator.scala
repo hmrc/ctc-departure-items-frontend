@@ -28,6 +28,7 @@ import models.journeyDomain.{ItemsDomain, ReaderError, UserAnswersReader}
 import models.{EoriNumber, Index, LocalReferenceNumber, RichJsObject, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
+import config.PhaseConfig
 
 trait UserAnswersGenerator extends UserAnswersEntryGenerators {
   self: Generators =>

@@ -17,11 +17,11 @@
 package config
 
 import com.google.inject.{Inject, Singleton}
-import models.LocalReferenceNumber
+import models.{LocalReferenceNumber, Phase}
 import play.api.Configuration
 
 @Singleton
-class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig: MyServicesConfig) {
+class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig: MyServicesConfig, phaseConfig: PhaseConfig) {
 
   val appName: String = configuration.get[String]("appName")
 
@@ -55,10 +55,16 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
 
   def signOutUrl(lrn: LocalReferenceNumber): String = s"$departureHubUrl/$lrn/delete-lock"
 
-  lazy val maxItems: Int                 = configuration.get[Int]("limits.maxItems")
-  lazy val maxDangerousGoods: Int        = configuration.get[Int]("limits.maxDangerousGoods")
-  lazy val maxPackages: Int              = configuration.get[Int]("limits.maxPackages")
-  lazy val maxPreviousDocuments: Int     = configuration.get[Int]("limits.maxPreviousDocuments")
+  lazy val maxItems: Int          = configuration.get[Int]("limits.maxItems")
+  lazy val maxDangerousGoods: Int = configuration.get[Int]("limits.maxDangerousGoods")
+  lazy val maxPackages: Int       = configuration.get[Int]("limits.maxPackages")
+
+  lazy val maxPreviousDocuments: Int = configuration.get[Int] {
+    phaseConfig.phase match {
+      case Phase.Transition     => "limits.maxPreviousDocuments.transition"
+      case Phase.PostTransition => "limits.maxPreviousDocuments.postTransition"
+    }
+  }
   lazy val maxSupportingDocuments: Int   = configuration.get[Int]("limits.maxSupportingDocuments")
   lazy val maxTransportDocuments: Int    = configuration.get[Int]("limits.maxTransportDocuments")
   lazy val maxAdditionalReferences: Int  = configuration.get[Int]("limits.maxAdditionalReferences")
