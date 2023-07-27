@@ -38,8 +38,7 @@ import pages.item.additionalReference.index._
 import pages.item.dangerousGoods.index.UNNumberPage
 import pages.item.documents.index.DocumentPage
 import pages.item.packages.index._
-import pages.sections.external.DocumentsSection
-import pages.sections.external.TransportEquipmentsSection
+import pages.sections.external.{DocumentsSection, TransportEquipmentsSection}
 import play.api.libs.json.{JsArray, Json}
 
 import java.util.UUID
@@ -67,27 +66,27 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
       def equipments(uuid: UUID) = Json
         .parse(s"""
              |[
-             |{
-             |  "containerIdentificationNumber" : "98777",
-             |  "addSealsYesNo" : true,
-             |  "seals" : [
-             |    {
-             |      "identificationNumber" : "TransportSeal1"
-             |    }
-             |   ],
-             |   "uuid": "$uuid"
-             |}
+             |  {
+             |    "containerIdentificationNumber" : "98777",
+             |    "addSealsYesNo" : true,
+             |    "seals" : [
+             |      {
+             |        "identificationNumber" : "TransportSeal1"
+             |      }
+             |    ],
+             |    "uuid": "$uuid"
+             |  }
              |]
              |""".stripMargin)
         .as[JsArray]
 
       "can be read from user answers" - {
         "when transport equipment sequence is present" in {
-          forAll(arbitrary[UUID]) {
-            uuid =>
+          forAll(arbitrary[UUID], Gen.oneOf(TransportEquipmentPage, InferredTransportEquipmentPage)) {
+            (uuid, page) =>
               val userAnswers = emptyUserAnswers
                 .setValue(TransportEquipmentsSection, equipments(uuid))
-                .setValue(TransportEquipmentPage(itemIndex), uuid)
+                .setValue(page(itemIndex), uuid)
 
               val expectedResult = Some(uuid)
 

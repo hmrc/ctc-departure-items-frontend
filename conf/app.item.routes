@@ -130,3 +130,8 @@ GET        /:itemIndex/payment-method/add/:lrn                              cont
 POST       /:itemIndex/payment-method/add/:lrn                              controllers.item.AddTransportChargesYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
 GET        /:itemIndex/payment-method/change-add/:lrn                       controllers.item.AddTransportChargesYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
 POST       /:itemIndex/payment-method/change-add/:lrn                       controllers.item.AddTransportChargesYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+
+GET        /:itemIndex/payment-method/:lrn                                  controllers.item.TransportChargesMethodOfPaymentController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+POST       /:itemIndex/payment-method/:lrn                                  controllers.item.TransportChargesMethodOfPaymentController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+GET        /:itemIndex/payment-method/:lrn                                  controllers.item.TransportChargesMethodOfPaymentController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+POST       /:itemIndex/payment-method/:lrn                                  controllers.item.TransportChargesMethodOfPaymentController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)

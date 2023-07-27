@@ -470,3 +470,9 @@ item.addTransportChargesYesNo.paragraph = These include charges for hauliers and
 item.addTransportChargesYesNo.checkYourAnswersLabel = Do you want to add a method of payment for this item’s transport charges?
 item.addTransportChargesYesNo.hidden = if you want to add a method of payment for this item’s transport charges
 item.addTransportChargesYesNo.error.required = Select yes if you want to add a method of payment for this item’s transport charges
+
+item.transportMethodOfPayment.title = Which method of payment do you want to use for transport charges?
+item.transportMethodOfPayment.heading = Which method of payment do you want to use for transport charges?
+item.transportMethodOfPayment.caption = Item {0} - Transport charges
+item.transportMethodOfPayment.checkYourAnswersLabel = Which method of payment do you want to use for transport charges?
+item.transportMethodOfPayment.error.required = Select which method of payment you want to use for transport charges

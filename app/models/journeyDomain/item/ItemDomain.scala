@@ -20,7 +20,6 @@ import cats.implicits._
 import config.Constants.GB
 import models.DeclarationType._
 import models.DocumentType.Previous
-import models._
 import models.journeyDomain.item.additionalInformation.AdditionalInformationListDomain
 import models.journeyDomain.item.additionalReferences.AdditionalReferencesDomain
 import models.journeyDomain.item.dangerousGoods.DangerousGoodsListDomain
@@ -29,11 +28,10 @@ import models.journeyDomain.item.packages.PackagesDomain
 import models.journeyDomain.item.supplyChainActors.SupplyChainActorsDomain
 import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, JsArrayGettableAsReaderOps, Stage, UserAnswersReader}
 import models.reference.Country
-import models.{DeclarationType, Document, Index, Mode, UserAnswers}
+import models._
 import pages.external._
 import pages.item._
-import pages.sections.external.DocumentsSection
-import pages.sections.external.TransportEquipmentsSection
+import pages.sections.external.{DocumentsSection, TransportEquipmentsSection}
 import play.api.i18n.Messages
 import play.api.mvc.Call
 
@@ -95,8 +93,11 @@ object ItemDomain {
 
   def transportEquipmentReader(itemIndex: Index): UserAnswersReader[Option[UUID]] =
     TransportEquipmentsSection.optionalReader.flatMap {
-      case Some(array) if array.nonEmpty => TransportEquipmentPage(itemIndex).reader.map(Some(_))
-      case _                             => none[UUID].pure[UserAnswersReader]
+      case Some(array) if array.nonEmpty =>
+        val reader = InferredTransportEquipmentPage(itemIndex).reader orElse TransportEquipmentPage(itemIndex).reader
+        reader.map(Some(_))
+      case _ =>
+        none[UUID].pure[UserAnswersReader]
     }
 
   def declarationTypeReader(itemIndex: Index): UserAnswersReader[Option[DeclarationType]] =

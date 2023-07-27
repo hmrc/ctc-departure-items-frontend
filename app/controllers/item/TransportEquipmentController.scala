@@ -16,21 +16,23 @@
 
 package controllers.item
 
-import config.FrontendAppConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.SelectableFormProvider
-import models.{Index, LocalReferenceNumber, Mode}
+import models.requests.DataRequest
+import models.{Index, LocalReferenceNumber, Mode, SelectableList}
 import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
-import pages.item.TransportEquipmentPage
+import pages.QuestionPage
+import pages.item.{InferredTransportEquipmentPage, TransportEquipmentPage}
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import services.TransportEquipmentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.item.TransportEquipmentView
 
+import java.util.UUID
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -42,8 +44,7 @@ class TransportEquipmentController @Inject() (
   formProvider: SelectableFormProvider,
   service: TransportEquipmentService,
   val controllerComponents: MessagesControllerComponents,
-  view: TransportEquipmentView,
-  config: FrontendAppConfig
+  view: TransportEquipmentView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
@@ -51,20 +52,22 @@ class TransportEquipmentController @Inject() (
 
   private val prefix: String = "item.transportEquipment"
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      val transportEquipmentList = service.getTransportEquipments(request.userAnswers)
-      val form                   = formProvider(prefix, transportEquipmentList)
-      val preparedForm = request.userAnswers.get(TransportEquipmentPage(itemIndex)) match {
-        case None => form
-        case Some(uuid) =>
-          transportEquipmentList.values.find(_.uuid == uuid) match {
-            case None        => form
-            case Some(value) => form.fill(value)
+      service.getTransportEquipments(request.userAnswers) match {
+        case SelectableList(head :: Nil) => redirect(mode, itemIndex, InferredTransportEquipmentPage, head.uuid)
+        case transportEquipmentList =>
+          val form = formProvider(prefix, transportEquipmentList)
+          val preparedForm = request.userAnswers.get(TransportEquipmentPage(itemIndex)) match {
+            case None => form
+            case Some(uuid) =>
+              transportEquipmentList.values.find(_.uuid == uuid) match {
+                case None        => form
+                case Some(value) => form.fill(value)
+              }
           }
+          Future.successful(Ok(view(preparedForm, lrn, transportEquipmentList.values, mode, itemIndex)))
       }
-      Ok(view(preparedForm, lrn, transportEquipmentList.values, mode, itemIndex))
-
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
@@ -75,11 +78,21 @@ class TransportEquipmentController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, transportEquipmentList.values, mode, itemIndex))),
-          value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
-            TransportEquipmentPage(itemIndex).writeToUserAnswers(value.uuid).updateTask().writeToSession().navigate()
-          }
+          value => redirect(mode, itemIndex, TransportEquipmentPage, value.uuid)
         )
   }
 
+  private def redirect(
+    mode: Mode,
+    index: Index,
+    page: Index => QuestionPage[UUID],
+    uuid: UUID
+  )(implicit request: DataRequest[_]): Future[Result] = {
+    implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
+    page(index)
+      .writeToUserAnswers(uuid)
+      .updateTask()
+      .writeToSession()
+      .navigate()
+  }
 }

@@ -18,13 +18,14 @@ package controllers.item
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.SelectableFormProvider
-import models.{NormalMode, SelectableList, TransportEquipment}
-import navigation.ItemNavigatorProvider
 import generators.Generators
+import models.{NormalMode, SelectableList, TransportEquipment, UserAnswers}
+import navigation.ItemNavigatorProvider
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{verify, when}
 import org.scalacheck.Arbitrary.arbitrary
-import pages.item.TransportEquipmentPage
+import pages.item.{InferredTransportEquipmentPage, TransportEquipmentPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -54,6 +55,29 @@ class TransportEquipmentControllerSpec extends SpecBase with AppWithDefaultMockF
       .overrides(bind(classOf[TransportEquipmentService]).toInstance(mockTransportEquipmentService))
 
   "TransportEquipment Controller" - {
+
+    "must set inferred answer and redirect to next page" - {
+      "when only one country to choose from" in {
+
+        when(mockTransportEquipmentService.getTransportEquipments(any()))
+          .thenReturn(SelectableList(Seq(transportEquipment1)))
+
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(GET, transportEquipmentRoute)
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual onwardRoute.url
+
+        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
+        userAnswersCaptor.getValue.get(TransportEquipmentPage(index)) must not be defined
+        userAnswersCaptor.getValue.getValue(InferredTransportEquipmentPage(index)) mustBe transportEquipment1.uuid
+      }
+    }
 
     "must return OK and the correct view for a GET" in {
 
