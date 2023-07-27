@@ -16,6 +16,7 @@
 
 package models.journeyDomain
 
+import config.PhaseConfig
 import models.journeyDomain.item.ItemDomain
 import models.{Index, Mode, RichJsArray, UserAnswers}
 import pages.sections.ItemsSection
@@ -30,7 +31,7 @@ case class ItemsDomain(item: Seq[ItemDomain]) extends JourneyDomainModel {
 
 object ItemsDomain {
 
-  implicit val userAnswersReader: UserAnswersReader[ItemsDomain] = {
+  implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): UserAnswersReader[ItemsDomain] = {
 
     val itemReader: UserAnswersReader[Seq[ItemDomain]] =
       ItemsSection.arrayReader.flatMap {
