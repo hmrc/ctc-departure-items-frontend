@@ -19,13 +19,14 @@ package pages.item.consignee
 import controllers.item.consignee.routes
 import models.{DynamicAddress, Index, Mode, UserAnswers}
 import pages.QuestionPage
+import pages.sections.consigneeSection.ConsigneeSection
 import pages.sections.{Item, ItemSection}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case class AddressPage(itemIndex: Index) extends QuestionPage[DynamicAddress] {
 
-  override def path: JsPath = ItemSection(itemIndex).path \ toString
+  override def path: JsPath = ConsigneeSection(itemIndex).path \ toString
 
   override def toString: String = "address"
 

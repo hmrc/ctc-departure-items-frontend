@@ -37,15 +37,9 @@ object AddressLine {
     val regex: Regex
   }
 
-  case object StreetNumber extends AddressLineWithValidation {
-    override val field: String = "streetNumber"
-    override val length: Int   = 17
-    override val regex: Regex  = alphaNumericRegex
-  }
-
   case object NumberAndStreet extends AddressLineWithValidation {
     override val field: String = "numberAndStreet"
-    override val length: Int   = 70
+    override val length: Int   = 35
     override val regex: Regex  = stringFieldRegex
   }
 
@@ -57,7 +51,7 @@ object AddressLine {
 
   case object PostalCode extends AddressLineWithValidation {
     override val field: String = "postalCode"
-    override val length: Int   = 17
+    override val length: Int   = 9
     override val regex: Regex  = alphaNumericWithSpacesRegex
   }
 }

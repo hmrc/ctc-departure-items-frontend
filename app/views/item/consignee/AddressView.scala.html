@@ -48,7 +48,7 @@
         @inputAddress(
             form = form,
             messageKeyPrefix = "item.consignee.address",
-            caption = None,
+            caption = Some(messages("item.consignee.caption", itemIndex.display)),
             isPostalCodeRequired = isPostalCodeRequired,
             headingArgs = name
         )
