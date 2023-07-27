@@ -18,7 +18,7 @@ package services
 
 import connectors.ReferenceDataConnector
 import models.SelectableList
-import models.reference.Country
+import models.reference.{Country, CountryCode}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -34,6 +34,13 @@ class CountriesService @Inject() (referenceDataConnector: ReferenceDataConnector
     referenceDataConnector
       .getCountryCodesForAddress()
       .map(sort)
+
+  def getCountriesWithoutZip()(implicit hc: HeaderCarrier): Future[Seq[CountryCode]] =
+    referenceDataConnector
+      .getCountriesWithoutZip()
+
+  def doesCountryRequireZip(country: Country)(implicit hc: HeaderCarrier): Future[Boolean] =
+    getCountriesWithoutZip().map(!_.contains(country.code))
 
   private def sort(countries: Seq[Country]): SelectableList[Country] =
     SelectableList(countries.sortBy(_.description.toLowerCase))

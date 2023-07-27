@@ -40,6 +40,11 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http.GET[Seq[Country]](serviceUrl, headers = version2Header)
   }
 
+  def getCountriesWithoutZip()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[CountryCode]] = {
+    val serviceUrl = s"${config.referenceDataUrl}/lists/CountryWithoutZip"
+    http.GET[Seq[CountryCode]](serviceUrl, headers = version2Header)
+  }
+
   def getPackageTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[PackageType]] = {
     val serviceUrl = s"${config.referenceDataUrl}/lists/KindOfPackages"
     http.GET[Seq[PackageType]](serviceUrl, headers = version2Header)(PackageType.httpReads(Other), hc, ec)
