@@ -178,10 +178,7 @@ class ItemLevelDocumentsSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
         "when post-transition" - {
 
-          val app = postTransitionApplicationBuilder()
-            .configure("config.resource" -> "application.conf")
-            .build()
-
+          val app = postTransitionApplicationBuilder().build()
           running(app) {
 
             val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
