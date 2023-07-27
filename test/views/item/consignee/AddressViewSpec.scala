@@ -42,6 +42,8 @@ class AddressViewSpec extends DynamicAddressViewBehaviours with Generators {
 
   behave like pageWithHeading(name)
 
+  behave like pageWithSectionCaption(s"Item ${itemIndex.display} - Consignee")
+
   behave like pageWithAddressInput()
 
   behave like pageWithSubmitButton("Save and continue")
