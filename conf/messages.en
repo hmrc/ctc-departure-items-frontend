@@ -69,6 +69,18 @@ item.checkYourAnswers.additionalInformation.change.hidden = additional informati
 item.checkYourAnswers.additionalInformation = Additional information
 item.checkYourAnswers.additionalInformation.addOrRemove = Add or remove additional information
 
+item.checkYourAnswers.consignee = Consignee
+item.checkYourAnswers.consignee.identificationNumberYesNo.checkYourAnswersLabel = Do you know the consignee’s EORI number or Trader Identification Number (TIN) for this item?
+item.checkYourAnswers.consignee.identificationNumberYesNo.change.hidden = if you know the consignee’s EORI number or Trader Identification Number (TIN) for item {0}
+item.checkYourAnswers.consignee.identificationNumber.checkYourAnswersLabel = EORI number or Trader Identification Number (TIN)
+item.checkYourAnswers.consignee.identificationNumber.change.hidden = consignee’s EORI number or Trader Identification Number (TIN) for item {0}
+item.checkYourAnswers.consignee.name.checkYourAnswersLabel = Name
+item.checkYourAnswers.consignee.name.change.hidden = consignee’s name for item {0}
+item.checkYourAnswers.consignee.country.checkYourAnswersLabel = Country
+item.checkYourAnswers.consignee.country.change.hidden = consignee’s country for item {0}
+item.checkYourAnswers.consignee.address.checkYourAnswersLabel = Address
+item.checkYourAnswers.consignee.address.change.hidden = consignee’s address for item {0}
+
 item.description.title = Enter a description of item {0}
 item.description.heading = Enter a description of item {0}
 item.description.checkYourAnswersLabel = Description

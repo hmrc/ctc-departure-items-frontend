@@ -64,6 +64,17 @@ object ItemAnswersViewModel {
         ).flatten
       )
 
+      val consigneeSection = Section(
+        sectionTitle = messages("item.checkYourAnswers.consignee"),
+        rows = Seq(
+          helper.consigneeIdentificationNumberYesNo,
+          helper.consigneeIdentificationNumber,
+          helper.consigneeName,
+          helper.consigneeCountry,
+          helper.consigneeAddress
+        ).flatten
+      )
+
       val dangerousGoodsSection = Section(
         sectionTitle = messages("item.checkYourAnswers.dangerousGoods"),
         rows = helper.dangerousGoodsYesNo.toList ++ helper.dangerousGoodsList,
@@ -115,6 +126,7 @@ object ItemAnswersViewModel {
         dangerousGoodsSection.toSeq ++
         measurementSection.toSeq ++
         packagesSection.toSeq ++
+        consigneeSection.toSeq ++
         supplyChainActorsSection.toSeq ++
         documentsSection.toSeq ++
         additionalReferencesSection.toSeq ++

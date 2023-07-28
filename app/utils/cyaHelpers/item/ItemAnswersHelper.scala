@@ -24,7 +24,7 @@ import models.journeyDomain.item.documents.DocumentDomain
 import models.journeyDomain.item.packages.PackageDomain
 import models.journeyDomain.item.supplyChainActors.SupplyChainActorDomain
 import models.reference.Country
-import models.{CheckMode, DeclarationType, Index, UserAnswers}
+import models.{CheckMode, DeclarationType, DynamicAddress, Index, UserAnswers}
 import pages.item._
 import pages.sections.additionalInformation.AdditionalInformationListSection
 import pages.sections.additionalReference.AdditionalReferencesSection
@@ -357,6 +357,46 @@ class ItemAnswersHelper(
         href = controllers.item.additionalInformation.routes.AddAnotherAdditionalInformationController.onPageLoad(userAnswers.lrn, mode, itemIndex).url
       )
   }
+
+  def consigneeIdentificationNumberYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = consignee.AddConsigneeEoriNumberYesNoPage(itemIndex),
+    formatAnswer = formatAsYesOrNo,
+    prefix = "item.checkYourAnswers.consignee.identificationNumberYesNo",
+    id = Some("change-has-consignee-eori"),
+    args = itemIndex.display
+  )
+
+  def consigneeIdentificationNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = consignee.IdentificationNumberPage(itemIndex),
+    formatAnswer = formatAsText,
+    prefix = "item.checkYourAnswers.consignee.identificationNumber",
+    id = Some("change-consignee-identification-number"),
+    args = itemIndex.display
+  )
+
+  def consigneeName: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = consignee.NamePage(itemIndex),
+    formatAnswer = formatAsText,
+    prefix = "item.checkYourAnswers.consignee.name",
+    id = Some("change-consignee-name"),
+    args = itemIndex.display
+  )
+
+  def consigneeCountry: Option[SummaryListRow] = getAnswerAndBuildRow[Country](
+    page = consignee.CountryPage(itemIndex),
+    formatAnswer = formatAsCountry,
+    prefix = "item.checkYourAnswers.consignee.country",
+    id = Some("change-consignee-country"),
+    args = itemIndex.display
+  )
+
+  def consigneeAddress: Option[SummaryListRow] = getAnswerAndBuildRow[DynamicAddress](
+    page = consignee.AddressPage(itemIndex),
+    formatAnswer = formatAsDynamicAddress,
+    prefix = "item.checkYourAnswers.consignee.address",
+    id = Some("change-consignee-address"),
+    args = itemIndex.display
+  )
 
 }
 // scalastyle:on number.of.methods
