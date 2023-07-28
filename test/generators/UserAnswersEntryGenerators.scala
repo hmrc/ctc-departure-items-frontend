@@ -16,8 +16,8 @@
 
 package generators
 
-import models.{DeclarationType, SupplyChainActorType}
-import models.reference.{AdditionalInformation, AdditionalReference, Country, PackageType}
+import models._
+import models.reference._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.libs.json._
@@ -77,6 +77,7 @@ trait UserAnswersEntryGenerators {
     pf orElse
       generateDangerousGoodsAnswer orElse
       generatePackageAnswer orElse
+      generateConsigneeAnswer orElse
       generateSupplyChainActorAnswer orElse
       generateDocumentsAnswer orElse
       generateAdditionalReferenceAnswer orElse
@@ -98,6 +99,17 @@ trait UserAnswersEntryGenerators {
       case NumberOfPackagesPage(_, _)     => Gen.posNum[Int].map(Json.toJson(_))
       case AddShippingMarkYesNoPage(_, _) => arbitrary[Boolean].map(JsBoolean)
       case ShippingMarkPage(_, _)         => Gen.alphaNumStr.map(JsString)
+    }
+  }
+
+  private def generateConsigneeAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+    import pages.item.consignee._
+    {
+      case AddConsigneeEoriNumberYesNoPage(_) => arbitrary[Boolean].map(JsBoolean)
+      case IdentificationNumberPage(_)        => Gen.alphaNumStr.map(JsString)
+      case NamePage(_)                        => Gen.alphaNumStr.map(JsString)
+      case CountryPage(_)                     => arbitrary[Country].map(Json.toJson(_))
+      case AddressPage(_)                     => arbitrary[DynamicAddress].map(Json.toJson(_))
     }
   }
 

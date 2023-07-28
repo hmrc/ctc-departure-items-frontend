@@ -18,6 +18,7 @@ package models.journeyDomain.item
 
 import base.SpecBase
 import config.Constants.GB
+import config.PhaseConfig
 import generators.Generators
 import models.DeclarationType._
 import models.journeyDomain.item.additionalInformation.{AdditionalInformationDomain, AdditionalInformationListDomain}
@@ -27,7 +28,8 @@ import models.journeyDomain.item.documents.{DocumentDomain, DocumentsDomain}
 import models.journeyDomain.item.packages.{PackageDomain, PackagesDomain}
 import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.reference.{AdditionalInformation, AdditionalReference, Country, PackageType}
-import models.{DeclarationType, Index}
+import models.{DeclarationType, Index, Phase}
+import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -884,6 +886,40 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
           ).run(emptyUserAnswers)
 
           result.left.value.page mustBe PackageTypePage(itemIndex, packageIndex)
+        }
+      }
+    }
+
+    "consigneeReader" - {
+      "when post-transition" - {
+        "then result must not be defined" in {
+          val mockPhaseConfig = mock[PhaseConfig]
+          when(mockPhaseConfig.phase).thenReturn(Phase.PostTransition)
+
+          forAll(arbitraryConsigneeAnswers(emptyUserAnswers, itemIndex)) {
+            userAnswers =>
+              val result = UserAnswersReader[Option[ConsigneeDomain]](
+                ItemDomain.consigneeReader(itemIndex)(mockPhaseConfig)
+              ).run(userAnswers)
+
+              result.value must not be defined
+          }
+        }
+      }
+
+      "when during transition" - {
+        "then result must be defined" in {
+          val mockPhaseConfig = mock[PhaseConfig]
+          when(mockPhaseConfig.phase).thenReturn(Phase.Transition)
+
+          forAll(arbitraryConsigneeAnswers(emptyUserAnswers, itemIndex)) {
+            userAnswers =>
+              val result = UserAnswersReader[Option[ConsigneeDomain]](
+                ItemDomain.consigneeReader(itemIndex)(mockPhaseConfig)
+              ).run(userAnswers)
+
+              result.value must be(defined)
+          }
         }
       }
     }
