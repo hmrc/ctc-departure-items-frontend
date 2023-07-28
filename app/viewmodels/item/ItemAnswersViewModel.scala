@@ -67,7 +67,7 @@ object ItemAnswersViewModel {
       val consigneeSection = Section(
         sectionTitle = messages("item.checkYourAnswers.consignee"),
         rows = Seq(
-          helper.consigneeIdentificationNumberYesNo,
+          helper.consigneeAddEoriNumberYesNo,
           helper.consigneeIdentificationNumber,
           helper.consigneeName,
           helper.consigneeCountry,

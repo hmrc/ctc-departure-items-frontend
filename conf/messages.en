@@ -43,6 +43,7 @@ item.transportEquipment.withoutContainerId = ({0}) Transport equipment
 
 item.checkYourAnswers.heading = Check your answers
 item.checkYourAnswers.title = Check your answers
+
 item.checkYourAnswers.dangerousGoods.label = UN number {0}
 item.checkYourAnswers.dangerousGoods.change.hidden = UN number {0}
 item.checkYourAnswers.dangerousGoods = Dangerous goods
@@ -68,19 +69,7 @@ item.checkYourAnswers.additionalInformation.label = Additional information {0}
 item.checkYourAnswers.additionalInformation.change.hidden = additional information {0}
 item.checkYourAnswers.additionalInformation = Additional information
 item.checkYourAnswers.additionalInformation.addOrRemove = Add or remove additional information
-
 item.checkYourAnswers.consignee = Consignee
-item.checkYourAnswers.consignee.identificationNumberYesNo.checkYourAnswersLabel = Do you know the consignee’s EORI number or Trader Identification Number (TIN) for this item?
-item.checkYourAnswers.consignee.identificationNumberYesNo.change.hidden = if you know the consignee’s EORI number or Trader Identification Number (TIN) for item {0}
-item.checkYourAnswers.consignee.identificationNumber.checkYourAnswersLabel = EORI number or Trader Identification Number (TIN)
-item.checkYourAnswers.consignee.identificationNumber.change.hidden = consignee’s EORI number or Trader Identification Number (TIN) for item {0}
-item.checkYourAnswers.consignee.name.checkYourAnswersLabel = Name
-item.checkYourAnswers.consignee.name.change.hidden = consignee’s name for item {0}
-item.checkYourAnswers.consignee.country.checkYourAnswersLabel = Country
-item.checkYourAnswers.consignee.country.change.hidden = consignee’s country for item {0}
-item.checkYourAnswers.consignee.address.checkYourAnswersLabel = Address
-item.checkYourAnswers.consignee.address.change.hidden = consignee’s address for item {0}
-
 item.description.title = Enter a description of item {0}
 item.description.heading = Enter a description of item {0}
 item.description.checkYourAnswersLabel = Description
@@ -494,11 +483,13 @@ item.consignee.caption = Item {0} - Consignee
 item.consignee.addConsigneeEoriNumberYesNo.title = Do you know the consignee’s EORI number or Trader Identification Number (TIN) for this item?
 item.consignee.addConsigneeEoriNumberYesNo.heading = Do you know the consignee’s EORI number or Trader Identification Number (TIN) for this item?
 item.consignee.addConsigneeEoriNumberYesNo.checkYourAnswersLabel = Do you know the consignee’s EORI number or Trader Identification Number (TIN) for this item?
+item.consignee.addConsigneeEoriNumberYesNo.change.hidden = if you know the consignee’s EORI number or Trader Identification Number (TIN) for item {0}
 item.consignee.addConsigneeEoriNumberYesNo.error.required = Select yes if you know the consignee’s EORI number or Trader Identification Number (TIN) for this item
 
 item.consignee.identificationNumber.title = What is the consignee’s EORI number or Trader Identification Number (TIN)?
 item.consignee.identificationNumber.heading = What is the consignee’s EORI number or Trader Identification Number (TIN)?
-item.consignee.identificationNumber.checkYourAnswersLabel = What is the consignee’s EORI number or Trader Identification Number (TIN)?
+item.consignee.identificationNumber.checkYourAnswersLabel = EORI number or Trader Identification Number (TIN)
+item.consignee.identificationNumber.change.hidden = consignee’s EORI number or Trader Identification Number (TIN) for item {0}
 item.consignee.identificationNumber.hint = This can be up to 17 characters long and include both letters and numbers. For example, GB123456789000.
 item.consignee.identificationNumber.error.required = Enter the consignee’s EORI number or Trader Identification Number (TIN)
 item.consignee.identificationNumber.error.invalidCharacters = The consignee’s EORI number or Trader Identification Number (TIN) must only include letters a to z and numbers 0 to 9
@@ -506,7 +497,8 @@ item.consignee.identificationNumber.error.length = The consignee’s EORI number
 
 item.consignee.name.title = What is the consignee’s name?
 item.consignee.name.heading = What is the consignee’s name?
-item.consignee.name.checkYourAnswersLabel = What is the consignee’s name?
+item.consignee.name.checkYourAnswersLabel = Name
+item.consignee.name.change.hidden = consignee’s name for item {0}
 item.consignee.name.hint = Enter the full name of the individual or organisation.
 item.consignee.name.error.required = Enter the full name of the individual or organisation.
 item.consignee.name.error.invalid = The consignee’s name must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
@@ -516,8 +508,8 @@ item.consignee.country.title = Which country is the consignee based in?
 item.consignee.country.heading = Which country is {0} based in?
 item.consignee.country.hint = Enter the country, like Italy or Spain.
 item.consignee.country.placeholder = Select a country
-item.consignee.country.change.hidden = consignee’s country
-item.consignee.country.checkYourAnswersLabel = Consignee’s country
+item.consignee.country.checkYourAnswersLabel = Country
+item.consignee.country.change.hidden = consignee’s country for item {0}
 item.consignee.country.error.required = Enter which country {0} is based in
 
 item.consignee.address.title = What is the consignee’s address?
@@ -526,8 +518,8 @@ item.consignee.address.numberAndStreet = Number and street name
 item.consignee.address.city = Town or city
 item.consignee.address.postalCode = Postal code
 item.consignee.address.postalCode.optional = Postal code (optional)
-item.consignee.address.checkYourAnswersLabel = Consignee’s address
-item.consignee.address.change.hidden = consignee’s address
+item.consignee.address.checkYourAnswersLabel = Address
+item.consignee.address.change.hidden = consignee’s address for item {0}
 item.consignee.address.error.postalCode.invalid = The postal code for {0}’s address must only include letters a to z, numbers 0 to 9 and spaces
 item.consignee.address.error.invalid = The {0} for {1}’s address must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
 item.consignee.address.error.required = Enter the {0} for {1}’s address

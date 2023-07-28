@@ -1161,21 +1161,21 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
       }
     }
 
-    "consigneeIdentificationNumberYesNo" - {
+    "consigneeAddEoriNumberYesNo" - {
       "must return None" - {
-        "when consigneeIdentificationNumberYesNo is undefined" in {
+        "when consigneeAddEoriNumberYesNo is undefined" in {
           val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
-          val result = helper.consigneeIdentificationNumberYesNo
+          val result = helper.consigneeAddEoriNumberYesNo
           result mustBe None
         }
       }
 
       "must return Some(Row)" - {
-        "when consigneeIdentificationNumberYesNo is defined" in {
+        "when consigneeAddEoriNumberYesNo is defined" in {
           val answers = emptyUserAnswers.setValue(consignee.AddConsigneeEoriNumberYesNoPage(itemIndex), true)
 
           val helper = new ItemAnswersHelper(answers, itemIndex)
-          val result = helper.consigneeIdentificationNumberYesNo.get
+          val result = helper.consigneeAddEoriNumberYesNo.get
 
           result.key.value mustBe "Do you know the consignee’s EORI number or Trader Identification Number (TIN) for this item?"
           result.value.value mustBe "Yes"

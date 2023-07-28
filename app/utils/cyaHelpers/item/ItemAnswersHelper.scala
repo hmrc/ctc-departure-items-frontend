@@ -358,10 +358,10 @@ class ItemAnswersHelper(
       )
   }
 
-  def consigneeIdentificationNumberYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+  def consigneeAddEoriNumberYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = consignee.AddConsigneeEoriNumberYesNoPage(itemIndex),
     formatAnswer = formatAsYesOrNo,
-    prefix = "item.checkYourAnswers.consignee.identificationNumberYesNo",
+    prefix = "item.consignee.addConsigneeEoriNumberYesNo",
     id = Some("change-has-consignee-eori"),
     args = itemIndex.display
   )
@@ -369,7 +369,7 @@ class ItemAnswersHelper(
   def consigneeIdentificationNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = consignee.IdentificationNumberPage(itemIndex),
     formatAnswer = formatAsText,
-    prefix = "item.checkYourAnswers.consignee.identificationNumber",
+    prefix = "item.consignee.identificationNumber",
     id = Some("change-consignee-identification-number"),
     args = itemIndex.display
   )
@@ -377,7 +377,7 @@ class ItemAnswersHelper(
   def consigneeName: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = consignee.NamePage(itemIndex),
     formatAnswer = formatAsText,
-    prefix = "item.checkYourAnswers.consignee.name",
+    prefix = "item.consignee.name",
     id = Some("change-consignee-name"),
     args = itemIndex.display
   )
@@ -385,7 +385,7 @@ class ItemAnswersHelper(
   def consigneeCountry: Option[SummaryListRow] = getAnswerAndBuildRow[Country](
     page = consignee.CountryPage(itemIndex),
     formatAnswer = formatAsCountry,
-    prefix = "item.checkYourAnswers.consignee.country",
+    prefix = "item.consignee.country",
     id = Some("change-consignee-country"),
     args = itemIndex.display
   )
@@ -393,7 +393,7 @@ class ItemAnswersHelper(
   def consigneeAddress: Option[SummaryListRow] = getAnswerAndBuildRow[DynamicAddress](
     page = consignee.AddressPage(itemIndex),
     formatAnswer = formatAsDynamicAddress,
-    prefix = "item.checkYourAnswers.consignee.address",
+    prefix = "item.consignee.address",
     id = Some("change-consignee-address"),
     args = itemIndex.display
   )
