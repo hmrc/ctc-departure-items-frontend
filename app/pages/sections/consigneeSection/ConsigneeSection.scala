@@ -18,9 +18,9 @@ package pages.sections.consigneeSection
 
 import models.Index
 import pages.sections.{ItemSection, Section}
-import play.api.libs.json.{JsArray, JsPath}
+import play.api.libs.json.{JsObject, JsPath}
 
-case class ConsigneeSection(itemIndex: Index) extends Section[JsArray] {
+case class ConsigneeSection(itemIndex: Index) extends Section[JsObject] {
 
   override def path: JsPath = ItemSection(itemIndex).path \ toString
 
