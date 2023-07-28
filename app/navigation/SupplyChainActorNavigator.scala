@@ -37,8 +37,10 @@ trait SupplyChainActorNavigatorProvider {
   def apply(mode: Mode, itemIndex: Index, actorIndex: Index): UserAnswersNavigator
 }
 
-class SupplyChainActorNavigator(override val mode: Mode, itemIndex: Index, actorIndex: Index)(implicit override val config: FrontendAppConfig)
-    extends UserAnswersNavigator {
+class SupplyChainActorNavigator(override val mode: Mode, itemIndex: Index, actorIndex: Index)(implicit
+  override val config: FrontendAppConfig,
+  override val phaseConfig: PhaseConfig
+) extends UserAnswersNavigator {
 
   override type T = SupplyChainActorDomain
 

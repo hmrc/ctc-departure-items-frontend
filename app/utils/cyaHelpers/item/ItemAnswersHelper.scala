@@ -16,7 +16,7 @@
 
 package utils.cyaHelpers.item
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import models.journeyDomain.item.additionalInformation.AdditionalInformationDomain
 import models.journeyDomain.item.additionalReferences.AdditionalReferenceDomain
 import models.journeyDomain.item.dangerousGoods.DangerousGoodsDomain
@@ -45,7 +45,7 @@ import java.util.UUID
 class ItemAnswersHelper(
   userAnswers: UserAnswers,
   itemIndex: Index
-)(implicit messages: Messages, config: FrontendAppConfig)
+)(implicit messages: Messages, config: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends AnswersHelper(userAnswers, CheckMode) {
 
   def itemDescription: Option[SummaryListRow] = getAnswerAndBuildRow[String](

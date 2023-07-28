@@ -72,7 +72,7 @@ class AddAnotherAdditionalInformationControllerSpec extends SpecBase with AppWit
   "AddAnotherAdditionalInformation Controller" - {
 
     "must redirect to add additional information yes no page when 0 additional information added" in {
-      when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
+      when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
         .thenReturn(emptyViewModel)
 
       setExistingUserAnswers(emptyUserAnswers)
@@ -90,7 +90,7 @@ class AddAnotherAdditionalInformationControllerSpec extends SpecBase with AppWit
 
     "must return OK and the correct view for a GET" - {
       "when max limit not reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
           .thenReturn(notMaxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -108,7 +108,7 @@ class AddAnotherAdditionalInformationControllerSpec extends SpecBase with AppWit
       }
 
       "when max limit reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
           .thenReturn(maxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -129,7 +129,7 @@ class AddAnotherAdditionalInformationControllerSpec extends SpecBase with AppWit
     "when max limit not reached" - {
       "when yes submitted" - {
         "must redirect to additional information type page at next index" in {
-          when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
+          when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
             .thenReturn(notMaxedOutViewModel)
 
           setExistingUserAnswers(emptyUserAnswers)
@@ -150,7 +150,7 @@ class AddAnotherAdditionalInformationControllerSpec extends SpecBase with AppWit
 
       "when no submitted" - {
         "must redirect to next page" in {
-          when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
+          when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
             .thenReturn(notMaxedOutViewModel)
 
           setExistingUserAnswers(emptyUserAnswers)
@@ -169,7 +169,7 @@ class AddAnotherAdditionalInformationControllerSpec extends SpecBase with AppWit
 
     "when max limit reached" - {
       "must redirect to next page" in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
           .thenReturn(maxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -187,7 +187,7 @@ class AddAnotherAdditionalInformationControllerSpec extends SpecBase with AppWit
 
     "must return a Bad Request and errors" - {
       "when invalid data is submitted and max limit not reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
           .thenReturn(notMaxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)

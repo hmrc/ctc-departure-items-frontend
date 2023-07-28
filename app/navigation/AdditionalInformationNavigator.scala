@@ -39,7 +39,8 @@ trait AdditionalInformationNavigatorProvider {
 }
 
 class AdditionalInformationNavigator(override val mode: Mode, itemIndex: Index, additionalInformationIndex: Index)(implicit
-  override val config: FrontendAppConfig
+  override val config: FrontendAppConfig,
+  override val phaseConfig: PhaseConfig
 ) extends UserAnswersNavigator {
 
   override type T = AdditionalInformationDomain

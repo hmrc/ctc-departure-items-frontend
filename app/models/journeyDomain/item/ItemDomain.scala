@@ -65,7 +65,7 @@ case class ItemDomain(
 
   def label(implicit messages: Messages): String = messages("item.label", index.display, itemDescription)
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some(
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] = Some(
     controllers.item.routes.CheckYourAnswersController.onPageLoad(userAnswers.lrn, index)
   )
 }
