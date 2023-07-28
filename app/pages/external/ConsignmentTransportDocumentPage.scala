@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-import play.api.libs.json.{__, JsPath}
+package pages.external
 
-package object pages {
+import pages.ReadOnlyPage
+import play.api.libs.json.JsPath
 
-  lazy val preTaskListPath: JsPath   = __ \ "preTaskList"
-  lazy val traderDetailsPath: JsPath = __ \ "traderDetails"
-  lazy val transportPath: JsPath     = __ \ "transportDetails"
-  lazy val documentsPath: JsPath     = __ \ "documents"
-  lazy val preRequisitesPath: JsPath = transportPath \ "preRequisites"
-  lazy val equipmentsPath: JsPath    = transportPath \ "equipmentsAndCharges"
-  lazy val consignmentPath: JsPath   = traderDetailsPath \ "consignment"
+case object ConsignmentTransportDocumentPage extends ReadOnlyPage[String] {
+
+  override def path: JsPath = documentsPath \ toString
+
+  override def toString: String = "path"
 }

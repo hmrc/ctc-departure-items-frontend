@@ -49,7 +49,11 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
   "Item Domain" - {
 
-    "can be read from user answers" - {}
+    val mockTransitionPhaseConfig = mock[PhaseConfig]
+    when(mockTransitionPhaseConfig.phase).thenReturn(Phase.Transition)
+
+    val mockPostTransitionPhaseConfig = mock[PhaseConfig]
+    when(mockPostTransitionPhaseConfig.phase).thenReturn(Phase.PostTransition)
 
     "userAnswersReader" - {
       "can not be read from user answers" - {
@@ -303,47 +307,198 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
     "ucrReader" - {
       "can be read from user answers" - {
-        "when consignment UCR is defined" in {
-          forAll(nonEmptyString) {
-            ucr =>
+
+        "when in transition" - {
+          "when consignment UCR is defined" in {
+            forAll(nonEmptyString) {
+              ucr =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(ConsignmentUCRPage, ucr)
+
+                val expectedResult = None
+
+                val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                  ItemDomain.ucrReader(itemIndex)(mockTransitionPhaseConfig)
+                ).run(userAnswers)
+
+                result.value mustBe expectedResult
+            }
+          }
+
+          "when consignment UCR is undefined" - {
+            "and add ucr is answered yes" in {
+              forAll(nonEmptyString) {
+                ucr =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(AddUCRYesNoPage(itemIndex), true)
+                    .setValue(UniqueConsignmentReferencePage(itemIndex), ucr)
+
+                  val expectedResult = Some(ucr)
+
+                  val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                    ItemDomain.ucrReader(itemIndex)(mockTransitionPhaseConfig)
+                  ).run(userAnswers)
+
+                  result.value mustBe expectedResult
+              }
+            }
+
+            "and add ucr is answered no" in {
               val userAnswers = emptyUserAnswers
-                .setValue(ConsignmentUCRPage, ucr)
+                .setValue(AddUCRYesNoPage(itemIndex), false)
 
               val expectedResult = None
 
               val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                ItemDomain.ucrReader(itemIndex)
+                ItemDomain.ucrReader(itemIndex)(mockTransitionPhaseConfig)
               ).run(userAnswers)
 
               result.value mustBe expectedResult
+            }
           }
         }
 
-        "when consignment UCR is undefined" in {
-          forAll(nonEmptyString) {
-            ucr =>
-              val userAnswers = emptyUserAnswers
-                .setValue(UniqueConsignmentReferencePage(itemIndex), ucr)
+        "when in post-transition" - {
+          "when consignment UCR is defined" in {
+            forAll(nonEmptyString) {
+              ucr =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(ConsignmentUCRPage, ucr)
 
-              val expectedResult = Some(ucr)
+                val expectedResult = None
 
-              val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                ItemDomain.ucrReader(itemIndex)
-              ).run(userAnswers)
+                val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                  ItemDomain.ucrReader(itemIndex)(mockPostTransitionPhaseConfig)
+                ).run(userAnswers)
 
-              result.value mustBe expectedResult
+                result.value mustBe expectedResult
+            }
+          }
+
+          "when consignment UCR is undefined" - {
+            "and consignment transport is defined" - {
+              "and add ucr is answered yes" in {
+                forAll(nonEmptyString, nonEmptyString) {
+                  (ucr, transportDoc) =>
+                    val userAnswers = emptyUserAnswers
+                      .setValue(ConsignmentTransportDocumentPage, transportDoc)
+                      .setValue(AddUCRYesNoPage(itemIndex), true)
+                      .setValue(UniqueConsignmentReferencePage(itemIndex), ucr)
+
+                    val expectedResult = Some(ucr)
+
+                    val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                      ItemDomain.ucrReader(itemIndex)(mockPostTransitionPhaseConfig)
+                    ).run(userAnswers)
+
+                    result.value mustBe expectedResult
+                }
+              }
+
+              "and add ucr is answered no" in {
+                forAll(nonEmptyString) {
+                  transportDoc =>
+                    val userAnswers = emptyUserAnswers
+                      .setValue(ConsignmentTransportDocumentPage, transportDoc)
+                      .setValue(AddUCRYesNoPage(itemIndex), false)
+
+                    val expectedResult = None
+
+                    val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                      ItemDomain.ucrReader(itemIndex)(mockPostTransitionPhaseConfig)
+                    ).run(userAnswers)
+
+                    result.value mustBe expectedResult
+                }
+              }
+            }
+
+            "and consignment transport is undefined" in {
+              forAll(nonEmptyString) {
+                ucr =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(UniqueConsignmentReferencePage(itemIndex), ucr)
+
+                  val expectedResult = Some(ucr)
+
+                  val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                    ItemDomain.ucrReader(itemIndex)(mockPostTransitionPhaseConfig)
+                  ).run(userAnswers)
+
+                  result.value mustBe expectedResult
+              }
+            }
+
           }
         }
       }
 
       "cannot be read from user answers" - {
-        "when consignment UCR is undefined" - {
-          "and UCR page is unanswered" in {
-            val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-              ItemDomain.ucrReader(itemIndex)
-            ).run(emptyUserAnswers)
+        "when in transition" - {
+          "when consignment UCR is undefined" - {
+            "and UCRYesNo page is unanswered" in {
+              val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                ItemDomain.ucrReader(itemIndex)(mockTransitionPhaseConfig)
+              ).run(emptyUserAnswers)
 
-            result.left.value.page mustBe UniqueConsignmentReferencePage(itemIndex)
+              result.left.value.page mustBe AddUCRYesNoPage(itemIndex)
+            }
+
+            "and UCR page is unanswered" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(AddUCRYesNoPage(itemIndex), true)
+
+              val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                ItemDomain.ucrReader(itemIndex)(mockTransitionPhaseConfig)
+              ).run(userAnswers)
+
+              result.left.value.page mustBe UniqueConsignmentReferencePage(itemIndex)
+            }
+          }
+        }
+        "when in post-transition" - {
+          "when consignment UCR is undefined" - {
+            "and consignment transport is undefined" - {
+              "and UCR page is unanswered" in {
+                val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                  ItemDomain.ucrReader(itemIndex)(mockPostTransitionPhaseConfig)
+                ).run(emptyUserAnswers)
+
+                result.left.value.page mustBe UniqueConsignmentReferencePage(itemIndex)
+              }
+            }
+
+            "and consignment transport is defined" - {
+              "and AddUCRYesNo page is unanswered" in {
+
+                forAll(nonEmptyString) {
+                  transportDoc =>
+                    val userAnswers = emptyUserAnswers
+                      .setValue(ConsignmentTransportDocumentPage, transportDoc)
+
+                    val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                      ItemDomain.ucrReader(itemIndex)(mockPostTransitionPhaseConfig)
+                    ).run(userAnswers)
+
+                    result.left.value.page mustBe AddUCRYesNoPage(itemIndex)
+                }
+              }
+              "and UCR page is unanswered" in {
+
+                forAll(nonEmptyString) {
+                  transportDoc =>
+                    val userAnswers = emptyUserAnswers
+                      .setValue(ConsignmentTransportDocumentPage, transportDoc)
+                      .setValue(AddUCRYesNoPage(itemIndex), true)
+
+                    val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                      ItemDomain.ucrReader(itemIndex)(mockPostTransitionPhaseConfig)
+                    ).run(userAnswers)
+
+                    result.left.value.page mustBe UniqueConsignmentReferencePage(itemIndex)
+                }
+              }
+            }
           }
         }
       }

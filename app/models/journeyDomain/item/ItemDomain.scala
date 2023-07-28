@@ -22,6 +22,7 @@ import config.PhaseConfig
 import models.DeclarationType._
 import models.DocumentType.Previous
 import models._
+import models.Phase.{PostTransition, Transition}
 import models.journeyDomain.item.additionalInformation.AdditionalInformationListDomain
 import models.journeyDomain.item.additionalReferences.AdditionalReferencesDomain
 import models.journeyDomain.item.dangerousGoods.DangerousGoodsListDomain
@@ -122,11 +123,20 @@ object ItemDomain {
       CountryOfDestinationPage(itemIndex).reader
     }
 
-  // TODO - will need updating once documents has been built
-  def ucrReader(itemIndex: Index): UserAnswersReader[Option[String]] =
-    ConsignmentUCRPage.filterDependent(_.isEmpty) {
-      UniqueConsignmentReferencePage(itemIndex).reader
-    }
+  def ucrReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[Option[String]] =
+    for {
+      isUCRDefined                     <- ConsignmentUCRPage.isDefined
+      isConsignmentTransportDocDefined <- ConsignmentTransportDocumentPage.isDefined
+      result <- {
+        (isUCRDefined, isConsignmentTransportDocDefined, phaseConfig.phase) match {
+          case (true, _, _) => UserAnswersReader(None)
+          case (false, false, PostTransition) =>
+            UniqueConsignmentReferencePage(itemIndex).reader.map(Some(_))
+          case _ =>
+            AddUCRYesNoPage(itemIndex).filterOptionalDependent(identity)(UniqueConsignmentReferencePage(itemIndex).reader)
+        }
+      }
+    } yield result
 
   def cusCodeReader(itemIndex: Index): UserAnswersReader[Option[String]] =
     AddCUSCodeYesNoPage(itemIndex).filterOptionalDependent(identity) {
