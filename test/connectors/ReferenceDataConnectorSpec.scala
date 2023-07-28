@@ -41,19 +41,19 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
   private lazy val connector: ReferenceDataConnector = app.injector.instanceOf[ReferenceDataConnector]
 
-  private val countriesResponseJson: String =
+  private def countriesResponseJson(listName: String): String =
     s"""
        |{
        |  "_links": {
        |    "self": {
-       |      "href": "/customs-reference-data/lists/CountryCodesFullList"
+       |      "href": "/customs-reference-data/lists/$listName"
        |    }
        |  },
        |  "meta": {
        |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
        |    "snapshotDate": "2023-01-01"
        |  },
-       |  "id": "CountryCodesFullList",
+       |  "id": "$listName",
        |  "data": [
        |    {
        |      "activeFrom": "2023-01-23",
@@ -181,7 +181,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       "must return Seq of Country when successful" in {
         server.stubFor(
           get(urlEqualTo(s"/$baseUrl/lists/CountryCodesFullList"))
-            .willReturn(okJson(countriesResponseJson))
+            .willReturn(okJson(countriesResponseJson("CountryCodesFullList")))
         )
 
         val expectedResult: Seq[Country] = Seq(
@@ -194,6 +194,46 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
       "must return an exception when an error response is returned" in {
         checkErrorResponse(s"/$baseUrl/lists/CountryCodesFullList", connector.getCountries)
+      }
+    }
+
+    "getCountryCodesForAddress" - {
+      "must return Seq of Country when successful" in {
+        server.stubFor(
+          get(urlEqualTo(s"/$baseUrl/lists/CountryCodesForAddress"))
+            .willReturn(okJson(countriesResponseJson("CountryCodesForAddress")))
+        )
+
+        val expectedResult: Seq[Country] = Seq(
+          Country(CountryCode("GB"), "United Kingdom"),
+          Country(CountryCode("AD"), "Andorra")
+        )
+
+        connector.getCountryCodesForAddress.futureValue mustEqual expectedResult
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(s"/$baseUrl/lists/CountryCodesFullList", connector.getCountries)
+      }
+    }
+
+    "getCountriesWithoutZip" - {
+      "must return Seq of Country when successful" in {
+        server.stubFor(
+          get(urlEqualTo(s"/$baseUrl/lists/CountryWithoutZip"))
+            .willReturn(okJson(countriesResponseJson("CountryWithoutZip")))
+        )
+
+        val expectedResult: Seq[CountryCode] = Seq(
+          CountryCode("GB"),
+          CountryCode("AD")
+        )
+
+        connector.getCountriesWithoutZip().futureValue mustEqual expectedResult
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(s"/$baseUrl/country-without-zip", connector.getCountriesWithoutZip())
       }
     }
 

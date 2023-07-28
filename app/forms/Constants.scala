@@ -17,7 +17,7 @@
 package forms
 
 object Constants {
-  lazy val maxNameLength: Int                       = 70
+  lazy val maxNameLength: Int                       = 35
   lazy val maxUCRLength: Int                        = 35
   lazy val maxItemDescriptionLength: Int            = 512
   lazy val exactCommodityCodeLength: Int            = 6

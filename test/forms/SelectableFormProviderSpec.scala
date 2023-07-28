@@ -28,11 +28,11 @@ class SelectableFormProviderSpec extends StringFieldBehaviours with Generators {
   private val requiredKey = s"$prefix.error.required"
   private val maxLength   = 8
 
-  private val additionalReference1    = arbitraryAdditionalReference.arbitrary.sample.get
-  private val additionalReference2    = arbitraryAdditionalReference.arbitrary.sample.get
-  private val additionalReferenceList = SelectableList(Seq(additionalReference1, additionalReference2))
+  private val country1    = arbitraryCountry.arbitrary.sample.get
+  private val country2    = arbitraryCountry.arbitrary.sample.get
+  private val countryList = SelectableList(Seq(country1, country2))
 
-  private val form = new SelectableFormProvider()(prefix, additionalReferenceList)
+  private val form = new SelectableFormProvider()(prefix, countryList)
 
   ".value" - {
 
@@ -57,7 +57,7 @@ class SelectableFormProviderSpec extends StringFieldBehaviours with Generators {
     }
 
     "bind a value which is in the list" in {
-      val boundForm = form.bind(Map("value" -> additionalReference1.value))
+      val boundForm = form.bind(Map("value" -> country1.value))
       val field     = boundForm("value")
       field.errors must be(empty)
     }
