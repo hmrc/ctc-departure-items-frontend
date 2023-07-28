@@ -16,7 +16,7 @@
 
 package controllers.item.dangerousGoods
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import controllers.actions._
 import forms.AddAnotherFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
@@ -41,7 +41,7 @@ class AddAnotherDangerousGoodsController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherDangerousGoodsView,
   viewModelProvider: AddAnotherDangerousGoodsViewModelProvider
-)(implicit config: FrontendAppConfig)
+)(implicit config: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 

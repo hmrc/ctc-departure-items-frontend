@@ -16,6 +16,7 @@
 
 package controllers.item.dangerousGoods.index
 
+import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.item.dangerousGoods.UNNumberFormProvider
@@ -39,7 +40,7 @@ class UNNumberController @Inject() (
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: UNNumberView
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
