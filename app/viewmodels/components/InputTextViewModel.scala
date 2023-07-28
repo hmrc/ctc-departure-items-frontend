@@ -46,4 +46,11 @@ object InputTextViewModel {
     label: String
   ) extends InputTextViewModel
 
+  case class TextInputWithAdditionalHtml(
+    heading: String,
+    caption: Option[String] = None,
+    additionalHtml: Html
+  ) extends InputTextViewModel
+      with AdditionalHtmlViewModel
+
 }

@@ -40,4 +40,9 @@ class AddAdditionalReferenceYesNoViewSpec extends YesNoViewBehaviours {
   behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Save and continue")
+
+  behave like pageWithContent(
+    "p",
+    "This can be any other reference you want to declare, such as a certificate number, import licence or accompanying document."
+  )
 }

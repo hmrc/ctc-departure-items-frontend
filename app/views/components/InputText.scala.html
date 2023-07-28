@@ -72,4 +72,10 @@
     case MultiTextInput(label) => {
         @govukInput(input.copy(label = Label(isPageHeading = false, content = Text(label))))
     }
+
+    case x @ TextInputWithAdditionalHtml(heading, caption, additionalHtml) => {
+        @hmrcHeading(heading, caption, Some(x.headingClasses))
+        @additionalHtml
+        @govukInput(input.copy(label = Label(isPageHeading = false)))
+    }
 }

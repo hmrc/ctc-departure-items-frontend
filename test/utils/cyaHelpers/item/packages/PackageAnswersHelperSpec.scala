@@ -59,14 +59,14 @@ class PackageAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks wi
               helper.listItems mustBe Seq(
                 Right(
                   ListItem(
-                    name = s"1 ${packageType.toString}",
+                    name = s"1 * ${packageType.toString}",
                     changeUrl = routes.PackageTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url,
                     removeUrl = Some(routes.RemovePackageController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url)
                   )
                 ),
                 Right(
                   ListItem(
-                    name = s"1 ${packageType.toString}",
+                    name = s"1 * ${packageType.toString}",
                     changeUrl = routes.PackageTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url,
                     removeUrl = Some(routes.RemovePackageController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url)
                   )
@@ -94,14 +94,14 @@ class PackageAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks wi
               helper.listItems mustBe Seq(
                 Right(
                   ListItem(
-                    name = s"$quantityString ${packageType.toString}",
+                    name = s"$quantityString * ${packageType.toString}",
                     changeUrl = routes.PackageTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url,
                     removeUrl = Some(routes.RemovePackageController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url)
                   )
                 ),
                 Right(
                   ListItem(
-                    name = s"$quantityString ${packageType.toString}",
+                    name = s"$quantityString * ${packageType.toString}",
                     changeUrl = routes.PackageTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url,
                     removeUrl = Some(routes.RemovePackageController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url)
                   )

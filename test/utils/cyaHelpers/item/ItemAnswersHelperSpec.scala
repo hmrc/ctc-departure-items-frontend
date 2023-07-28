@@ -742,7 +742,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               val result = helper.`package`(packageIndex).get
 
               result.key.value mustBe "Package 1"
-              result.value.value mustBe s"1 ${packageType.toString}"
+              result.value.value mustBe s"1 * ${packageType.toString}"
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
@@ -769,7 +769,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
               result.key.value mustBe "Package 1"
               val quantityString = String.format("%,d", quantity)
-              result.value.value mustBe s"$quantityString ${packageType.toString}"
+              result.value.value mustBe s"$quantityString * ${packageType.toString}"
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
