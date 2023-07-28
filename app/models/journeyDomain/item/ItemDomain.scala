@@ -23,6 +23,7 @@ import models.DeclarationType._
 import models.DocumentType.Previous
 import models._
 import models.Phase.{PostTransition, Transition}
+import models.SecurityDetailsType.NoSecurityDetails
 import models.journeyDomain.item.additionalInformation.AdditionalInformationListDomain
 import models.journeyDomain.item.additionalReferences.AdditionalReferencesDomain
 import models.journeyDomain.item.dangerousGoods.DangerousGoodsListDomain
@@ -30,7 +31,8 @@ import models.journeyDomain.item.documents.DocumentsDomain
 import models.journeyDomain.item.packages.PackagesDomain
 import models.journeyDomain.item.supplyChainActors.SupplyChainActorsDomain
 import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, JsArrayGettableAsReaderOps, Stage, UserAnswersReader}
-import models.reference.Country
+import models.reference.{Country, TransportChargesMethodOfPayment}
+import models._
 import pages.external._
 import pages.item._
 import pages.sections.external.{ConsignmentConsigneeSection, DocumentsSection, TransportEquipmentsSection}
@@ -59,7 +61,8 @@ case class ItemDomain(
   supplyChainActors: Option[SupplyChainActorsDomain],
   documents: Option[DocumentsDomain],
   additionalReferences: Option[AdditionalReferencesDomain],
-  additionalInformation: Option[AdditionalInformationListDomain]
+  additionalInformation: Option[AdditionalInformationListDomain],
+  transportCharges: Option[TransportChargesMethodOfPayment]
 )(index: Index)
     extends JourneyDomainModel {
 
@@ -92,7 +95,8 @@ object ItemDomain {
       supplyChainActorsReader(itemIndex),
       documentsReader(itemIndex),
       additionalReferencesReader(itemIndex),
-      additionalInformationListReader(itemIndex)
+      additionalInformationListReader(itemIndex),
+      transportChargesReader(itemIndex)
     ).tupled.map((ItemDomain.apply _).tupled).map(_(itemIndex))
 
   def transportEquipmentReader(itemIndex: Index): UserAnswersReader[Option[UUID]] =
@@ -233,4 +237,18 @@ object ItemDomain {
   def additionalInformationListReader(itemIndex: Index): UserAnswersReader[Option[AdditionalInformationListDomain]] =
     AddAdditionalInformationYesNoPage(itemIndex)
       .filterOptionalDependent(identity)(AdditionalInformationListDomain.userAnswersReader(itemIndex))
+
+  def transportChargesReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[Option[TransportChargesMethodOfPayment]] =
+    for {
+      securityDetails                      <- SecurityDetailsTypePage.reader
+      isConsignmentTransportChargesDefined <- ConsignmentTransportChargesPage.isDefined
+      result <- {
+        (securityDetails, isConsignmentTransportChargesDefined, phaseConfig.phase) match {
+          case (NoSecurityDetails, _, Transition) | (_, false, Transition) =>
+            AddTransportChargesYesNoPage(itemIndex).filterOptionalDependent(identity)(TransportChargesMethodOfPaymentPage(itemIndex).reader)
+          case _ => UserAnswersReader(None)
+        }
+      }
+    } yield result
+
 }

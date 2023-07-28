@@ -27,8 +27,8 @@ import models.journeyDomain.item.dangerousGoods.{DangerousGoodsDomain, Dangerous
 import models.journeyDomain.item.documents.{DocumentDomain, DocumentsDomain}
 import models.journeyDomain.item.packages.{PackageDomain, PackagesDomain}
 import models.journeyDomain.{EitherType, UserAnswersReader}
-import models.reference.{AdditionalInformation, AdditionalReference, Country, PackageType}
-import models.{DeclarationType, Index, Phase}
+import models.reference.{AdditionalInformation, AdditionalReference, Country, PackageType, TransportChargesMethodOfPayment}
+import models.{DeclarationType, Index, PaymentMethod, Phase, SecurityDetailsType}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -1453,6 +1453,139 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         }
       }
     }
-  }
 
+    "transportChargesReader" - {
+      "can be read from user answers" - {
+        "when in post-transition" in {
+          forAll(arbitrary[SecurityDetailsType]) {
+            securityDetails =>
+              val userAnswers = emptyUserAnswers
+                .setValue(SecurityDetailsTypePage, securityDetails)
+
+              val expectedResult = None
+
+              val result: EitherType[Option[TransportChargesMethodOfPayment]] = UserAnswersReader[Option[TransportChargesMethodOfPayment]](
+                ItemDomain.transportChargesReader(itemIndex)(mockPostTransitionPhaseConfig)
+              ).run(userAnswers)
+
+              result.value mustBe expectedResult
+          }
+        }
+
+        "when in transition" - {
+          "and security is 0" - {
+            "and add transport charges is answered yes" in {
+              forAll(arbitrary[SecurityDetailsType](arbitraryNoSecurityDetailsType), arbitrary[TransportChargesMethodOfPayment](arbitraryMethodOfPayment)) {
+                (securityDetailsType, transportCharge) =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(SecurityDetailsTypePage, securityDetailsType)
+                    .setValue(AddTransportChargesYesNoPage(itemIndex), true)
+                    .setValue(TransportChargesMethodOfPaymentPage(itemIndex), transportCharge)
+
+                  val expectedResult = Some(transportCharge)
+
+                  val result: EitherType[Option[TransportChargesMethodOfPayment]] = UserAnswersReader[Option[TransportChargesMethodOfPayment]](
+                    ItemDomain.transportChargesReader(itemIndex)(mockTransitionPhaseConfig)
+                  ).run(userAnswers)
+
+                  result.value mustBe expectedResult
+              }
+            }
+
+            "and add transport charges is answered no" in {
+              forAll(arbitrary[SecurityDetailsType](arbitraryNoSecurityDetailsType)) {
+                securityDetailsType =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(SecurityDetailsTypePage, securityDetailsType)
+                    .setValue(AddTransportChargesYesNoPage(itemIndex), false)
+
+                  val expectedResult = None
+
+                  val result: EitherType[Option[TransportChargesMethodOfPayment]] = UserAnswersReader[Option[TransportChargesMethodOfPayment]](
+                    ItemDomain.transportChargesReader(itemIndex)(mockTransitionPhaseConfig)
+                  ).run(userAnswers)
+
+                  result.value mustBe expectedResult
+              }
+            }
+          }
+
+          "or if consignmentTransportCharges is not present" in {
+            forAll(arbitrary[SecurityDetailsType], arbitrary[TransportChargesMethodOfPayment]) {
+              (securityDetailType, transportCharges) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(SecurityDetailsTypePage, securityDetailType)
+                  .setValue(AddTransportChargesYesNoPage(itemIndex), true)
+                  .setValue(TransportChargesMethodOfPaymentPage(itemIndex), transportCharges)
+
+                val expectedResult = Some(transportCharges)
+
+                val result: EitherType[Option[TransportChargesMethodOfPayment]] = UserAnswersReader[Option[TransportChargesMethodOfPayment]](
+                  ItemDomain.transportChargesReader(itemIndex)(mockTransitionPhaseConfig)
+                ).run(userAnswers)
+
+                result.value mustBe expectedResult
+
+            }
+
+          }
+
+          "or if consignmentTransportCharges is present" in {
+            forAll(arbitrary[SecurityDetailsType](arbitrarySomeSecurityDetailsType), arbitrary[PaymentMethod]) {
+              (securityDetailType, consignmentTransportCharges) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(SecurityDetailsTypePage, securityDetailType)
+                  .setValue(ConsignmentTransportChargesPage, consignmentTransportCharges)
+
+                val expectedResult = None
+
+                val result: EitherType[Option[TransportChargesMethodOfPayment]] = UserAnswersReader[Option[TransportChargesMethodOfPayment]](
+                  ItemDomain.transportChargesReader(itemIndex)(mockTransitionPhaseConfig)
+                ).run(userAnswers)
+
+                result.value mustBe expectedResult
+
+            }
+
+          }
+
+        }
+
+      }
+    }
+
+    "can not be read from user answers" - {
+      "when in transition" - {
+        "and security is 0" - {
+          "and add transport charges is unanswered" in {
+            forAll(arbitrary[SecurityDetailsType](arbitraryNoSecurityDetailsType)) {
+              securityDetailsType =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(SecurityDetailsTypePage, securityDetailsType)
+
+                val result: EitherType[Option[TransportChargesMethodOfPayment]] = UserAnswersReader[Option[TransportChargesMethodOfPayment]](
+                  ItemDomain.transportChargesReader(itemIndex)(mockTransitionPhaseConfig)
+                ).run(userAnswers)
+
+                result.left.value.page mustBe AddTransportChargesYesNoPage(itemIndex)
+            }
+          }
+          "and transport charges is unanswered" in {
+            forAll(arbitrary[SecurityDetailsType](arbitraryNoSecurityDetailsType)) {
+              securityDetailsType =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(SecurityDetailsTypePage, securityDetailsType)
+                  .setValue(AddTransportChargesYesNoPage(itemIndex), true)
+
+                val result: EitherType[Option[TransportChargesMethodOfPayment]] = UserAnswersReader[Option[TransportChargesMethodOfPayment]](
+                  ItemDomain.transportChargesReader(itemIndex)(mockTransitionPhaseConfig)
+                ).run(userAnswers)
+
+                result.left.value.page mustBe TransportChargesMethodOfPaymentPage(itemIndex)
+            }
+          }
+        }
+      }
+    }
+  }
 }
