@@ -130,7 +130,7 @@ class InputTextSpec extends A11ySpecBase {
         content.toString() must passAccessibilityChecks
       }
 
-      "address text input" in {
+      "text with additional html " in {
         val content = template.apply(title, lrn = lrn) {
           component
             .apply(
