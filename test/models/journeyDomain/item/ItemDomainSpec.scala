@@ -378,10 +378,29 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
           "when consignment UCR is undefined" - {
             "and consignment transport is defined" - {
               "and add ucr is answered yes" in {
-                forAll(nonEmptyString, nonEmptyString) {
-                  (ucr, transportDoc) =>
+                forAll(nonEmptyString, nonEmptyString, arbitrary[UUID]) {
+                  (ucr, transportDoc, documentUUID) =>
+                    val documents = Json
+                      .parse(s"""
+                           |[
+                           |    {
+                           |      "attachToAllItems" : true,
+                           |      "type" : {
+                           |        "type" : "Transport",
+                           |        "code" : "Code 1",
+                           |        "description" : "Description 1"
+                           |      },
+                           |      "details" : {
+                           |        "documentReferenceNumber" : "Ref no. 1",
+                           |        "uuid" : "$documentUUID"
+                           |      }
+                           |    }
+                           |]
+                           |""".stripMargin)
+                      .as[JsArray]
+
                     val userAnswers = emptyUserAnswers
-                      .setValue(ConsignmentTransportDocumentPage, transportDoc)
+                      .setValue(DocumentsSection, documents)
                       .setValue(AddUCRYesNoPage(itemIndex), true)
                       .setValue(UniqueConsignmentReferencePage(itemIndex), ucr)
 
@@ -396,10 +415,28 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
               }
 
               "and add ucr is answered no" in {
-                forAll(nonEmptyString) {
-                  transportDoc =>
+                forAll(arbitrary[UUID]) {
+                  documentUUID =>
+                    val documents = Json
+                      .parse(s"""
+                           |[
+                           |    {
+                           |      "attachToAllItems" : true,
+                           |      "type" : {
+                           |        "type" : "Transport",
+                           |        "code" : "Code 1",
+                           |        "description" : "Description 1"
+                           |      },
+                           |      "details" : {
+                           |        "documentReferenceNumber" : "Ref no. 1",
+                           |        "uuid" : "$documentUUID"
+                           |      }
+                           |    }
+                           |]
+                           |""".stripMargin)
+                      .as[JsArray]
                     val userAnswers = emptyUserAnswers
-                      .setValue(ConsignmentTransportDocumentPage, transportDoc)
+                      .setValue(DocumentsSection, documents)
                       .setValue(AddUCRYesNoPage(itemIndex), false)
 
                     val expectedResult = None
@@ -469,12 +506,31 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
             }
 
             "and consignment transport is defined" - {
+
               "and AddUCRYesNo page is unanswered" in {
 
-                forAll(nonEmptyString) {
-                  transportDoc =>
+                forAll(arbitrary[UUID]) {
+                  documentUUID =>
+                    val documents = Json
+                      .parse(s"""
+                           |[
+                           |    {
+                           |      "attachToAllItems" : true,
+                           |      "type" : {
+                           |        "type" : "Transport",
+                           |        "code" : "Code 1",
+                           |        "description" : "Description 1"
+                           |      },
+                           |      "details" : {
+                           |        "documentReferenceNumber" : "Ref no. 1",
+                           |        "uuid" : "$documentUUID"
+                           |      }
+                           |    }
+                           |]
+                           |""".stripMargin)
+                      .as[JsArray]
                     val userAnswers = emptyUserAnswers
-                      .setValue(ConsignmentTransportDocumentPage, transportDoc)
+                      .setValue(DocumentsSection, documents)
 
                     val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
                       ItemDomain.ucrReader(itemIndex)(mockPostTransitionPhaseConfig)
@@ -485,10 +541,28 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
               }
               "and UCR page is unanswered" in {
 
-                forAll(nonEmptyString) {
-                  transportDoc =>
+                forAll(arbitrary[UUID]) {
+                  documentUUID =>
+                    val documents = Json
+                      .parse(s"""
+                           |[
+                           |    {
+                           |      "attachToAllItems" : true,
+                           |      "type" : {
+                           |        "type" : "Transport",
+                           |        "code" : "Code 1",
+                           |        "description" : "Description 1"
+                           |      },
+                           |      "details" : {
+                           |        "documentReferenceNumber" : "Ref no. 1",
+                           |        "uuid" : "$documentUUID"
+                           |      }
+                           |    }
+                           |]
+                           |""".stripMargin)
+                      .as[JsArray]
                     val userAnswers = emptyUserAnswers
-                      .setValue(ConsignmentTransportDocumentPage, transportDoc)
+                      .setValue(DocumentsSection, documents)
                       .setValue(AddUCRYesNoPage(itemIndex), true)
 
                     val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](

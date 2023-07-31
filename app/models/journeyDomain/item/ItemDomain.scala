@@ -22,6 +22,7 @@ import config.PhaseConfig
 import models.DeclarationType._
 import models.DocumentType.Previous
 import models._
+import models.DocumentType.{Previous, Transport}
 import models.Phase.{PostTransition, Transition}
 import models.SecurityDetailsType.NoSecurityDetails
 import models.journeyDomain.item.additionalInformation.AdditionalInformationListDomain
@@ -129,8 +130,11 @@ object ItemDomain {
 
   def ucrReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[Option[String]] =
     for {
-      isUCRDefined                     <- ConsignmentUCRPage.isDefined
-      isConsignmentTransportDocDefined <- ConsignmentTransportDocumentPage.isDefined
+      isUCRDefined <- ConsignmentUCRPage.isDefined
+      documents    <- DocumentsSection.arrayReader.map(_.validateAsListOf[Document])
+      isConsignmentTransportDocDefined = documents.exists(
+        x => x.attachToAllItems && x.`type` == Transport
+      )
       result <- {
         (isUCRDefined, isConsignmentTransportDocDefined, phaseConfig.phase) match {
           case (true, _, _) => UserAnswersReader(None)
