@@ -27,8 +27,8 @@ import models.journeyDomain.item.dangerousGoods.{DangerousGoodsDomain, Dangerous
 import models.journeyDomain.item.documents.{DocumentDomain, DocumentsDomain}
 import models.journeyDomain.item.packages.{PackageDomain, PackagesDomain}
 import models.journeyDomain.{EitherType, UserAnswersReader}
-import models.reference.{AdditionalInformation, AdditionalReference, Country, PackageType, TransportChargesMethodOfPayment}
-import models.{DeclarationType, Index, PaymentMethod, Phase, SecurityDetailsType}
+import models.reference._
+import models.{DeclarationType, Index, Phase, SecurityDetailsType}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -1671,7 +1671,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
           }
 
           "or if consignmentTransportCharges is present" in {
-            forAll(arbitrary[SecurityDetailsType](arbitrarySomeSecurityDetailsType), arbitrary[PaymentMethod]) {
+            forAll(arbitrary[SecurityDetailsType](arbitrarySomeSecurityDetailsType), nonEmptyString) {
               (securityDetailType, consignmentTransportCharges) =>
                 val userAnswers = emptyUserAnswers
                   .setValue(SecurityDetailsTypePage, securityDetailType)
