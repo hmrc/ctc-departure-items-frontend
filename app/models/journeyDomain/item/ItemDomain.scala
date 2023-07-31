@@ -147,15 +147,16 @@ object ItemDomain {
       CustomsUnionAndStatisticsCodePage(itemIndex).reader
     }
 
-  def commodityCodeReader(itemIndex: Index): UserAnswersReader[Option[String]] =
-    TransitOperationTIRCarnetNumberPage.isDefined.flatMap {
-      case true =>
-        AddCommodityCodeYesNoPage(itemIndex).filterOptionalDependent(identity) {
-          CommodityCodePage(itemIndex).reader
+  def commodityCodeReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[Option[String]] =
+    for {
+      isTransitOperationTIRDefined <- TransitOperationTIRCarnetNumberPage.isDefined
+      result <- {
+        (isTransitOperationTIRDefined, phaseConfig.phase) match {
+          case (false, PostTransition) => CommodityCodePage(itemIndex).reader.map(Some(_))
+          case _                       => AddCommodityCodeYesNoPage(itemIndex).filterOptionalDependent(identity)(CommodityCodePage(itemIndex).reader)
         }
-      case false =>
-        CommodityCodePage(itemIndex).reader.map(Some(_))
-    }
+      }
+    } yield result
 
   def combinedNomenclatureCodeReader(itemIndex: Index): UserAnswersReader[Option[String]] =
     CommodityCodePage(itemIndex).isDefined.flatMap {

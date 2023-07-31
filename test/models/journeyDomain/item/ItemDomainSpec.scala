@@ -563,100 +563,166 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
     "commodityCodeReader" - {
 
       "can be read from user answers" - {
-        "when TIR Carnet reference number is defined" - {
+        "when in transition" - {
           "and commodity code has been provided" in {
-            forAll(nonEmptyString, nonEmptyString) {
-              (tirReference, commodityCode) =>
+            forAll(nonEmptyString) {
+              commodityCode =>
                 val userAnswers = emptyUserAnswers
-                  .setValue(TransitOperationTIRCarnetNumberPage, tirReference)
                   .setValue(AddCommodityCodeYesNoPage(itemIndex), true)
                   .setValue(CommodityCodePage(itemIndex), commodityCode)
 
                 val expectedResult = Some(commodityCode)
 
                 val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                  ItemDomain.commodityCodeReader(itemIndex)
+                  ItemDomain.commodityCodeReader(itemIndex)(mockTransitionPhaseConfig)
                 ).run(userAnswers)
 
                 result.value mustBe expectedResult
-            }
-          }
 
+            }
+
+          }
           "and commodity code has not been provided" in {
             forAll(nonEmptyString) {
-              tirReference =>
+              commodityCode =>
                 val userAnswers = emptyUserAnswers
-                  .setValue(TransitOperationTIRCarnetNumberPage, tirReference)
                   .setValue(AddCommodityCodeYesNoPage(itemIndex), false)
 
                 val expectedResult = None
 
                 val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                  ItemDomain.commodityCodeReader(itemIndex)
+                  ItemDomain.commodityCodeReader(itemIndex)(mockTransitionPhaseConfig)
+                ).run(userAnswers)
+
+                result.value mustBe expectedResult
+
+            }
+
+          }
+        }
+        "when in post-transition" - {
+          "and TIR Carnet reference number is defined" - {
+            "and commodity code has been provided" in {
+              forAll(nonEmptyString, nonEmptyString) {
+                (tirReference, commodityCode) =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(TransitOperationTIRCarnetNumberPage, tirReference)
+                    .setValue(AddCommodityCodeYesNoPage(itemIndex), true)
+                    .setValue(CommodityCodePage(itemIndex), commodityCode)
+
+                  val expectedResult = Some(commodityCode)
+
+                  val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                    ItemDomain.commodityCodeReader(itemIndex)(mockPostTransitionPhaseConfig)
+                  ).run(userAnswers)
+
+                  result.value mustBe expectedResult
+              }
+            }
+
+            "and commodity code has not been provided" in {
+              forAll(nonEmptyString) {
+                tirReference =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(TransitOperationTIRCarnetNumberPage, tirReference)
+                    .setValue(AddCommodityCodeYesNoPage(itemIndex), false)
+
+                  val expectedResult = None
+
+                  val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                    ItemDomain.commodityCodeReader(itemIndex)(mockPostTransitionPhaseConfig)
+                  ).run(userAnswers)
+
+                  result.value mustBe expectedResult
+              }
+            }
+          }
+
+          "when TIR Carnet reference number is undefined" in {
+            forAll(nonEmptyString) {
+              commodityCode =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(CommodityCodePage(itemIndex), commodityCode)
+
+                val expectedResult = Some(commodityCode)
+
+                val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                  ItemDomain.commodityCodeReader(itemIndex)(mockPostTransitionPhaseConfig)
                 ).run(userAnswers)
 
                 result.value mustBe expectedResult
             }
-          }
-        }
-
-        "when TIR Carnet reference number is undefined" in {
-          forAll(nonEmptyString) {
-            commodityCode =>
-              val userAnswers = emptyUserAnswers
-                .setValue(CommodityCodePage(itemIndex), commodityCode)
-
-              val expectedResult = Some(commodityCode)
-
-              val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                ItemDomain.commodityCodeReader(itemIndex)
-              ).run(userAnswers)
-
-              result.value mustBe expectedResult
           }
         }
       }
 
       "can not be read from user answers" - {
 
-        "when TIR Carnet reference number is defined" - {
-          "and add commodity code yes/no is unanswered" in {
-            forAll(nonEmptyString) {
-              tirReference =>
-                val userAnswers = emptyUserAnswers
-                  .setValue(TransitOperationTIRCarnetNumberPage, tirReference)
+        "when in transition" - {
+          "and commodity code yes/no is unanswered" in {
 
-                val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                  ItemDomain.commodityCodeReader(itemIndex)
-                ).run(userAnswers)
-
-                result.left.value.page mustBe AddCommodityCodeYesNoPage(itemIndex)
-            }
-          }
-
-          "and commodity code is unanswered" in {
-            forAll(nonEmptyString) {
-              tirReference =>
-                val userAnswers = emptyUserAnswers
-                  .setValue(TransitOperationTIRCarnetNumberPage, tirReference)
-                  .setValue(AddCommodityCodeYesNoPage(itemIndex), true)
-
-                val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                  ItemDomain.commodityCodeReader(itemIndex)
-                ).run(userAnswers)
-
-                result.left.value.page mustBe CommodityCodePage(itemIndex)
-            }
-          }
-        }
-
-        "when TIR Carnet reference number is undefined" - {
-          "and commodity code is unanswered" in {
             val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-              ItemDomain.commodityCodeReader(itemIndex)
+              ItemDomain.commodityCodeReader(itemIndex)(mockTransitionPhaseConfig)
             ).run(emptyUserAnswers)
 
+            result.left.value.page mustBe AddCommodityCodeYesNoPage(itemIndex)
+          }
+
+          "and commodity code is unanswered" in {
+
+            val userAnswers = emptyUserAnswers
+              .setValue(AddCommodityCodeYesNoPage(itemIndex), true)
+
+            val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+              ItemDomain.commodityCodeReader(itemIndex)(mockTransitionPhaseConfig)
+            ).run(userAnswers)
+
             result.left.value.page mustBe CommodityCodePage(itemIndex)
+
+          }
+
+        }
+
+        "when in post-transition" - {
+          "and TIR Carnet reference number is defined" - {
+            "and add commodity code yes/no is unanswered" in {
+              forAll(nonEmptyString) {
+                tirReference =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(TransitOperationTIRCarnetNumberPage, tirReference)
+
+                  val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                    ItemDomain.commodityCodeReader(itemIndex)
+                  ).run(userAnswers)
+
+                  result.left.value.page mustBe AddCommodityCodeYesNoPage(itemIndex)
+              }
+            }
+
+            "and commodity code is unanswered" in {
+              forAll(nonEmptyString) {
+                tirReference =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(TransitOperationTIRCarnetNumberPage, tirReference)
+                    .setValue(AddCommodityCodeYesNoPage(itemIndex), true)
+
+                  val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                    ItemDomain.commodityCodeReader(itemIndex)(mockPostTransitionPhaseConfig)
+                  ).run(userAnswers)
+
+                  result.left.value.page mustBe CommodityCodePage(itemIndex)
+              }
+            }
+          }
+
+          "when TIR Carnet reference number is undefined" - {
+            "and commodity code is unanswered" in {
+              val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                ItemDomain.commodityCodeReader(itemIndex)(mockPostTransitionPhaseConfig)
+              ).run(emptyUserAnswers)
+
+              result.left.value.page mustBe CommodityCodePage(itemIndex)
+            }
           }
         }
       }
