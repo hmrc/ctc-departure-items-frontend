@@ -43,7 +43,7 @@
 
         @inputText(
             field = form("value"),
-            inputTextType = TextInputWithAdditionalHtml(
+            inputTextType = TextInputWithHiddenLabel(
                 heading = messages("item.packages.index.numberOfPackages.heading", packageType),
                 caption = Some(messages("item.packages.caption", itemIndex.display)),
                 additionalHtml = govukInsetText(InsetText(content = Text( messages("item.packages.index.numberOfPackages.inset.text", packageType)  )))
