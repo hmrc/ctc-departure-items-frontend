@@ -36,15 +36,18 @@ trait UserAnswersEntryGenerators {
 
   private def generateExternalAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.external._
+    import pages.sections.external._
     {
-      case CustomsOfficeOfDeparturePage        => Gen.alphaNumStr.map(JsString)
-      case CustomsOfficeOfDepartureInCL112Page => arbitrary[Boolean].map(JsBoolean)
-      case TransitOperationDeclarationTypePage => arbitrary[DeclarationType].map(Json.toJson(_))
-      case TransitOperationTIRCarnetNumberPage => Gen.alphaNumStr.map(JsString)
-      case ConsignmentUCRPage                  => Gen.alphaNumStr.map(JsString)
-      case ConsignmentCountryOfDispatchPage    => arbitrary[Country].map(Json.toJson(_))
-      case ConsignmentCountryOfDestinationPage => arbitrary[Country].map(Json.toJson(_))
-      case ApprovedOperatorPage                => arbitrary[Boolean].map(JsBoolean)
+      case CustomsOfficeOfDeparturePage               => Gen.alphaNumStr.map(JsString)
+      case CustomsOfficeOfDepartureInCL112Page        => arbitrary[Boolean].map(JsBoolean)
+      case TransitOperationDeclarationTypePage        => arbitrary[DeclarationType].map(Json.toJson(_))
+      case TransitOperationTIRCarnetNumberPage        => Gen.alphaNumStr.map(JsString)
+      case ConsignmentUCRPage                         => Gen.alphaNumStr.map(JsString)
+      case ConsignmentCountryOfDispatchPage           => arbitrary[Country].map(Json.toJson(_))
+      case ConsignmentCountryOfDestinationPage        => arbitrary[Country].map(Json.toJson(_))
+      case ApprovedOperatorPage                       => arbitrary[Boolean].map(JsBoolean)
+      case ConsignmentConsigneeSection                => arbitrary[JsObject]
+      case ConsignmentCountryOfDestinationInCL009Page => arbitrary[Boolean].map(JsBoolean)
     }
   }
 

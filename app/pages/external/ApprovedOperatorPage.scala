@@ -16,7 +16,7 @@
 
 package pages.external
 
-import pages.ReadOnlyPage
+import pages.{consignmentPath, ReadOnlyPage}
 import play.api.libs.json.JsPath
 
 case object ApprovedOperatorPage extends ReadOnlyPage[Boolean] {
