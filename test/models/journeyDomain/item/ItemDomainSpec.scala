@@ -945,6 +945,22 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
               }
             }
           }
+
+          "and country of destination is undefined" - {
+            "then result must be defined" in {
+              val initialAnswers = emptyUserAnswers
+                .setValue(ConsignmentConsigneeSection, Json.obj("foo" -> "bar"))
+
+              forAll(arbitraryConsigneeAnswers(initialAnswers, itemIndex)) {
+                userAnswers =>
+                  val result = UserAnswersReader[Option[ConsigneeDomain]](
+                    ItemDomain.consigneeReader(itemIndex)(mockPhaseConfig)
+                  ).run(userAnswers)
+
+                  result.value must be(defined)
+              }
+            }
+          }
         }
 
         "and consignee info not present at consignment level" - {
@@ -970,6 +986,19 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                 .setValue(ConsignmentCountryOfDestinationInCL009Page, false)
 
               forAll(arbitraryConsigneeAnswers(initialAnswers, itemIndex)) {
+                userAnswers =>
+                  val result = UserAnswersReader[Option[ConsigneeDomain]](
+                    ItemDomain.consigneeReader(itemIndex)(mockPhaseConfig)
+                  ).run(userAnswers)
+
+                  result.value must be(defined)
+              }
+            }
+          }
+
+          "and country of destination is undefined" - {
+            "then result must be defined" in {
+              forAll(arbitraryConsigneeAnswers(emptyUserAnswers, itemIndex)) {
                 userAnswers =>
                   val result = UserAnswersReader[Option[ConsigneeDomain]](
                     ItemDomain.consigneeReader(itemIndex)(mockPhaseConfig)

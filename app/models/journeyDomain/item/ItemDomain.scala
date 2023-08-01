@@ -184,7 +184,7 @@ object ItemDomain {
       case Phase.Transition =>
         for {
           consignmentConsigneePresent <- ConsignmentConsigneeSection.isDefined
-          countryOfDestinationInCL009 <- ConsignmentCountryOfDestinationInCL009Page.reader
+          countryOfDestinationInCL009 <- ConsignmentCountryOfDestinationInCL009Page.readerWithDefault(false)
           reader <- (consignmentConsigneePresent, countryOfDestinationInCL009) match {
             case (true, true) => none[ConsigneeDomain].pure[UserAnswersReader]
             case _            => ConsigneeDomain.userAnswersReader(itemIndex).map(Some(_))
