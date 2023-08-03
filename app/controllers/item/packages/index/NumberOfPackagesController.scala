@@ -21,6 +21,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.Constants.maxNumberOfPackages
 import forms.IntFormProvider
+import models.PackingType.Unpacked
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{PackageNavigatorProvider, UserAnswersNavigator}
 import pages.item.packages.index.{NumberOfPackagesPage, PackageTypePage}
@@ -64,8 +65,9 @@ class NumberOfPackagesController @Inject() (
     .andThen(getMandatoryPage(PackageTypePage(itemIndex, packageIndex)))
     .async {
       implicit request =>
-        val packageType = request.arg.toString
-        val form        = formProvider("item.packages.index.numberOfPackages", maxNumberOfPackages, Seq(packageType))
+        val packageType         = request.arg.toString
+        val minNumberOfPackages = if (request.arg.`type` == Unpacked) 1 else 0
+        val form                = formProvider("item.packages.index.numberOfPackages", maxNumberOfPackages, Seq(packageType), minNumberOfPackages)
         form
           .bindFromRequest()
           .fold(

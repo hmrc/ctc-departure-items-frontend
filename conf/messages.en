@@ -261,10 +261,10 @@ item.packages.index.numberOfPackages.inset.text = {0}
 item.packages.index.numberOfPackages.checkYourAnswersLabel = Package quantity
 item.packages.index.numberOfPackages.change.hidden = package quantity for package {0}
 item.packages.index.numberOfPackages.error.nonNumeric = The quantity must only include numbers 0 to 9
-item.packages.index.numberOfPackages.error.required = Enter the number of {0} you are using
+item.packages.index.numberOfPackages.error.required = Enter the quantity of the package type
 item.packages.index.numberOfPackages.error.wholeNumber = The quantity must only include numbers 0 to 9
 item.packages.index.numberOfPackages.error.maximum = The quantity must be 99,999,999 or less
-item.packages.index.numberOfPackages.error.negative = The quantity must be 0 or more
+item.packages.index.numberOfPackages.error.negative = The quantity must be {0} or more
 
 item.packages.index.beforeYouContinue.title = Before you continue
 item.packages.index.beforeYouContinue.heading = Before you continue
