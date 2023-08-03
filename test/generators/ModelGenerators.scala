@@ -23,6 +23,7 @@ import models._
 import models.reference._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import uk.gov.hmrc.http.HttpVerbs._
 
@@ -250,6 +251,13 @@ trait ModelGenerators {
 
   lazy val arbitraryIncompleteTaskStatus: Arbitrary[TaskStatus] = Arbitrary {
     Gen.oneOf(TaskStatus.InProgress, TaskStatus.NotStarted, TaskStatus.CannotStartYet)
+  }
+
+  implicit lazy val arbitraryJsObject: Arbitrary[JsObject] = Arbitrary {
+    Gen.oneOf(
+      Json.obj(),
+      Json.obj("foo" -> "bar")
+    )
   }
 
 }

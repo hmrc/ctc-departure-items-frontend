@@ -14,11 +14,21 @@
  * limitations under the License.
  */
 
-package pages.sections
+package pages.item.consignee
 
-import play.api.libs.json.{__, JsPath}
+import controllers.item.consignee.routes
+import models.{Index, Mode, UserAnswers}
+import pages.QuestionPage
+import pages.sections.consigneeSection.ConsigneeSection
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-package object external {
-  lazy val transportPath: JsPath  = __ \ "transportDetails"
-  lazy val equipmentsPath: JsPath = transportPath \ "equipmentsAndCharges"
+case class NamePage(itemIndex: Index) extends QuestionPage[String] {
+
+  override def path: JsPath = ConsigneeSection(itemIndex).path \ toString
+
+  override def toString: String = "name"
+
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.NameController.onPageLoad(userAnswers.lrn, mode, itemIndex))
 }

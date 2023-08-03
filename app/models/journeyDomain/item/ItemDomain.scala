@@ -21,6 +21,7 @@ import config.Constants.GB
 import config.PhaseConfig
 import models.DeclarationType._
 import models.DocumentType.Previous
+import models._
 import models.journeyDomain.item.additionalInformation.AdditionalInformationListDomain
 import models.journeyDomain.item.additionalReferences.AdditionalReferencesDomain
 import models.journeyDomain.item.dangerousGoods.DangerousGoodsListDomain
@@ -29,10 +30,9 @@ import models.journeyDomain.item.packages.PackagesDomain
 import models.journeyDomain.item.supplyChainActors.SupplyChainActorsDomain
 import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, JsArrayGettableAsReaderOps, Stage, UserAnswersReader}
 import models.reference.Country
-import models._
 import pages.external._
 import pages.item._
-import pages.sections.external.{DocumentsSection, TransportEquipmentsSection}
+import pages.sections.external.{ConsignmentConsigneeSection, DocumentsSection, TransportEquipmentsSection}
 import play.api.i18n.Messages
 import play.api.mvc.Call
 
@@ -54,6 +54,7 @@ case class ItemDomain(
   netWeight: Option[BigDecimal],
   supplementaryUnits: Option[BigDecimal],
   packages: PackagesDomain,
+  consignee: Option[ConsigneeDomain],
   supplyChainActors: Option[SupplyChainActorsDomain],
   documents: Option[DocumentsDomain],
   additionalReferences: Option[AdditionalReferencesDomain],
@@ -86,6 +87,7 @@ object ItemDomain {
       netWeightReader(itemIndex),
       supplementaryUnitsReader(itemIndex),
       packagesReader(itemIndex),
+      consigneeReader(itemIndex),
       supplyChainActorsReader(itemIndex),
       documentsReader(itemIndex),
       additionalReferencesReader(itemIndex),
@@ -176,6 +178,21 @@ object ItemDomain {
 
   def packagesReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[PackagesDomain] =
     PackagesDomain.userAnswersReader(itemIndex)
+
+  def consigneeReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[Option[ConsigneeDomain]] =
+    phaseConfig.phase match {
+      case Phase.Transition =>
+        for {
+          consignmentConsigneePresent <- ConsignmentConsigneeSection.isDefined
+          countryOfDestinationInCL009 <- ConsignmentCountryOfDestinationInCL009Page.readerWithDefault(false)
+          reader <- (consignmentConsigneePresent, countryOfDestinationInCL009) match {
+            case (true, true) => none[ConsigneeDomain].pure[UserAnswersReader]
+            case _            => ConsigneeDomain.userAnswersReader(itemIndex).map(Some(_))
+          }
+        } yield reader
+      case Phase.PostTransition =>
+        none[ConsigneeDomain].pure[UserAnswersReader]
+    }
 
   def supplyChainActorsReader(itemIndex: Index): UserAnswersReader[Option[SupplyChainActorsDomain]] =
     AddSupplyChainActorYesNoPage(itemIndex)

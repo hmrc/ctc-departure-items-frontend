@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package pages
+package pages.sections.consigneeSection
 
-import play.api.libs.json.{__, JsPath}
+import models.Index
+import pages.sections.{ItemSection, Section}
+import play.api.libs.json.{JsObject, JsPath}
 
-package object external {
+case class ConsigneeSection(itemIndex: Index) extends Section[JsObject] {
 
-  lazy val preTaskListPath: JsPath   = __ \ "preTaskList"
-  lazy val traderDetailsPath: JsPath = __ \ "traderDetails"
-  lazy val transportPath: JsPath     = __ \ "transportDetails"
-  lazy val preRequisitesPath: JsPath = transportPath \ "preRequisites"
-  lazy val consignmentPath: JsPath   = traderDetailsPath \ "consignment"
+  override def path: JsPath = ItemSection(itemIndex).path \ toString
 
+  override def toString: String = "consignee"
 }

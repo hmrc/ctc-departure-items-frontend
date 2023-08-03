@@ -24,8 +24,11 @@ import controllers.item.dangerousGoods.index.routes.UNNumberController
 import controllers.item.documents.index.routes.DocumentController
 import controllers.item.packages.index.routes.PackageTypeController
 import controllers.item.supplyChainActors.index.routes.SupplyChainActorTypeController
+import controllers.item.consignee.routes._
 import controllers.item.routes._
 import generators.Generators
+import models.reference.{AdditionalInformation, AdditionalReference, Country, CountryCode, PackageType}
+import models.{CheckMode, DeclarationType, Document, DynamicAddress, Index, Mode, SupplyChainActorType, TransportEquipment}
 import models.reference.{AdditionalInformation, AdditionalReference, Country, PackageType}
 import models.{CheckMode, DeclarationType, Document, Index, Mode, Phase, SupplyChainActorType, TransportEquipment}
 import org.mockito.Mockito.when
@@ -1165,5 +1168,164 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
       }
     }
 
+    "consigneeAddEoriNumberYesNo" - {
+      "must return None" - {
+        "when consigneeAddEoriNumberYesNo is undefined" in {
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+          val result = helper.consigneeAddEoriNumberYesNo
+          result mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when consigneeAddEoriNumberYesNo is defined" in {
+          val answers = emptyUserAnswers.setValue(consignee.AddConsigneeEoriNumberYesNoPage(itemIndex), true)
+
+          val helper = new ItemAnswersHelper(answers, itemIndex)
+          val result = helper.consigneeAddEoriNumberYesNo.get
+
+          result.key.value mustBe "Do you know the consignee’s EORI number or Trader Identification Number (TIN) for this item?"
+          result.value.value mustBe "Yes"
+
+          val actions = result.actions.get.items
+          actions.size mustBe 1
+          val action = actions.head
+          action.content.value mustBe "Change"
+          action.href mustBe AddConsigneeEoriNumberYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
+          action.visuallyHiddenText.get mustBe s"if you know the consignee’s EORI number or Trader Identification Number (TIN) for item ${itemIndex.display}"
+          action.id mustBe "change-has-consignee-eori"
+        }
+      }
+
+    }
+
+    "consigneeIdentificationNumber" - {
+
+      "must return None" - {
+        "when consigneeIdentificationNumber is undefined" in {
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+          val result = helper.consigneeIdentificationNumber
+          result mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when consigneeIdentificationNumber is defined" in {
+          val answers = emptyUserAnswers.setValue(consignee.IdentificationNumberPage(itemIndex), "AB123")
+
+          val helper = new ItemAnswersHelper(answers, itemIndex)
+          val result = helper.consigneeIdentificationNumber.get
+
+          result.key.value mustBe "EORI number or Trader Identification Number (TIN)"
+          result.value.value mustBe "AB123"
+
+          val actions = result.actions.get.items
+          actions.size mustBe 1
+          val action = actions.head
+          action.content.value mustBe "Change"
+          action.href mustBe IdentificationNumberController.onPageLoad(answers.lrn, mode, itemIndex).url
+          action.visuallyHiddenText.get mustBe s"consignee’s EORI number or Trader Identification Number (TIN) for item ${itemIndex.display}"
+          action.id mustBe "change-consignee-identification-number"
+        }
+      }
+
+    }
+
+    "consigneeName" - {
+
+      "must return None" - {
+        "when consigneeName is undefined" in {
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+          val result = helper.consigneeName
+          result mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when consigneeName is defined" in {
+          val answers = emptyUserAnswers.setValue(consignee.NamePage(itemIndex), "John Doe")
+
+          val helper = new ItemAnswersHelper(answers, itemIndex)
+          val result = helper.consigneeName.get
+
+          result.key.value mustBe "Name"
+          result.value.value mustBe "John Doe"
+
+          val actions = result.actions.get.items
+          actions.size mustBe 1
+          val action = actions.head
+          action.content.value mustBe "Change"
+          action.href mustBe NameController.onPageLoad(answers.lrn, mode, itemIndex).url
+          action.visuallyHiddenText.get mustBe s"consignee’s name for item ${itemIndex.display}"
+          action.id mustBe "change-consignee-name"
+        }
+      }
+
+    }
+
+    "consigneeCountry" - {
+
+      "must return None" - {
+        "when consigneeCountry is undefined" in {
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+          val result = helper.consigneeCountry
+          result mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when consigneeCountry is defined" in {
+          val country = Country(CountryCode("GB"), "United Kingdom")
+          val answers = emptyUserAnswers.setValue(consignee.CountryPage(itemIndex), country)
+
+          val helper = new ItemAnswersHelper(answers, itemIndex)
+          val result = helper.consigneeCountry.get
+
+          result.key.value mustBe "Country"
+          result.value.value mustBe country.description
+
+          val actions = result.actions.get.items
+          actions.size mustBe 1
+          val action = actions.head
+          action.content.value mustBe "Change"
+          action.href mustBe CountryController.onPageLoad(answers.lrn, mode, itemIndex).url
+          action.visuallyHiddenText.get mustBe s"consignee’s country for item ${itemIndex.display}"
+          action.id mustBe "change-consignee-country"
+        }
+      }
+
+    }
+
+    "consigneeAddress" - {
+
+      "must return None" - {
+        "when consigneeAddress is undefined" in {
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+          val result = helper.consigneeAddress
+          result mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when consigneeAddress is defined" in {
+          val address = DynamicAddress("Number and street 1", "City 2", Some("AB1 1AB"))
+          val answers = emptyUserAnswers.setValue(consignee.AddressPage(itemIndex), address)
+
+          val helper = new ItemAnswersHelper(answers, itemIndex)
+          val result = helper.consigneeAddress.get
+
+          result.key.value mustBe "Consignee’s address"
+          result.value.value mustBe "Number and street 1<br>City 2<br>AB1 1AB"
+
+          val actions = result.actions.get.items
+          actions.size mustBe 1
+          val action = actions.head
+          action.content.value mustBe "Change"
+          action.href mustBe AddressController.onPageLoad(answers.lrn, mode, itemIndex).url
+          action.visuallyHiddenText.get mustBe s"consignee’s address for item ${itemIndex.display}"
+          action.id mustBe "change-consignee-address"
+        }
+      }
+    }
   }
 }

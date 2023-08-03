@@ -31,8 +31,9 @@ object CountryCode {
       override def writes(o: CountryCode): JsValue = JsString(o.code)
 
       override def reads(json: JsValue): JsResult[CountryCode] = json match {
-        case JsString(code) => JsSuccess(CountryCode(code))
-        case x              => JsError(s"Expected a string, got a ${x.getClass}")
+        case JsObject(mapping) => JsSuccess(CountryCode(mapping("code").as[String]))
+        case JsString(code)    => JsSuccess(CountryCode(code))
+        case x                 => JsError(s"Expected a string, got a ${x.getClass}")
       }
     }
 
