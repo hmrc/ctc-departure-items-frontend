@@ -18,6 +18,7 @@ package viewmodels.item
 
 import base.SpecBase
 import generators.Generators
+import org.mockito.Mockito.when
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import services.{DocumentsService, TransportEquipmentService}
 import viewmodels.item.ItemAnswersViewModel.ItemAnswersViewModelProvider
@@ -28,13 +29,14 @@ class ItemAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks wi
   implicit private val transportEquipmentService: TransportEquipmentService = injector.instanceOf[TransportEquipmentService]
 
   "apply" - {
-    "must return all sections" in {
+    "must return all sections for transition" in {
+
       forAll(arbitraryItemAnswers(emptyUserAnswers, itemIndex)) {
         answers =>
           val viewModelProvider = new ItemAnswersViewModelProvider()
           val sections          = viewModelProvider.apply(answers, itemIndex).sections
 
-          sections.size mustBe 8
+          sections.size mustBe 9
 
           sections.head.sectionTitle must not be defined
           sections.head.rows must not be empty
@@ -47,13 +49,15 @@ class ItemAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
           sections(3: Int).sectionTitle.get mustBe "Packages"
 
-          sections(4: Int).sectionTitle.get mustBe "Supply chain actors"
+          sections(4: Int).sectionTitle.get mustBe "Consignee"
 
-          sections(5: Int).sectionTitle.get mustBe "Documents"
+          sections(5: Int).sectionTitle.get mustBe "Supply chain actors"
 
-          sections(6: Int).sectionTitle.get mustBe "Additional references"
+          sections(6: Int).sectionTitle.get mustBe "Documents"
 
-          sections(7: Int).sectionTitle.get mustBe "Additional information"
+          sections(7: Int).sectionTitle.get mustBe "Additional references"
+
+          sections(8: Int).sectionTitle.get mustBe "Additional information"
 
       }
     }
