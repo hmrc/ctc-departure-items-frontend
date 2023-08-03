@@ -18,6 +18,7 @@ package models.journeyDomain.item
 
 import base.SpecBase
 import config.Constants.GB
+import config.PhaseConfig
 import generators.Generators
 import models.DeclarationType._
 import models.journeyDomain.item.additionalInformation.{AdditionalInformationDomain, AdditionalInformationListDomain}
@@ -27,7 +28,8 @@ import models.journeyDomain.item.documents.{DocumentDomain, DocumentsDomain}
 import models.journeyDomain.item.packages.{PackageDomain, PackagesDomain}
 import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.reference.{AdditionalInformation, AdditionalReference, Country, PackageType}
-import models.{DeclarationType, Index}
+import models.{DeclarationType, Index, Phase}
+import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -38,7 +40,7 @@ import pages.item.additionalReference.index._
 import pages.item.dangerousGoods.index.UNNumberPage
 import pages.item.documents.index.DocumentPage
 import pages.item.packages.index._
-import pages.sections.external.{DocumentsSection, TransportEquipmentsSection}
+import pages.sections.external.{ConsignmentConsigneeSection, DocumentsSection, TransportEquipmentsSection}
 import play.api.libs.json.{JsArray, Json}
 
 import java.util.UUID
@@ -884,6 +886,128 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
           ).run(emptyUserAnswers)
 
           result.left.value.page mustBe PackageTypePage(itemIndex, packageIndex)
+        }
+      }
+    }
+
+    "consigneeReader" - {
+      "when post-transition" - {
+        val mockPhaseConfig = mock[PhaseConfig]
+        when(mockPhaseConfig.phase).thenReturn(Phase.PostTransition)
+
+        "then result must not be defined" in {
+          forAll(arbitraryConsigneeAnswers(emptyUserAnswers, itemIndex)) {
+            userAnswers =>
+              val result = UserAnswersReader[Option[ConsigneeDomain]](
+                ItemDomain.consigneeReader(itemIndex)(mockPhaseConfig)
+              ).run(userAnswers)
+
+              result.value must not be defined
+          }
+        }
+      }
+
+      "when during transition" - {
+        val mockPhaseConfig = mock[PhaseConfig]
+        when(mockPhaseConfig.phase).thenReturn(Phase.Transition)
+
+        "and consignee info present at consignment level" - {
+          "and country of destination is in set CL009" - {
+            "then result must not be defined" in {
+              val initialAnswers = emptyUserAnswers
+                .setValue(ConsignmentConsigneeSection, Json.obj("foo" -> "bar"))
+                .setValue(ConsignmentCountryOfDestinationInCL009Page, true)
+
+              forAll(arbitraryConsigneeAnswers(initialAnswers, itemIndex)) {
+                userAnswers =>
+                  val result = UserAnswersReader[Option[ConsigneeDomain]](
+                    ItemDomain.consigneeReader(itemIndex)(mockPhaseConfig)
+                  ).run(userAnswers)
+
+                  result.value must not be defined
+              }
+            }
+          }
+
+          "and country of destination is not in set CL009" - {
+            "then result must be defined" in {
+              val initialAnswers = emptyUserAnswers
+                .setValue(ConsignmentConsigneeSection, Json.obj("foo" -> "bar"))
+                .setValue(ConsignmentCountryOfDestinationInCL009Page, false)
+
+              forAll(arbitraryConsigneeAnswers(initialAnswers, itemIndex)) {
+                userAnswers =>
+                  val result = UserAnswersReader[Option[ConsigneeDomain]](
+                    ItemDomain.consigneeReader(itemIndex)(mockPhaseConfig)
+                  ).run(userAnswers)
+
+                  result.value must be(defined)
+              }
+            }
+          }
+
+          "and country of destination is undefined" - {
+            "then result must be defined" in {
+              val initialAnswers = emptyUserAnswers
+                .setValue(ConsignmentConsigneeSection, Json.obj("foo" -> "bar"))
+
+              forAll(arbitraryConsigneeAnswers(initialAnswers, itemIndex)) {
+                userAnswers =>
+                  val result = UserAnswersReader[Option[ConsigneeDomain]](
+                    ItemDomain.consigneeReader(itemIndex)(mockPhaseConfig)
+                  ).run(userAnswers)
+
+                  result.value must be(defined)
+              }
+            }
+          }
+        }
+
+        "and consignee info not present at consignment level" - {
+          "and country of destination is in set CL009" - {
+            "then result must be defined" in {
+              val initialAnswers = emptyUserAnswers
+                .setValue(ConsignmentCountryOfDestinationInCL009Page, true)
+
+              forAll(arbitraryConsigneeAnswers(initialAnswers, itemIndex)) {
+                userAnswers =>
+                  val result = UserAnswersReader[Option[ConsigneeDomain]](
+                    ItemDomain.consigneeReader(itemIndex)(mockPhaseConfig)
+                  ).run(userAnswers)
+
+                  result.value must be(defined)
+              }
+            }
+          }
+
+          "and country of destination is not in set CL009" - {
+            "then result must be defined" in {
+              val initialAnswers = emptyUserAnswers
+                .setValue(ConsignmentCountryOfDestinationInCL009Page, false)
+
+              forAll(arbitraryConsigneeAnswers(initialAnswers, itemIndex)) {
+                userAnswers =>
+                  val result = UserAnswersReader[Option[ConsigneeDomain]](
+                    ItemDomain.consigneeReader(itemIndex)(mockPhaseConfig)
+                  ).run(userAnswers)
+
+                  result.value must be(defined)
+              }
+            }
+          }
+
+          "and country of destination is undefined" - {
+            "then result must be defined" in {
+              forAll(arbitraryConsigneeAnswers(emptyUserAnswers, itemIndex)) {
+                userAnswers =>
+                  val result = UserAnswersReader[Option[ConsigneeDomain]](
+                    ItemDomain.consigneeReader(itemIndex)(mockPhaseConfig)
+                  ).run(userAnswers)
+
+                  result.value must be(defined)
+              }
+            }
+          }
         }
       }
     }
