@@ -17,6 +17,7 @@
 package pages.item.consignee
 
 import pages.behaviours.PageBehaviours
+import pages.item.consignee
 
 class AddConsigneeEoriNumberYesNoPageSpec extends PageBehaviours {
 
@@ -27,5 +28,33 @@ class AddConsigneeEoriNumberYesNoPageSpec extends PageBehaviours {
     beSettable[Boolean](AddConsigneeEoriNumberYesNoPage(itemIndex))
 
     beRemovable[Boolean](AddConsigneeEoriNumberYesNoPage(itemIndex))
+
+    "cleanup" - {
+      "when no selected" - {
+        "must remove IdentificationNumber" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(AddConsigneeEoriNumberYesNoPage(itemIndex), true)
+            .setValue(IdentificationNumberPage(itemIndex), "AB123")
+
+          val result = userAnswers.setValue(consignee.AddConsigneeEoriNumberYesNoPage(itemIndex), false)
+
+          result.get(IdentificationNumberPage(itemIndex)) must not be defined
+        }
+      }
+
+      "when yes selected" - {
+        "must do nothing" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(AddConsigneeEoriNumberYesNoPage(itemIndex), true)
+            .setValue(IdentificationNumberPage(itemIndex), "AB123")
+
+          val result = userAnswers.setValue(AddConsigneeEoriNumberYesNoPage(itemIndex), true)
+
+          result.get(IdentificationNumberPage(itemIndex)) must be(defined)
+        }
+      }
+    }
   }
 }

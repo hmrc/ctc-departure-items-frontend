@@ -16,8 +16,8 @@
 
 package generators
 
-import models.{DeclarationType, SupplyChainActorType}
-import models.reference.{AdditionalInformation, AdditionalReference, Country, PackageType}
+import models._
+import models.reference._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.libs.json._
@@ -36,15 +36,18 @@ trait UserAnswersEntryGenerators {
 
   private def generateExternalAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.external._
+    import pages.sections.external._
     {
-      case CustomsOfficeOfDeparturePage        => Gen.alphaNumStr.map(JsString)
-      case CustomsOfficeOfDepartureInCL112Page => arbitrary[Boolean].map(JsBoolean)
-      case TransitOperationDeclarationTypePage => arbitrary[DeclarationType].map(Json.toJson(_))
-      case TransitOperationTIRCarnetNumberPage => Gen.alphaNumStr.map(JsString)
-      case ConsignmentUCRPage                  => Gen.alphaNumStr.map(JsString)
-      case ConsignmentCountryOfDispatchPage    => arbitrary[Country].map(Json.toJson(_))
-      case ConsignmentCountryOfDestinationPage => arbitrary[Country].map(Json.toJson(_))
-      case ApprovedOperatorPage                => arbitrary[Boolean].map(JsBoolean)
+      case CustomsOfficeOfDeparturePage               => Gen.alphaNumStr.map(JsString)
+      case CustomsOfficeOfDepartureInCL112Page        => arbitrary[Boolean].map(JsBoolean)
+      case TransitOperationDeclarationTypePage        => arbitrary[DeclarationType].map(Json.toJson(_))
+      case TransitOperationTIRCarnetNumberPage        => Gen.alphaNumStr.map(JsString)
+      case ConsignmentUCRPage                         => Gen.alphaNumStr.map(JsString)
+      case ConsignmentCountryOfDispatchPage           => arbitrary[Country].map(Json.toJson(_))
+      case ConsignmentCountryOfDestinationPage        => arbitrary[Country].map(Json.toJson(_))
+      case ApprovedOperatorPage                       => arbitrary[Boolean].map(JsBoolean)
+      case ConsignmentConsigneeSection                => arbitrary[JsObject]
+      case ConsignmentCountryOfDestinationInCL009Page => arbitrary[Boolean].map(JsBoolean)
     }
   }
 
@@ -77,6 +80,7 @@ trait UserAnswersEntryGenerators {
     pf orElse
       generateDangerousGoodsAnswer orElse
       generatePackageAnswer orElse
+      generateConsigneeAnswer orElse
       generateSupplyChainActorAnswer orElse
       generateDocumentsAnswer orElse
       generateAdditionalReferenceAnswer orElse
@@ -98,6 +102,17 @@ trait UserAnswersEntryGenerators {
       case NumberOfPackagesPage(_, _)     => Gen.posNum[Int].map(Json.toJson(_))
       case AddShippingMarkYesNoPage(_, _) => arbitrary[Boolean].map(JsBoolean)
       case ShippingMarkPage(_, _)         => Gen.alphaNumStr.map(JsString)
+    }
+  }
+
+  private def generateConsigneeAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+    import pages.item.consignee._
+    {
+      case AddConsigneeEoriNumberYesNoPage(_) => arbitrary[Boolean].map(JsBoolean)
+      case IdentificationNumberPage(_)        => Gen.alphaNumStr.map(JsString)
+      case NamePage(_)                        => Gen.alphaNumStr.map(JsString)
+      case CountryPage(_)                     => arbitrary[Country].map(Json.toJson(_))
+      case AddressPage(_)                     => arbitrary[DynamicAddress].map(Json.toJson(_))
     }
   }
 

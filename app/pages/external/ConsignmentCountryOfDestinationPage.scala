@@ -17,7 +17,7 @@
 package pages.external
 
 import models.reference.Country
-import pages.ReadOnlyPage
+import pages.{preRequisitesPath, ReadOnlyPage}
 import play.api.libs.json.JsPath
 
 case object ConsignmentCountryOfDestinationPage extends ReadOnlyPage[Country] {
@@ -25,4 +25,11 @@ case object ConsignmentCountryOfDestinationPage extends ReadOnlyPage[Country] {
   override def path: JsPath = preRequisitesPath \ toString
 
   override def toString: String = "itemsDestinationCountry"
+}
+
+case object ConsignmentCountryOfDestinationInCL009Page extends ReadOnlyPage[Boolean] {
+
+  override def path: JsPath = ConsignmentCountryOfDestinationPage.path \ toString
+
+  override def toString: String = "isInCL009"
 }
