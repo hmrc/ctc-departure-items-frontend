@@ -16,13 +16,14 @@
 
 package generators
 
-import models.journeyDomain.item.ItemDomain
+import config.PhaseConfig
 import models.journeyDomain.item.additionalInformation.AdditionalInformationDomain
 import models.journeyDomain.item.additionalReferences.AdditionalReferenceDomain
 import models.journeyDomain.item.dangerousGoods.DangerousGoodsDomain
 import models.journeyDomain.item.documents.DocumentDomain
 import models.journeyDomain.item.packages.PackageDomain
 import models.journeyDomain.item.supplyChainActors.SupplyChainActorDomain
+import models.journeyDomain.item.{ConsigneeDomain, ItemDomain}
 import models.journeyDomain.{ItemsDomain, ReaderError, UserAnswersReader}
 import models.{EoriNumber, Index, LocalReferenceNumber, RichJsObject, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
@@ -31,7 +32,7 @@ import org.scalacheck.{Arbitrary, Gen}
 trait UserAnswersGenerator extends UserAnswersEntryGenerators {
   self: Generators =>
 
-  implicit lazy val arbitraryUserAnswers: Arbitrary[UserAnswers] =
+  implicit def arbitraryUserAnswers(implicit phaseConfig: PhaseConfig): Arbitrary[UserAnswers] =
     Arbitrary {
       for {
         lrn        <- arbitrary[LocalReferenceNumber]
@@ -62,10 +63,10 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators {
     rec(initialUserAnswers)
   }
 
-  def arbitraryItemsAnswers(userAnswers: UserAnswers): Gen[UserAnswers] =
+  def arbitraryItemsAnswers(userAnswers: UserAnswers)(implicit phaseConfig: PhaseConfig): Gen[UserAnswers] =
     buildUserAnswers[ItemsDomain](userAnswers)
 
-  def arbitraryItemAnswers(userAnswers: UserAnswers, index: Index): Gen[UserAnswers] =
+  def arbitraryItemAnswers(userAnswers: UserAnswers, index: Index)(implicit phaseConfig: PhaseConfig): Gen[UserAnswers] =
     buildUserAnswers[ItemDomain](userAnswers)(ItemDomain.userAnswersReader(index))
 
   def arbitraryDangerousGoodsAnswers(userAnswers: UserAnswers, itemIndex: Index, dangerousGoodsIndex: Index): Gen[UserAnswers] =
@@ -73,6 +74,9 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators {
 
   def arbitraryPackageAnswers(userAnswers: UserAnswers, itemIndex: Index, packageIndex: Index): Gen[UserAnswers] =
     buildUserAnswers[PackageDomain](userAnswers)(PackageDomain.userAnswersReader(itemIndex, packageIndex))
+
+  def arbitraryConsigneeAnswers(userAnswers: UserAnswers, itemIndex: Index): Gen[UserAnswers] =
+    buildUserAnswers[ConsigneeDomain](userAnswers)(ConsigneeDomain.userAnswersReader(itemIndex))
 
   def arbitrarySupplyChainActorAnswers(userAnswers: UserAnswers, itemIndex: Index, actorIndex: Index): Gen[UserAnswers] =
     buildUserAnswers[SupplyChainActorDomain](userAnswers)(SupplyChainActorDomain.userAnswersReader(itemIndex, actorIndex))

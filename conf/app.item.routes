@@ -4,6 +4,7 @@
 ->         /                                                                app.item.additionalReference.Routes
 ->         /                                                                app.item.additionalInformation.Routes
 ->         /                                                                app.item.supplyChainActors.Routes
+->         /                                                                app.item.consignee.Routes
 
 GET        /:itemIndex/description/:lrn                                     controllers.item.DescriptionController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
 POST       /:itemIndex/description/:lrn                                     controllers.item.DescriptionController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)

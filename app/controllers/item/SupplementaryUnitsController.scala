@@ -16,6 +16,7 @@
 
 package controllers.item
 
+import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.BigDecimalFormProvider
@@ -40,7 +41,7 @@ class SupplementaryUnitsController @Inject() (
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: SupplementaryUnitsView
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 

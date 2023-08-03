@@ -16,7 +16,7 @@
 
 package navigation
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.item.dangerousGoods.DangerousGoodsDomain
 import models.{CheckMode, Index, Mode, NormalMode}
@@ -24,7 +24,7 @@ import models.{CheckMode, Index, Mode, NormalMode}
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class DangerousGoodsNavigatorProviderImpl @Inject() (implicit config: FrontendAppConfig) extends DangerousGoodsNavigatorProvider {
+class DangerousGoodsNavigatorProviderImpl @Inject() (implicit config: FrontendAppConfig, phaseConfig: PhaseConfig) extends DangerousGoodsNavigatorProvider {
 
   override def apply(mode: Mode, itemIndex: Index, dangerousGoodsIndex: Index): UserAnswersNavigator =
     mode match {

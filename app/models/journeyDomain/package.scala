@@ -101,6 +101,11 @@ package object journeyDomain {
 
     def reader(implicit reads: Reads[A]): UserAnswersReader[A] = reader(None)
 
+    def readerWithDefault(default: A)(implicit reads: Reads[A]): UserAnswersReader[A] = {
+      val fn: UserAnswers => EitherType[A] = ua => Right(ua.get(a).getOrElse(default))
+      UserAnswersReader(fn)
+    }
+
     def isDefined(implicit reads: Reads[A]): UserAnswersReader[Boolean] = {
       val fn: UserAnswers => EitherType[Boolean] = ua => Right(ua.get(a).isDefined)
       UserAnswersReader(fn)
