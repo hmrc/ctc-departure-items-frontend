@@ -1307,7 +1307,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
           val helper = new ItemAnswersHelper(answers, itemIndex)
           val result = helper.consigneeAddress.get
 
-          result.key.value mustBe "Address"
+          result.key.value mustBe "Consignee’s address"
           result.value.value mustBe "Number and street 1<br>City 2<br>AB1 1AB"
 
           val actions = result.actions.get.items
