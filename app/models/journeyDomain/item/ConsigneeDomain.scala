@@ -22,20 +22,42 @@ import models.reference.Country
 import models.{DynamicAddress, Index}
 import pages.item.consignee._
 
-case class ConsigneeDomain(
-  identificationNumber: Option[String],
-  name: String,
-  country: Country,
-  address: DynamicAddress
-)(itemIndex: Index)
-    extends JourneyDomainModel
+sealed trait ConsigneeDomain extends JourneyDomainModel {
+  val itemIndex: Index
+}
 
 object ConsigneeDomain {
 
-  def userAnswersReader(itemIndex: Index): UserAnswersReader[ConsigneeDomain] = (
-    AddConsigneeEoriNumberYesNoPage(itemIndex).filterOptionalDependent(identity)(IdentificationNumberPage(itemIndex).reader),
+  def userAnswersReader(itemIndex: Index): UserAnswersReader[ConsigneeDomain] =
+    AddConsigneeEoriNumberYesNoPage(itemIndex).reader.flatMap {
+      case true  => ConsigneeDomainWithIdentificationNumber.userAnswersReader(itemIndex).widen[ConsigneeDomain]
+      case false => ConsigneeDomainWithNameAndAddress.userAnswersReader(itemIndex).widen[ConsigneeDomain]
+    }
+}
+
+case class ConsigneeDomainWithIdentificationNumber(
+  identificationNumber: String
+)(override val itemIndex: Index)
+    extends ConsigneeDomain
+
+object ConsigneeDomainWithIdentificationNumber {
+
+  def userAnswersReader(itemIndex: Index): UserAnswersReader[ConsigneeDomainWithIdentificationNumber] =
+    IdentificationNumberPage(itemIndex).reader.map(ConsigneeDomainWithIdentificationNumber(_)(itemIndex))
+}
+
+case class ConsigneeDomainWithNameAndAddress(
+  name: String,
+  country: Country,
+  address: DynamicAddress
+)(override val itemIndex: Index)
+    extends ConsigneeDomain
+
+object ConsigneeDomainWithNameAndAddress {
+
+  def userAnswersReader(itemIndex: Index): UserAnswersReader[ConsigneeDomainWithNameAndAddress] = (
     NamePage(itemIndex).reader,
     CountryPage(itemIndex).reader,
     AddressPage(itemIndex).reader
-  ).tupled.map((ConsigneeDomain.apply _).tupled).map(_(itemIndex))
+  ).tupled.map((ConsigneeDomainWithNameAndAddress.apply _).tupled).map(_(itemIndex))
 }

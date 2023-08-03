@@ -16,6 +16,7 @@
 
 package pages.sections.external
 
+import pages.equipmentsPath
 import pages.sections.ReadOnlySection
 import play.api.libs.json.{JsArray, JsPath}
 

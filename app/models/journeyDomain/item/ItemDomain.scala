@@ -32,7 +32,7 @@ import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderO
 import models.reference.Country
 import pages.external._
 import pages.item._
-import pages.sections.external.{DocumentsSection, TransportEquipmentsSection}
+import pages.sections.external.{ConsignmentConsigneeSection, DocumentsSection, TransportEquipmentsSection}
 import play.api.i18n.Messages
 import play.api.mvc.Call
 
@@ -181,8 +181,17 @@ object ItemDomain {
 
   def consigneeReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[Option[ConsigneeDomain]] =
     phaseConfig.phase match {
-      case Phase.Transition     => ConsigneeDomain.userAnswersReader(itemIndex).map(Some(_))
-      case Phase.PostTransition => none[ConsigneeDomain].pure[UserAnswersReader]
+      case Phase.Transition =>
+        for {
+          consignmentConsigneePresent <- ConsignmentConsigneeSection.isDefined
+          countryOfDestinationInCL009 <- ConsignmentCountryOfDestinationInCL009Page.readerWithDefault(false)
+          reader <- (consignmentConsigneePresent, countryOfDestinationInCL009) match {
+            case (true, true) => none[ConsigneeDomain].pure[UserAnswersReader]
+            case _            => ConsigneeDomain.userAnswersReader(itemIndex).map(Some(_))
+          }
+        } yield reader
+      case Phase.PostTransition =>
+        none[ConsigneeDomain].pure[UserAnswersReader]
     }
 
   def supplyChainActorsReader(itemIndex: Index): UserAnswersReader[Option[SupplyChainActorsDomain]] =

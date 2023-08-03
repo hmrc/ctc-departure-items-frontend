@@ -31,20 +31,14 @@ class ConsigneeDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
     "can be read from user answers" - {
       "when identification number defined" in {
-        forAll(nonEmptyString, nonEmptyString, arbitrary[Country], arbitrary[DynamicAddress]) {
-          (identificationNumber, name, country, address) =>
+        forAll(nonEmptyString) {
+          identificationNumber =>
             val userAnswers = emptyUserAnswers
               .setValue(AddConsigneeEoriNumberYesNoPage(itemIndex), true)
               .setValue(IdentificationNumberPage(itemIndex), identificationNumber)
-              .setValue(NamePage(itemIndex), name)
-              .setValue(CountryPage(itemIndex), country)
-              .setValue(AddressPage(itemIndex), address)
 
-            val expectedResult = ConsigneeDomain(
-              identificationNumber = Some(identificationNumber),
-              name = name,
-              country = country,
-              address = address
+            val expectedResult = ConsigneeDomainWithIdentificationNumber(
+              identificationNumber = identificationNumber
             )(itemIndex)
 
             val result = UserAnswersReader[ConsigneeDomain](
@@ -64,8 +58,7 @@ class ConsigneeDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
               .setValue(CountryPage(itemIndex), country)
               .setValue(AddressPage(itemIndex), address)
 
-            val expectedResult = ConsigneeDomain(
-              identificationNumber = None,
+            val expectedResult = ConsigneeDomainWithNameAndAddress(
               name = name,
               country = country,
               address = address

@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package pages.sections
+package pages.sections.external
 
-import play.api.libs.json.{__, JsPath}
+import pages.consignmentPath
+import pages.sections.ReadOnlySection
+import play.api.libs.json.{JsObject, JsPath}
 
-package object external {
-  lazy val transportPath: JsPath  = __ \ "transportDetails"
-  lazy val equipmentsPath: JsPath = transportPath \ "equipmentsAndCharges"
+object ConsignmentConsigneeSection extends ReadOnlySection[JsObject] {
+
+  override def path: JsPath = consignmentPath \ "consignee"
 }
