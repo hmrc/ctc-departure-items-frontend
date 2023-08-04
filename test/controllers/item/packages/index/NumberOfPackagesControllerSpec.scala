@@ -20,13 +20,13 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.Constants.maxNumberOfPackages
 import forms.IntFormProvider
 import generators.Generators
-import models.NormalMode
-import models.PackingType.Unpacked
+import models.{NormalMode, PackingType}
+import models.PackingType.{Bulk, Unpacked}
 import models.reference.PackageType
 import navigation.PackageNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalacheck.Arbitrary
+import org.scalacheck.{Arbitrary, Gen}
 import pages.item.packages.index.{NumberOfPackagesPage, PackageTypePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -38,7 +38,8 @@ import scala.concurrent.Future
 
 class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val packageType                = Arbitrary.arbitrary[PackageType].sample.get
+  private val packingType                = Gen.oneOf(PackingType.values).retryUntil(_ != Unpacked).sample.value
+  private val packageType                = PackageType("code", Some("description"), packingType)
   private val formProvider               = new IntFormProvider()
   private val form                       = formProvider("item.packages.index.numberOfPackages", maxNumberOfPackages, Seq(packageType.toString))
   private val mode                       = NormalMode
