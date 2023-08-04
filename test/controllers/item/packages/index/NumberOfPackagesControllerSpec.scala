@@ -21,6 +21,7 @@ import forms.Constants.maxNumberOfPackages
 import forms.IntFormProvider
 import generators.Generators
 import models.NormalMode
+import models.PackingType.Unpacked
 import models.reference.PackageType
 import navigation.PackageNavigatorProvider
 import org.mockito.ArgumentMatchers.any
@@ -123,6 +124,26 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       redirectLocation(result).value mustEqual
         routes.BeforeYouContinueController.onPageLoad(lrn, mode, itemIndex, packageIndex).url
+    }
+
+    "must return a Bad Request and when package Type is unpacked" in {
+
+      val packageType = PackageType("Unpacked", Some("Unpacked"), Unpacked)
+      val userAnswers = emptyUserAnswers.setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+
+      setExistingUserAnswers(userAnswers)
+
+      val request    = FakeRequest(POST, numberOfPackagesRoute).withFormUrlEncodedBody(("value", ""))
+      val filledForm = form.bind(Map("value" -> ""))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual BAD_REQUEST
+
+      val view = injector.instanceOf[NumberOfPackagesView]
+
+      contentAsString(result) mustEqual
+        view(filledForm, lrn, mode, itemIndex, packageIndex, packageType.toString)(request, messages).toString
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
