@@ -23,7 +23,7 @@ import play.api.data.Form
 
 class IntFormProvider @Inject() extends Mappings {
 
-  def apply(prefix: String, maximum: Int, args: Seq[String] = Seq.empty, minimum: Int = 0): Form[Int] =
+  def apply(prefix: String, maximum: Int, minimum: Int = 0, args: Seq[String] = Seq.empty): Form[Int] =
     Form(
       "value" -> int(s"$prefix.error.required", s"$prefix.error.wholeNumber", s"$prefix.error.nonNumeric", args = args)
         .verifying(

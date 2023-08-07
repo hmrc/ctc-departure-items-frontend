@@ -27,7 +27,9 @@ import views.html.item.NetWeightView
 
 class NetWeightViewSpec extends InputTextViewBehaviours[BigDecimal] {
 
-  override def form: Form[BigDecimal] = new NetWeightFormProvider()(prefix, grossWeight)
+  private val decimalPlace: Int       = positiveInts.sample.value
+  private val characterCount: Int     = positiveInts.sample.value
+  override def form: Form[BigDecimal] = new NetWeightFormProvider()(prefix, grossWeight, decimalPlace, characterCount)
 
   override def applyView(form: Form[BigDecimal]): HtmlFormat.Appendable =
     injector.instanceOf[NetWeightView].apply(form, lrn, NormalMode, itemIndex)(fakeRequest, messages)
@@ -46,7 +48,7 @@ class NetWeightViewSpec extends InputTextViewBehaviours[BigDecimal] {
 
   behave like pageWithHeading()
 
-  behave like pageWithHint("Enter the weight in kilograms (kg), up to 6 decimal places.")
+  behave like pageWithHint(s"Enter the weight in kilograms (kg), up to ${phaseConfig.decimalPlaces} decimal places.")
 
   behave like pageWithInputText(Some(InputSize.Width20))
 

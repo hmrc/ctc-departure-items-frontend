@@ -33,8 +33,8 @@ import scala.concurrent.Future
 
 class DescriptionControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val formProvider              = new DescriptionFormProvider()
-  private val form                      = formProvider("item.description", itemIndex.display)
+  private lazy val formProvider         = new DescriptionFormProvider()
+  private lazy val form                 = formProvider("item.description", itemIndex.display)
   private val mode                      = NormalMode
   private lazy val itemDescriptionRoute = routes.DescriptionController.onPageLoad(lrn, mode, itemIndex).url
 

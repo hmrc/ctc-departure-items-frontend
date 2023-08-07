@@ -74,7 +74,7 @@ item.description.title = Enter a description of item {0}
 item.description.heading = Enter a description of item {0}
 item.description.checkYourAnswersLabel = Description
 item.description.change.hidden = description for item {0}
-item.description.error.length = The description must be 512 characters or less
+item.description.error.length = The description must be {0} characters or less
 item.description.error.required = Enter a description of item {0}
 item.description.error.invalidCharacters = The description must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
 item.description.paragraph = This should be clear and detailed enough for anyone involved in the transit movement to understand its contents.
@@ -206,25 +206,25 @@ item.addItemNetWeightYesNo.error.required = Select yes if you want to add the ne
 
 item.netWeight.title = What is the item’s net weight?
 item.netWeight.heading = What is the item’s net weight?
-item.netWeight.hint = Enter the weight in kilograms (kg), up to 6 decimal places.
+item.netWeight.hint = Enter the weight in kilograms (kg), up to {0} decimal places.
 item.netWeight.checkYourAnswersLabel = Net weight
 item.netWeight.change.hidden = net weight of item {0}
 item.netWeight.error.invalidCharacters = The net weight must only include numbers 0 to 9 and a decimal point
 item.netWeight.error.required = Enter the item’s net weight
-item.netWeight.error.invalidFormat = The net weight must only include 6 decimal places or less
-item.netWeight.error.invalidValue = The net weight must be 16 characters or less
+item.netWeight.error.invalidFormat = The net weight must only include {0} decimal places or less
+item.netWeight.error.invalidValue = The net weight must be {1} characters or less
 item.netWeight.error.maximum = The net weight must be less than or equal to the gross weight
 
 item.grossWeight.title = What is the item’s gross weight?
 item.grossWeight.heading = What is the item’s gross weight?
 item.grossWeight.paragraph = This is the combined weight of the item’s goods and packaging.
-item.grossWeight.hint = Enter the weight in kilograms (kg), up to 6 decimal places.
+item.grossWeight.hint = Enter the weight in kilograms (kg), up to {0} decimal places.
 item.grossWeight.checkYourAnswersLabel = Gross weight
 item.grossWeight.change.hidden = gross weight of item {0}
 item.grossWeight.error.required = Enter the item’s gross weight
 item.grossWeight.error.invalidCharacters = The gross weight must only include numbers 0 to 9 and a decimal point
-item.grossWeight.error.invalidFormat = The gross weight must only include 6 decimal places or less
-item.grossWeight.error.invalidValue = The gross weight must be 16 characters or less
+item.grossWeight.error.invalidFormat = The gross weight must only include {0} decimal places or less
+item.grossWeight.error.invalidValue = The gross weight must be {1} characters or less
 
 item.addSupplementaryUnitsYesNo.title = Do you want to add supplementary units?
 item.addSupplementaryUnitsYesNo.heading = Do you want to add supplementary units?
@@ -263,7 +263,7 @@ item.packages.index.numberOfPackages.change.hidden = package quantity for packag
 item.packages.index.numberOfPackages.error.nonNumeric = The quantity must only include numbers 0 to 9
 item.packages.index.numberOfPackages.error.required = Enter the quantity of the package type
 item.packages.index.numberOfPackages.error.wholeNumber = The quantity must only include numbers 0 to 9
-item.packages.index.numberOfPackages.error.maximum = The quantity must be 99,999,999 or less
+item.packages.index.numberOfPackages.error.maximum = The quantity must be {0} or less
 item.packages.index.numberOfPackages.error.negative = The quantity must be {0} or more
 
 item.packages.index.beforeYouContinue.title = Before you continue
@@ -285,7 +285,7 @@ item.packages.index.shippingMark.heading = What is the shipping mark?
 item.packages.index.shippingMark.checkYourAnswersLabel = Shipping mark
 item.packages.index.shippingMark.change.hidden = shipping mark for package {0}
 item.packages.index.shippingMark.error.required = Enter the shipping mark
-item.packages.index.shippingMark.error.length = The shipping mark must be 512 characters or less
+item.packages.index.shippingMark.error.length = The shipping mark must be {0} characters or less
 item.packages.index.shippingMark.error.invalidCharacters = The shipping mark must only include letters a to z and numbers 0 to 9
 
 item.packages.index.removePackage.title = Are you sure you want to remove {0} from this item?
@@ -355,7 +355,7 @@ item.additionalReference.index.additionalReferenceNumber.paragraph = You need to
 item.additionalReference.index.additionalReferenceNumber.checkYourAnswersLabel = Additional reference {0}
 item.additionalReference.index.additionalReferenceNumber.change.hidden = additional reference {0} - {1}
 item.additionalReference.index.additionalReferenceNumber.error.required = Enter the additional reference number
-item.additionalReference.index.additionalReferenceNumber.error.length = The additional reference number must be 70 characters or less
+item.additionalReference.index.additionalReferenceNumber.error.length = The additional reference number must be {0} characters or less
 item.additionalReference.index.additionalReferenceNumber.error.invalidCharacters = The additional reference number must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
 item.additionalReference.index.additionalReferenceNumber.error.unique = The additional reference number must be unique
 
