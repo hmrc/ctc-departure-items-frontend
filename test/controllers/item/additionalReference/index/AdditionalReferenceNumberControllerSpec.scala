@@ -41,8 +41,8 @@ class AdditionalReferenceNumberControllerSpec extends SpecBase with AppWithDefau
 
   private val viewModel = arbitrary[AdditionalReferenceNumberViewModel].sample.value
 
-  private val formProvider                        = new AdditionalReferenceNumberFormProvider()
-  private val form                                = formProvider("item.additionalReference.index.additionalReferenceNumber", viewModel.otherAdditionalReferenceNumbers)
+  private lazy val formProvider                   = new AdditionalReferenceNumberFormProvider()
+  private lazy val form                           = formProvider("item.additionalReference.index.additionalReferenceNumber", viewModel.otherAdditionalReferenceNumbers)
   private val mode                                = NormalMode
   private lazy val additionalReferenceNumberRoute = routes.AdditionalReferenceNumberController.onPageLoad(lrn, mode, itemIndex, additionalReferenceIndex).url
 

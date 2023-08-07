@@ -29,7 +29,7 @@ import scala.util.matching.Regex
 // scalastyle:off number.of.methods
 trait Generators extends UserAnswersGenerator with ModelGenerators with DomainModelGenerators with ViewModelGenerators {
 
-  lazy val stringMaxLength = 36
+  lazy val stringMaxLength = 35
 
   lazy val maxListLength = 10
 

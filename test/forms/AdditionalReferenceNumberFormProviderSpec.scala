@@ -16,14 +16,15 @@
 
 package forms
 
-import forms.Constants.maxAdditionalReferenceNumLength
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.behaviours.StringFieldBehaviours
 import forms.item.additionalReference.AdditionalReferenceNumberFormProvider
 import models.domain.StringFieldRegex.stringFieldRegex
 import org.scalacheck.{Arbitrary, Gen}
-import play.api.data.FormError
+import play.api.data.{Form, FormError}
+import play.api.test.Helpers.running
 
-class AdditionalReferenceNumberFormProviderSpec extends StringFieldBehaviours {
+class AdditionalReferenceNumberFormProviderSpec extends SpecBase with AppWithDefaultMockFixtures with StringFieldBehaviours {
 
   private val prefix      = Gen.alphaNumStr.sample.value
   private val requiredKey = s"$prefix.error.required"
@@ -33,43 +34,62 @@ class AdditionalReferenceNumberFormProviderSpec extends StringFieldBehaviours {
 
   private val values = listWithMaxLength[String]()(Arbitrary(nonEmptyString)).sample.value
 
-  val form = new AdditionalReferenceNumberFormProvider()(prefix, values)
+  private val maxAdditionalReferenceNumTransitionLength     = 35
+  private val maxAdditionalReferenceNumPostTransitionLength = 70
 
   ".value" - {
 
-    val fieldName = "value"
+    def runTests(form: Form[String], maxAdditionalReferenceNumLength: Int): Unit = {
+      val fieldName = "value"
 
-    behave like fieldThatBindsValidData(
-      form,
-      fieldName,
-      stringsWithMaxLength(maxAdditionalReferenceNumLength)
-    )
+      behave like fieldThatBindsValidData(
+        form,
+        fieldName,
+        stringsWithMaxLength(maxAdditionalReferenceNumLength)
+      )
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
+      behave like mandatoryField(
+        form,
+        fieldName,
+        requiredError = FormError(fieldName, requiredKey)
+      )
 
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxAdditionalReferenceNumLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxAdditionalReferenceNumLength))
-    )
+      behave like fieldWithMaxLength(
+        form,
+        fieldName,
+        maxLength = maxAdditionalReferenceNumLength,
+        lengthError = FormError(fieldName, lengthKey, Seq(maxAdditionalReferenceNumLength))
+      )
 
-    behave like fieldWithInvalidCharacters(
-      form,
-      fieldName,
-      error = FormError(fieldName, invalidKey, Seq(stringFieldRegex.regex)),
-      maxAdditionalReferenceNumLength
-    )
+      behave like fieldWithInvalidCharacters(
+        form,
+        fieldName,
+        error = FormError(fieldName, invalidKey, Seq(stringFieldRegex.regex)),
+        maxAdditionalReferenceNumLength
+      )
 
-    behave like fieldThatBindsUniqueData(
-      form = form,
-      fieldName = fieldName,
-      uniqueError = FormError(fieldName, uniqueKey),
-      values = values
-    )
+      behave like fieldThatBindsUniqueData(
+        form = form,
+        fieldName = fieldName,
+        uniqueError = FormError(fieldName, uniqueKey),
+        values = values
+      )
+    }
+
+    "during transition" - {
+      val app = transitionApplicationBuilder().build()
+      running(app) {
+        val form = app.injector.instanceOf[AdditionalReferenceNumberFormProvider].apply(prefix, values)
+        runTests(form, maxAdditionalReferenceNumTransitionLength)
+      }
+    }
+
+    "post transition" - {
+      val app = postTransitionApplicationBuilder().build()
+      running(app) {
+        val form = app.injector.instanceOf[AdditionalReferenceNumberFormProvider].apply(prefix, values)
+        runTests(form, maxAdditionalReferenceNumPostTransitionLength)
+      }
+    }
   }
 }

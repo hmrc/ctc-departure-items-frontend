@@ -17,7 +17,6 @@
 package controllers.item.packages.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.Constants.maxNumberOfPackages
 import forms.IntFormProvider
 import generators.Generators
 import models.NormalMode
@@ -39,7 +38,7 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
 
   private val packageType                = Arbitrary.arbitrary[PackageType].sample.get
   private val formProvider               = new IntFormProvider()
-  private val form                       = formProvider("item.packages.index.numberOfPackages", maxNumberOfPackages, Seq(packageType.toString))
+  private val form                       = formProvider("item.packages.index.numberOfPackages", phaseConfig.maxNumberOfPackages, Seq(packageType.toString))
   private val mode                       = NormalMode
   private val validAnswer                = 1
   private lazy val numberOfPackagesRoute = routes.NumberOfPackagesController.onPageLoad(lrn, mode, itemIndex, packageIndex).url

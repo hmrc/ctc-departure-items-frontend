@@ -18,6 +18,7 @@ package controllers.item
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.BigDecimalFormProvider
+import generators.Generators
 import models.NormalMode
 import navigation.ItemNavigatorProvider
 import org.mockito.ArgumentMatchers.any
@@ -31,10 +32,12 @@ import views.html.item.SupplementaryUnitsView
 
 import scala.concurrent.Future
 
-class SupplementaryUnitsControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class SupplementaryUnitsControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
+  private val decimalPlace                 = positiveInts.sample.value
+  private val characterCount               = positiveInts.sample.value
   private val formProvider                 = new BigDecimalFormProvider()
-  private val form                         = formProvider("item.supplementaryUnits")
+  private val form                         = formProvider("item.supplementaryUnits", decimalPlace, characterCount)
   private val mode                         = NormalMode
   private val validAnswer                  = BigDecimal(1)
   private lazy val supplementaryUnitsRoute = routes.SupplementaryUnitsController.onPageLoad(lrn, mode, itemIndex).url

@@ -16,6 +16,7 @@
 
 package config
 
+import forms.{NetWeightFormProvider, TransitionNetWeightFormProvider}
 import services.{AdditionalInformationService, TransitionAdditionalInformationService}
 
 class TransitionModule extends Module {
@@ -25,5 +26,6 @@ class TransitionModule extends Module {
 
     bind(classOf[PhaseConfig]).to(classOf[TransitionConfig])
     bind(classOf[AdditionalInformationService]).to(classOf[TransitionAdditionalInformationService])
+    bind(classOf[NetWeightFormProvider]).to(classOf[TransitionNetWeightFormProvider])
   }
 }
