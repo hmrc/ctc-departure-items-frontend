@@ -16,23 +16,24 @@
 
 package forms.behaviours
 
+import config.PhaseConfig
+import models.Phase
 import play.api.data.{Form, FormError}
 
 trait BigDecimalFieldBehaviours extends FieldBehaviours {
 
-  val maxValue: BigDecimal  = BigDecimal("10000000000000000")
-  val maxDecimalPlaces: Int = 6
+  val maxValue: BigDecimal = BigDecimal("10000000000000000")
 
   def bigDecimalField(
     form: Form[_],
     fieldName: String,
     invalidCharactersError: FormError,
     invalidFormatError: FormError,
-    invalidValueError: FormError
-  ): Unit = {
+    invalidValueError: FormError,
+    args: Seq[String]
+  )(implicit phaseConfig: PhaseConfig): Unit = {
 
     "must not bind non-numeric numbers" in {
-
       forAll(nonNumerics -> "nonNumeric") {
         nonNumeric =>
           val result = form.bind(Map(fieldName -> nonNumeric)).apply(fieldName)
@@ -41,7 +42,6 @@ trait BigDecimalFieldBehaviours extends FieldBehaviours {
     }
 
     "must bind decimals" in {
-
       forAll(decimals -> "decimal") {
         decimal =>
           val result = form.bind(Map(fieldName -> decimal)).apply(fieldName)
@@ -50,33 +50,41 @@ trait BigDecimalFieldBehaviours extends FieldBehaviours {
     }
 
     s"must not bind values greater than or equal to $maxValue" in {
-
       val result = form.bind(Map(fieldName -> maxValue.toString)).apply(fieldName)
       result.errors mustEqual Seq(invalidValueError)
     }
 
-    s"must not bind values with more than $maxDecimalPlaces decimal places" in {
-
-      val result = form.bind(Map(fieldName -> BigDecimal(1.1234567).toString)).apply(fieldName)
-      result.errors mustEqual Seq(invalidFormatError)
-    }
-
     "must not bind negative values" in {
-
       val result = form.bind(Map(fieldName -> BigDecimal(-1).toString)).apply(fieldName)
       result.errors mustEqual Seq(invalidCharactersError)
-    }
-
-    "must not bind values with more than 16 characters" in {
-      val result = form.bind(Map(fieldName -> BigDecimal(1234567890123.456).toString)).apply(fieldName)
-      result.errors mustEqual Seq(invalidValueError)
-
     }
 
     "must not bind values that end in a full stop" in {
       val result = form.bind(Map(fieldName -> "123456789012345.")).apply(fieldName)
       result.errors mustEqual Seq(invalidFormatError)
+    }
 
+    phaseConfig.phase match {
+      case Phase.Transition =>
+        "must not bind values with more than 3 decimal places" in {
+          val result = form.bind(Map(fieldName -> BigDecimal(1.1234).toString)).apply(fieldName)
+          result.errors mustEqual Seq(invalidFormatError)
+        }
+
+        "must not bind values with more than 11 characters" in {
+          val result = form.bind(Map(fieldName -> BigDecimal(12345678.456).toString)).apply(fieldName)
+          result.errors mustEqual Seq(invalidValueError)
+        }
+      case Phase.PostTransition =>
+        "must not bind values with more than 6 decimal places" in {
+          val result = form.bind(Map(fieldName -> BigDecimal(1.1234567).toString)).apply(fieldName)
+          result.errors mustEqual Seq(invalidFormatError)
+        }
+
+        "must not bind values with more than 16 characters" in {
+          val result = form.bind(Map(fieldName -> BigDecimal(1234567890123.456).toString)).apply(fieldName)
+          result.errors mustEqual Seq(invalidValueError)
+        }
     }
   }
 }

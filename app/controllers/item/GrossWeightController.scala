@@ -44,7 +44,7 @@ class GrossWeightController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("item.grossWeight")
+  private val form = formProvider("item.grossWeight", phaseConfig.decimalPlaces, phaseConfig.characterCount)
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
