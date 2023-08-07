@@ -23,13 +23,16 @@ import javax.inject.Inject
 
 class NetWeightFormProvider @Inject() extends Mappings {
 
-  def apply(prefix: String, grossWeight: BigDecimal): Form[BigDecimal] =
+  def apply(prefix: String, grossWeight: BigDecimal, decimalPlaceCount: Int, characterCount: Int): Form[BigDecimal] =
     Form(
       "value" -> bigDecimal(
+        decimalPlaceCount,
+        characterCount,
         s"$prefix.error.required",
         s"$prefix.error.invalidCharacters",
         s"$prefix.error.invalidFormat",
-        s"$prefix.error.invalidValue"
+        s"$prefix.error.invalidValue",
+        Seq(decimalPlaceCount.toString, characterCount.toString)
       ).verifying(
         maximumValue(grossWeight, s"$prefix.error.maximum")
       )

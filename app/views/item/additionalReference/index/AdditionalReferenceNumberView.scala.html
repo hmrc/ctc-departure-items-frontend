@@ -15,7 +15,7 @@
  *@
 
 @import controllers.item.additionalReference.index.routes
-@import forms.Constants.maxAdditionalReferenceNumLength
+@import config.PhaseConfig
 @import models.LocalReferenceNumber
 @import viewmodels.components.InputCharacterCountViewModel
 @import views.html.components.{Button, ErrorSummary, InputCharacterCount}
@@ -25,7 +25,8 @@
     formHelper: FormWithCSRF,
     inputCharacterCount: InputCharacterCount,
     errorSummary: ErrorSummary,
-    button: Button
+    button: Button,
+    phaseConfig: PhaseConfig
 )
 
 @(form: Form[String], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, additionalReferenceIndex: Index, isRequired: Boolean)(implicit request: Request[_], messages: Messages)
@@ -48,7 +49,7 @@
                 additionalHtml = if (isRequired) Some(messages("item.additionalReference.index.additionalReferenceNumber.paragraph").toParagraph) else None
             ),
             label = messages("item.additionalReference.index.additionalReferenceNumber.heading", itemIndex.display),
-            maxLength = maxAdditionalReferenceNumLength,
+            maxLength = phaseConfig.maxAdditionalReferenceNumLength,
             rows = 2
         )
 

@@ -20,6 +20,7 @@ import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.BigDecimalFormProvider
+import forms.Constants.{supplementaryUnitsCharacterCount, supplementaryUnitsDecimalPlaces}
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
 import pages.item.SupplementaryUnitsPage
@@ -44,7 +45,7 @@ class SupplementaryUnitsController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("item.supplementaryUnits")
+  private val form = formProvider("item.supplementaryUnits", supplementaryUnitsDecimalPlaces, supplementaryUnitsCharacterCount)
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
