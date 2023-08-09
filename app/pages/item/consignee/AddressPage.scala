@@ -20,7 +20,6 @@ import controllers.item.consignee.routes
 import models.{DynamicAddress, Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.consigneeSection.ConsigneeSection
-import pages.sections.ItemSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 

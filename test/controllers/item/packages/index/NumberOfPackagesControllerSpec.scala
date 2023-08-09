@@ -19,12 +19,13 @@ package controllers.item.packages.index
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.IntFormProvider
 import generators.Generators
-import models.NormalMode
+import models.PackingType.Unpacked
 import models.reference.PackageType
+import models.{NormalMode, PackingType}
 import navigation.PackageNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalacheck.Arbitrary
+import org.scalacheck.Gen
 import pages.item.packages.index.{NumberOfPackagesPage, PackageTypePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -36,9 +37,13 @@ import scala.concurrent.Future
 
 class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val packageType                = Arbitrary.arbitrary[PackageType].sample.get
-  private val formProvider               = new IntFormProvider()
-  private val form                       = formProvider("item.packages.index.numberOfPackages", phaseConfig.maxNumberOfPackages, Seq(packageType.toString))
+  private val packingType = Gen.oneOf(PackingType.values).retryUntil(_ != Unpacked).sample.value
+  private val packageType = PackageType("code", Some("description"), packingType)
+
+  private def formProvider(minimum: Int) =
+    new IntFormProvider().apply("item.packages.index.numberOfPackages", phaseConfig.maxNumberOfPackages, minimum, Seq(packageType.toString))
+  private val form                       = formProvider(0)
+  private val unpackedForm               = formProvider(1)
   private val mode                       = NormalMode
   private val validAnswer                = 1
   private lazy val numberOfPackagesRoute = routes.NumberOfPackagesController.onPageLoad(lrn, mode, itemIndex, packageIndex).url
@@ -122,6 +127,26 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       redirectLocation(result).value mustEqual
         routes.BeforeYouContinueController.onPageLoad(lrn, mode, itemIndex, packageIndex).url
+    }
+
+    "must return a Bad Request and when 0 is submitted and package Type is unpacked" in {
+
+      val packageType = PackageType("Unpacked", Some("Unpacked"), Unpacked)
+      val userAnswers = emptyUserAnswers.setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+
+      setExistingUserAnswers(userAnswers)
+
+      val request    = FakeRequest(POST, numberOfPackagesRoute).withFormUrlEncodedBody(("value", "0"))
+      val filledForm = unpackedForm.bind(Map("value" -> "0"))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual BAD_REQUEST
+
+      val view = injector.instanceOf[NumberOfPackagesView]
+
+      contentAsString(result) mustEqual
+        view(filledForm, lrn, mode, itemIndex, packageIndex, packageType.toString)(request, messages).toString
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

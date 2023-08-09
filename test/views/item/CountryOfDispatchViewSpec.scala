@@ -44,7 +44,7 @@ class CountryOfDispatchViewSpec extends InputSelectViewBehaviours[Country] {
 
   behave like pageWithHeading()
 
-  behave like pageWithContent("p", "This is the country the item was originally dispatched from. It might not be where the CTC transit movement begins.")
+  behave like pageWithContent("p", "This is the country the item was originally dispatched from. It may not be where the transit movement begins.")
 
   behave like pageWithHint("Enter the country, like France or Portugal.")
 

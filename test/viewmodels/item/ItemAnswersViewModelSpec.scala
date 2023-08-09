@@ -18,7 +18,6 @@ package viewmodels.item
 
 import base.SpecBase
 import generators.Generators
-import org.mockito.Mockito.when
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import services.{DocumentsService, TransportEquipmentService}
 import viewmodels.item.ItemAnswersViewModel.ItemAnswersViewModelProvider
