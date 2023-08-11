@@ -18,7 +18,7 @@ package forms.item.additionalInformation
 
 import forms.Constants.maxAdditionalInformationLength
 import forms.mappings.Mappings
-import models.domain.StringFieldRegex.stringFieldRegex
+import models.domain.StringFieldRegex.stringFieldRegexComma
 import play.api.data.Form
 
 import javax.inject.Inject
@@ -30,7 +30,7 @@ class AdditionalInformationFormProvider @Inject() extends Mappings {
       "value" -> text(s"$prefix.error.required")
         .verifying(
           forms.StopOnFirstFail[String](
-            regexp(stringFieldRegex, s"$prefix.error.invalidCharacters"),
+            regexp(stringFieldRegexComma, s"$prefix.error.invalidCharacters"),
             maxLength(maxAdditionalInformationLength, s"$prefix.error.length")
           )
         )
