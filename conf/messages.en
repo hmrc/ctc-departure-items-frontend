@@ -70,6 +70,8 @@ item.checkYourAnswers.additionalInformation.change.hidden = additional informati
 item.checkYourAnswers.additionalInformation = Additional information
 item.checkYourAnswers.additionalInformation.addOrRemove = Add or remove additional information
 item.checkYourAnswers.consignee = Consignee
+item.checkYourAnswers.transportCharges = Transport charges
+
 item.description.title = Enter a description of item {0}
 item.description.heading = Enter a description of item {0}
 item.description.checkYourAnswersLabel = Description
@@ -468,19 +470,6 @@ item.transportEquipment.change.hidden = transport equipment for item {0}
 item.transportEquipment.checkYourAnswersLabel = Transport equipment
 item.transportEquipment.error.required = Select which transport equipment you are using for this item
 
-item.addTransportChargesYesNo.title = Do you want to add a method of payment for this item’s transport charges?
-item.addTransportChargesYesNo.heading = Do you want to add a method of payment for this item’s transport charges?
-item.addTransportChargesYesNo.paragraph = These include charges for hauliers and carriers.
-item.addTransportChargesYesNo.checkYourAnswersLabel = Do you want to add a method of payment for this item’s transport charges?
-item.addTransportChargesYesNo.hidden = if you want to add a method of payment for this item’s transport charges
-item.addTransportChargesYesNo.error.required = Select yes if you want to add a method of payment for this item’s transport charges
-
-item.transportMethodOfPayment.title = Which method of payment do you want to use for transport charges?
-item.transportMethodOfPayment.heading = Which method of payment do you want to use for transport charges?
-item.transportMethodOfPayment.caption = Item {0} - Transport charges
-item.transportMethodOfPayment.checkYourAnswersLabel = Which method of payment do you want to use for transport charges?
-item.transportMethodOfPayment.error.required = Select which method of payment you want to use for transport charges
-
 item.consignee.caption = Item {0} - Consignee
 
 item.consignee.addConsigneeEoriNumberYesNo.title = Do you know the consignee’s EORI number or Trader Identification Number (TIN) for this item?
@@ -527,3 +516,17 @@ item.consignee.address.error.postalCode.invalid = The postal code must only incl
 item.consignee.address.error.invalid = The {0} must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
 item.consignee.address.error.required = Enter the {0} for {1}’s address
 item.consignee.address.error.length = The {0} must be {1} characters or less
+
+item.addTransportChargesYesNo.title = Do you want to add a method of payment for this item’s transport charges?
+item.addTransportChargesYesNo.heading = Do you want to add a method of payment for this item’s transport charges?
+item.addTransportChargesYesNo.paragraph = These include charges for hauliers and carriers.
+item.addTransportChargesYesNo.checkYourAnswersLabel = Do you want to add a method of payment for this item’s transport charges?
+item.addTransportChargesYesNo.change.hidden = if you want to add a method of payment for this item’s transport charges
+item.addTransportChargesYesNo.error.required = Select yes if you want to add a method of payment for this item’s transport charges
+
+item.transportMethodOfPayment.title = Which method of payment do you want to use for transport charges?
+item.transportMethodOfPayment.heading = Which method of payment do you want to use for transport charges?
+item.transportMethodOfPayment.caption = Item {0} - Transport charges
+item.transportMethodOfPayment.checkYourAnswersLabel = Payment method
+item.transportMethodOfPayment.change.hidden = payment method for this item’s transport charges
+item.transportMethodOfPayment.error.required = Select which method of payment you want to use for transport charges

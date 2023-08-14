@@ -35,7 +35,7 @@ class ItemAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks wi
           val viewModelProvider = new ItemAnswersViewModelProvider()
           val sections          = viewModelProvider.apply(answers, itemIndex).sections
 
-          sections.size mustBe 9
+          sections.size mustBe 10
 
           sections.head.sectionTitle must not be defined
           sections.head.rows must not be empty
@@ -57,6 +57,8 @@ class ItemAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks wi
           sections(7: Int).sectionTitle.get mustBe "Additional references"
 
           sections(8: Int).sectionTitle.get mustBe "Additional information"
+
+          sections(9: Int).sectionTitle.get mustBe "Transport charges"
 
       }
     }
