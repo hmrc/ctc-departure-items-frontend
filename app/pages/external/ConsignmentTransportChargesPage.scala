@@ -16,7 +16,7 @@
 
 package pages.external
 
-import pages.ReadOnlyPage
+import pages.{equipmentAndChargesPath, ReadOnlyPage}
 import play.api.libs.json.JsPath
 
 case object ConsignmentTransportChargesPage extends ReadOnlyPage[String] {

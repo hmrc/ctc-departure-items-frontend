@@ -263,11 +263,6 @@ trait ModelGenerators {
       Gen.oneOf(SecurityDetailsType.values.filterNot(_ == SecurityDetailsType.NoSecurityDetails))
     }
 
-  implicit lazy val arbitraryConsignmentTransportCharges: Arbitrary[PaymentMethod] =
-    Arbitrary {
-      Gen.oneOf(PaymentMethod.values)
-    }
-
   implicit lazy val arbitraryJsObject: Arbitrary[JsObject] = Arbitrary {
     Gen.oneOf(
       Json.obj(),

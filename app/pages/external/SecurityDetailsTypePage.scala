@@ -17,7 +17,7 @@
 package pages.external
 
 import models.SecurityDetailsType
-import pages.ReadOnlyPage
+import pages.{preTaskListPath, ReadOnlyPage}
 import play.api.libs.json.JsPath
 
 case object SecurityDetailsTypePage extends ReadOnlyPage[SecurityDetailsType] {
