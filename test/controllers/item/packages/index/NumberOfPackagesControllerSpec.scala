@@ -17,11 +17,12 @@
 package controllers.item.packages.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import config.PhaseConfig
 import forms.IntFormProvider
 import generators.Generators
 import models.PackingType.Unpacked
 import models.reference.PackageType
-import models.{NormalMode, PackingType}
+import models.{NormalMode, PackingType, Phase}
 import navigation.PackageNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -129,7 +130,11 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
         routes.BeforeYouContinueController.onPageLoad(lrn, mode, itemIndex, packageIndex).url
     }
 
-    "must return a Bad Request and when 0 is submitted and package Type is unpacked" in {
+    "must return a Bad Request and when 0 is submitted and package Type is unpacked only for PostTransition" in {
+
+      val app                          = postTransitionApplicationBuilder().build()
+      val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
+      when(mockPhaseConfig.phase).thenReturn(Phase.PostTransition)
 
       val packageType = PackageType("Unpacked", Some("Unpacked"), Unpacked)
       val userAnswers = emptyUserAnswers.setValue(PackageTypePage(itemIndex, packageIndex), packageType)
@@ -147,6 +152,27 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       contentAsString(result) mustEqual
         view(filledForm, lrn, mode, itemIndex, packageIndex, packageType.toString)(request, messages).toString
+    }
+
+    "must redirect to information page when 0 is submitted for packageType is unpacked only for Transition" in {
+
+      val app                          = transitionApplicationBuilder().build()
+      val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
+      when(mockPhaseConfig.phase).thenReturn(Phase.Transition)
+
+      val packageType = PackageType("Unpacked", Some("Unpacked"), Unpacked)
+      val userAnswers = emptyUserAnswers.setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+
+      setExistingUserAnswers(userAnswers)
+
+      val request = FakeRequest(POST, numberOfPackagesRoute).withFormUrlEncodedBody(("value", "0"))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual
+        routes.BeforeYouContinueController.onPageLoad(lrn, mode, itemIndex, packageIndex).url
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
