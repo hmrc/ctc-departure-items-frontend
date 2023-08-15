@@ -125,6 +125,14 @@ object ItemAnswersViewModel {
         addAnotherLink = helper.addOrRemoveAdditionalInformation
       )
 
+      val paymentMethodSection = Section(
+        sectionTitle = messages("item.checkYourAnswers.transportCharges"),
+        rows = Seq(
+          helper.addTransportChargesYesNo,
+          helper.transportCharges
+        ).flatten
+      )
+
       val sections = firstItemSection.toSeq ++
         dangerousGoodsSection.toSeq ++
         measurementSection.toSeq ++
@@ -133,7 +141,8 @@ object ItemAnswersViewModel {
         supplyChainActorsSection.toSeq ++
         documentsSection.toSeq ++
         additionalReferencesSection.toSeq ++
-        additionalInformationSection.toSeq
+        additionalInformationSection.toSeq ++
+        paymentMethodSection.toSeq
 
       new ItemAnswersViewModel(sections)
     }

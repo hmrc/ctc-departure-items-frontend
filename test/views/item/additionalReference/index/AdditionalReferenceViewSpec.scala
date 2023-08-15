@@ -47,4 +47,6 @@ class AdditionalReferenceViewSpec extends InputSelectViewBehaviours[AdditionalRe
   behave like pageWithSelect()
 
   behave like pageWithSubmitButton("Save and continue")
+
+  behave like pageWithHint("Enter the reference name or code, like Carrier (AEO certificate number) or Y028.")
 }

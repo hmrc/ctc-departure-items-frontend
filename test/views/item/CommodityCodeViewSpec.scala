@@ -44,7 +44,7 @@ class CommodityCodeViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithHeading()
 
-  behave like pageWithHint("This will be 6 characters long and include both letters and numbers.")
+  behave like pageWithHint("This will be 6 characters long and include both letters and numbers, for example 0G23AB.")
 
   behave like pageWithInputText(Some(InputSize.Width20))
 

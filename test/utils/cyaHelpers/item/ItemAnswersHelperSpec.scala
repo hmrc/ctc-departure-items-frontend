@@ -20,17 +20,15 @@ import base.SpecBase
 import config.PhaseConfig
 import controllers.item.additionalInformation.index.routes._
 import controllers.item.additionalReference.index.routes._
+import controllers.item.consignee.routes._
 import controllers.item.dangerousGoods.index.routes.UNNumberController
 import controllers.item.documents.index.routes.DocumentController
 import controllers.item.packages.index.routes.PackageTypeController
-import controllers.item.supplyChainActors.index.routes.SupplyChainActorTypeController
-import controllers.item.consignee.routes._
 import controllers.item.routes._
+import controllers.item.supplyChainActors.index.routes.SupplyChainActorTypeController
 import generators.Generators
-import models.reference.{AdditionalInformation, AdditionalReference, Country, CountryCode, PackageType}
-import models.{CheckMode, DeclarationType, Document, DynamicAddress, Index, Mode, SupplyChainActorType, TransportEquipment}
-import models.reference.{AdditionalInformation, AdditionalReference, Country, PackageType}
-import models.{CheckMode, DeclarationType, Document, Index, Mode, Phase, SupplyChainActorType, TransportEquipment}
+import models.reference._
+import models.{CheckMode, DeclarationType, Document, DynamicAddress, Index, Mode, Phase, SupplyChainActorType, TransportEquipment}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -750,7 +748,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               val result = helper.`package`(packageIndex).get
 
               result.key.value mustBe "Package 1"
-              result.value.value mustBe s"1 ${packageType.toString}"
+              result.value.value mustBe s"1 * ${packageType.toString}"
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
@@ -777,7 +775,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
               result.key.value mustBe "Package 1"
               val quantityString = String.format("%,d", quantity)
-              result.value.value mustBe s"$quantityString ${packageType.toString}"
+              result.value.value mustBe s"$quantityString * ${packageType.toString}"
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
@@ -1326,6 +1324,71 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
           action.id mustBe "change-consignee-address"
         }
       }
+    }
+
+    "addTransportChargesYesNo" - {
+      "must return None" - {
+        "when addTransportChargesYesNo is undefined" in {
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+          val result = helper.addTransportChargesYesNo
+          result mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when addTransportChargesYesNo is defined" in {
+          val answers = emptyUserAnswers.setValue(AddTransportChargesYesNoPage(itemIndex), true)
+
+          val helper = new ItemAnswersHelper(answers, itemIndex)
+          val result = helper.addTransportChargesYesNo.get
+
+          result.key.value mustBe "Do you want to add a method of payment for this item’s transport charges?"
+          result.value.value mustBe "Yes"
+
+          val actions = result.actions.get.items
+          actions.size mustBe 1
+          val action = actions.head
+          action.content.value mustBe "Change"
+          action.href mustBe AddTransportChargesYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
+          action.visuallyHiddenText.get mustBe s"if you want to add a method of payment for this item’s transport charges"
+          action.id mustBe "change-add-payment-method"
+        }
+      }
+
+    }
+
+    "transportCharges" - {
+      "must return None" - {
+        "when transportCharges is undefined" in {
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+          val result = helper.transportCharges
+          result mustBe None
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when transportCharges is defined" in {
+          forAll(arbitrary[TransportChargesMethodOfPayment]) {
+            paymentMethod =>
+              val answers = emptyUserAnswers.setValue(TransportChargesMethodOfPaymentPage(itemIndex), paymentMethod)
+
+              val helper = new ItemAnswersHelper(answers, itemIndex)
+              val result = helper.transportCharges.get
+
+              result.key.value mustBe "Payment method"
+              result.value.value mustBe paymentMethod.toString
+
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe TransportChargesMethodOfPaymentController.onPageLoad(answers.lrn, mode, itemIndex).url
+              action.visuallyHiddenText.get mustBe s"payment method for this item’s transport charges"
+              action.id mustBe "change-payment-method"
+          }
+        }
+      }
+
     }
   }
 }

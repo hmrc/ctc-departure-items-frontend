@@ -70,6 +70,8 @@ item.checkYourAnswers.additionalInformation.change.hidden = additional informati
 item.checkYourAnswers.additionalInformation = Additional information
 item.checkYourAnswers.additionalInformation.addOrRemove = Add or remove additional information
 item.checkYourAnswers.consignee = Consignee
+item.checkYourAnswers.transportCharges = Transport charges
+
 item.description.title = Enter a description of item {0}
 item.description.heading = Enter a description of item {0}
 item.description.checkYourAnswersLabel = Description
@@ -91,7 +93,7 @@ item.declarationType.error.required = Select the type of declaration you want to
 item.countryOfDispatch.title = What is the item’s country of dispatch?
 item.countryOfDispatch.heading = What is the item’s country of dispatch?
 item.countryOfDispatch.hint = Enter the country, like France or Portugal.
-item.countryOfDispatch.paragraph = This is the country the item was originally dispatched from. It might not be where the CTC transit movement begins.
+item.countryOfDispatch.paragraph = This is the country the item was originally dispatched from. It may not be where the transit movement begins.
 item.countryOfDispatch.placeholder = Select a country
 item.countryOfDispatch.change.hidden = country of dispatch for item {0}
 item.countryOfDispatch.checkYourAnswersLabel = Country of dispatch
@@ -100,7 +102,7 @@ item.countryOfDispatch.error.required = Enter the item’s country of dispatch
 item.countryOfDestination.title = What is the item’s country of destination?
 item.countryOfDestination.heading = What is the item’s country of destination?
 item.countryOfDestination.hint = Enter the country, like Albania or Montenegro.
-item.countryOfDestination.paragraph = This is where the goods complete their journey. It may not be the final CTC country of the transit route.
+item.countryOfDestination.paragraph = This is where the goods complete their journey. It may not be where the transit movement ends.
 item.countryOfDestination.placeholder = Select a country
 item.countryOfDestination.change.hidden =  country of destination for item {0}
 item.countryOfDestination.checkYourAnswersLabel = Country of destination
@@ -108,7 +110,7 @@ item.countryOfDestination.error.required = Enter the item’s country of destina
 
 item.addUCRYesNo.title = Do you want to add a Unique Consignment Reference (UCR)?
 item.addUCRYesNo.heading = Do you want to add a Unique Consignment Reference (UCR)?
-item.addUCRYesNo.paragraph = This is a unique reference number that customs use to identify a consignment.
+item.addUCRYesNo.paragraph = This is a unique reference number you create that Customs use to identify the consignment.
 item.addUCRYesNo.checkYourAnswersLabel = Do you want to add a Unique Consignment Reference (UCR)?
 item.addUCRYesNo.change.hidden = if you want to add a Unique Consignment Reference (UCR) for item {0}
 item.addUCRYesNo.error.required = Select yes if you want to add a Unique Consignment Reference (UCR)
@@ -147,7 +149,7 @@ item.addCommodityCodeYesNo.error.required = Select yes if you want to add a comm
 
 item.commodityCode.title = What is the commodity code?
 item.commodityCode.heading = What is the commodity code?
-item.commodityCode.hint = This will be 6 characters long and include both letters and numbers.
+item.commodityCode.hint = This will be 6 characters long and include both letters and numbers, for example 0G23AB.
 item.commodityCode.checkYourAnswersLabel = Commodity code
 item.commodityCode.change.hidden = commodity code for item {0}
 item.commodityCode.error.required = Enter the commodity code
@@ -156,7 +158,7 @@ item.commodityCode.error.invalidCharacters = The commodity code must only includ
 
 item.addCombinedNomenclatureCodeYesNo.title = Do you want to add a combined nomenclature code?
 item.addCombinedNomenclatureCodeYesNo.heading = Do you want to add a combined nomenclature code?
-item.addCombinedNomenclatureCodeYesNo.paragraph = This is used to classify goods when they’re declared to customs in the EU.
+item.addCombinedNomenclatureCodeYesNo.paragraph = This is used to classify goods when they’re declared to Customs in the EU.
 item.addCombinedNomenclatureCodeYesNo.checkYourAnswersLabel = Do you want to add a combined nomenclature code?
 item.addCombinedNomenclatureCodeYesNo.change.hidden = if you want to add a combined nomenclature code for item {0}
 item.addCombinedNomenclatureCodeYesNo.error.required = Select yes if you want to add a combined nomenclature code
@@ -179,7 +181,7 @@ item.addDangerousGoodsYesNo.error.required = Select yes if the item contains any
 
 item.dangerousGoods.index.unNumber.title = What is the UN number for the dangerous goods?
 item.dangerousGoods.index.unNumber.heading = What is the UN number for the dangerous goods?
-item.dangerousGoods.index.unNumber.hint = This will be 4 characters long and include both letters and numbers.
+item.dangerousGoods.index.unNumber.hint = This will be 4 characters long and include both letters and numbers, for example 2156.
 item.dangerousGoods.index.unNumber.checkYourAnswersLabel = What is the UN number for the dangerous goods
 item.dangerousGoods.index.unNumber.error.required = Enter the UN number for the dangerous goods
 item.dangerousGoods.index.unNumber.error.length = The UN number must be 4 characters long
@@ -255,15 +257,16 @@ item.packages.index.packageType.change.hidden = package type for package {0}
 item.packages.index.packageType.checkYourAnswersLabel = Package type
 item.packages.index.packageType.error.required = Enter the type of package you are using for the item
 
-item.packages.index.numberOfPackages.title = How many {0} are you using?
-item.packages.index.numberOfPackages.heading = How many {0} are you using?
+item.packages.index.numberOfPackages.title = How many of these are you using?
+item.packages.index.numberOfPackages.heading = How many of these are you using?
+item.packages.index.numberOfPackages.inset.text = {0}
 item.packages.index.numberOfPackages.checkYourAnswersLabel = Package quantity
 item.packages.index.numberOfPackages.change.hidden = package quantity for package {0}
 item.packages.index.numberOfPackages.error.nonNumeric = The quantity must only include numbers 0 to 9
-item.packages.index.numberOfPackages.error.required = Enter the number of {0} you are using
+item.packages.index.numberOfPackages.error.required = Enter the quantity of the package type
 item.packages.index.numberOfPackages.error.wholeNumber = The quantity must only include numbers 0 to 9
 item.packages.index.numberOfPackages.error.maximum = The quantity must be {0} or less
-item.packages.index.numberOfPackages.error.negative = The quantity must be 0 or more
+item.packages.index.numberOfPackages.error.negative = The quantity of the package type must be {0} or more
 
 item.packages.index.beforeYouContinue.title = Before you continue
 item.packages.index.beforeYouContinue.heading = Before you continue
@@ -320,6 +323,7 @@ item.documents.index.removeDocument.error.required = Select yes if you want to r
 
 item.addAdditionalReferenceYesNo.title = Do you want to add an additional reference for this item?
 item.addAdditionalReferenceYesNo.heading = Do you want to add an additional reference for this item?
+item.addAdditionalReferenceYesNo.paragraph = This can be any other reference you want to declare, such as a certificate number, import licence or accompanying document.
 item.addAdditionalReferenceYesNo.change.hidden = if you want to add an additional reference for item {0}
 item.addAdditionalReferenceYesNo.checkYourAnswersLabel = Do you want to add an additional reference for this item?
 item.addAdditionalReferenceYesNo.error.required = Select yes if you want to add an additional reference for this item
@@ -327,7 +331,7 @@ item.addAdditionalReferenceYesNo.error.required = Select yes if you want to add 
 item.additionalReference.index.additionalReference.title = What type of additional reference do you want to add?
 item.additionalReference.index.additionalReference.heading = What type of additional reference do you want to add?
 item.additionalReference.index.additionalReference.placeholder = Select an additional reference
-item.additionalReference.index.additionalReference.change.hidden = What type of additional reference do you want to add?
+item.additionalReference.index.additionalReference.change.hint = Enter the reference name or code, like Carrier (AEO certificate number) or Y028.
 item.additionalReference.index.additionalReference.checkYourAnswersLabel = What type of additional reference do you want to add?
 item.additionalReference.index.additionalReference.error.required = Select the type of additional reference
 
@@ -378,8 +382,9 @@ item.addAdditionalInformationYesNo.error.required = Select yes if you want to ad
 
 item.additionalInformation.index.additionalInformationType.title = What type of additional information do you want to add?
 item.additionalInformation.index.additionalInformationType.heading = What type of additional information do you want to add?
+item.additionalInformation.index.additionalInformationType.hint = Enter the information name or code, like Export or 20300.
 item.additionalInformation.index.additionalInformationType.placeholder = Select an additional information type
-item.additionalInformation.index.additionalInformationType.change.hidden = additional information {0}
+item.additionalInformation.index.additionalInformationType.change.hidden = Enter the information name or code, like Export {0} or 20300.
 item.additionalInformation.index.additionalInformationType.checkYourAnswersLabel = Additional information {0}
 item.additionalInformation.index.additionalInformationType.error.required = Select the type of additional information
 
@@ -465,19 +470,6 @@ item.transportEquipment.change.hidden = transport equipment for item {0}
 item.transportEquipment.checkYourAnswersLabel = Transport equipment
 item.transportEquipment.error.required = Select which transport equipment you are using for this item
 
-item.addTransportChargesYesNo.title = Do you want to add a method of payment for this item’s transport charges?
-item.addTransportChargesYesNo.heading = Do you want to add a method of payment for this item’s transport charges?
-item.addTransportChargesYesNo.paragraph = These include charges for hauliers and carriers.
-item.addTransportChargesYesNo.checkYourAnswersLabel = Do you want to add a method of payment for this item’s transport charges?
-item.addTransportChargesYesNo.hidden = if you want to add a method of payment for this item’s transport charges
-item.addTransportChargesYesNo.error.required = Select yes if you want to add a method of payment for this item’s transport charges
-
-item.transportMethodOfPayment.title = Which method of payment do you want to use for transport charges?
-item.transportMethodOfPayment.heading = Which method of payment do you want to use for transport charges?
-item.transportMethodOfPayment.caption = Item {0} - Transport charges
-item.transportMethodOfPayment.checkYourAnswersLabel = Which method of payment do you want to use for transport charges?
-item.transportMethodOfPayment.error.required = Select which method of payment you want to use for transport charges
-
 item.consignee.caption = Item {0} - Consignee
 
 item.consignee.addConsigneeEoriNumberYesNo.title = Do you know the consignee’s EORI number or Trader Identification Number (TIN) for this item?
@@ -524,3 +516,17 @@ item.consignee.address.error.postalCode.invalid = The postal code must only incl
 item.consignee.address.error.invalid = The {0} must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
 item.consignee.address.error.required = Enter the {0} for {1}’s address
 item.consignee.address.error.length = The {0} must be {1} characters or less
+
+item.addTransportChargesYesNo.title = Do you want to add a method of payment for this item’s transport charges?
+item.addTransportChargesYesNo.heading = Do you want to add a method of payment for this item’s transport charges?
+item.addTransportChargesYesNo.paragraph = These include charges for hauliers and carriers.
+item.addTransportChargesYesNo.checkYourAnswersLabel = Do you want to add a method of payment for this item’s transport charges?
+item.addTransportChargesYesNo.change.hidden = if you want to add a method of payment for this item’s transport charges
+item.addTransportChargesYesNo.error.required = Select yes if you want to add a method of payment for this item’s transport charges
+
+item.transportMethodOfPayment.title = Which method of payment do you want to use for transport charges?
+item.transportMethodOfPayment.heading = Which method of payment do you want to use for transport charges?
+item.transportMethodOfPayment.caption = Item {0} - Transport charges
+item.transportMethodOfPayment.checkYourAnswersLabel = Payment method
+item.transportMethodOfPayment.change.hidden = payment method for this item’s transport charges
+item.transportMethodOfPayment.error.required = Select which method of payment you want to use for transport charges

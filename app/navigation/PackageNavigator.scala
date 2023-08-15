@@ -39,7 +39,7 @@ trait PackageNavigatorProvider {
 
 class PackageNavigator(override val mode: Mode, itemIndex: Index, packageIndex: Index)(implicit
   override val config: FrontendAppConfig,
-  phaseConfig: PhaseConfig
+  override val phaseConfig: PhaseConfig
 ) extends UserAnswersNavigator {
 
   override type T = PackageDomain

@@ -108,12 +108,12 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
     defaultApplicationBuilder()
 
   protected def transitionApplicationBuilder(): GuiceApplicationBuilder =
-    defaultApplicationBuilder()
+    guiceApplicationBuilder()
       .disable[PostTransitionModule]
       .bindings(new TransitionModule)
 
   protected def postTransitionApplicationBuilder(): GuiceApplicationBuilder =
-    defaultApplicationBuilder()
+    guiceApplicationBuilder()
       .disable[TransitionModule]
       .bindings(new PostTransitionModule)
 }

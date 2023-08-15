@@ -20,7 +20,9 @@ import cats.implicits._
 import config.Constants.GB
 import config.PhaseConfig
 import models.DeclarationType._
-import models.DocumentType.Previous
+import models.DocumentType.{Previous, Transport}
+import models.Phase.{PostTransition, Transition}
+import models.SecurityDetailsType.NoSecurityDetails
 import models._
 import models.journeyDomain.item.additionalInformation.AdditionalInformationListDomain
 import models.journeyDomain.item.additionalReferences.AdditionalReferencesDomain
@@ -29,7 +31,7 @@ import models.journeyDomain.item.documents.DocumentsDomain
 import models.journeyDomain.item.packages.PackagesDomain
 import models.journeyDomain.item.supplyChainActors.SupplyChainActorsDomain
 import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, JsArrayGettableAsReaderOps, Stage, UserAnswersReader}
-import models.reference.Country
+import models.reference.{Country, TransportChargesMethodOfPayment}
 import pages.external._
 import pages.item._
 import pages.sections.external.{ConsignmentConsigneeSection, DocumentsSection, TransportEquipmentsSection}
@@ -58,13 +60,14 @@ case class ItemDomain(
   supplyChainActors: Option[SupplyChainActorsDomain],
   documents: Option[DocumentsDomain],
   additionalReferences: Option[AdditionalReferencesDomain],
-  additionalInformation: Option[AdditionalInformationListDomain]
+  additionalInformation: Option[AdditionalInformationListDomain],
+  transportCharges: Option[TransportChargesMethodOfPayment]
 )(index: Index)
     extends JourneyDomainModel {
 
   def label(implicit messages: Messages): String = messages("item.label", index.display, itemDescription)
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some(
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] = Some(
     controllers.item.routes.CheckYourAnswersController.onPageLoad(userAnswers.lrn, index)
   )
 }
@@ -91,7 +94,8 @@ object ItemDomain {
       supplyChainActorsReader(itemIndex),
       documentsReader(itemIndex),
       additionalReferencesReader(itemIndex),
-      additionalInformationListReader(itemIndex)
+      additionalInformationListReader(itemIndex),
+      transportChargesReader(itemIndex)
     ).tupled.map((ItemDomain.apply _).tupled).map(_(itemIndex))
 
   def transportEquipmentReader(itemIndex: Index): UserAnswersReader[Option[UUID]] =
@@ -122,26 +126,39 @@ object ItemDomain {
       CountryOfDestinationPage(itemIndex).reader
     }
 
-  // TODO - will need updating once documents has been built
-  def ucrReader(itemIndex: Index): UserAnswersReader[Option[String]] =
-    ConsignmentUCRPage.filterDependent(_.isEmpty) {
-      UniqueConsignmentReferencePage(itemIndex).reader
-    }
+  def ucrReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[Option[String]] =
+    for {
+      isUCRDefined <- ConsignmentUCRPage.isDefined
+      documents    <- DocumentsSection.arrayReader.map(_.validateAsListOf[Document])
+      isConsignmentTransportDocDefined = documents.exists(
+        x => x.attachToAllItems && x.`type` == Transport
+      )
+      result <- {
+        (isUCRDefined, isConsignmentTransportDocDefined, phaseConfig.phase) match {
+          case (true, _, _) => UserAnswersReader(None)
+          case (false, false, PostTransition) =>
+            UniqueConsignmentReferencePage(itemIndex).reader.map(Some(_))
+          case _ =>
+            AddUCRYesNoPage(itemIndex).filterOptionalDependent(identity)(UniqueConsignmentReferencePage(itemIndex).reader)
+        }
+      }
+    } yield result
 
   def cusCodeReader(itemIndex: Index): UserAnswersReader[Option[String]] =
     AddCUSCodeYesNoPage(itemIndex).filterOptionalDependent(identity) {
       CustomsUnionAndStatisticsCodePage(itemIndex).reader
     }
 
-  def commodityCodeReader(itemIndex: Index): UserAnswersReader[Option[String]] =
-    TransitOperationTIRCarnetNumberPage.isDefined.flatMap {
-      case true =>
-        AddCommodityCodeYesNoPage(itemIndex).filterOptionalDependent(identity) {
-          CommodityCodePage(itemIndex).reader
+  def commodityCodeReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[Option[String]] =
+    for {
+      isTransitOperationTIRDefined <- TransitOperationTIRCarnetNumberPage.isDefined
+      result <- {
+        (isTransitOperationTIRDefined, phaseConfig.phase) match {
+          case (false, PostTransition) => CommodityCodePage(itemIndex).reader.map(Some(_))
+          case _                       => AddCommodityCodeYesNoPage(itemIndex).filterOptionalDependent(identity)(CommodityCodePage(itemIndex).reader)
         }
-      case false =>
-        CommodityCodePage(itemIndex).reader.map(Some(_))
-    }
+      }
+    } yield result
 
   def combinedNomenclatureCodeReader(itemIndex: Index): UserAnswersReader[Option[String]] =
     CommodityCodePage(itemIndex).isDefined.flatMap {
@@ -223,4 +240,18 @@ object ItemDomain {
   def additionalInformationListReader(itemIndex: Index): UserAnswersReader[Option[AdditionalInformationListDomain]] =
     AddAdditionalInformationYesNoPage(itemIndex)
       .filterOptionalDependent(identity)(AdditionalInformationListDomain.userAnswersReader(itemIndex))
+
+  def transportChargesReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[Option[TransportChargesMethodOfPayment]] =
+    for {
+      securityDetails                      <- SecurityDetailsTypePage.reader
+      isConsignmentTransportChargesDefined <- ConsignmentTransportChargesPage.isDefined
+      result <- {
+        (securityDetails, isConsignmentTransportChargesDefined, phaseConfig.phase) match {
+          case (NoSecurityDetails, _, Transition) | (_, false, Transition) =>
+            AddTransportChargesYesNoPage(itemIndex).filterOptionalDependent(identity)(TransportChargesMethodOfPaymentPage(itemIndex).reader)
+          case _ => UserAnswersReader(None)
+        }
+      }
+    } yield result
+
 }

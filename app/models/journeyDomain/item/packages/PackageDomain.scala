@@ -32,9 +32,9 @@ case class PackageDomain(
 )(itemIndex: Index, packageIndex: Index)
     extends JourneyDomainModel {
 
-  override def toString: String = s"${numberOfPackages.getOrElse(1)} ${`type`}"
+  override def toString: String = s"${numberOfPackages.getOrElse(1)} * ${`type`}"
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some {
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] = Some {
     stage match {
       case AccessingJourney =>
         controllers.item.packages.index.routes.PackageTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, packageIndex)

@@ -23,7 +23,7 @@ import models.journeyDomain.item.dangerousGoods.DangerousGoodsDomain
 import models.journeyDomain.item.documents.DocumentDomain
 import models.journeyDomain.item.packages.PackageDomain
 import models.journeyDomain.item.supplyChainActors.SupplyChainActorDomain
-import models.reference.Country
+import models.reference.{Country, TransportChargesMethodOfPayment}
 import models.{CheckMode, DeclarationType, DynamicAddress, Index, UserAnswers}
 import pages.item._
 import pages.sections.additionalInformation.AdditionalInformationListSection
@@ -395,6 +395,22 @@ class ItemAnswersHelper(
     formatAnswer = formatAsDynamicAddress,
     prefix = "item.consignee.address",
     id = Some("change-consignee-address"),
+    args = itemIndex.display
+  )
+
+  def addTransportChargesYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddTransportChargesYesNoPage(itemIndex),
+    formatAnswer = formatAsYesOrNo,
+    prefix = "item.addTransportChargesYesNo",
+    id = Some("change-add-payment-method"),
+    args = itemIndex.display
+  )
+
+  def transportCharges: Option[SummaryListRow] = getAnswerAndBuildRow[TransportChargesMethodOfPayment](
+    page = TransportChargesMethodOfPaymentPage(itemIndex),
+    formatAnswer = formatAsText,
+    prefix = "item.transportMethodOfPayment",
+    id = Some("change-payment-method"),
     args = itemIndex.display
   )
 
