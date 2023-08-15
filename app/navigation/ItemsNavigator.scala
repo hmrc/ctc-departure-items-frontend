@@ -33,7 +33,8 @@ trait ItemsNavigatorProvider {
   def apply(mode: Mode): UserAnswersNavigator
 }
 
-class ItemsNavigator(override val mode: Mode)(implicit override val config: FrontendAppConfig, phaseConfig: PhaseConfig) extends UserAnswersNavigator {
+class ItemsNavigator(override val mode: Mode)(implicit override val config: FrontendAppConfig, override val phaseConfig: PhaseConfig)
+    extends UserAnswersNavigator {
 
   override type T = ItemsDomain
 

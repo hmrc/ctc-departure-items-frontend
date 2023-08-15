@@ -33,33 +33,42 @@ class FakeItemNavigator(desiredRoute: Call, mode: Mode, index: Index)(implicit c
   override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }
 
-class FakeDangerousGoodsNavigator(desiredRoute: Call, mode: Mode, itemIndex: Index, dangerousGoodsIndex: Index)(implicit config: FrontendAppConfig)
-    extends DangerousGoodsNavigator(mode, itemIndex, dangerousGoodsIndex) {
+class FakeDangerousGoodsNavigator(desiredRoute: Call, mode: Mode, itemIndex: Index, dangerousGoodsIndex: Index)(implicit
+  config: FrontendAppConfig,
+  phaseConfig: PhaseConfig
+) extends DangerousGoodsNavigator(mode, itemIndex, dangerousGoodsIndex) {
   override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }
 
-class FakePackageNavigator(desiredRoute: Call, mode: Mode, itemIndex: Index, packageIndex: Index)(implicit config: FrontendAppConfig)
+class FakePackageNavigator(desiredRoute: Call, mode: Mode, itemIndex: Index, packageIndex: Index)(implicit config: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends PackageNavigator(mode, itemIndex, packageIndex) {
   override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }
 
-class FakeSupplyChainActorNavigator(desiredRoute: Call, mode: Mode, itemIndex: Index, actorIndex: Index)(implicit config: FrontendAppConfig)
-    extends PackageNavigator(mode, itemIndex, actorIndex) {
+class FakeSupplyChainActorNavigator(desiredRoute: Call, mode: Mode, itemIndex: Index, actorIndex: Index)(implicit
+  config: FrontendAppConfig,
+  phaseConfig: PhaseConfig
+) extends PackageNavigator(mode, itemIndex, actorIndex) {
   override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }
 
-class FakeDocumentNavigator(desiredRoute: Call, mode: Mode, itemIndex: Index, documentIndex: Index)(implicit config: FrontendAppConfig)
-    extends DocumentNavigator(mode, itemIndex, documentIndex) {
+class FakeDocumentNavigator(desiredRoute: Call, mode: Mode, itemIndex: Index, documentIndex: Index)(implicit
+  config: FrontendAppConfig,
+  phaseConfig: PhaseConfig
+) extends DocumentNavigator(mode, itemIndex, documentIndex) {
   override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }
 
-class FakeAdditionalReferenceNavigator(desiredRoute: Call, mode: Mode, itemIndex: Index, additionalReferenceIndex: Index)(implicit config: FrontendAppConfig)
-    extends AdditionalReferenceNavigator(mode, itemIndex, additionalReferenceIndex) {
+class FakeAdditionalReferenceNavigator(desiredRoute: Call, mode: Mode, itemIndex: Index, additionalReferenceIndex: Index)(implicit
+  config: FrontendAppConfig,
+  phaseConfig: PhaseConfig
+) extends AdditionalReferenceNavigator(mode, itemIndex, additionalReferenceIndex) {
   override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }
 
 class FakeAdditionalInformationNavigator(desiredRoute: Call, mode: Mode, itemIndex: Index, additionalInformationIndex: Index)(implicit
-  config: FrontendAppConfig
+  config: FrontendAppConfig,
+  phaseConfig: PhaseConfig
 ) extends AdditionalInformationNavigator(mode, itemIndex, additionalInformationIndex) {
   override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }

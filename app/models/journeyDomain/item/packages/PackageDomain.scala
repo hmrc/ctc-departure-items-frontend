@@ -20,7 +20,7 @@ import cats.implicits._
 import models.journeyDomain.Stage._
 import models.journeyDomain._
 import models.reference.PackageType
-import models.{Index, Mode, PackingType, UserAnswers}
+import models.{Index, Mode, PackingType, Phase, UserAnswers}
 import pages.item.packages.index._
 import play.api.mvc.Call
 
@@ -33,7 +33,7 @@ case class PackageDomain(
 
   override def toString: String = s"${numberOfPackages.getOrElse(1)} * ${`type`}"
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some {
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] = Some {
     stage match {
       case AccessingJourney =>
         controllers.item.packages.index.routes.PackageTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, packageIndex)

@@ -16,7 +16,7 @@
 
 package utils.cyaHelpers.item.supplyChainActors
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import controllers.item.supplyChainActors.index.routes
 import models.journeyDomain.item.supplyChainActors.SupplyChainActorDomain
 import models.{Index, Mode, UserAnswers}
@@ -26,8 +26,11 @@ import play.api.i18n.Messages
 import utils.cyaHelpers.AnswersHelper
 import viewmodels.ListItem
 
-class SupplyChainActorsAnswersHelper(userAnswers: UserAnswers, mode: Mode, itemIndex: Index)(implicit messages: Messages, config: FrontendAppConfig)
-    extends AnswersHelper(userAnswers, mode) {
+class SupplyChainActorsAnswersHelper(userAnswers: UserAnswers, mode: Mode, itemIndex: Index)(implicit
+  messages: Messages,
+  config: FrontendAppConfig,
+  phaseConfig: PhaseConfig
+) extends AnswersHelper(userAnswers, mode) {
 
   def listItems: Seq[Either[ListItem, ListItem]] =
     buildListItems(SupplyChainActorsSection(itemIndex)) {

@@ -16,7 +16,7 @@
 
 package viewmodels.item
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import models.{Index, UserAnswers}
 import play.api.i18n.Messages
 import services.{DocumentsService, TransportEquipmentService}
@@ -36,14 +36,17 @@ object ItemAnswersViewModel {
     messages: Messages,
     config: FrontendAppConfig,
     documentsService: DocumentsService,
-    transportEquipmentService: TransportEquipmentService
+    transportEquipmentService: TransportEquipmentService,
+    phaseConfig: PhaseConfig
   ): ItemAnswersViewModel =
     new ItemAnswersViewModelProvider().apply(userAnswers, itemIndex)
 
   class ItemAnswersViewModelProvider @Inject() (implicit documentsService: DocumentsService, transportEquipmentService: TransportEquipmentService) {
 
     // scalastyle:off method.length
-    def apply(userAnswers: UserAnswers, itemIndex: Index)(implicit messages: Messages, config: FrontendAppConfig): ItemAnswersViewModel = {
+    def apply(userAnswers: UserAnswers,
+              itemIndex: Index
+    )(implicit messages: Messages, config: FrontendAppConfig, phaseConfig: PhaseConfig): ItemAnswersViewModel = {
       val helper = new ItemAnswersHelper(userAnswers, itemIndex)
 
       val firstItemSection = Section(
@@ -122,6 +125,14 @@ object ItemAnswersViewModel {
         addAnotherLink = helper.addOrRemoveAdditionalInformation
       )
 
+      val paymentMethodSection = Section(
+        sectionTitle = messages("item.checkYourAnswers.transportCharges"),
+        rows = Seq(
+          helper.addTransportChargesYesNo,
+          helper.transportCharges
+        ).flatten
+      )
+
       val sections = firstItemSection.toSeq ++
         dangerousGoodsSection.toSeq ++
         measurementSection.toSeq ++
@@ -130,7 +141,8 @@ object ItemAnswersViewModel {
         supplyChainActorsSection.toSeq ++
         documentsSection.toSeq ++
         additionalReferencesSection.toSeq ++
-        additionalInformationSection.toSeq
+        additionalInformationSection.toSeq ++
+        paymentMethodSection.toSeq
 
       new ItemAnswersViewModel(sections)
     }

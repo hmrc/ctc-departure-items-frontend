@@ -46,6 +46,7 @@ trait UserAnswersEntryGenerators {
       case ConsignmentCountryOfDispatchPage           => arbitrary[Country].map(Json.toJson(_))
       case ConsignmentCountryOfDestinationPage        => arbitrary[Country].map(Json.toJson(_))
       case ApprovedOperatorPage                       => arbitrary[Boolean].map(JsBoolean)
+      case SecurityDetailsTypePage                    => arbitrary[SecurityDetailsType].map(Json.toJson(_))
       case ConsignmentConsigneeSection                => arbitrary[JsObject]
       case ConsignmentCountryOfDestinationInCL009Page => arbitrary[Boolean].map(JsBoolean)
     }
@@ -76,6 +77,8 @@ trait UserAnswersEntryGenerators {
       case AddDocumentsYesNoPage(_)                => arbitrary[Boolean].map(JsBoolean)
       case AddAdditionalReferenceYesNoPage(_)      => arbitrary[Boolean].map(JsBoolean)
       case AddAdditionalInformationYesNoPage(_)    => arbitrary[Boolean].map(JsBoolean)
+      case AddTransportChargesYesNoPage(_)         => arbitrary[Boolean].map(JsBoolean)
+      case TransportChargesMethodOfPaymentPage(_)  => arbitrary[TransportChargesMethodOfPayment].map(Json.toJson(_))
     }
     pf orElse
       generateDangerousGoodsAnswer orElse

@@ -38,8 +38,10 @@ trait AdditionalReferenceNavigatorProvider {
   def apply(mode: Mode, itemIndex: Index, additionalReferenceIndex: Index): UserAnswersNavigator
 }
 
-class AdditionalReferenceNavigator(override val mode: Mode, itemIndex: Index, additionalReferenceIndex: Index)(implicit override val config: FrontendAppConfig)
-    extends UserAnswersNavigator {
+class AdditionalReferenceNavigator(override val mode: Mode, itemIndex: Index, additionalReferenceIndex: Index)(implicit
+  override val config: FrontendAppConfig,
+  override val phaseConfig: PhaseConfig
+) extends UserAnswersNavigator {
 
   override type T = AdditionalReferenceDomain
 

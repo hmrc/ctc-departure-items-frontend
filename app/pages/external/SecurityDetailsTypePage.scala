@@ -14,11 +14,15 @@
  * limitations under the License.
  */
 
-package models.journeyDomain
+package pages.external
 
-import models.{Mode, Phase, UserAnswers}
-import play.api.mvc.Call
+import models.SecurityDetailsType
+import pages.{preTaskListPath, ReadOnlyPage}
+import play.api.libs.json.JsPath
 
-trait JourneyDomainModel {
-  def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] = None
+case object SecurityDetailsTypePage extends ReadOnlyPage[SecurityDetailsType] {
+
+  override def path: JsPath = preTaskListPath \ toString
+
+  override def toString: String = "securityDetailsType"
 }
