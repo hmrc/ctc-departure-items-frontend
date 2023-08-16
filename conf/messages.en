@@ -78,7 +78,7 @@ item.description.checkYourAnswersLabel = Description
 item.description.change.hidden = description for item {0}
 item.description.error.length = The description must be {0} characters or less
 item.description.error.required = Enter a description of item {0}
-item.description.error.invalidCharacters = The description must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
+item.description.error.invalidCharacters = The description must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
 item.description.paragraph = This should be clear and detailed enough for anyone involved in the transit movement to understand its contents.
 
 item.declarationType.title = Which type of declaration do you want to create for this item?

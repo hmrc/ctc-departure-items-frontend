@@ -18,7 +18,7 @@ package forms.item
 
 import config.PhaseConfig
 import forms.mappings.Mappings
-import models.domain.StringFieldRegex.stringFieldRegex
+import models.domain.StringFieldRegex.stringFieldRegexComma
 import play.api.data.Form
 
 import javax.inject.Inject
@@ -30,7 +30,7 @@ class DescriptionFormProvider @Inject() (implicit phaseConfig: PhaseConfig) exte
       "value" -> text(s"$prefix.error.required", args = args.map(_.toString))
         .verifying(
           forms.StopOnFirstFail[String](
-            regexp(stringFieldRegex, s"$prefix.error.invalidCharacters"),
+            regexp(stringFieldRegexComma, s"$prefix.error.invalidCharacters"),
             maxLength(phaseConfig.maxItemDescriptionLength, s"$prefix.error.length")
           )
         )

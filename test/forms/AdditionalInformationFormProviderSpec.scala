@@ -19,7 +19,7 @@ package forms
 import forms.Constants.maxAdditionalInformationLength
 import forms.behaviours.StringFieldBehaviours
 import forms.item.additionalInformation.AdditionalInformationFormProvider
-import models.domain.StringFieldRegex.stringFieldRegex
+import models.domain.StringFieldRegex.stringFieldRegexComma
 import org.scalacheck.Gen
 import play.api.data.FormError
 
@@ -58,7 +58,7 @@ class AdditionalInformationFormProviderSpec extends StringFieldBehaviours {
     behave like fieldWithInvalidCharacters(
       form,
       fieldName,
-      error = FormError(fieldName, invalidKey, Seq(stringFieldRegex.regex)),
+      error = FormError(fieldName, invalidKey, Seq(stringFieldRegexComma.regex)),
       maxAdditionalInformationLength
     )
   }

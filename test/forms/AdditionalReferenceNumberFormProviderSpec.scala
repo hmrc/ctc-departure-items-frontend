@@ -19,7 +19,7 @@ package forms
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.behaviours.StringFieldBehaviours
 import forms.item.additionalReference.AdditionalReferenceNumberFormProvider
-import models.domain.StringFieldRegex.stringFieldRegex
+import models.domain.StringFieldRegex.stringFieldRegexComma
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.{Form, FormError}
 import play.api.test.Helpers.running
@@ -64,7 +64,7 @@ class AdditionalReferenceNumberFormProviderSpec extends SpecBase with AppWithDef
       behave like fieldWithInvalidCharacters(
         form,
         fieldName,
-        error = FormError(fieldName, invalidKey, Seq(stringFieldRegex.regex)),
+        error = FormError(fieldName, invalidKey, Seq(stringFieldRegexComma.regex)),
         maxAdditionalReferenceNumLength
       )
 
