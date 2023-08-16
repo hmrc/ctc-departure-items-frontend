@@ -1231,10 +1231,11 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
           }
 
           "when other packageType added" in {
-            forAll(arbitrary[PackageType](arbitraryOtherPackageType), arbitrary[String]) {
-              (packageType, shippingMark) =>
+            forAll(arbitrary[PackageType](arbitraryOtherPackageType), arbitrary[String], arbitrary[Int]) {
+              (packageType, shippingMark, numberOfPackages) =>
                 val userAnswers = emptyUserAnswers
                   .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+                  .setValue(NumberOfPackagesPage(itemIndex, packageIndex), numberOfPackages)
                   .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
 
                 val expectedResult =
@@ -1242,7 +1243,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                     Seq(
                       PackageDomain(
                         packageType,
-                        None,
+                        Some(numberOfPackages),
                         Some(shippingMark)
                       )(itemIndex, packageIndex)
                     )

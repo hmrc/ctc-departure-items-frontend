@@ -157,15 +157,16 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
         }
 
         "when package type is Other" in {
-          forAll(arbitrary[PackageType](arbitraryOtherPackageType), nonEmptyString) {
-            (packageType, shippingMark) =>
+          forAll(arbitrary[PackageType](arbitraryOtherPackageType), nonEmptyString, arbitrary[Int]) {
+            (packageType, shippingMark, numberOfPackages) =>
               val userAnswers = emptyUserAnswers
                 .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+                .setValue(NumberOfPackagesPage(itemIndex, packageIndex), numberOfPackages)
                 .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
 
               val expectedResult = PackageDomain(
                 `type` = packageType,
-                numberOfPackages = None,
+                numberOfPackages = Some(numberOfPackages),
                 shippingMark = Some(shippingMark)
               )(itemIndex, packageIndex)
 
@@ -393,11 +394,26 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
 
         "when package type is Other" - {
 
-          "and shipping mark is not answered" in {
+          "and number of packages is not answered" in {
             forAll(arbitrary[PackageType](arbitraryOtherPackageType)) {
               packageType =>
                 val userAnswers = emptyUserAnswers
                   .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+
+                val result: EitherType[PackageDomain] = UserAnswersReader[PackageDomain](
+                  PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockPostTransitionPhaseConfig)
+                ).run(userAnswers)
+
+                result.left.value.page mustBe NumberOfPackagesPage(itemIndex, packageIndex)
+            }
+          }
+
+          "and shipping mark is not answered" in {
+            forAll(arbitrary[PackageType](arbitraryOtherPackageType), arbitrary[Int]) {
+              (packageType, numberOfPackages) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+                  .setValue(NumberOfPackagesPage(itemIndex, packageIndex), numberOfPackages)
 
                 val result: EitherType[PackageDomain] = UserAnswersReader[PackageDomain](
                   PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockPostTransitionPhaseConfig)
