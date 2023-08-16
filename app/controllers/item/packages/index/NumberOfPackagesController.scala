@@ -21,6 +21,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.IntFormProvider
 import models.PackingType.Unpacked
+import models.Phase.PostTransition
 import models.reference.PackageType
 import models.requests.SpecificDataRequestProvider1
 import models.{Index, LocalReferenceNumber, Mode}
@@ -50,7 +51,7 @@ class NumberOfPackagesController @Inject() (
 
   private type Request = SpecificDataRequestProvider1[PackageType]#SpecificDataRequest[_]
 
-  private def minNumberOfPackages(implicit request: Request): Int = if (request.arg.`type` == Unpacked) 1 else 0
+  private def minNumberOfPackages(implicit request: Request): Int = if (request.arg.`type` == Unpacked && phaseConfig.phase == PostTransition) 1 else 0
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, packageIndex: Index): Action[AnyContent] = actions
     .requireData(lrn)

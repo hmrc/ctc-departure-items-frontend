@@ -72,7 +72,7 @@ class AddAnotherDangerousGoodsControllerSpec extends SpecBase with AppWithDefaul
   "AddAnotherDangerousGoods Controller" - {
 
     "must redirect to add dangerous goods yes/no when 0 dangerous goods added" in {
-      when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
+      when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
         .thenReturn(emptyViewModel)
 
       setExistingUserAnswers(emptyUserAnswers)
@@ -90,7 +90,7 @@ class AddAnotherDangerousGoodsControllerSpec extends SpecBase with AppWithDefaul
 
     "must return OK and the correct view for a GET" - {
       "when max limit not reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
           .thenReturn(notMaxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -108,7 +108,7 @@ class AddAnotherDangerousGoodsControllerSpec extends SpecBase with AppWithDefaul
       }
 
       "when max limit reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
           .thenReturn(maxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -129,7 +129,7 @@ class AddAnotherDangerousGoodsControllerSpec extends SpecBase with AppWithDefaul
     "when max limit not reached" - {
       "when yes submitted" - {
         "must redirect to UNNumber page at next index" in {
-          when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
+          when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
             .thenReturn(notMaxedOutViewModel)
 
           setExistingUserAnswers(emptyUserAnswers)
@@ -148,7 +148,7 @@ class AddAnotherDangerousGoodsControllerSpec extends SpecBase with AppWithDefaul
 
       "when no submitted" - {
         "must redirect to next page" in {
-          when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
+          when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
             .thenReturn(notMaxedOutViewModel)
 
           setExistingUserAnswers(emptyUserAnswers)
@@ -167,7 +167,7 @@ class AddAnotherDangerousGoodsControllerSpec extends SpecBase with AppWithDefaul
 
     "when max limit reached" - {
       "must redirect to next page" in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
           .thenReturn(maxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -185,7 +185,7 @@ class AddAnotherDangerousGoodsControllerSpec extends SpecBase with AppWithDefaul
 
     "must return a Bad Request and errors" - {
       "when invalid data is submitted and max limit not reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
           .thenReturn(notMaxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)

@@ -18,7 +18,7 @@ package models.journeyDomain.item.documents
 
 import models.journeyDomain.Stage._
 import models.journeyDomain._
-import models.{Index, Mode, UserAnswers}
+import models.{Index, Mode, Phase, UserAnswers}
 import pages.item.documents.index.DocumentPage
 import play.api.mvc.Call
 
@@ -31,7 +31,7 @@ case class DocumentDomain(
 
   override def toString: String = document.toString
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some {
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] = Some {
     stage match {
       case AccessingJourney =>
         controllers.item.documents.index.routes.DocumentController.onPageLoad(userAnswers.lrn, mode, itemIndex, documentIndex)

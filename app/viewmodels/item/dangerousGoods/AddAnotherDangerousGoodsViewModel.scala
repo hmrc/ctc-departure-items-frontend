@@ -16,7 +16,7 @@
 
 package viewmodels.item.dangerousGoods
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import controllers.item.dangerousGoods.routes
 import models.{Index, Mode, UserAnswers}
 import play.api.i18n.Messages
@@ -42,7 +42,8 @@ object AddAnotherDangerousGoodsViewModel {
 
     def apply(userAnswers: UserAnswers, mode: Mode, itemIndex: Index)(implicit
       messages: Messages,
-      config: FrontendAppConfig
+      config: FrontendAppConfig,
+      phaseConfig: PhaseConfig
     ): AddAnotherDangerousGoodsViewModel = {
       val helper = new DangerousGoodsAnswersHelper(userAnswers, mode, itemIndex)
 

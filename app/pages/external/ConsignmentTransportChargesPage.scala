@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 
-package models.journeyDomain
+package pages.external
 
-import models.{Mode, Phase, UserAnswers}
-import play.api.mvc.Call
+import pages.{equipmentAndChargesPath, ReadOnlyPage}
+import play.api.libs.json.JsPath
 
-trait JourneyDomainModel {
-  def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] = None
+case object ConsignmentTransportChargesPage extends ReadOnlyPage[String] {
+
+  override def path: JsPath = equipmentAndChargesPath \ toString
+
+  override def toString: String = "paymentMethod"
 }

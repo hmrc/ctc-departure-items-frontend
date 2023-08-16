@@ -16,7 +16,7 @@
 
 package viewmodels.item.packages
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import controllers.item.packages.routes
 import models.{Index, Mode, UserAnswers}
 import play.api.i18n.Messages
@@ -42,7 +42,8 @@ object AddAnotherPackageViewModel {
 
     def apply(userAnswers: UserAnswers, mode: Mode, itemIndex: Index)(implicit
       messages: Messages,
-      config: FrontendAppConfig
+      config: FrontendAppConfig,
+      phaseConfig: PhaseConfig
     ): AddAnotherPackageViewModel = {
       val helper = new PackageAnswersHelper(userAnswers, mode, itemIndex)
 

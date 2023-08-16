@@ -16,7 +16,7 @@
 
 package utils.cyaHelpers.item.documents
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import controllers.item.documents.index.routes
 import models.{Index, Mode, UserAnswers}
 import pages.item.documents.index.DocumentPage
@@ -26,8 +26,11 @@ import services.DocumentsService
 import utils.cyaHelpers.AnswersHelper
 import viewmodels.ListItem
 
-class DocumentAnswersHelper(userAnswers: UserAnswers, mode: Mode, itemIndex: Index)(implicit messages: Messages, config: FrontendAppConfig)
-    extends AnswersHelper(userAnswers, mode) {
+class DocumentAnswersHelper(userAnswers: UserAnswers, mode: Mode, itemIndex: Index)(implicit
+  messages: Messages,
+  config: FrontendAppConfig,
+  phaseConfig: PhaseConfig
+) extends AnswersHelper(userAnswers, mode) {
 
   def consignmentLevelListItems(implicit documentsService: DocumentsService): Seq[ListItem] =
     documentsService.getConsignmentLevelDocuments(userAnswers).map {

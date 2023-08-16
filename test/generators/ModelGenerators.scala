@@ -253,6 +253,16 @@ trait ModelGenerators {
     Gen.oneOf(TaskStatus.InProgress, TaskStatus.NotStarted, TaskStatus.CannotStartYet)
   }
 
+  implicit lazy val arbitraryNoSecurityDetailsType: Arbitrary[SecurityDetailsType] =
+    Arbitrary {
+      Gen.oneOf(SecurityDetailsType.values.filter(_ == SecurityDetailsType.NoSecurityDetails))
+    }
+
+  lazy val arbitrarySomeSecurityDetailsType: Arbitrary[SecurityDetailsType] =
+    Arbitrary {
+      Gen.oneOf(SecurityDetailsType.values.filterNot(_ == SecurityDetailsType.NoSecurityDetails))
+    }
+
   implicit lazy val arbitraryJsObject: Arbitrary[JsObject] = Arbitrary {
     Gen.oneOf(
       Json.obj(),
