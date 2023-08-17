@@ -193,7 +193,7 @@ object ItemDomain {
       SupplementaryUnitsPage(itemIndex).reader
     }
 
-  def packagesReader(itemIndex: Index): UserAnswersReader[PackagesDomain] =
+  def packagesReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[PackagesDomain] =
     PackagesDomain.userAnswersReader(itemIndex)
 
   def consigneeReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[Option[ConsigneeDomain]] =

@@ -48,7 +48,6 @@ import java.util.UUID
 class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   "Item Domain" - {
-
     val mockTransitionPhaseConfig = mock[PhaseConfig]
     when(mockTransitionPhaseConfig.phase).thenReturn(Phase.Transition)
 
@@ -1092,84 +1091,170 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
     "packagesReader" - {
       "can be read from user answers" - {
-        "when unpacked packageType added" in {
-          forAll(arbitrary[PackageType](arbitraryUnpackedPackageType), Gen.posNum[Int].sample.value, arbitrary[String]) {
-            (packageType, quantity, shippingMark) =>
-              val userAnswers = emptyUserAnswers
-                .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
-                .setValue(NumberOfPackagesPage(itemIndex, packageIndex), quantity)
-                .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
-                .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
+        "when in transition" - {
+          "when unpacked packageType added" in {
+            forAll(arbitrary[PackageType](arbitraryUnpackedPackageType), Gen.posNum[Int].sample.value, arbitrary[String]) {
+              (packageType, quantity, shippingMark) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+                  .setValue(NumberOfPackagesPage(itemIndex, packageIndex), quantity)
+                  .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
+                  .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
 
-              val expectedResult =
-                PackagesDomain(
-                  Seq(
-                    PackageDomain(
-                      packageType,
-                      Some(quantity),
-                      Some(shippingMark)
-                    )(itemIndex, packageIndex)
+                val expectedResult =
+                  PackagesDomain(
+                    Seq(
+                      PackageDomain(
+                        packageType,
+                        Some(quantity),
+                        Some(shippingMark)
+                      )(itemIndex, packageIndex)
+                    )
                   )
-                )
 
-              val result: EitherType[PackagesDomain] = UserAnswersReader[PackagesDomain](
-                ItemDomain.packagesReader(itemIndex)
-              ).run(userAnswers)
+                val result: EitherType[PackagesDomain] = UserAnswersReader[PackagesDomain](
+                  ItemDomain.packagesReader(itemIndex)(mockTransitionPhaseConfig)
+                ).run(userAnswers)
 
-              result.value mustBe expectedResult
+                result.value mustBe expectedResult
+            }
+          }
+
+          "when bulk packageType added" in {
+            forAll(arbitrary[PackageType](arbitraryBulkPackageType), arbitrary[String]) {
+              (packageType, shippingMark) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+                  .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
+                  .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
+
+                val expectedResult =
+                  PackagesDomain(
+                    Seq(
+                      PackageDomain(
+                        packageType,
+                        None,
+                        Some(shippingMark)
+                      )(itemIndex, packageIndex)
+                    )
+                  )
+
+                val result: EitherType[PackagesDomain] = UserAnswersReader[PackagesDomain](
+                  ItemDomain.packagesReader(itemIndex)(mockTransitionPhaseConfig)
+                ).run(userAnswers)
+
+                result.value mustBe expectedResult
+            }
+          }
+
+          "when other packageType added" in {
+            forAll(arbitrary[PackageType](arbitraryOtherPackageType), arbitrary[Int], arbitrary[String]) {
+              (packageType, numberOfPackages, shippingMark) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+                  .setValue(NumberOfPackagesPage(itemIndex, packageIndex), numberOfPackages)
+                  .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
+
+                val expectedResult =
+                  PackagesDomain(
+                    Seq(
+                      PackageDomain(
+                        packageType,
+                        Some(numberOfPackages),
+                        Some(shippingMark)
+                      )(itemIndex, packageIndex)
+                    )
+                  )
+
+                val result: EitherType[PackagesDomain] = UserAnswersReader[PackagesDomain](
+                  ItemDomain.packagesReader(itemIndex)(mockTransitionPhaseConfig)
+                ).run(userAnswers)
+
+                result.value mustBe expectedResult
+            }
           }
         }
+        "when in post-transition" - {
+          "when unpacked packageType added" in {
+            forAll(arbitrary[PackageType](arbitraryUnpackedPackageType), Gen.posNum[Int].sample.value, arbitrary[String]) {
+              (packageType, quantity, shippingMark) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+                  .setValue(NumberOfPackagesPage(itemIndex, packageIndex), quantity)
+                  .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
+                  .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
 
-        "when bulk packageType added" in {
-          forAll(arbitrary[PackageType](arbitraryBulkPackageType), arbitrary[String]) {
-            (packageType, shippingMark) =>
-              val userAnswers = emptyUserAnswers
-                .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
-                .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
-                .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
-
-              val expectedResult =
-                PackagesDomain(
-                  Seq(
-                    PackageDomain(
-                      packageType,
-                      None,
-                      Some(shippingMark)
-                    )(itemIndex, packageIndex)
+                val expectedResult =
+                  PackagesDomain(
+                    Seq(
+                      PackageDomain(
+                        packageType,
+                        Some(quantity),
+                        Some(shippingMark)
+                      )(itemIndex, packageIndex)
+                    )
                   )
-                )
 
-              val result: EitherType[PackagesDomain] = UserAnswersReader[PackagesDomain](
-                ItemDomain.packagesReader(itemIndex)
-              ).run(userAnswers)
+                val result: EitherType[PackagesDomain] = UserAnswersReader[PackagesDomain](
+                  ItemDomain.packagesReader(itemIndex)(mockPostTransitionPhaseConfig)
+                ).run(userAnswers)
 
-              result.value mustBe expectedResult
+                result.value mustBe expectedResult
+            }
           }
-        }
 
-        "when other packageType added" in {
-          forAll(arbitrary[PackageType](arbitraryOtherPackageType), arbitrary[String]) {
-            (packageType, shippingMark) =>
-              val userAnswers = emptyUserAnswers
-                .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
-                .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
+          "when bulk packageType added" in {
+            forAll(arbitrary[PackageType](arbitraryBulkPackageType), arbitrary[String]) {
+              (packageType, shippingMark) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+                  .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
+                  .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
 
-              val expectedResult =
-                PackagesDomain(
-                  Seq(
-                    PackageDomain(
-                      packageType,
-                      None,
-                      Some(shippingMark)
-                    )(itemIndex, packageIndex)
+                val expectedResult =
+                  PackagesDomain(
+                    Seq(
+                      PackageDomain(
+                        packageType,
+                        None,
+                        Some(shippingMark)
+                      )(itemIndex, packageIndex)
+                    )
                   )
-                )
 
-              val result: EitherType[PackagesDomain] = UserAnswersReader[PackagesDomain](
-                ItemDomain.packagesReader(itemIndex)
-              ).run(userAnswers)
+                val result: EitherType[PackagesDomain] = UserAnswersReader[PackagesDomain](
+                  ItemDomain.packagesReader(itemIndex)(mockPostTransitionPhaseConfig)
+                ).run(userAnswers)
 
-              result.value mustBe expectedResult
+                result.value mustBe expectedResult
+            }
+          }
+
+          "when other packageType added" in {
+            forAll(arbitrary[PackageType](arbitraryOtherPackageType), arbitrary[String], arbitrary[Int]) {
+              (packageType, shippingMark, numberOfPackages) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+                  .setValue(NumberOfPackagesPage(itemIndex, packageIndex), numberOfPackages)
+                  .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
+
+                val expectedResult =
+                  PackagesDomain(
+                    Seq(
+                      PackageDomain(
+                        packageType,
+                        Some(numberOfPackages),
+                        Some(shippingMark)
+                      )(itemIndex, packageIndex)
+                    )
+                  )
+
+                val result: EitherType[PackagesDomain] = UserAnswersReader[PackagesDomain](
+                  ItemDomain.packagesReader(itemIndex)(mockPostTransitionPhaseConfig)
+                ).run(userAnswers)
+
+                result.value mustBe expectedResult
+            }
           }
         }
       }

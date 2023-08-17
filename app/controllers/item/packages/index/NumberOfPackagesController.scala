@@ -79,9 +79,8 @@ class NumberOfPackagesController @Inject() (
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex, packageIndex, packageType))),
             value => {
               val writes = NumberOfPackagesPage(itemIndex, packageIndex).writeToUserAnswers(value).updateTask().writeToSession()
-              value match {
-                case 0 =>
-                  writes.navigateTo(routes.BeforeYouContinueController.onPageLoad(lrn, mode, itemIndex, packageIndex))
+              phaseConfig.phase match {
+                case PostTransition if value == 0 => writes.navigateTo(routes.BeforeYouContinueController.onPageLoad(lrn, mode, itemIndex, packageIndex))
                 case _ =>
                   implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex, packageIndex)
                   writes.navigate()
