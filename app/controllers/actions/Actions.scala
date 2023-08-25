@@ -33,6 +33,9 @@ class Actions @Inject() (
   def getData(lrn: LocalReferenceNumber): ActionBuilder[OptionalDataRequest, AnyContent] =
     identifierAction andThen dataRetrievalActionProvider(lrn)
 
+  def requireDataWithNoDependencies(lrn: LocalReferenceNumber): ActionBuilder[DataRequest, AnyContent] =
+    getData(lrn) andThen dataRequiredAction andThen lockAction()
+
   def requireData(lrn: LocalReferenceNumber): ActionBuilder[DataRequest, AnyContent] =
-    getData(lrn) andThen dataRequiredAction andThen lockAction() andThen dependentTasksAction
+    requireDataWithNoDependencies(lrn) andThen dependentTasksAction
 }
