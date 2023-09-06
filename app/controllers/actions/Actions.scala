@@ -18,7 +18,9 @@ package controllers.actions
 
 import models.LocalReferenceNumber
 import models.requests.{DataRequest, OptionalDataRequest}
-import play.api.mvc.{ActionBuilder, AnyContent}
+import pages.sections.Section
+import play.api.libs.json.JsObject
+import play.api.mvc.{ActionBuilder, AnyContent, Call}
 
 import javax.inject.Inject
 
@@ -27,7 +29,8 @@ class Actions @Inject() (
   dataRetrievalActionProvider: DataRetrievalActionProvider,
   dataRequiredAction: DataRequiredAction,
   lockAction: LockActionProvider,
-  dependentTasksAction: DependentTasksAction
+  dependentTasksAction: DependentTasksAction,
+  indexRequiredAction: IndexRequiredActionProvider
 ) {
 
   def getData(lrn: LocalReferenceNumber): ActionBuilder[OptionalDataRequest, AnyContent] =
@@ -38,4 +41,7 @@ class Actions @Inject() (
 
   def requireData(lrn: LocalReferenceNumber): ActionBuilder[DataRequest, AnyContent] =
     requireDataWithNoDependencies(lrn) andThen dependentTasksAction
+
+  def requireIndex(lrn: LocalReferenceNumber, section: Section[JsObject], addAnother: => Call): ActionBuilder[DataRequest, AnyContent] =
+    requireData(lrn) andThen indexRequiredAction(section, addAnother)
 }

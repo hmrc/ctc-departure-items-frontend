@@ -25,6 +25,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.sections.documents.DocumentSection
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -33,7 +34,7 @@ import play.api.test.Helpers._
 import services.DocumentsService
 import views.html.item.documents.index.RemoveDocumentView
 
-class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   private val formProvider = new YesNoFormProvider()
   private val form         = formProvider("item.documents.index.removeDocument")
@@ -58,83 +59,90 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
   "RemoveDocument Controller" - {
 
     "must return OK and the correct view for a GET" in {
+      forAll(arbitraryDocumentAnswers(emptyUserAnswers, itemIndex, documentIndex)) {
+        userAnswers =>
+          setExistingUserAnswers(userAnswers)
 
-      setExistingUserAnswers(emptyUserAnswers)
+          val request = FakeRequest(GET, removeDocumentRoute)
+          val result  = route(app, request).value
 
-      val request = FakeRequest(GET, removeDocumentRoute)
-      val result  = route(app, request).value
+          val view = injector.instanceOf[RemoveDocumentView]
 
-      val view = injector.instanceOf[RemoveDocumentView]
+          status(result) mustEqual OK
 
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(form, lrn, mode, itemIndex, documentIndex, document)(request, messages).toString
+          contentAsString(result) mustEqual
+            view(form, lrn, mode, itemIndex, documentIndex, document)(request, messages).toString
+      }
     }
 
     "must redirect to the next page" - {
       "when yes is submitted" in {
+        forAll(arbitraryDocumentAnswers(emptyUserAnswers, itemIndex, documentIndex)) {
+          userAnswers =>
+            beforeEach()
 
-        val userAnswers = emptyUserAnswers
+            setExistingUserAnswers(userAnswers)
 
-        setExistingUserAnswers(userAnswers)
+            val request = FakeRequest(POST, removeDocumentRoute)
+              .withFormUrlEncodedBody(("value", "true"))
 
-        val request = FakeRequest(POST, removeDocumentRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+            val result = route(app, request).value
 
-        val result = route(app, request).value
+            status(result) mustEqual SEE_OTHER
 
-        status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustEqual
+              documentRoutes.AddAnotherDocumentController.onPageLoad(userAnswers.lrn, mode, itemIndex).url
 
-        redirectLocation(result).value mustEqual
-          documentRoutes.AddAnotherDocumentController.onPageLoad(userAnswers.lrn, mode, itemIndex).url
+            val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+            verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
 
-        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-        verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-
-        userAnswersCaptor.getValue.get(DocumentSection(itemIndex, documentIndex)) mustNot be(defined)
+            userAnswersCaptor.getValue.get(DocumentSection(itemIndex, documentIndex)) mustNot be(defined)
+        }
       }
 
       "when no is submitted" in {
+        forAll(arbitraryDocumentAnswers(emptyUserAnswers, itemIndex, documentIndex)) {
+          userAnswers =>
+            beforeEach()
 
-        val userAnswers = emptyUserAnswers
+            setExistingUserAnswers(userAnswers)
 
-        setExistingUserAnswers(userAnswers)
+            val request = FakeRequest(POST, removeDocumentRoute)
+              .withFormUrlEncodedBody(("value", "false"))
 
-        val request = FakeRequest(POST, removeDocumentRoute)
-          .withFormUrlEncodedBody(("value", "false"))
+            val result = route(app, request).value
 
-        val result = route(app, request).value
+            status(result) mustEqual SEE_OTHER
 
-        status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustEqual
+              documentRoutes.AddAnotherDocumentController.onPageLoad(userAnswers.lrn, mode, itemIndex).url
 
-        redirectLocation(result).value mustEqual
-          documentRoutes.AddAnotherDocumentController.onPageLoad(userAnswers.lrn, mode, itemIndex).url
-
-        verify(mockSessionRepository, never()).set(any())(any())
+            verify(mockSessionRepository, never()).set(any())(any())
+        }
       }
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
+      forAll(arbitraryDocumentAnswers(emptyUserAnswers, itemIndex, documentIndex)) {
+        userAnswers =>
+          setExistingUserAnswers(userAnswers)
 
-      setExistingUserAnswers(emptyUserAnswers)
+          val request   = FakeRequest(POST, removeDocumentRoute).withFormUrlEncodedBody(("value", ""))
+          val boundForm = form.bind(Map("value" -> ""))
 
-      val request   = FakeRequest(POST, removeDocumentRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form.bind(Map("value" -> ""))
+          val result = route(app, request).value
 
-      val result = route(app, request).value
+          status(result) mustEqual BAD_REQUEST
 
-      status(result) mustEqual BAD_REQUEST
+          val view = injector.instanceOf[RemoveDocumentView]
 
-      val view = injector.instanceOf[RemoveDocumentView]
-
-      contentAsString(result) mustEqual
-        view(boundForm, lrn, mode, itemIndex, documentIndex, document)(request, messages).toString
+          contentAsString(result) mustEqual
+            view(boundForm, lrn, mode, itemIndex, documentIndex, document)(request, messages).toString
+      }
     }
 
-    "must redirect to Session Expired for a GET" - {
+    "must redirect for a GET" - {
       "if no existing data is found" in {
-
         setNoExistingUserAnswers()
 
         val request = FakeRequest(GET, removeDocumentRoute)
@@ -146,10 +154,24 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
         redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
       }
 
-      "if no document is found" in {
+      "if no document is found in documents section" in {
+        forAll(arbitraryDocumentAnswers(emptyUserAnswers, itemIndex, documentIndex)) {
+          userAnswers =>
+            when(mockDocumentsService.getDocument(any(), any(), any())).thenReturn(None)
 
-        when(mockDocumentsService.getDocument(any(), any(), any())).thenReturn(None)
+            setExistingUserAnswers(userAnswers)
 
+            val request = FakeRequest(GET, removeDocumentRoute)
+
+            val result = route(app, request).value
+
+            status(result) mustEqual SEE_OTHER
+
+            redirectLocation(result).value mustEqual frontendAppConfig.technicalDifficultiesUrl
+        }
+      }
+
+      "if no document is found in user answers" in {
         setExistingUserAnswers(emptyUserAnswers)
 
         val request = FakeRequest(GET, removeDocumentRoute)
@@ -158,11 +180,12 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.technicalDifficultiesUrl
+        redirectLocation(result).value mustEqual
+          documentRoutes.AddAnotherDocumentController.onPageLoad(lrn, mode, itemIndex).url
       }
     }
 
-    "must redirect to Session Expired for a POST" - {
+    "must redirect for a POST" - {
       "if no existing data is found" in {
 
         setNoExistingUserAnswers()
@@ -177,10 +200,25 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
         redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
       }
 
-      "if no document is found" in {
+      "if no document is found in documents section" in {
+        forAll(arbitraryDocumentAnswers(emptyUserAnswers, itemIndex, documentIndex)) {
+          userAnswers =>
+            when(mockDocumentsService.getDocument(any(), any(), any())).thenReturn(None)
 
-        when(mockDocumentsService.getDocument(any(), any(), any())).thenReturn(None)
+            setExistingUserAnswers(userAnswers)
 
+            val request = FakeRequest(POST, removeDocumentRoute)
+              .withFormUrlEncodedBody(("value", "true"))
+
+            val result = route(app, request).value
+
+            status(result) mustEqual SEE_OTHER
+
+            redirectLocation(result).value mustEqual frontendAppConfig.technicalDifficultiesUrl
+        }
+      }
+
+      "if no document is found in user answers" in {
         setExistingUserAnswers(emptyUserAnswers)
 
         val request = FakeRequest(POST, removeDocumentRoute)
@@ -190,7 +228,8 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.technicalDifficultiesUrl
+        redirectLocation(result).value mustEqual
+          documentRoutes.AddAnotherDocumentController.onPageLoad(lrn, mode, itemIndex).url
       }
     }
   }
