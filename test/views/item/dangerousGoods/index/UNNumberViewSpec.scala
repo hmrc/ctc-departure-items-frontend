@@ -44,7 +44,7 @@ class UNNumberViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithHeading()
 
-  behave like pageWithHint("This will be 4 characters long and include both letters and numbers.")
+  behave like pageWithHint("This will be 4 characters long and include both letters and numbers, for example 2156.")
 
   behave like pageWithInputText(Some(InputSize.Width20))
 

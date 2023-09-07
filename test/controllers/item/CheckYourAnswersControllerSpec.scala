@@ -44,7 +44,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
     "must return OK and the correct view for a GET" in {
       val sampleSections = arbitrary[List[Section]].sample.value
 
-      when(mockViewModelProvider.apply(any(), any())(any(), any()))
+      when(mockViewModelProvider.apply(any(), any())(any(), any(), any()))
         .thenReturn(ItemAnswersViewModel(sampleSections))
 
       setExistingUserAnswers(emptyUserAnswers)

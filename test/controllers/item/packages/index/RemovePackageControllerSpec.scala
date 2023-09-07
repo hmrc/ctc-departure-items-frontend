@@ -16,8 +16,8 @@
 
 package controllers.item.packages.index
 
-import controllers.item.packages.{routes => packageRoutes}
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import controllers.item.packages.{routes => packageRoutes}
 import forms.YesNoFormProvider
 import generators.Generators
 import models.reference.PackageType
@@ -141,7 +141,7 @@ class RemovePackageControllerSpec extends SpecBase with AppWithDefaultMockFixtur
         view(boundForm, lrn, mode, itemIndex, packageIndex, packageType)(request, messages).toString
     }
 
-    "must redirect to Session Expired for a GET" - {
+    "must redirect for a GET" - {
       "if no existing data found" in {
         setNoExistingUserAnswers()
 
@@ -163,11 +163,12 @@ class RemovePackageControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual
+          packageRoutes.AddAnotherPackageController.onPageLoad(lrn, mode, itemIndex).url
       }
     }
 
-    "must redirect to Session Expired for a POST" - {
+    "must redirect for a POST" - {
       "if no existing data is found" in {
 
         setNoExistingUserAnswers()
@@ -193,7 +194,8 @@ class RemovePackageControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual
+          packageRoutes.AddAnotherPackageController.onPageLoad(lrn, mode, itemIndex).url
       }
     }
   }

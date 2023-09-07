@@ -18,8 +18,11 @@ package models.journeyDomain.item
 
 import cats.implicits._
 import config.Constants._
-import models.DocumentType.Previous
-import models._
+import config.PhaseConfig
+import models.DocumentType.{Previous, Transport}
+import models.Phase.{PostTransition, Transition}
+import models.SecurityDetailsType.NoSecurityDetails
+import models.{DeclarationType, _}
 import models.journeyDomain.item.additionalInformation.AdditionalInformationListDomain
 import models.journeyDomain.item.additionalReferences.AdditionalReferencesDomain
 import models.journeyDomain.item.dangerousGoods.DangerousGoodsListDomain
@@ -27,10 +30,10 @@ import models.journeyDomain.item.documents.DocumentsDomain
 import models.journeyDomain.item.packages.PackagesDomain
 import models.journeyDomain.item.supplyChainActors.SupplyChainActorsDomain
 import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, JsArrayGettableAsReaderOps, Stage, UserAnswersReader}
-import models.reference.Country
+import models.reference.{Country, TransportChargesMethodOfPayment}
 import pages.external._
 import pages.item._
-import pages.sections.external.{DocumentsSection, TransportEquipmentsSection}
+import pages.sections.external.{ConsignmentConsigneeSection, DocumentsSection, TransportEquipmentsSection}
 import play.api.i18n.Messages
 import play.api.mvc.Call
 
@@ -52,23 +55,25 @@ case class ItemDomain(
   netWeight: Option[BigDecimal],
   supplementaryUnits: Option[BigDecimal],
   packages: PackagesDomain,
+  consignee: Option[ConsigneeDomain],
   supplyChainActors: Option[SupplyChainActorsDomain],
   documents: Option[DocumentsDomain],
   additionalReferences: Option[AdditionalReferencesDomain],
-  additionalInformation: Option[AdditionalInformationListDomain]
+  additionalInformation: Option[AdditionalInformationListDomain],
+  transportCharges: Option[TransportChargesMethodOfPayment]
 )(index: Index)
     extends JourneyDomainModel {
 
   def label(implicit messages: Messages): String = messages("item.label", index.display, itemDescription)
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some(
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] = Some(
     controllers.item.routes.CheckYourAnswersController.onPageLoad(userAnswers.lrn, index)
   )
 }
 
 object ItemDomain {
 
-  implicit def userAnswersReader(itemIndex: Index): UserAnswersReader[ItemDomain] =
+  implicit def userAnswersReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[ItemDomain] =
     (
       DescriptionPage(itemIndex).reader,
       transportEquipmentReader(itemIndex),
@@ -84,10 +89,12 @@ object ItemDomain {
       netWeightReader(itemIndex),
       supplementaryUnitsReader(itemIndex),
       packagesReader(itemIndex),
+      consigneeReader(itemIndex),
       supplyChainActorsReader(itemIndex),
       documentsReader(itemIndex),
       additionalReferencesReader(itemIndex),
-      additionalInformationListReader(itemIndex)
+      additionalInformationListReader(itemIndex),
+      transportChargesReader(itemIndex)
     ).tupled.map((ItemDomain.apply _).tupled).map(_(itemIndex))
 
   def transportEquipmentReader(itemIndex: Index): UserAnswersReader[Option[UUID]] =
@@ -118,26 +125,39 @@ object ItemDomain {
       CountryOfDestinationPage(itemIndex).reader
     }
 
-  // TODO - will need updating once documents has been built
-  def ucrReader(itemIndex: Index): UserAnswersReader[Option[String]] =
-    ConsignmentUCRPage.filterDependent(_.isEmpty) {
-      UniqueConsignmentReferencePage(itemIndex).reader
-    }
+  def ucrReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[Option[String]] =
+    for {
+      isUCRDefined <- ConsignmentUCRPage.isDefined
+      documents    <- DocumentsSection.arrayReader.map(_.validateAsListOf[Document])
+      isConsignmentTransportDocDefined = documents.exists(
+        x => x.attachToAllItems && x.`type` == Transport
+      )
+      result <- {
+        (isUCRDefined, isConsignmentTransportDocDefined, phaseConfig.phase) match {
+          case (true, _, _) => UserAnswersReader(None)
+          case (false, false, PostTransition) =>
+            UniqueConsignmentReferencePage(itemIndex).reader.map(Some(_))
+          case _ =>
+            AddUCRYesNoPage(itemIndex).filterOptionalDependent(identity)(UniqueConsignmentReferencePage(itemIndex).reader)
+        }
+      }
+    } yield result
 
   def cusCodeReader(itemIndex: Index): UserAnswersReader[Option[String]] =
     AddCUSCodeYesNoPage(itemIndex).filterOptionalDependent(identity) {
       CustomsUnionAndStatisticsCodePage(itemIndex).reader
     }
 
-  def commodityCodeReader(itemIndex: Index): UserAnswersReader[Option[String]] =
-    TransitOperationTIRCarnetNumberPage.isDefined.flatMap {
-      case true =>
-        AddCommodityCodeYesNoPage(itemIndex).filterOptionalDependent(identity) {
-          CommodityCodePage(itemIndex).reader
+  def commodityCodeReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[Option[String]] =
+    for {
+      isTransitOperationTIRDefined <- TransitOperationTIRCarnetNumberPage.isDefined
+      result <- {
+        (isTransitOperationTIRDefined, phaseConfig.phase) match {
+          case (false, PostTransition) => CommodityCodePage(itemIndex).reader.map(Some(_))
+          case _                       => AddCommodityCodeYesNoPage(itemIndex).filterOptionalDependent(identity)(CommodityCodePage(itemIndex).reader)
         }
-      case false =>
-        CommodityCodePage(itemIndex).reader.map(Some(_))
-    }
+      }
+    } yield result
 
   def combinedNomenclatureCodeReader(itemIndex: Index): UserAnswersReader[Option[String]] =
     CommodityCodePage(itemIndex).isDefined.flatMap {
@@ -157,7 +177,7 @@ object ItemDomain {
     AddDangerousGoodsYesNoPage(itemIndex)
       .filterOptionalDependent(identity)(DangerousGoodsListDomain.userAnswersReader(itemIndex))
 
-  def netWeightReader(itemIndex: Index): UserAnswersReader[Option[BigDecimal]] =
+  def netWeightReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[Option[BigDecimal]] =
     ApprovedOperatorPage.optionalReader.flatMap {
       case Some(true) =>
         none[BigDecimal].pure[UserAnswersReader]
@@ -172,8 +192,23 @@ object ItemDomain {
       SupplementaryUnitsPage(itemIndex).reader
     }
 
-  def packagesReader(itemIndex: Index): UserAnswersReader[PackagesDomain] =
+  def packagesReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[PackagesDomain] =
     PackagesDomain.userAnswersReader(itemIndex)
+
+  def consigneeReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[Option[ConsigneeDomain]] =
+    phaseConfig.phase match {
+      case Phase.Transition =>
+        for {
+          consignmentConsigneePresent <- ConsignmentConsigneeSection.isDefined
+          countryOfDestinationInCL009 <- ConsignmentCountryOfDestinationInCL009Page.readerWithDefault(false)
+          reader <- (consignmentConsigneePresent, countryOfDestinationInCL009) match {
+            case (true, true) => none[ConsigneeDomain].pure[UserAnswersReader]
+            case _            => ConsigneeDomain.userAnswersReader(itemIndex).map(Some(_))
+          }
+        } yield reader
+      case Phase.PostTransition =>
+        none[ConsigneeDomain].pure[UserAnswersReader]
+    }
 
   def supplyChainActorsReader(itemIndex: Index): UserAnswersReader[Option[SupplyChainActorsDomain]] =
     AddSupplyChainActorYesNoPage(itemIndex)
@@ -204,4 +239,18 @@ object ItemDomain {
   def additionalInformationListReader(itemIndex: Index): UserAnswersReader[Option[AdditionalInformationListDomain]] =
     AddAdditionalInformationYesNoPage(itemIndex)
       .filterOptionalDependent(identity)(AdditionalInformationListDomain.userAnswersReader(itemIndex))
+
+  def transportChargesReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[Option[TransportChargesMethodOfPayment]] =
+    for {
+      securityDetails                      <- SecurityDetailsTypePage.reader
+      isConsignmentTransportChargesDefined <- ConsignmentTransportChargesPage.isDefined
+      result <- {
+        (securityDetails, isConsignmentTransportChargesDefined, phaseConfig.phase) match {
+          case (NoSecurityDetails, _, Transition) | (_, false, Transition) =>
+            AddTransportChargesYesNoPage(itemIndex).filterOptionalDependent(identity)(TransportChargesMethodOfPaymentPage(itemIndex).reader)
+          case _ => UserAnswersReader(None)
+        }
+      }
+    } yield result
+
 }

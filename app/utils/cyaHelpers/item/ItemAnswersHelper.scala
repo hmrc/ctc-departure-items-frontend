@@ -16,15 +16,15 @@
 
 package utils.cyaHelpers.item
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import models.journeyDomain.item.additionalInformation.AdditionalInformationDomain
 import models.journeyDomain.item.additionalReferences.AdditionalReferenceDomain
 import models.journeyDomain.item.dangerousGoods.DangerousGoodsDomain
 import models.journeyDomain.item.documents.DocumentDomain
 import models.journeyDomain.item.packages.PackageDomain
 import models.journeyDomain.item.supplyChainActors.SupplyChainActorDomain
-import models.reference.Country
-import models.{CheckMode, DeclarationType, Index, UserAnswers}
+import models.reference.{Country, TransportChargesMethodOfPayment}
+import models.{CheckMode, DeclarationType, DynamicAddress, Index, UserAnswers}
 import pages.item._
 import pages.sections.additionalInformation.AdditionalInformationListSection
 import pages.sections.additionalReference.AdditionalReferencesSection
@@ -45,7 +45,7 @@ import java.util.UUID
 class ItemAnswersHelper(
   userAnswers: UserAnswers,
   itemIndex: Index
-)(implicit messages: Messages, config: FrontendAppConfig)
+)(implicit messages: Messages, config: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends AnswersHelper(userAnswers, CheckMode) {
 
   def itemDescription: Option[SummaryListRow] = getAnswerAndBuildRow[String](
@@ -357,6 +357,62 @@ class ItemAnswersHelper(
         href = controllers.item.additionalInformation.routes.AddAnotherAdditionalInformationController.onPageLoad(userAnswers.lrn, mode, itemIndex).url
       )
   }
+
+  def consigneeAddEoriNumberYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = consignee.AddConsigneeEoriNumberYesNoPage(itemIndex),
+    formatAnswer = formatAsYesOrNo,
+    prefix = "item.consignee.addConsigneeEoriNumberYesNo",
+    id = Some("change-has-consignee-eori"),
+    args = itemIndex.display
+  )
+
+  def consigneeIdentificationNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = consignee.IdentificationNumberPage(itemIndex),
+    formatAnswer = formatAsText,
+    prefix = "item.consignee.identificationNumber",
+    id = Some("change-consignee-identification-number"),
+    args = itemIndex.display
+  )
+
+  def consigneeName: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+    page = consignee.NamePage(itemIndex),
+    formatAnswer = formatAsText,
+    prefix = "item.consignee.name",
+    id = Some("change-consignee-name"),
+    args = itemIndex.display
+  )
+
+  def consigneeCountry: Option[SummaryListRow] = getAnswerAndBuildRow[Country](
+    page = consignee.CountryPage(itemIndex),
+    formatAnswer = formatAsCountry,
+    prefix = "item.consignee.country",
+    id = Some("change-consignee-country"),
+    args = itemIndex.display
+  )
+
+  def consigneeAddress: Option[SummaryListRow] = getAnswerAndBuildRow[DynamicAddress](
+    page = consignee.AddressPage(itemIndex),
+    formatAnswer = formatAsDynamicAddress,
+    prefix = "item.consignee.address",
+    id = Some("change-consignee-address"),
+    args = itemIndex.display
+  )
+
+  def addTransportChargesYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddTransportChargesYesNoPage(itemIndex),
+    formatAnswer = formatAsYesOrNo,
+    prefix = "item.addTransportChargesYesNo",
+    id = Some("change-add-payment-method"),
+    args = itemIndex.display
+  )
+
+  def transportCharges: Option[SummaryListRow] = getAnswerAndBuildRow[TransportChargesMethodOfPayment](
+    page = TransportChargesMethodOfPaymentPage(itemIndex),
+    formatAnswer = formatAsText,
+    prefix = "item.transportMethodOfPayment",
+    id = Some("change-payment-method"),
+    args = itemIndex.display
+  )
 
 }
 // scalastyle:on number.of.methods

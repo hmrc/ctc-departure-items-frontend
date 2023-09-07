@@ -16,7 +16,7 @@
 
 package controllers.item.packages
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import controllers.actions._
 import forms.AddAnotherFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
@@ -39,7 +39,7 @@ class AddAnotherPackageController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherPackageView,
   viewModelProvider: AddAnotherPackageViewModelProvider
-)(implicit config: FrontendAppConfig)
+)(implicit config: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 

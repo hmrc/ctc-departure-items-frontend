@@ -16,6 +16,7 @@
 
 package controllers.item
 
+import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
@@ -23,7 +24,7 @@ import models.{Index, LocalReferenceNumber}
 import pages.sections.ItemSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.item.RemoveItemView
@@ -38,23 +39,25 @@ class RemoveItemController @Inject() (
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: RemoveItemView
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
   private def form(itemIndex: Index): Form[Boolean] = formProvider("item.removeItem", itemIndex.display)
 
+  private def addAnother(lrn: LocalReferenceNumber): Call =
+    controllers.routes.AddAnotherItemController.onPageLoad(lrn)
+
   def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] = actions
-    .requireData(lrn) {
+    .requireIndex(lrn, ItemSection(itemIndex), addAnother(lrn)) {
       implicit request =>
         Ok(view(form(itemIndex), lrn, itemIndex))
     }
 
   def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] = actions
-    .requireData(lrn)
+    .requireIndex(lrn, ItemSection(itemIndex), addAnother(lrn))
     .async {
       implicit request =>
-        lazy val redirect = controllers.routes.AddAnotherItemController.onPageLoad(lrn)
         form(itemIndex)
           .bindFromRequest()
           .fold(
@@ -65,9 +68,9 @@ class RemoveItemController @Inject() (
                   .removeFromUserAnswers()
                   .updateTask()
                   .writeToSession()
-                  .navigateTo(redirect)
+                  .navigateTo(addAnother(lrn))
               case false =>
-                Future.successful(Redirect(redirect))
+                Future.successful(Redirect(addAnother(lrn)))
             }
           )
     }

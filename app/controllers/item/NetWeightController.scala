@@ -16,6 +16,7 @@
 
 package controllers.item
 
+import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.NetWeightFormProvider
@@ -42,7 +43,7 @@ class NetWeightController @Inject() (
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: NetWeightView
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -51,7 +52,7 @@ class NetWeightController @Inject() (
   private def grossWeight(implicit request: Request): BigDecimal = request.arg
 
   private def form(grossWeight: BigDecimal): Form[BigDecimal] =
-    formProvider("item.netWeight", grossWeight)
+    formProvider("item.netWeight", grossWeight, phaseConfig.decimalPlaces, phaseConfig.characterCount)
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions
     .requireData(lrn)

@@ -16,7 +16,7 @@
 
 package navigation
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.item.documents.DocumentDomain
 import models.{CheckMode, Index, Mode, NormalMode}
@@ -24,7 +24,7 @@ import models.{CheckMode, Index, Mode, NormalMode}
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class DocumentNavigatorProviderImpl @Inject() (implicit config: FrontendAppConfig) extends DocumentNavigatorProvider {
+class DocumentNavigatorProviderImpl @Inject() (implicit config: FrontendAppConfig, phaseConfig: PhaseConfig) extends DocumentNavigatorProvider {
 
   override def apply(mode: Mode, itemIndex: Index, documentIndex: Index): UserAnswersNavigator =
     mode match {
@@ -37,8 +37,10 @@ trait DocumentNavigatorProvider {
   def apply(mode: Mode, itemIndex: Index, documentIndex: Index): UserAnswersNavigator
 }
 
-class DocumentNavigator(override val mode: Mode, itemIndex: Index, documentIndex: Index)(implicit override val config: FrontendAppConfig)
-    extends UserAnswersNavigator {
+class DocumentNavigator(override val mode: Mode, itemIndex: Index, documentIndex: Index)(implicit
+  override val config: FrontendAppConfig,
+  override val phaseConfig: PhaseConfig
+) extends UserAnswersNavigator {
 
   override type T = DocumentDomain
 

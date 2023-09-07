@@ -77,7 +77,8 @@ class RemoveAdditionalReferenceControllerSpec extends SpecBase with AppWithDefau
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual additionalReferenceRoutes.AddAnotherAdditionalReferenceController.onPageLoad(lrn, mode, itemIndex).url
+        redirectLocation(result).value mustEqual
+          additionalReferenceRoutes.AddAnotherAdditionalReferenceController.onPageLoad(lrn, mode, itemIndex).url
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
@@ -96,7 +97,8 @@ class RemoveAdditionalReferenceControllerSpec extends SpecBase with AppWithDefau
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual additionalReferenceRoutes.AddAnotherAdditionalReferenceController.onPageLoad(lrn, mode, itemIndex).url
+        redirectLocation(result).value mustEqual
+          additionalReferenceRoutes.AddAnotherAdditionalReferenceController.onPageLoad(lrn, mode, itemIndex).url
 
         verify(mockSessionRepository, never()).set(any())(any())
       }
@@ -119,62 +121,60 @@ class RemoveAdditionalReferenceControllerSpec extends SpecBase with AppWithDefau
         view(boundForm, lrn, mode, itemIndex, additionalReferenceIndex, additionalReference.toString)(request, messages).toString
     }
 
-    "must redirect to Session Expired for a GET if no existing data is found" in {
+    "must redirect for a GET" - {
+      "no existing data is found" in {
+        setNoExistingUserAnswers()
 
-      setNoExistingUserAnswers()
+        val request = FakeRequest(GET, removeAdditionalReferenceRoute)
 
-      val request = FakeRequest(GET, removeAdditionalReferenceRoute)
+        val result = route(app, request).value
 
-      val result = route(app, request).value
+        status(result) mustEqual SEE_OTHER
 
-      status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      }
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      "no additional reference is found" in {
+        setExistingUserAnswers(emptyUserAnswers)
 
+        val request = FakeRequest(GET, removeAdditionalReferenceRoute)
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual
+          additionalReferenceRoutes.AddAnotherAdditionalReferenceController.onPageLoad(lrn, mode, itemIndex).url
+      }
     }
 
-    "must redirect to Session Expired for a GET if no additional reference is found" - {
+    "must redirect for a POST" - {
+      "no existing data is found" in {
+        setNoExistingUserAnswers()
 
-      setExistingUserAnswers(emptyUserAnswers)
+        val request = FakeRequest(POST, removeAdditionalReferenceRoute)
+          .withFormUrlEncodedBody(("value", "true"))
 
-      val request = FakeRequest(GET, removeAdditionalReferenceRoute)
+        val result = route(app, request).value
 
-      val result = route(app, request).value
+        status(result) mustEqual SEE_OTHER
 
-      status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      }
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      "no additional reference is found" in {
+        setExistingUserAnswers(emptyUserAnswers)
 
-    }
+        val request = FakeRequest(POST, removeAdditionalReferenceRoute)
+          .withFormUrlEncodedBody(("value", "true"))
 
-    "must redirect to Session Expired for a POST if no existing data is found" in {
+        val result = route(app, request).value
 
-      setNoExistingUserAnswers()
+        status(result) mustEqual SEE_OTHER
 
-      val request = FakeRequest(POST, removeAdditionalReferenceRoute)
-        .withFormUrlEncodedBody(("value", "true"))
-
-      val result = route(app, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
-
-    }
-
-    "must redirect to Session Expired for a POST if no additional reference is found" in {
-
-      setExistingUserAnswers(emptyUserAnswers)
-
-      val request = FakeRequest(POST, removeAdditionalReferenceRoute)
-        .withFormUrlEncodedBody(("value", ""))
-
-      val result = route(app, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
-
+        redirectLocation(result).value mustEqual
+          additionalReferenceRoutes.AddAnotherAdditionalReferenceController.onPageLoad(lrn, mode, itemIndex).url
+      }
     }
   }
 }

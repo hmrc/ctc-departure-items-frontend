@@ -27,7 +27,7 @@ import java.time.LocalDate
 
 trait Mappings extends Formatters with Constraints {
 
-  protected def text(errorKey: String = "error.required", args: Seq[String] = Seq.empty): FieldMapping[String] =
+  protected def text(errorKey: String = "error.required", args: Seq[Any] = Seq.empty): FieldMapping[String] =
     of(stringFormatter(errorKey, args))
 
   protected def textWithSpacesRemoved(errorKey: String = "error.required"): FieldMapping[String] =
@@ -42,13 +42,15 @@ trait Mappings extends Formatters with Constraints {
     of(intFormatter(requiredKey, wholeNumberKey, nonNumericKey, args))
 
   protected def bigDecimal(
+    decimalPlaces: Int,
+    characterCount: Int,
     requiredKey: String = "error.required",
     invalidCharactersKey: String = "error.invalidCharacters",
     invalidFormatKey: String = "error.invalidFormat",
     invalidValueKey: String = "error.invalidValue",
     args: Seq[String] = Seq.empty
   ): FieldMapping[BigDecimal] =
-    of(bigDecimalFormatter(requiredKey, invalidCharactersKey, invalidFormatKey, invalidValueKey, args))
+    of(bigDecimalFormatter(decimalPlaces, characterCount, requiredKey, invalidCharactersKey, invalidFormatKey, invalidValueKey, args))
 
   protected def mandatoryIfBoolean(errorKey: String = "error.required", condition: Boolean, defaultValue: Boolean): FieldMapping[Boolean] =
     if (condition) boolean(errorKey) else of(ignoredFormat(defaultValue))

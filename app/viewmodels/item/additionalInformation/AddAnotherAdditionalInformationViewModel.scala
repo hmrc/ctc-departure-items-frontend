@@ -16,7 +16,7 @@
 
 package viewmodels.item.additionalInformation
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import controllers.item.additionalInformation.routes
 import models.{Index, Mode, UserAnswers}
 import play.api.i18n.Messages
@@ -42,7 +42,8 @@ object AddAnotherAdditionalInformationViewModel {
 
     def apply(userAnswers: UserAnswers, mode: Mode, itemIndex: Index)(implicit
       messages: Messages,
-      config: FrontendAppConfig
+      config: FrontendAppConfig,
+      phaseConfig: PhaseConfig
     ): AddAnotherAdditionalInformationViewModel = {
       val helper = new AdditionalInformationAnswersHelper(userAnswers, mode, itemIndex)
 

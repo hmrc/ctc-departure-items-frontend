@@ -16,6 +16,7 @@
 
 package controllers.item
 
+import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
@@ -43,7 +44,7 @@ class TransportChargesMethodOfPaymentController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: TransportMethodOfPaymentView,
   methodOfPaymentService: TransportChargesMethodOfPaymentService
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 

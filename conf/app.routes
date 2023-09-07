@@ -7,5 +7,7 @@ GET        /assets/*file                                controllers.Assets.versi
 
 GET        /:lrn                                        controllers.RedirectController.redirect(lrn: LocalReferenceNumber)
 
+GET        /:lrn/update-task                            controllers.UpdateTaskController.updateTask(lrn: LocalReferenceNumber, continue: String)
+
 GET        /add-another/:lrn                            controllers.AddAnotherItemController.onPageLoad(lrn: LocalReferenceNumber)
 POST       /add-another/:lrn                            controllers.AddAnotherItemController.onSubmit(lrn: LocalReferenceNumber)

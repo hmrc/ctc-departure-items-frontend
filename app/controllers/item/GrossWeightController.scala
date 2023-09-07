@@ -16,6 +16,7 @@
 
 package controllers.item
 
+import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.BigDecimalFormProvider
@@ -39,11 +40,11 @@ class GrossWeightController @Inject() (
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: GrossWeightView
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("item.grossWeight")
+  private val form = formProvider("item.grossWeight", phaseConfig.decimalPlaces, phaseConfig.characterCount)
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>

@@ -53,6 +53,8 @@ trait Formatters {
   }
 
   private[mappings] def bigDecimalFormatter(
+    decimalPlaces: Int,
+    characterCount: Int,
     requiredKey: String = "error.required",
     invalidCharactersKey: String = "error.invalidCharacters",
     invalidFormatKey: String = "error.invalidFormat",
@@ -62,8 +64,8 @@ trait Formatters {
     new Formatter[BigDecimal] {
 
       private val invalidCharactersRegex = """^[0-9.]*$"""
-      private val invalidFormatRegex     = """^[0-9]*(\.[0-9]{1,6})?$"""
-      private val invalidValueRegex      = """^[0-9.]{1,16}$"""
+      private val invalidFormatRegex     = s"""^[0-9]*(\\.[0-9]{1,$decimalPlaces})?$$"""
+      private val invalidValueRegex      = s"""^[0-9.]{1,$characterCount}$$"""
 
       private val baseFormatter = stringFormatter(requiredKey)
 

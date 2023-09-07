@@ -16,7 +16,7 @@
 
 package pages.external
 
-import pages.ReadOnlyPage
+import pages.{preTaskListPath, ReadOnlyPage}
 import play.api.libs.json.JsPath
 
 case object TransitOperationDeclarationTypePage extends ReadOnlyPage[String] {

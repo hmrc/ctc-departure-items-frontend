@@ -16,7 +16,7 @@
 
 package views.item.packages.index
 
-import forms.Constants.maxNumberOfPackages
+import base.SpecBase
 import forms.IntFormProvider
 import models.NormalMode
 import models.reference.PackageType
@@ -27,16 +27,16 @@ import viewmodels.InputSize
 import views.behaviours.InputTextViewBehaviours
 import views.html.item.packages.index.NumberOfPackagesView
 
-class NumberOfPackagesViewSpec extends InputTextViewBehaviours[Int] {
+class NumberOfPackagesViewSpec extends SpecBase with InputTextViewBehaviours[Int] {
 
   private val packageType = Arbitrary.arbitrary[PackageType].sample.get
 
-  override def form: Form[Int] = new IntFormProvider()(prefix, 10, Seq(packageType.toString))
+  override def form: Form[Int] = new IntFormProvider()(prefix, 10, 0, Seq(packageType.toString))
 
   override def applyView(form: Form[Int]): HtmlFormat.Appendable =
     injector.instanceOf[NumberOfPackagesView].apply(form, lrn, NormalMode, itemIndex, packageIndex, packageType.toString)(fakeRequest, messages)
 
-  private val maxInt = maxNumberOfPackages
+  private val maxInt = phaseConfig.maxNumberOfPackages
 
   implicit override val arbitraryT: Arbitrary[Int] = Arbitrary(maxInt)
 
@@ -51,6 +51,8 @@ class NumberOfPackagesViewSpec extends InputTextViewBehaviours[Int] {
   behave like pageWithHeading(packageType.toString)
 
   behave like pageWithoutHint()
+
+  behave like pageWithInsetText(packageType.toString)
 
   behave like pageWithInputText(Some(InputSize.Width20))
 

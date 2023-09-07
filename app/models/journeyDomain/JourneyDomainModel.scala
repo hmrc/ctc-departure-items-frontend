@@ -16,9 +16,9 @@
 
 package models.journeyDomain
 
-import models.{Mode, UserAnswers}
+import models.{Mode, Phase, UserAnswers}
 import play.api.mvc.Call
 
 trait JourneyDomainModel {
-  def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = None
+  def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] = None
 }

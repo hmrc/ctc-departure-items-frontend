@@ -16,6 +16,7 @@
 
 package controllers.item.packages.index
 
+import config.PhaseConfig
 import controllers.actions._
 import controllers.item.packages.routes
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
@@ -27,7 +28,7 @@ import pages.item.packages.index.PackageTypePage
 import pages.sections.packages.PackageSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.item.packages.index.RemovePackageView
@@ -43,7 +44,7 @@ class RemovePackageController @Inject() (
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: RemovePackageView
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -53,19 +54,21 @@ class RemovePackageController @Inject() (
 
   private def packageType(implicit request: Request): PackageType = request.arg
 
+  private def addAnother(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Call =
+    routes.AddAnotherPackageController.onPageLoad(lrn, mode, itemIndex)
+
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, packageIndex: Index): Action[AnyContent] = actions
-    .requireData(lrn)
+    .requireIndex(lrn, PackageSection(itemIndex, packageIndex), addAnother(lrn, mode, itemIndex))
     .andThen(getMandatoryPage(PackageTypePage(itemIndex, packageIndex))) {
       implicit request =>
         Ok(view(form(packageType), lrn, mode, itemIndex, packageIndex, packageType))
     }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, packageIndex: Index): Action[AnyContent] = actions
-    .requireData(lrn)
+    .requireIndex(lrn, PackageSection(itemIndex, packageIndex), addAnother(lrn, mode, itemIndex))
     .andThen(getMandatoryPage(PackageTypePage(itemIndex, packageIndex)))
     .async {
       implicit request =>
-        lazy val redirect = routes.AddAnotherPackageController.onPageLoad(lrn, mode, itemIndex)
         form(packageType)
           .bindFromRequest()
           .fold(
@@ -76,9 +79,9 @@ class RemovePackageController @Inject() (
                   .removeFromUserAnswers()
                   .updateTask()
                   .writeToSession()
-                  .navigateTo(redirect)
+                  .navigateTo(addAnother(lrn, mode, itemIndex))
               case false =>
-                Future.successful(Redirect(redirect))
+                Future.successful(Redirect(addAnother(lrn, mode, itemIndex)))
             }
           )
     }

@@ -16,6 +16,7 @@
 
 package models.journeyDomain.item.packages
 
+import config.PhaseConfig
 import models.journeyDomain.{JsArrayGettableAsReaderOps, UserAnswersReader}
 import models.{Index, RichJsArray}
 import pages.sections.packages.PackagesSection
@@ -24,7 +25,7 @@ case class PackagesDomain(value: Seq[PackageDomain])
 
 object PackagesDomain {
 
-  implicit def userAnswersReader(itemIndex: Index): UserAnswersReader[PackagesDomain] =
+  implicit def userAnswersReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[PackagesDomain] =
     PackagesSection(itemIndex).arrayReader
       .flatMap {
         case x if x.isEmpty =>

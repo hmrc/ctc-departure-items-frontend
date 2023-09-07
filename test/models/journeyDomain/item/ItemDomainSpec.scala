@@ -18,6 +18,7 @@ package models.journeyDomain.item
 
 import base.SpecBase
 import config.Constants._
+import config.PhaseConfig
 import generators.Generators
 import models.journeyDomain.item.additionalInformation.{AdditionalInformationDomain, AdditionalInformationListDomain}
 import models.journeyDomain.item.additionalReferences.{AdditionalReferenceDomain, AdditionalReferencesDomain}
@@ -25,8 +26,9 @@ import models.journeyDomain.item.dangerousGoods.{DangerousGoodsDomain, Dangerous
 import models.journeyDomain.item.documents.{DocumentDomain, DocumentsDomain}
 import models.journeyDomain.item.packages.{PackageDomain, PackagesDomain}
 import models.journeyDomain.{EitherType, UserAnswersReader}
-import models.reference.{AdditionalInformation, AdditionalReference, Country, PackageType}
-import models.{DeclarationType, Index}
+import models.reference._
+import models.{DeclarationType, Index, Phase, SecurityDetailsType}
+import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -37,7 +39,7 @@ import pages.item.additionalReference.index._
 import pages.item.dangerousGoods.index.UNNumberPage
 import pages.item.documents.index.DocumentPage
 import pages.item.packages.index._
-import pages.sections.external.{DocumentsSection, TransportEquipmentsSection}
+import pages.sections.external.{ConsignmentConsigneeSection, DocumentsSection, TransportEquipmentsSection}
 import play.api.libs.json.{JsArray, Json}
 
 import java.util.UUID
@@ -45,8 +47,11 @@ import java.util.UUID
 class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   "Item Domain" - {
+    val mockTransitionPhaseConfig = mock[PhaseConfig]
+    when(mockTransitionPhaseConfig.phase).thenReturn(Phase.Transition)
 
-    "can be read from user answers" - {}
+    val mockPostTransitionPhaseConfig = mock[PhaseConfig]
+    when(mockPostTransitionPhaseConfig.phase).thenReturn(Phase.PostTransition)
 
     "userAnswersReader" - {
       "can not be read from user answers" - {
@@ -300,47 +305,272 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
     "ucrReader" - {
       "can be read from user answers" - {
-        "when consignment UCR is defined" in {
-          forAll(nonEmptyString) {
-            ucr =>
+
+        "when in transition" - {
+          "when consignment UCR is defined" in {
+            forAll(nonEmptyString) {
+              ucr =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(ConsignmentUCRPage, ucr)
+
+                val expectedResult = None
+
+                val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                  ItemDomain.ucrReader(itemIndex)(mockTransitionPhaseConfig)
+                ).run(userAnswers)
+
+                result.value mustBe expectedResult
+            }
+          }
+
+          "when consignment UCR is undefined" - {
+            "and add ucr is answered yes" in {
+              forAll(nonEmptyString) {
+                ucr =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(AddUCRYesNoPage(itemIndex), true)
+                    .setValue(UniqueConsignmentReferencePage(itemIndex), ucr)
+
+                  val expectedResult = Some(ucr)
+
+                  val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                    ItemDomain.ucrReader(itemIndex)(mockTransitionPhaseConfig)
+                  ).run(userAnswers)
+
+                  result.value mustBe expectedResult
+              }
+            }
+
+            "and add ucr is answered no" in {
               val userAnswers = emptyUserAnswers
-                .setValue(ConsignmentUCRPage, ucr)
+                .setValue(AddUCRYesNoPage(itemIndex), false)
 
               val expectedResult = None
 
               val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                ItemDomain.ucrReader(itemIndex)
+                ItemDomain.ucrReader(itemIndex)(mockTransitionPhaseConfig)
               ).run(userAnswers)
 
               result.value mustBe expectedResult
+            }
           }
         }
 
-        "when consignment UCR is undefined" in {
-          forAll(nonEmptyString) {
-            ucr =>
-              val userAnswers = emptyUserAnswers
-                .setValue(UniqueConsignmentReferencePage(itemIndex), ucr)
+        "when in post-transition" - {
+          "when consignment UCR is defined" in {
+            forAll(nonEmptyString) {
+              ucr =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(ConsignmentUCRPage, ucr)
 
-              val expectedResult = Some(ucr)
+                val expectedResult = None
 
-              val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                ItemDomain.ucrReader(itemIndex)
-              ).run(userAnswers)
+                val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                  ItemDomain.ucrReader(itemIndex)(mockPostTransitionPhaseConfig)
+                ).run(userAnswers)
 
-              result.value mustBe expectedResult
+                result.value mustBe expectedResult
+            }
+          }
+
+          "when consignment UCR is undefined" - {
+            "and consignment transport is defined" - {
+              "and add ucr is answered yes" in {
+                forAll(nonEmptyString, nonEmptyString, arbitrary[UUID]) {
+                  (ucr, transportDoc, documentUUID) =>
+                    val documents = Json
+                      .parse(s"""
+                           |[
+                           |    {
+                           |      "attachToAllItems" : true,
+                           |      "type" : {
+                           |        "type" : "Transport",
+                           |        "code" : "Code 1",
+                           |        "description" : "Description 1"
+                           |      },
+                           |      "details" : {
+                           |        "documentReferenceNumber" : "Ref no. 1",
+                           |        "uuid" : "$documentUUID"
+                           |      }
+                           |    }
+                           |]
+                           |""".stripMargin)
+                      .as[JsArray]
+
+                    val userAnswers = emptyUserAnswers
+                      .setValue(DocumentsSection, documents)
+                      .setValue(AddUCRYesNoPage(itemIndex), true)
+                      .setValue(UniqueConsignmentReferencePage(itemIndex), ucr)
+
+                    val expectedResult = Some(ucr)
+
+                    val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                      ItemDomain.ucrReader(itemIndex)(mockPostTransitionPhaseConfig)
+                    ).run(userAnswers)
+
+                    result.value mustBe expectedResult
+                }
+              }
+
+              "and add ucr is answered no" in {
+                forAll(arbitrary[UUID]) {
+                  documentUUID =>
+                    val documents = Json
+                      .parse(s"""
+                           |[
+                           |    {
+                           |      "attachToAllItems" : true,
+                           |      "type" : {
+                           |        "type" : "Transport",
+                           |        "code" : "Code 1",
+                           |        "description" : "Description 1"
+                           |      },
+                           |      "details" : {
+                           |        "documentReferenceNumber" : "Ref no. 1",
+                           |        "uuid" : "$documentUUID"
+                           |      }
+                           |    }
+                           |]
+                           |""".stripMargin)
+                      .as[JsArray]
+                    val userAnswers = emptyUserAnswers
+                      .setValue(DocumentsSection, documents)
+                      .setValue(AddUCRYesNoPage(itemIndex), false)
+
+                    val expectedResult = None
+
+                    val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                      ItemDomain.ucrReader(itemIndex)(mockPostTransitionPhaseConfig)
+                    ).run(userAnswers)
+
+                    result.value mustBe expectedResult
+                }
+              }
+            }
+
+            "and consignment transport is undefined" in {
+              forAll(nonEmptyString) {
+                ucr =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(UniqueConsignmentReferencePage(itemIndex), ucr)
+
+                  val expectedResult = Some(ucr)
+
+                  val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                    ItemDomain.ucrReader(itemIndex)(mockPostTransitionPhaseConfig)
+                  ).run(userAnswers)
+
+                  result.value mustBe expectedResult
+              }
+            }
+
           }
         }
       }
 
       "cannot be read from user answers" - {
-        "when consignment UCR is undefined" - {
-          "and UCR page is unanswered" in {
-            val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-              ItemDomain.ucrReader(itemIndex)
-            ).run(emptyUserAnswers)
+        "when in transition" - {
+          "when consignment UCR is undefined" - {
+            "and UCRYesNo page is unanswered" in {
+              val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                ItemDomain.ucrReader(itemIndex)(mockTransitionPhaseConfig)
+              ).run(emptyUserAnswers)
 
-            result.left.value.page mustBe UniqueConsignmentReferencePage(itemIndex)
+              result.left.value.page mustBe AddUCRYesNoPage(itemIndex)
+            }
+
+            "and UCR page is unanswered" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(AddUCRYesNoPage(itemIndex), true)
+
+              val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                ItemDomain.ucrReader(itemIndex)(mockTransitionPhaseConfig)
+              ).run(userAnswers)
+
+              result.left.value.page mustBe UniqueConsignmentReferencePage(itemIndex)
+            }
+          }
+        }
+        "when in post-transition" - {
+          "when consignment UCR is undefined" - {
+            "and consignment transport is undefined" - {
+              "and UCR page is unanswered" in {
+                val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                  ItemDomain.ucrReader(itemIndex)(mockPostTransitionPhaseConfig)
+                ).run(emptyUserAnswers)
+
+                result.left.value.page mustBe UniqueConsignmentReferencePage(itemIndex)
+              }
+            }
+
+            "and consignment transport is defined" - {
+
+              "and AddUCRYesNo page is unanswered" in {
+
+                forAll(arbitrary[UUID]) {
+                  documentUUID =>
+                    val documents = Json
+                      .parse(s"""
+                           |[
+                           |    {
+                           |      "attachToAllItems" : true,
+                           |      "type" : {
+                           |        "type" : "Transport",
+                           |        "code" : "Code 1",
+                           |        "description" : "Description 1"
+                           |      },
+                           |      "details" : {
+                           |        "documentReferenceNumber" : "Ref no. 1",
+                           |        "uuid" : "$documentUUID"
+                           |      }
+                           |    }
+                           |]
+                           |""".stripMargin)
+                      .as[JsArray]
+                    val userAnswers = emptyUserAnswers
+                      .setValue(DocumentsSection, documents)
+
+                    val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                      ItemDomain.ucrReader(itemIndex)(mockPostTransitionPhaseConfig)
+                    ).run(userAnswers)
+
+                    result.left.value.page mustBe AddUCRYesNoPage(itemIndex)
+                }
+              }
+              "and UCR page is unanswered" in {
+
+                forAll(arbitrary[UUID]) {
+                  documentUUID =>
+                    val documents = Json
+                      .parse(s"""
+                           |[
+                           |    {
+                           |      "attachToAllItems" : true,
+                           |      "type" : {
+                           |        "type" : "Transport",
+                           |        "code" : "Code 1",
+                           |        "description" : "Description 1"
+                           |      },
+                           |      "details" : {
+                           |        "documentReferenceNumber" : "Ref no. 1",
+                           |        "uuid" : "$documentUUID"
+                           |      }
+                           |    }
+                           |]
+                           |""".stripMargin)
+                      .as[JsArray]
+                    val userAnswers = emptyUserAnswers
+                      .setValue(DocumentsSection, documents)
+                      .setValue(AddUCRYesNoPage(itemIndex), true)
+
+                    val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                      ItemDomain.ucrReader(itemIndex)(mockPostTransitionPhaseConfig)
+                    ).run(userAnswers)
+
+                    result.left.value.page mustBe UniqueConsignmentReferencePage(itemIndex)
+                }
+              }
+            }
           }
         }
       }
@@ -405,100 +635,166 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
     "commodityCodeReader" - {
 
       "can be read from user answers" - {
-        "when TIR Carnet reference number is defined" - {
+        "when in transition" - {
           "and commodity code has been provided" in {
-            forAll(nonEmptyString, nonEmptyString) {
-              (tirReference, commodityCode) =>
+            forAll(nonEmptyString) {
+              commodityCode =>
                 val userAnswers = emptyUserAnswers
-                  .setValue(TransitOperationTIRCarnetNumberPage, tirReference)
                   .setValue(AddCommodityCodeYesNoPage(itemIndex), true)
                   .setValue(CommodityCodePage(itemIndex), commodityCode)
 
                 val expectedResult = Some(commodityCode)
 
                 val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                  ItemDomain.commodityCodeReader(itemIndex)
+                  ItemDomain.commodityCodeReader(itemIndex)(mockTransitionPhaseConfig)
                 ).run(userAnswers)
 
                 result.value mustBe expectedResult
-            }
-          }
 
+            }
+
+          }
           "and commodity code has not been provided" in {
             forAll(nonEmptyString) {
-              tirReference =>
+              commodityCode =>
                 val userAnswers = emptyUserAnswers
-                  .setValue(TransitOperationTIRCarnetNumberPage, tirReference)
                   .setValue(AddCommodityCodeYesNoPage(itemIndex), false)
 
                 val expectedResult = None
 
                 val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                  ItemDomain.commodityCodeReader(itemIndex)
+                  ItemDomain.commodityCodeReader(itemIndex)(mockTransitionPhaseConfig)
+                ).run(userAnswers)
+
+                result.value mustBe expectedResult
+
+            }
+
+          }
+        }
+        "when in post-transition" - {
+          "and TIR Carnet reference number is defined" - {
+            "and commodity code has been provided" in {
+              forAll(nonEmptyString, nonEmptyString) {
+                (tirReference, commodityCode) =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(TransitOperationTIRCarnetNumberPage, tirReference)
+                    .setValue(AddCommodityCodeYesNoPage(itemIndex), true)
+                    .setValue(CommodityCodePage(itemIndex), commodityCode)
+
+                  val expectedResult = Some(commodityCode)
+
+                  val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                    ItemDomain.commodityCodeReader(itemIndex)(mockPostTransitionPhaseConfig)
+                  ).run(userAnswers)
+
+                  result.value mustBe expectedResult
+              }
+            }
+
+            "and commodity code has not been provided" in {
+              forAll(nonEmptyString) {
+                tirReference =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(TransitOperationTIRCarnetNumberPage, tirReference)
+                    .setValue(AddCommodityCodeYesNoPage(itemIndex), false)
+
+                  val expectedResult = None
+
+                  val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                    ItemDomain.commodityCodeReader(itemIndex)(mockPostTransitionPhaseConfig)
+                  ).run(userAnswers)
+
+                  result.value mustBe expectedResult
+              }
+            }
+          }
+
+          "when TIR Carnet reference number is undefined" in {
+            forAll(nonEmptyString) {
+              commodityCode =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(CommodityCodePage(itemIndex), commodityCode)
+
+                val expectedResult = Some(commodityCode)
+
+                val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                  ItemDomain.commodityCodeReader(itemIndex)(mockPostTransitionPhaseConfig)
                 ).run(userAnswers)
 
                 result.value mustBe expectedResult
             }
-          }
-        }
-
-        "when TIR Carnet reference number is undefined" in {
-          forAll(nonEmptyString) {
-            commodityCode =>
-              val userAnswers = emptyUserAnswers
-                .setValue(CommodityCodePage(itemIndex), commodityCode)
-
-              val expectedResult = Some(commodityCode)
-
-              val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                ItemDomain.commodityCodeReader(itemIndex)
-              ).run(userAnswers)
-
-              result.value mustBe expectedResult
           }
         }
       }
 
       "can not be read from user answers" - {
 
-        "when TIR Carnet reference number is defined" - {
-          "and add commodity code yes/no is unanswered" in {
-            forAll(nonEmptyString) {
-              tirReference =>
-                val userAnswers = emptyUserAnswers
-                  .setValue(TransitOperationTIRCarnetNumberPage, tirReference)
+        "when in transition" - {
+          "and commodity code yes/no is unanswered" in {
 
-                val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                  ItemDomain.commodityCodeReader(itemIndex)
-                ).run(userAnswers)
-
-                result.left.value.page mustBe AddCommodityCodeYesNoPage(itemIndex)
-            }
-          }
-
-          "and commodity code is unanswered" in {
-            forAll(nonEmptyString) {
-              tirReference =>
-                val userAnswers = emptyUserAnswers
-                  .setValue(TransitOperationTIRCarnetNumberPage, tirReference)
-                  .setValue(AddCommodityCodeYesNoPage(itemIndex), true)
-
-                val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                  ItemDomain.commodityCodeReader(itemIndex)
-                ).run(userAnswers)
-
-                result.left.value.page mustBe CommodityCodePage(itemIndex)
-            }
-          }
-        }
-
-        "when TIR Carnet reference number is undefined" - {
-          "and commodity code is unanswered" in {
             val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-              ItemDomain.commodityCodeReader(itemIndex)
+              ItemDomain.commodityCodeReader(itemIndex)(mockTransitionPhaseConfig)
             ).run(emptyUserAnswers)
 
+            result.left.value.page mustBe AddCommodityCodeYesNoPage(itemIndex)
+          }
+
+          "and commodity code is unanswered" in {
+
+            val userAnswers = emptyUserAnswers
+              .setValue(AddCommodityCodeYesNoPage(itemIndex), true)
+
+            val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+              ItemDomain.commodityCodeReader(itemIndex)(mockTransitionPhaseConfig)
+            ).run(userAnswers)
+
             result.left.value.page mustBe CommodityCodePage(itemIndex)
+
+          }
+
+        }
+
+        "when in post-transition" - {
+          "and TIR Carnet reference number is defined" - {
+            "and add commodity code yes/no is unanswered" in {
+              forAll(nonEmptyString) {
+                tirReference =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(TransitOperationTIRCarnetNumberPage, tirReference)
+
+                  val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                    ItemDomain.commodityCodeReader(itemIndex)
+                  ).run(userAnswers)
+
+                  result.left.value.page mustBe AddCommodityCodeYesNoPage(itemIndex)
+              }
+            }
+
+            "and commodity code is unanswered" in {
+              forAll(nonEmptyString) {
+                tirReference =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(TransitOperationTIRCarnetNumberPage, tirReference)
+                    .setValue(AddCommodityCodeYesNoPage(itemIndex), true)
+
+                  val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                    ItemDomain.commodityCodeReader(itemIndex)(mockPostTransitionPhaseConfig)
+                  ).run(userAnswers)
+
+                  result.left.value.page mustBe CommodityCodePage(itemIndex)
+              }
+            }
+          }
+
+          "when TIR Carnet reference number is undefined" - {
+            "and commodity code is unanswered" in {
+              val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                ItemDomain.commodityCodeReader(itemIndex)(mockPostTransitionPhaseConfig)
+              ).run(emptyUserAnswers)
+
+              result.left.value.page mustBe CommodityCodePage(itemIndex)
+            }
           }
         }
       }
@@ -794,84 +1090,170 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
     "packagesReader" - {
       "can be read from user answers" - {
-        "when unpacked packageType added" in {
-          forAll(arbitrary[PackageType](arbitraryUnpackedPackageType), Gen.posNum[Int].sample.value, arbitrary[String]) {
-            (packageType, quantity, shippingMark) =>
-              val userAnswers = emptyUserAnswers
-                .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
-                .setValue(NumberOfPackagesPage(itemIndex, packageIndex), quantity)
-                .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
-                .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
+        "when in transition" - {
+          "when unpacked packageType added" in {
+            forAll(arbitrary[PackageType](arbitraryUnpackedPackageType), Gen.posNum[Int].sample.value, arbitrary[String]) {
+              (packageType, quantity, shippingMark) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+                  .setValue(NumberOfPackagesPage(itemIndex, packageIndex), quantity)
+                  .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
+                  .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
 
-              val expectedResult =
-                PackagesDomain(
-                  Seq(
-                    PackageDomain(
-                      packageType,
-                      Some(quantity),
-                      Some(shippingMark)
-                    )(itemIndex, packageIndex)
+                val expectedResult =
+                  PackagesDomain(
+                    Seq(
+                      PackageDomain(
+                        packageType,
+                        Some(quantity),
+                        Some(shippingMark)
+                      )(itemIndex, packageIndex)
+                    )
                   )
-                )
 
-              val result: EitherType[PackagesDomain] = UserAnswersReader[PackagesDomain](
-                ItemDomain.packagesReader(itemIndex)
-              ).run(userAnswers)
+                val result: EitherType[PackagesDomain] = UserAnswersReader[PackagesDomain](
+                  ItemDomain.packagesReader(itemIndex)(mockTransitionPhaseConfig)
+                ).run(userAnswers)
 
-              result.value mustBe expectedResult
+                result.value mustBe expectedResult
+            }
+          }
+
+          "when bulk packageType added" in {
+            forAll(arbitrary[PackageType](arbitraryBulkPackageType), arbitrary[String]) {
+              (packageType, shippingMark) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+                  .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
+                  .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
+
+                val expectedResult =
+                  PackagesDomain(
+                    Seq(
+                      PackageDomain(
+                        packageType,
+                        None,
+                        Some(shippingMark)
+                      )(itemIndex, packageIndex)
+                    )
+                  )
+
+                val result: EitherType[PackagesDomain] = UserAnswersReader[PackagesDomain](
+                  ItemDomain.packagesReader(itemIndex)(mockTransitionPhaseConfig)
+                ).run(userAnswers)
+
+                result.value mustBe expectedResult
+            }
+          }
+
+          "when other packageType added" in {
+            forAll(arbitrary[PackageType](arbitraryOtherPackageType), arbitrary[Int], arbitrary[String]) {
+              (packageType, numberOfPackages, shippingMark) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+                  .setValue(NumberOfPackagesPage(itemIndex, packageIndex), numberOfPackages)
+                  .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
+
+                val expectedResult =
+                  PackagesDomain(
+                    Seq(
+                      PackageDomain(
+                        packageType,
+                        Some(numberOfPackages),
+                        Some(shippingMark)
+                      )(itemIndex, packageIndex)
+                    )
+                  )
+
+                val result: EitherType[PackagesDomain] = UserAnswersReader[PackagesDomain](
+                  ItemDomain.packagesReader(itemIndex)(mockTransitionPhaseConfig)
+                ).run(userAnswers)
+
+                result.value mustBe expectedResult
+            }
           }
         }
+        "when in post-transition" - {
+          "when unpacked packageType added" in {
+            forAll(arbitrary[PackageType](arbitraryUnpackedPackageType), Gen.posNum[Int].sample.value, arbitrary[String]) {
+              (packageType, quantity, shippingMark) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+                  .setValue(NumberOfPackagesPage(itemIndex, packageIndex), quantity)
+                  .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
+                  .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
 
-        "when bulk packageType added" in {
-          forAll(arbitrary[PackageType](arbitraryBulkPackageType), arbitrary[String]) {
-            (packageType, shippingMark) =>
-              val userAnswers = emptyUserAnswers
-                .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
-                .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
-                .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
-
-              val expectedResult =
-                PackagesDomain(
-                  Seq(
-                    PackageDomain(
-                      packageType,
-                      None,
-                      Some(shippingMark)
-                    )(itemIndex, packageIndex)
+                val expectedResult =
+                  PackagesDomain(
+                    Seq(
+                      PackageDomain(
+                        packageType,
+                        Some(quantity),
+                        Some(shippingMark)
+                      )(itemIndex, packageIndex)
+                    )
                   )
-                )
 
-              val result: EitherType[PackagesDomain] = UserAnswersReader[PackagesDomain](
-                ItemDomain.packagesReader(itemIndex)
-              ).run(userAnswers)
+                val result: EitherType[PackagesDomain] = UserAnswersReader[PackagesDomain](
+                  ItemDomain.packagesReader(itemIndex)(mockPostTransitionPhaseConfig)
+                ).run(userAnswers)
 
-              result.value mustBe expectedResult
+                result.value mustBe expectedResult
+            }
           }
-        }
 
-        "when other packageType added" in {
-          forAll(arbitrary[PackageType](arbitraryOtherPackageType), arbitrary[String]) {
-            (packageType, shippingMark) =>
-              val userAnswers = emptyUserAnswers
-                .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
-                .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
+          "when bulk packageType added" in {
+            forAll(arbitrary[PackageType](arbitraryBulkPackageType), arbitrary[String]) {
+              (packageType, shippingMark) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+                  .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
+                  .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
 
-              val expectedResult =
-                PackagesDomain(
-                  Seq(
-                    PackageDomain(
-                      packageType,
-                      None,
-                      Some(shippingMark)
-                    )(itemIndex, packageIndex)
+                val expectedResult =
+                  PackagesDomain(
+                    Seq(
+                      PackageDomain(
+                        packageType,
+                        None,
+                        Some(shippingMark)
+                      )(itemIndex, packageIndex)
+                    )
                   )
-                )
 
-              val result: EitherType[PackagesDomain] = UserAnswersReader[PackagesDomain](
-                ItemDomain.packagesReader(itemIndex)
-              ).run(userAnswers)
+                val result: EitherType[PackagesDomain] = UserAnswersReader[PackagesDomain](
+                  ItemDomain.packagesReader(itemIndex)(mockPostTransitionPhaseConfig)
+                ).run(userAnswers)
 
-              result.value mustBe expectedResult
+                result.value mustBe expectedResult
+            }
+          }
+
+          "when other packageType added" in {
+            forAll(arbitrary[PackageType](arbitraryOtherPackageType), arbitrary[String], arbitrary[Int]) {
+              (packageType, shippingMark, numberOfPackages) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+                  .setValue(NumberOfPackagesPage(itemIndex, packageIndex), numberOfPackages)
+                  .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
+
+                val expectedResult =
+                  PackagesDomain(
+                    Seq(
+                      PackageDomain(
+                        packageType,
+                        Some(numberOfPackages),
+                        Some(shippingMark)
+                      )(itemIndex, packageIndex)
+                    )
+                  )
+
+                val result: EitherType[PackagesDomain] = UserAnswersReader[PackagesDomain](
+                  ItemDomain.packagesReader(itemIndex)(mockPostTransitionPhaseConfig)
+                ).run(userAnswers)
+
+                result.value mustBe expectedResult
+            }
           }
         }
       }
@@ -883,6 +1265,128 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
           ).run(emptyUserAnswers)
 
           result.left.value.page mustBe PackageTypePage(itemIndex, packageIndex)
+        }
+      }
+    }
+
+    "consigneeReader" - {
+      "when post-transition" - {
+        val mockPhaseConfig = mock[PhaseConfig]
+        when(mockPhaseConfig.phase).thenReturn(Phase.PostTransition)
+
+        "then result must not be defined" in {
+          forAll(arbitraryConsigneeAnswers(emptyUserAnswers, itemIndex)) {
+            userAnswers =>
+              val result = UserAnswersReader[Option[ConsigneeDomain]](
+                ItemDomain.consigneeReader(itemIndex)(mockPhaseConfig)
+              ).run(userAnswers)
+
+              result.value must not be defined
+          }
+        }
+      }
+
+      "when during transition" - {
+        val mockPhaseConfig = mock[PhaseConfig]
+        when(mockPhaseConfig.phase).thenReturn(Phase.Transition)
+
+        "and consignee info present at consignment level" - {
+          "and country of destination is in set CL009" - {
+            "then result must not be defined" in {
+              val initialAnswers = emptyUserAnswers
+                .setValue(ConsignmentConsigneeSection, Json.obj("foo" -> "bar"))
+                .setValue(ConsignmentCountryOfDestinationInCL009Page, true)
+
+              forAll(arbitraryConsigneeAnswers(initialAnswers, itemIndex)) {
+                userAnswers =>
+                  val result = UserAnswersReader[Option[ConsigneeDomain]](
+                    ItemDomain.consigneeReader(itemIndex)(mockPhaseConfig)
+                  ).run(userAnswers)
+
+                  result.value must not be defined
+              }
+            }
+          }
+
+          "and country of destination is not in set CL009" - {
+            "then result must be defined" in {
+              val initialAnswers = emptyUserAnswers
+                .setValue(ConsignmentConsigneeSection, Json.obj("foo" -> "bar"))
+                .setValue(ConsignmentCountryOfDestinationInCL009Page, false)
+
+              forAll(arbitraryConsigneeAnswers(initialAnswers, itemIndex)) {
+                userAnswers =>
+                  val result = UserAnswersReader[Option[ConsigneeDomain]](
+                    ItemDomain.consigneeReader(itemIndex)(mockPhaseConfig)
+                  ).run(userAnswers)
+
+                  result.value must be(defined)
+              }
+            }
+          }
+
+          "and country of destination is undefined" - {
+            "then result must be defined" in {
+              val initialAnswers = emptyUserAnswers
+                .setValue(ConsignmentConsigneeSection, Json.obj("foo" -> "bar"))
+
+              forAll(arbitraryConsigneeAnswers(initialAnswers, itemIndex)) {
+                userAnswers =>
+                  val result = UserAnswersReader[Option[ConsigneeDomain]](
+                    ItemDomain.consigneeReader(itemIndex)(mockPhaseConfig)
+                  ).run(userAnswers)
+
+                  result.value must be(defined)
+              }
+            }
+          }
+        }
+
+        "and consignee info not present at consignment level" - {
+          "and country of destination is in set CL009" - {
+            "then result must be defined" in {
+              val initialAnswers = emptyUserAnswers
+                .setValue(ConsignmentCountryOfDestinationInCL009Page, true)
+
+              forAll(arbitraryConsigneeAnswers(initialAnswers, itemIndex)) {
+                userAnswers =>
+                  val result = UserAnswersReader[Option[ConsigneeDomain]](
+                    ItemDomain.consigneeReader(itemIndex)(mockPhaseConfig)
+                  ).run(userAnswers)
+
+                  result.value must be(defined)
+              }
+            }
+          }
+
+          "and country of destination is not in set CL009" - {
+            "then result must be defined" in {
+              val initialAnswers = emptyUserAnswers
+                .setValue(ConsignmentCountryOfDestinationInCL009Page, false)
+
+              forAll(arbitraryConsigneeAnswers(initialAnswers, itemIndex)) {
+                userAnswers =>
+                  val result = UserAnswersReader[Option[ConsigneeDomain]](
+                    ItemDomain.consigneeReader(itemIndex)(mockPhaseConfig)
+                  ).run(userAnswers)
+
+                  result.value must be(defined)
+              }
+            }
+          }
+
+          "and country of destination is undefined" - {
+            "then result must be defined" in {
+              forAll(arbitraryConsigneeAnswers(emptyUserAnswers, itemIndex)) {
+                userAnswers =>
+                  val result = UserAnswersReader[Option[ConsigneeDomain]](
+                    ItemDomain.consigneeReader(itemIndex)(mockPhaseConfig)
+                  ).run(userAnswers)
+
+                  result.value must be(defined)
+              }
+            }
+          }
         }
       }
     }
@@ -1173,6 +1677,139 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         }
       }
     }
-  }
 
+    "transportChargesReader" - {
+      "can be read from user answers" - {
+        "when in post-transition" in {
+          forAll(arbitrary[SecurityDetailsType]) {
+            securityDetails =>
+              val userAnswers = emptyUserAnswers
+                .setValue(SecurityDetailsTypePage, securityDetails)
+
+              val expectedResult = None
+
+              val result: EitherType[Option[TransportChargesMethodOfPayment]] = UserAnswersReader[Option[TransportChargesMethodOfPayment]](
+                ItemDomain.transportChargesReader(itemIndex)(mockPostTransitionPhaseConfig)
+              ).run(userAnswers)
+
+              result.value mustBe expectedResult
+          }
+        }
+
+        "when in transition" - {
+          "and security is 0" - {
+            "and add transport charges is answered yes" in {
+              forAll(arbitrary[SecurityDetailsType](arbitraryNoSecurityDetailsType), arbitrary[TransportChargesMethodOfPayment](arbitraryMethodOfPayment)) {
+                (securityDetailsType, transportCharge) =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(SecurityDetailsTypePage, securityDetailsType)
+                    .setValue(AddTransportChargesYesNoPage(itemIndex), true)
+                    .setValue(TransportChargesMethodOfPaymentPage(itemIndex), transportCharge)
+
+                  val expectedResult = Some(transportCharge)
+
+                  val result: EitherType[Option[TransportChargesMethodOfPayment]] = UserAnswersReader[Option[TransportChargesMethodOfPayment]](
+                    ItemDomain.transportChargesReader(itemIndex)(mockTransitionPhaseConfig)
+                  ).run(userAnswers)
+
+                  result.value mustBe expectedResult
+              }
+            }
+
+            "and add transport charges is answered no" in {
+              forAll(arbitrary[SecurityDetailsType](arbitraryNoSecurityDetailsType)) {
+                securityDetailsType =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(SecurityDetailsTypePage, securityDetailsType)
+                    .setValue(AddTransportChargesYesNoPage(itemIndex), false)
+
+                  val expectedResult = None
+
+                  val result: EitherType[Option[TransportChargesMethodOfPayment]] = UserAnswersReader[Option[TransportChargesMethodOfPayment]](
+                    ItemDomain.transportChargesReader(itemIndex)(mockTransitionPhaseConfig)
+                  ).run(userAnswers)
+
+                  result.value mustBe expectedResult
+              }
+            }
+          }
+
+          "or if consignmentTransportCharges is not present" in {
+            forAll(arbitrary[SecurityDetailsType], arbitrary[TransportChargesMethodOfPayment]) {
+              (securityDetailType, transportCharges) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(SecurityDetailsTypePage, securityDetailType)
+                  .setValue(AddTransportChargesYesNoPage(itemIndex), true)
+                  .setValue(TransportChargesMethodOfPaymentPage(itemIndex), transportCharges)
+
+                val expectedResult = Some(transportCharges)
+
+                val result: EitherType[Option[TransportChargesMethodOfPayment]] = UserAnswersReader[Option[TransportChargesMethodOfPayment]](
+                  ItemDomain.transportChargesReader(itemIndex)(mockTransitionPhaseConfig)
+                ).run(userAnswers)
+
+                result.value mustBe expectedResult
+
+            }
+
+          }
+
+          "or if consignmentTransportCharges is present" in {
+            forAll(arbitrary[SecurityDetailsType](arbitrarySomeSecurityDetailsType), nonEmptyString) {
+              (securityDetailType, consignmentTransportCharges) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(SecurityDetailsTypePage, securityDetailType)
+                  .setValue(ConsignmentTransportChargesPage, consignmentTransportCharges)
+
+                val expectedResult = None
+
+                val result: EitherType[Option[TransportChargesMethodOfPayment]] = UserAnswersReader[Option[TransportChargesMethodOfPayment]](
+                  ItemDomain.transportChargesReader(itemIndex)(mockTransitionPhaseConfig)
+                ).run(userAnswers)
+
+                result.value mustBe expectedResult
+
+            }
+
+          }
+
+        }
+
+      }
+    }
+
+    "can not be read from user answers" - {
+      "when in transition" - {
+        "and security is 0" - {
+          "and add transport charges is unanswered" in {
+            forAll(arbitrary[SecurityDetailsType](arbitraryNoSecurityDetailsType)) {
+              securityDetailsType =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(SecurityDetailsTypePage, securityDetailsType)
+
+                val result: EitherType[Option[TransportChargesMethodOfPayment]] = UserAnswersReader[Option[TransportChargesMethodOfPayment]](
+                  ItemDomain.transportChargesReader(itemIndex)(mockTransitionPhaseConfig)
+                ).run(userAnswers)
+
+                result.left.value.page mustBe AddTransportChargesYesNoPage(itemIndex)
+            }
+          }
+          "and transport charges is unanswered" in {
+            forAll(arbitrary[SecurityDetailsType](arbitraryNoSecurityDetailsType)) {
+              securityDetailsType =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(SecurityDetailsTypePage, securityDetailsType)
+                  .setValue(AddTransportChargesYesNoPage(itemIndex), true)
+
+                val result: EitherType[Option[TransportChargesMethodOfPayment]] = UserAnswersReader[Option[TransportChargesMethodOfPayment]](
+                  ItemDomain.transportChargesReader(itemIndex)(mockTransitionPhaseConfig)
+                ).run(userAnswers)
+
+                result.left.value.page mustBe TransportChargesMethodOfPaymentPage(itemIndex)
+            }
+          }
+        }
+      }
+    }
+  }
 }

@@ -16,21 +16,22 @@
 
 package models.journeyDomain
 
+import config.PhaseConfig
 import models.journeyDomain.item.ItemDomain
-import models.{Index, Mode, RichJsArray, UserAnswers}
+import models.{Index, Mode, Phase, RichJsArray, UserAnswers}
 import pages.sections.ItemsSection
 import play.api.mvc.Call
 
 case class ItemsDomain(item: Seq[ItemDomain]) extends JourneyDomainModel {
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some(
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] = Some(
     controllers.routes.AddAnotherItemController.onPageLoad(userAnswers.lrn)
   )
 }
 
 object ItemsDomain {
 
-  implicit val userAnswersReader: UserAnswersReader[ItemsDomain] = {
+  implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): UserAnswersReader[ItemsDomain] = {
 
     val itemReader: UserAnswersReader[Seq[ItemDomain]] =
       ItemsSection.arrayReader.flatMap {
