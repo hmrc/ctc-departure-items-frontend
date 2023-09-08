@@ -55,6 +55,11 @@ trait ModelGenerators {
       Gen.oneOf(DeclarationType.values)
     }
 
+  lazy val arbitraryConsignmentDeclarationType: Arbitrary[String] =
+    Arbitrary {
+      Gen.oneOf("T", "T1", "T2", "T2F", "TIR")
+    }
+
   lazy val arbitraryNonTDeclarationType: Arbitrary[String] =
     Arbitrary {
       Gen.oneOf("T1", "T2", "T2F", "TIR")
@@ -253,14 +258,14 @@ trait ModelGenerators {
     Gen.oneOf(TaskStatus.InProgress, TaskStatus.NotStarted, TaskStatus.CannotStartYet)
   }
 
-  implicit lazy val arbitraryNoSecurityDetailsType: Arbitrary[SecurityDetailsType] =
+  lazy val arbitrarySecurityDetailsType: Arbitrary[String] =
     Arbitrary {
-      Gen.oneOf(SecurityDetailsType.values.filter(_ == SecurityDetailsType.NoSecurityDetails))
+      Gen.oneOf("0", "1", "2", "3")
     }
 
-  lazy val arbitrarySomeSecurityDetailsType: Arbitrary[SecurityDetailsType] =
+  lazy val arbitrarySomeSecurityDetailsType: Arbitrary[String] =
     Arbitrary {
-      Gen.oneOf(SecurityDetailsType.values.filterNot(_ == SecurityDetailsType.NoSecurityDetails))
+      Gen.oneOf("1", "2", "3")
     }
 
   implicit lazy val arbitraryJsObject: Arbitrary[JsObject] = Arbitrary {

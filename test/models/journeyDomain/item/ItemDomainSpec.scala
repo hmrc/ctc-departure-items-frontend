@@ -27,7 +27,7 @@ import models.journeyDomain.item.documents.{DocumentDomain, DocumentsDomain}
 import models.journeyDomain.item.packages.{PackageDomain, PackagesDomain}
 import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.reference._
-import models.{DeclarationType, Index, Phase, SecurityDetailsType}
+import models.{DeclarationType, Index, Phase}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -1681,7 +1681,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
     "transportChargesReader" - {
       "can be read from user answers" - {
         "when in post-transition" in {
-          forAll(arbitrary[SecurityDetailsType]) {
+          forAll(arbitrary[String](arbitrarySecurityDetailsType)) {
             securityDetails =>
               val userAnswers = emptyUserAnswers
                 .setValue(SecurityDetailsTypePage, securityDetails)
@@ -1699,10 +1699,10 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         "when in transition" - {
           "and security is 0" - {
             "and add transport charges is answered yes" in {
-              forAll(arbitrary[SecurityDetailsType](arbitraryNoSecurityDetailsType), arbitrary[TransportChargesMethodOfPayment](arbitraryMethodOfPayment)) {
-                (securityDetailsType, transportCharge) =>
+              forAll(arbitrary[TransportChargesMethodOfPayment](arbitraryMethodOfPayment)) {
+                transportCharge =>
                   val userAnswers = emptyUserAnswers
-                    .setValue(SecurityDetailsTypePage, securityDetailsType)
+                    .setValue(SecurityDetailsTypePage, NoSecurityDetails)
                     .setValue(AddTransportChargesYesNoPage(itemIndex), true)
                     .setValue(TransportChargesMethodOfPaymentPage(itemIndex), transportCharge)
 
@@ -1717,25 +1717,22 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
             }
 
             "and add transport charges is answered no" in {
-              forAll(arbitrary[SecurityDetailsType](arbitraryNoSecurityDetailsType)) {
-                securityDetailsType =>
-                  val userAnswers = emptyUserAnswers
-                    .setValue(SecurityDetailsTypePage, securityDetailsType)
-                    .setValue(AddTransportChargesYesNoPage(itemIndex), false)
+              val userAnswers = emptyUserAnswers
+                .setValue(SecurityDetailsTypePage, NoSecurityDetails)
+                .setValue(AddTransportChargesYesNoPage(itemIndex), false)
 
-                  val expectedResult = None
+              val expectedResult = None
 
-                  val result: EitherType[Option[TransportChargesMethodOfPayment]] = UserAnswersReader[Option[TransportChargesMethodOfPayment]](
-                    ItemDomain.transportChargesReader(itemIndex)(mockTransitionPhaseConfig)
-                  ).run(userAnswers)
+              val result: EitherType[Option[TransportChargesMethodOfPayment]] = UserAnswersReader[Option[TransportChargesMethodOfPayment]](
+                ItemDomain.transportChargesReader(itemIndex)(mockTransitionPhaseConfig)
+              ).run(userAnswers)
 
-                  result.value mustBe expectedResult
-              }
+              result.value mustBe expectedResult
             }
           }
 
           "or if consignmentTransportCharges is not present" in {
-            forAll(arbitrary[SecurityDetailsType], arbitrary[TransportChargesMethodOfPayment]) {
+            forAll(arbitrary[String](arbitrarySecurityDetailsType), arbitrary[TransportChargesMethodOfPayment]) {
               (securityDetailType, transportCharges) =>
                 val userAnswers = emptyUserAnswers
                   .setValue(SecurityDetailsTypePage, securityDetailType)
@@ -1755,7 +1752,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
           }
 
           "or if consignmentTransportCharges is present" in {
-            forAll(arbitrary[SecurityDetailsType](arbitrarySomeSecurityDetailsType), nonEmptyString) {
+            forAll(arbitrary[String](arbitrarySomeSecurityDetailsType), nonEmptyString) {
               (securityDetailType, consignmentTransportCharges) =>
                 val userAnswers = emptyUserAnswers
                   .setValue(SecurityDetailsTypePage, securityDetailType)
@@ -1782,31 +1779,25 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
       "when in transition" - {
         "and security is 0" - {
           "and add transport charges is unanswered" in {
-            forAll(arbitrary[SecurityDetailsType](arbitraryNoSecurityDetailsType)) {
-              securityDetailsType =>
-                val userAnswers = emptyUserAnswers
-                  .setValue(SecurityDetailsTypePage, securityDetailsType)
+            val userAnswers = emptyUserAnswers
+              .setValue(SecurityDetailsTypePage, NoSecurityDetails)
 
-                val result: EitherType[Option[TransportChargesMethodOfPayment]] = UserAnswersReader[Option[TransportChargesMethodOfPayment]](
-                  ItemDomain.transportChargesReader(itemIndex)(mockTransitionPhaseConfig)
-                ).run(userAnswers)
+            val result: EitherType[Option[TransportChargesMethodOfPayment]] = UserAnswersReader[Option[TransportChargesMethodOfPayment]](
+              ItemDomain.transportChargesReader(itemIndex)(mockTransitionPhaseConfig)
+            ).run(userAnswers)
 
-                result.left.value.page mustBe AddTransportChargesYesNoPage(itemIndex)
-            }
+            result.left.value.page mustBe AddTransportChargesYesNoPage(itemIndex)
           }
           "and transport charges is unanswered" in {
-            forAll(arbitrary[SecurityDetailsType](arbitraryNoSecurityDetailsType)) {
-              securityDetailsType =>
-                val userAnswers = emptyUserAnswers
-                  .setValue(SecurityDetailsTypePage, securityDetailsType)
-                  .setValue(AddTransportChargesYesNoPage(itemIndex), true)
+            val userAnswers = emptyUserAnswers
+              .setValue(SecurityDetailsTypePage, NoSecurityDetails)
+              .setValue(AddTransportChargesYesNoPage(itemIndex), true)
 
-                val result: EitherType[Option[TransportChargesMethodOfPayment]] = UserAnswersReader[Option[TransportChargesMethodOfPayment]](
-                  ItemDomain.transportChargesReader(itemIndex)(mockTransitionPhaseConfig)
-                ).run(userAnswers)
+            val result: EitherType[Option[TransportChargesMethodOfPayment]] = UserAnswersReader[Option[TransportChargesMethodOfPayment]](
+              ItemDomain.transportChargesReader(itemIndex)(mockTransitionPhaseConfig)
+            ).run(userAnswers)
 
-                result.left.value.page mustBe TransportChargesMethodOfPaymentPage(itemIndex)
-            }
+            result.left.value.page mustBe TransportChargesMethodOfPaymentPage(itemIndex)
           }
         }
       }

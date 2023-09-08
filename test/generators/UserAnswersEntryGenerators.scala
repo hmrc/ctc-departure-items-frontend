@@ -40,13 +40,13 @@ trait UserAnswersEntryGenerators {
     {
       case CustomsOfficeOfDeparturePage               => Gen.alphaNumStr.map(JsString)
       case CustomsOfficeOfDepartureInCL112Page        => arbitrary[Boolean].map(JsBoolean)
-      case TransitOperationDeclarationTypePage        => arbitrary[DeclarationType].map(Json.toJson(_))
+      case TransitOperationDeclarationTypePage        => arbitrary[String](arbitraryConsignmentDeclarationType).map(Json.toJson(_))
       case TransitOperationTIRCarnetNumberPage        => Gen.alphaNumStr.map(JsString)
       case ConsignmentUCRPage                         => Gen.alphaNumStr.map(JsString)
       case ConsignmentCountryOfDispatchPage           => arbitrary[Country].map(Json.toJson(_))
       case ConsignmentCountryOfDestinationPage        => arbitrary[Country].map(Json.toJson(_))
       case ApprovedOperatorPage                       => arbitrary[Boolean].map(JsBoolean)
-      case SecurityDetailsTypePage                    => arbitrary[SecurityDetailsType].map(Json.toJson(_))
+      case SecurityDetailsTypePage                    => arbitrary[String](arbitrarySecurityDetailsType).map(Json.toJson(_))
       case ConsignmentConsigneeSection                => arbitrary[JsObject]
       case ConsignmentCountryOfDestinationInCL009Page => arbitrary[Boolean].map(JsBoolean)
     }

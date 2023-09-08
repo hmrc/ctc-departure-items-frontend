@@ -26,4 +26,6 @@ object Constants {
   val C658 = "C658"
 
   val additionalInformationType30600 = "30600"
+
+  val NoSecurityDetails = "0"
 }
