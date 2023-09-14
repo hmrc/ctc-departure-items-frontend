@@ -17,9 +17,10 @@
 package utils.cyaHelpers.item.supplyChainActors
 
 import base.SpecBase
-import generators.Generators
 import controllers.item.supplyChainActors.index.routes
-import models.{Index, Mode, SupplyChainActorType}
+import generators.Generators
+import models.{Index, Mode}
+import models.reference.SupplyChainActorType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks

@@ -19,7 +19,8 @@ package controllers.item.supplyChainActors.index
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.EoriNumberFormProvider
 import generators.Generators
-import models.{NormalMode, SupplyChainActorType}
+import models.NormalMode
+import models.reference.SupplyChainActorType
 import navigation.SupplyChainActorNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when

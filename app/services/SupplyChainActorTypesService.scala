@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package pages.item.supplyChainActors.index
+package services
 
+import connectors.ReferenceDataConnector
 import models.reference.SupplyChainActorType
-import pages.behaviours.PageBehaviours
+import uk.gov.hmrc.http.HeaderCarrier
 
-class SupplyChainActorTypePageSpec extends PageBehaviours {
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
-  "SupplyChainActorTypePage" - {
+class SupplyChainActorTypesService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
 
-    beRetrievable[SupplyChainActorType](SupplyChainActorTypePage(itemIndex, actorIndex))
+  def getSupplyChainActorTypes()(implicit hc: HeaderCarrier): Future[Seq[SupplyChainActorType]] =
+    referenceDataConnector.getSupplyChainActorTypes().map(sort)
 
-    beSettable[SupplyChainActorType](SupplyChainActorTypePage(itemIndex, actorIndex))
-
-    beRemovable[SupplyChainActorType](SupplyChainActorTypePage(itemIndex, actorIndex))
-  }
+  private def sort(supplyChainActorTypes: Seq[SupplyChainActorType]): Seq[SupplyChainActorType] =
+    supplyChainActorTypes.sortBy(_.code.toLowerCase)
 }

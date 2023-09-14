@@ -17,7 +17,8 @@
 package pages.item.supplyChainActors.index
 
 import controllers.item.supplyChainActors.index.routes
-import models.{Index, Mode, SupplyChainActorType, UserAnswers}
+import models.reference.SupplyChainActorType
+import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.supplyChainActors.SupplyChainActorSection
 import play.api.libs.json.JsPath

@@ -17,7 +17,8 @@
 package views.item.supplyChainActors.index
 
 import forms.EnumerableFormProvider
-import models.{NormalMode, SupplyChainActorType}
+import models.NormalMode
+import models.reference.SupplyChainActorType
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
@@ -26,7 +27,7 @@ import views.html.item.supplyChainActors.index.SupplyChainActorTypeView
 
 class SupplyChainActorTypeViewSpec extends RadioViewBehaviours[SupplyChainActorType] {
 
-  override def form: Form[SupplyChainActorType] = new EnumerableFormProvider()(prefix)
+  override def form: Form[SupplyChainActorType] = new EnumerableFormProvider()(prefix, values)
 
   override def applyView(form: Form[SupplyChainActorType]): HtmlFormat.Appendable =
     injector.instanceOf[SupplyChainActorTypeView].apply(form, lrn, values, NormalMode, itemIndex, actorIndex)(fakeRequest, messages)
@@ -36,7 +37,10 @@ class SupplyChainActorTypeViewSpec extends RadioViewBehaviours[SupplyChainActorT
   override def radioItems(fieldId: String, checkedValue: Option[SupplyChainActorType] = None): Seq[RadioItem] =
     values.toRadioItems(fieldId, checkedValue)
 
-  override def values: Seq[SupplyChainActorType] = SupplyChainActorType.values
+  override def values: Seq[SupplyChainActorType] = Seq(
+    SupplyChainActorType("FW", "Freight Forwarder"),
+    SupplyChainActorType("WH", "Warehouse Keeper")
+  )
 
   behave like pageWithTitle()
 

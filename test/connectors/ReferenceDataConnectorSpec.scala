@@ -175,6 +175,32 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       |}
       |""".stripMargin
 
+  val supplyChainActorTypesResponseJson: String =
+    """
+      |{
+      |  "_links": {
+      |    "self": {
+      |      "href": "/customs-reference-data/lists/AdditionalSupplyChainActorRoleCode"
+      |    }
+      |  },
+      |  "meta": {
+      |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+      |    "snapshotDate": "2023-01-01"
+      |  },
+      |  "id": "AdditionalSupplyChainActorRoleCode",
+      |  "data": [
+      |    {
+      |      "role":"CS",
+      |      "description":"Consolidator"
+      |    },
+      |    {
+      |      "role":"MF",
+      |      "description":"Manufacturer"
+      |    }
+      |  ]
+      |}
+      |""".stripMargin
+
   "Reference Data" - {
 
     "getCountries" - {
@@ -371,6 +397,27 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       }
     }
 
+    "getSupplyChainActorTypes" - {
+      val url: String = s"/$baseUrl/lists/AdditionalSupplyChainActorRoleCode"
+
+      "must return Seq of SupplyChainActorType when successful" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(supplyChainActorTypesResponseJson))
+        )
+
+        val expectedResult: Seq[SupplyChainActorType] = Seq(
+          SupplyChainActorType("CS", "Consolidator"),
+          SupplyChainActorType("MF", "Manufacturer")
+        )
+
+        connector.getSupplyChainActorTypes().futureValue mustEqual expectedResult
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getSupplyChainActorTypes())
+      }
+    }
   }
 
   private def checkErrorResponse(url: String, result: => Future[_]): Assertion = {

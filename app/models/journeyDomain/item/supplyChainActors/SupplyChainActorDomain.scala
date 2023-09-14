@@ -18,7 +18,8 @@ package models.journeyDomain.item.supplyChainActors
 
 import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
 import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
-import models.{Index, Mode, Phase, SupplyChainActorType, UserAnswers}
+import models.{Index, Mode, Phase, UserAnswers}
+import models.reference.SupplyChainActorType
 import pages.item.supplyChainActors.index.{IdentificationNumberPage, SupplyChainActorTypePage}
 import play.api.i18n.Messages
 import play.api.mvc.Call

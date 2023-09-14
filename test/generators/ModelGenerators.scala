@@ -42,7 +42,10 @@ trait ModelGenerators {
 
   implicit lazy val arbitrarySupplyChainActorType: Arbitrary[SupplyChainActorType] =
     Arbitrary {
-      Gen.oneOf(SupplyChainActorType.values)
+      for {
+        code        <- Gen.oneOf("CS", "FW", "MF", "WH")
+        description <- nonEmptyString
+      } yield SupplyChainActorType(code, description)
     }
 
   implicit lazy val arbitraryDocumentType: Arbitrary[DocumentType] =

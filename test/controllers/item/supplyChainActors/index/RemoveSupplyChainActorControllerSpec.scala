@@ -20,10 +20,12 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.item.supplyChainActors.{routes => supplyChainActorRoutes}
 import forms.YesNoFormProvider
 import generators.Generators
-import models.{NormalMode, SupplyChainActorType, UserAnswers}
+import models.{NormalMode, UserAnswers}
+import models.reference.SupplyChainActorType
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, reset, verify, when}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.item.supplyChainActors.index.{IdentificationNumberPage, SupplyChainActorTypePage}
 import pages.sections.supplyChainActors.SupplyChainActorSection
@@ -34,6 +36,8 @@ import views.html.item.supplyChainActors.index.RemoveSupplyChainActorView
 import scala.concurrent.Future
 
 class RemoveSupplyChainActorControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
+
+  private val supplyChainActorTypes = arbitrary[Seq[SupplyChainActorType]].sample.value
 
   private val form = new YesNoFormProvider()("item.supplyChainActors.index.removeSupplyChainActor")
 
@@ -47,7 +51,7 @@ class RemoveSupplyChainActorControllerSpec extends SpecBase with AppWithDefaultM
 
     "must return OK and the correct view for a GET" in {
       val userAnswers = emptyUserAnswers
-        .setValue(SupplyChainActorTypePage(itemIndex, actorIndex), SupplyChainActorType.values.head)
+        .setValue(SupplyChainActorTypePage(itemIndex, actorIndex), supplyChainActorTypes.head)
         .setValue(IdentificationNumberPage(itemIndex, actorIndex), identificationNumber)
 
       setExistingUserAnswers(userAnswers)
@@ -66,7 +70,7 @@ class RemoveSupplyChainActorControllerSpec extends SpecBase with AppWithDefaultM
     "when yes submitted" - {
       "must redirect to add another supply chain actor and remove supply chain actor at specified index" in {
         val userAnswers = emptyUserAnswers
-          .setValue(SupplyChainActorTypePage(itemIndex, actorIndex), SupplyChainActorType.values.head)
+          .setValue(SupplyChainActorTypePage(itemIndex, actorIndex), supplyChainActorTypes.head)
           .setValue(IdentificationNumberPage(itemIndex, actorIndex), identificationNumber)
 
         reset(mockSessionRepository)
@@ -93,7 +97,7 @@ class RemoveSupplyChainActorControllerSpec extends SpecBase with AppWithDefaultM
     "when no submitted" - {
       "must redirect to add another supply chain actor and not remove supply chain actor at specified index" in {
         val userAnswers = emptyUserAnswers
-          .setValue(SupplyChainActorTypePage(itemIndex, actorIndex), SupplyChainActorType.values.head)
+          .setValue(SupplyChainActorTypePage(itemIndex, actorIndex), supplyChainActorTypes.head)
           .setValue(IdentificationNumberPage(itemIndex, actorIndex), identificationNumber)
         reset(mockSessionRepository)
 
@@ -116,7 +120,7 @@ class RemoveSupplyChainActorControllerSpec extends SpecBase with AppWithDefaultM
 
     "must return a Bad Request and errors when invalid data is submitted" in {
       val userAnswers = emptyUserAnswers
-        .setValue(SupplyChainActorTypePage(itemIndex, actorIndex), SupplyChainActorType.values.head)
+        .setValue(SupplyChainActorTypePage(itemIndex, actorIndex), supplyChainActorTypes.head)
         .setValue(IdentificationNumberPage(itemIndex, actorIndex), identificationNumber)
       setExistingUserAnswers(userAnswers)
 

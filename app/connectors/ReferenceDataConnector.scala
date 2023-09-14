@@ -75,6 +75,11 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http.GET[Seq[TransportChargesMethodOfPayment]](serviceUrl, headers = version2Header)
   }
 
+  def getSupplyChainActorTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[SupplyChainActorType]] = {
+    val url = s"${config.referenceDataUrl}/lists/AdditionalSupplyChainActorRoleCode"
+    http.GET[Seq[SupplyChainActorType]](url, headers = version2Header)
+  }
+
   private def version2Header: Seq[(String, String)] = Seq(
     HeaderNames.Accept -> "application/vnd.hmrc.2.0+json"
   )
