@@ -20,7 +20,7 @@ import models._
 import models.reference._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages.sections.external.AddConsignmentDocumentsYesNoPage
+import pages.external.ConsignmentAddDocumentsPage
 import play.api.libs.json._
 import queries.Gettable
 
@@ -76,7 +76,7 @@ trait UserAnswersEntryGenerators {
       case SupplementaryUnitsPage(_)               => arbitrary[BigDecimal].map(Json.toJson(_))
       case AddSupplyChainActorYesNoPage(_)         => arbitrary[Boolean].map(JsBoolean)
       case AddDocumentsYesNoPage(_)                => arbitrary[Boolean].map(JsBoolean)
-      case AddConsignmentDocumentsYesNoPage        => arbitrary[Boolean].map(JsBoolean)
+      case ConsignmentAddDocumentsPage             => arbitrary[Boolean].map(JsBoolean)
       case AddAdditionalReferenceYesNoPage(_)      => arbitrary[Boolean].map(JsBoolean)
       case AddAdditionalInformationYesNoPage(_)    => arbitrary[Boolean].map(JsBoolean)
       case AddTransportChargesYesNoPage(_)         => arbitrary[Boolean].map(JsBoolean)

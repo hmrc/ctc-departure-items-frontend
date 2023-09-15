@@ -43,9 +43,8 @@ import models.journeyDomain.{
 import models.reference.{Country, TransportChargesMethodOfPayment}
 import pages.external._
 import pages.item._
-import pages.sections.external.{AddConsignmentDocumentsYesNoPage, ConsignmentConsigneeSection, DocumentsSection, TransportEquipmentsSection}
+import pages.sections.external.{ConsignmentConsigneeSection, DocumentsSection, TransportEquipmentsSection}
 import play.api.i18n.Messages
-import play.api.libs.json.Reads
 import play.api.mvc.Call
 
 import java.util.UUID
