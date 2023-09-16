@@ -17,16 +17,18 @@
 package controllers.item
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import config.TestConstants.{declarationTypeItemValues, declarationTypeValues}
 import forms.EnumerableFormProvider
-import models.{DeclarationType, NormalMode}
+import models.{DeclarationTypeItemLevel, NormalMode}
 import navigation.ItemNavigatorProvider
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, when}
 import pages.item.DeclarationTypePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.DeclarationTypeService
 import views.html.item.DeclarationTypeView
 
 import scala.concurrent.Future
@@ -34,14 +36,23 @@ import scala.concurrent.Future
 class DeclarationTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private val formProvider              = new EnumerableFormProvider()
-  private val form                      = formProvider[DeclarationType]("item.declarationType")
+  private val form                      = formProvider[DeclarationTypeItemLevel]("item.declarationType")(declarationTypeValues)
   private val mode                      = NormalMode
   private lazy val declarationTypeRoute = routes.DeclarationTypeController.onPageLoad(lrn, mode, itemIndex).url
+  private val mockDeclarationService    = mock[DeclarationTypeService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[ItemNavigatorProvider]).toInstance(fakeItemNavigatorProvider))
+      .overrides(bind(classOf[DeclarationTypeService]).toInstance(mockDeclarationService))
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockDeclarationService)
+    when(mockDeclarationService.getDeclarationTypeItemLevel()(any()))
+      .thenReturn(Future.successful(declarationTypeValues))
+  }
 
   "DeclarationType Controller" - {
 
@@ -59,26 +70,26 @@ class DeclarationTypeControllerSpec extends SpecBase with AppWithDefaultMockFixt
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, DeclarationType.itemValues, mode, itemIndex)(request, messages).toString
+        view(form, lrn, declarationTypeItemValues, mode, itemIndex)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(DeclarationTypePage(itemIndex), DeclarationType.values.head)
+      val userAnswers = emptyUserAnswers.setValue(DeclarationTypePage(itemIndex), declarationTypeValues.head)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, declarationTypeRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> DeclarationType.values.head.toString))
+      val filledForm = form.bind(Map("value" -> declarationTypeValues.head.toString))
 
       val view = injector.instanceOf[DeclarationTypeView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, DeclarationType.itemValues, mode, itemIndex)(request, messages).toString
+        view(filledForm, lrn, declarationTypeItemValues, mode, itemIndex)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -88,7 +99,7 @@ class DeclarationTypeControllerSpec extends SpecBase with AppWithDefaultMockFixt
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, declarationTypeRoute)
-        .withFormUrlEncodedBody(("value", DeclarationType.values.head.toString))
+        .withFormUrlEncodedBody(("value", declarationTypeValues.head.toString))
 
       val result = route(app, request).value
 
@@ -112,7 +123,7 @@ class DeclarationTypeControllerSpec extends SpecBase with AppWithDefaultMockFixt
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, DeclarationType.itemValues, mode, itemIndex)(request, messages).toString
+        view(boundForm, lrn, declarationTypeItemValues, mode, itemIndex)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -132,7 +143,7 @@ class DeclarationTypeControllerSpec extends SpecBase with AppWithDefaultMockFixt
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, declarationTypeRoute)
-        .withFormUrlEncodedBody(("value", DeclarationType.values.head.toString))
+        .withFormUrlEncodedBody(("value", declarationTypeValues.head.toString))
 
       val result = route(app, request).value
 

@@ -42,6 +42,8 @@ trait PageBehaviours extends SpecBase with ScalaCheckPropertyChecks with Generat
             val gen: Gen[(P, UserAnswers)] = for {
               page        <- genP
               userAnswers <- arbitrary[UserAnswers]
+              jj   = userAnswers.eoriNumber
+              hh   = userAnswers.data
               json = userAnswers.data.removeObject(page.path).asOpt.getOrElse(userAnswers.data)
             } yield (page, userAnswers.copy(data = json))
 

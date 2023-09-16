@@ -17,17 +17,17 @@
 package pages.item
 
 import controllers.item.routes
-import models.{DeclarationType, Index, Mode, UserAnswers}
+import models.{DeclarationType, DeclarationTypeItemLevel, Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.ItemSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class DeclarationTypePage(itemIndex: Index) extends QuestionPage[DeclarationType] {
+case class DeclarationTypePage(itemIndex: Index) extends QuestionPage[DeclarationTypeItemLevel] {
 
   override def path: JsPath = ItemSection(itemIndex).path \ toString
 
-  override def toString: String = "declarationType"
+  override def toString: String = "declarationTypeItemLevel"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.DeclarationTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex))

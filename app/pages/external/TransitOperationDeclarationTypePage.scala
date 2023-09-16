@@ -16,7 +16,7 @@
 
 package pages.external
 
-import models.DeclarationType
+import models.{DeclarationType, DeclarationTypeItemLevel}
 import pages.{preTaskListPath, ReadOnlyPage}
 import play.api.libs.json.JsPath
 

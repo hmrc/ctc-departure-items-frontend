@@ -19,8 +19,9 @@ package models.journeyDomain.item
 import base.SpecBase
 import config.Constants.GB
 import config.PhaseConfig
+import config.TestConstants.{declarationTypeItemValues, declarationTypeT, declarationTypeT1, declarationTypeT2, declarationTypeT2F, declarationTypeTIR}
 import generators.Generators
-import models.DeclarationType._
+import models.DeclarationTypeItemLevel._
 import models.journeyDomain.item.additionalInformation.{AdditionalInformationDomain, AdditionalInformationListDomain}
 import models.journeyDomain.item.additionalReferences.{AdditionalReferenceDomain, AdditionalReferencesDomain}
 import models.journeyDomain.item.dangerousGoods.{DangerousGoodsDomain, DangerousGoodsListDomain}
@@ -28,7 +29,7 @@ import models.journeyDomain.item.documents.{DocumentDomain, DocumentsDomain}
 import models.journeyDomain.item.packages.{PackageDomain, PackagesDomain}
 import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.reference._
-import models.{DeclarationType, Index, Phase, SecurityDetailsType}
+import models.{DeclarationType, DeclarationTypeItemLevel, Index, Phase, SecurityDetailsType, WithName}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -140,7 +141,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               val expectedResult = None
 
-              val result: EitherType[Option[DeclarationType]] = UserAnswersReader[Option[DeclarationType]](
+              val result: EitherType[Option[DeclarationTypeItemLevel]] = UserAnswersReader[Option[DeclarationTypeItemLevel]](
                 ItemDomain.declarationTypeReader(itemIndex)
               ).run(userAnswers)
 
@@ -149,7 +150,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         }
 
         "when declaration type is T" in {
-          forAll(arbitrary[DeclarationType]) {
+          forAll(arbitrary[DeclarationTypeItemLevel]) {
             declarationType =>
               val userAnswers = emptyUserAnswers
                 .setValue(TransitOperationDeclarationTypePage, DeclarationType.T)
@@ -157,7 +158,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               val expectedResult = Some(declarationType)
 
-              val result: EitherType[Option[DeclarationType]] = UserAnswersReader[Option[DeclarationType]](
+              val result: EitherType[Option[DeclarationTypeItemLevel]] = UserAnswersReader[Option[DeclarationTypeItemLevel]](
                 ItemDomain.declarationTypeReader(itemIndex)
               ).run(userAnswers)
 
@@ -172,7 +173,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
             val userAnswers = emptyUserAnswers
               .setValue(TransitOperationDeclarationTypePage, DeclarationType.T)
 
-            val result: EitherType[Option[DeclarationType]] = UserAnswersReader[Option[DeclarationType]](
+            val result: EitherType[Option[DeclarationTypeItemLevel]] = UserAnswersReader[Option[DeclarationTypeItemLevel]](
               ItemDomain.declarationTypeReader(itemIndex)
             ).run(userAnswers)
 
@@ -1398,9 +1399,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
       )
       val nonGgbCustomsOfficeGen = nonEmptyString.retryUntil(!_.startsWith(GB))
 
-      val genForT2OrT2F    = Gen.oneOf(T2, T2F)
-      val genForNonT2OrT2F = Gen.oneOf(T1, TIR, T)
-      val genForNonT       = Gen.oneOf(T2, T2F, TIR, T1)
+      val genForT2OrT2F: Gen[DeclarationTypeItemLevel]    = Gen.oneOf(declarationTypeT2, declarationTypeT2F)
+      val genForNonT2OrT2F: Gen[DeclarationTypeItemLevel] = Gen.oneOf(declarationTypeT1, declarationTypeTIR, declarationTypeT)
+      val genForNonT: Gen[DeclarationType]                = Gen.oneOf(DeclarationType.T2, DeclarationType.T2F, DeclarationType.TIR, DeclarationType.T1)
 
       "can be read from user answers" - {
         "when T declaration type, T2/T2F item declaration type, GB office of departure and consignment-level previous document is present" - {

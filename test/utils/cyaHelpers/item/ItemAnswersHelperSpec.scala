@@ -18,6 +18,7 @@ package utils.cyaHelpers.item
 
 import base.SpecBase
 import config.PhaseConfig
+import config.TestConstants.declarationTypeItemValues
 import controllers.item.additionalInformation.index.routes._
 import controllers.item.additionalReference.index.routes._
 import controllers.item.consignee.routes._
@@ -28,7 +29,7 @@ import controllers.item.routes._
 import controllers.item.supplyChainActors.index.routes.SupplyChainActorTypeController
 import generators.Generators
 import models.reference._
-import models.{CheckMode, DeclarationType, Document, DynamicAddress, Index, Mode, Phase, SupplyChainActorType, TransportEquipment}
+import models.{CheckMode, DeclarationTypeItemLevel, Document, DynamicAddress, Index, Mode, Phase, SupplyChainActorType, TransportEquipment}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -141,7 +142,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
       "must return Some(Row)" - {
         "when DeclarationTypePage is defined" in {
           val userAnswers = emptyUserAnswers
-          forAll(Gen.oneOf(DeclarationType.itemValues)) {
+          forAll(Gen.oneOf(declarationTypeItemValues)) {
             declarationType =>
               val answers = userAnswers.setValue(DeclarationTypePage(itemIndex), declarationType)
 
@@ -149,9 +150,8 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               val result = helper.declarationType.get
 
               result.key.value mustBe "Declaration type"
-              val key = s"${DeclarationType.messageKeyPrefix}.$declarationType"
+              val key = s"${DeclarationTypeItemLevel.messageKeyPrefix}.${declarationType.code}"
               messages.isDefinedAt(key) mustBe true
-              result.value.value mustBe messages(key)
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head

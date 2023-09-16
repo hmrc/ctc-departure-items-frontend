@@ -17,6 +17,7 @@
 package generators
 
 import config.Constants._
+import config.TestConstants.{declarationTypeItemValues, declarationTypeValues}
 import models.AddressLine.{Country => _, _}
 import models.DocumentType.{Previous, Support, Transport}
 import models._
@@ -53,6 +54,11 @@ trait ModelGenerators {
   implicit lazy val arbitraryDeclarationType: Arbitrary[DeclarationType] =
     Arbitrary {
       Gen.oneOf(DeclarationType.values)
+    }
+
+  implicit lazy val arbitraryDeclarationTypeItemLevel: Arbitrary[DeclarationTypeItemLevel] =
+    Arbitrary {
+      Gen.oneOf(declarationTypeValues)
     }
 
   lazy val arbitraryNonTDeclarationType: Arbitrary[DeclarationType] =

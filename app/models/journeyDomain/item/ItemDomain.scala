@@ -17,9 +17,9 @@
 package models.journeyDomain.item
 
 import cats.implicits._
-import config.Constants.GB
+import config.Constants.{GB, T, T2, T2F, TIR}
 import config.PhaseConfig
-import models.DeclarationType._
+import models.DeclarationTypeItemLevel._
 import models.DocumentType.{Previous, Transport}
 import models.Phase.{PostTransition, Transition}
 import models.SecurityDetailsType.NoSecurityDetails
@@ -44,7 +44,7 @@ import scala.language.implicitConversions
 case class ItemDomain(
   itemDescription: String,
   transportEquipment: Option[UUID],
-  declarationType: Option[DeclarationType],
+  declarationType: Option[DeclarationTypeItemLevel],
   countryOfDispatch: Option[Country],
   countryOfDestination: Option[Country],
   ucr: Option[String],
@@ -107,14 +107,14 @@ object ItemDomain {
         none[UUID].pure[UserAnswersReader]
     }
 
-  def declarationTypeReader(itemIndex: Index): UserAnswersReader[Option[DeclarationType]] =
-    TransitOperationDeclarationTypePage.filterOptionalDependent(_ == T) {
+  def declarationTypeReader(itemIndex: Index): UserAnswersReader[Option[DeclarationTypeItemLevel]] =
+    TransitOperationDeclarationTypePage.filterOptionalDependent(_ == models.DeclarationType.T) {
       DeclarationTypePage(itemIndex).reader
     }
 
   def countryOfDispatchReader(itemIndex: Index): UserAnswersReader[Option[Country]] =
     TransitOperationDeclarationTypePage
-      .filterOptionalDependent(_ == TIR) {
+      .filterOptionalDependent(_ == models.DeclarationType.TIR) {
         ConsignmentCountryOfDispatchPage.filterDependent(_.isEmpty) {
           CountryOfDispatchPage(itemIndex).reader
         }
@@ -220,13 +220,15 @@ object ItemDomain {
       transitOperationDeclarationType <- TransitOperationDeclarationTypePage.reader
       isGBOfficeOfDeparture           <- CustomsOfficeOfDeparturePage.reader.map(_.startsWith(GB))
       itemDeclarationType             <- DeclarationTypePage(itemIndex).optionalReader
-      isT2OrT2FItemDeclarationType = itemDeclarationType.exists(_.isOneOf(T2, T2F))
+      isT2OrT2FItemDeclarationType = itemDeclarationType.exists(
+        x => DeclarationTypeItemLevel.isOneOf(x, Seq(T2, T2F))
+      )
       documents <- DocumentsSection.arrayReader.map(_.validateAsListOf[Document])
       consignmentLevelPreviousDocumentPresent = documents.exists(
         x => x.attachToAllItems && x.`type` == Previous
       )
       reader <- (transitOperationDeclarationType, isGBOfficeOfDeparture, isT2OrT2FItemDeclarationType, consignmentLevelPreviousDocumentPresent) match {
-        case (T, true, true, true) =>
+        case (models.DeclarationType.T, true, true, true) =>
           AddDocumentsYesNoPage(itemIndex).filterOptionalDependent(identity)(DocumentsDomain.userAnswersReader(itemIndex))
         case _ =>
           DocumentsDomain.userAnswersReader(itemIndex).map(Some(_))
