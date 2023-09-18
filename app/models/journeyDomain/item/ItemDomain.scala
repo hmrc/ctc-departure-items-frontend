@@ -237,27 +237,27 @@ object ItemDomain {
         case false => DocumentsDomain.userAnswersReader(itemIndex).map(Some(_))
       }
 
-  private def addDocumentCheck(itemIndex: Index): UserAnswersReader[Option[DocumentsDomain]] =
-    ConsignmentAddDocumentsPage.reader.flatMap {
-      case true  => AddDocumentsYesNoPage(itemIndex).filterOptionalDependent(identity)(DocumentsDomain.userAnswersReader(itemIndex))
-      case false => none[DocumentsDomain].pure[UserAnswersReader]
-    }
+  def documentsReader(itemIndex: Index): UserAnswersReader[Option[DocumentsDomain]] = {
 
-  private val externalPages: Kleisli[EitherType, UserAnswers, (DeclarationType, Boolean)] = for {
-    consignmentDecType    <- TransitOperationDeclarationTypePage.reader
-    isGBOfficeOfDeparture <- CustomsOfficeOfDeparturePage.reader.map(_.startsWith(GB))
-  } yield (consignmentDecType, isGBOfficeOfDeparture)
+    val externalPages: UserAnswersReader[(DeclarationType, Boolean)] = for {
+      consignmentDecType    <- TransitOperationDeclarationTypePage.reader
+      isGBOfficeOfDeparture <- CustomsOfficeOfDeparturePage.reader.map(_.startsWith(GB))
+    } yield (consignmentDecType, isGBOfficeOfDeparture)
 
-  def documentsReader(itemIndex: Index): UserAnswersReader[Option[DocumentsDomain]] =
-    externalPages.flatMap {
-      case (T2 | T2F, true) => isConsignmentPreviousDocDefined(itemIndex)
-      case (T, true) =>
-        DeclarationTypePage(itemIndex).reader.flatMap {
-          case T2 | T2F => isConsignmentPreviousDocDefined(itemIndex)
-          case _        => addDocumentCheck(itemIndex)
+    ConsignmentAddDocumentsPage.optionalReader.flatMap {
+      case Some(true) | None =>
+        externalPages.flatMap {
+          case (T2 | T2F, true) => isConsignmentPreviousDocDefined(itemIndex)
+          case (_, true) =>
+            DeclarationTypePage(itemIndex).optionalReader.flatMap {
+              case Some(T2) | Some(T2F) => isConsignmentPreviousDocDefined(itemIndex)
+              case _                    => AddDocumentsYesNoPage(itemIndex).filterOptionalDependent(identity)(DocumentsDomain.userAnswersReader(itemIndex))
+            }
+          case _ => AddDocumentsYesNoPage(itemIndex).filterOptionalDependent(identity)(DocumentsDomain.userAnswersReader(itemIndex))
         }
-      case _ => addDocumentCheck(itemIndex)
+      case _ => none[DocumentsDomain].pure[UserAnswersReader]
     }
+  }
 
   def additionalReferencesReader(itemIndex: Index): UserAnswersReader[Option[AdditionalReferencesDomain]] =
     AddAdditionalReferenceYesNoPage(itemIndex)
