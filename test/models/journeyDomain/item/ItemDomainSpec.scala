@@ -1403,21 +1403,6 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
       val genForOther      = Gen.oneOf(TIR, T1)
 
       "can be read from user answers" - {
-//
-//        externalPages.flatMap {
-//          case (T2 | T2F, true) => isConsignmentPreviousDocDefined(itemIndex)
-//          case (T, true) =>
-//            DeclarationTypePage(itemIndex).reader.flatMap {
-//              case T2 | T2F => isConsignmentPreviousDocDefined(itemIndex)
-//              case _ => addDocumentCheck(itemIndex)
-//            }
-//          case _ => addDocumentCheck(itemIndex)
-
-//        private def addDocumentCheck(itemIndex: Index): UserAnswersReader[Option[DocumentsDomain]] =
-//          ConsignmentAddDocumentsPage.reader.flatMap {
-//            case true => AddDocumentsYesNoPage(itemIndex).filterOptionalDependent(identity)(DocumentsDomain.userAnswersReader(itemIndex))
-//            case false => none[DocumentsDomain].pure[UserAnswersReader]
-//          }
 
         "when declaration type is T2 or T2F and GB office of departure" - {
 
@@ -1982,12 +1967,6 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
             }
           }
         }
-      }
-
-      "cannot be read from user answers" - {
-
-        ""
-
       }
     }
 
