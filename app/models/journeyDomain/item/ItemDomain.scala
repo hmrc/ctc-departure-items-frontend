@@ -16,6 +16,7 @@
 
 package models.journeyDomain.item
 
+import cats.data.Kleisli
 import cats.implicits._
 import config.Constants.GB
 import config.PhaseConfig
@@ -30,7 +31,15 @@ import models.journeyDomain.item.dangerousGoods.DangerousGoodsListDomain
 import models.journeyDomain.item.documents.DocumentsDomain
 import models.journeyDomain.item.packages.PackagesDomain
 import models.journeyDomain.item.supplyChainActors.SupplyChainActorsDomain
-import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, JsArrayGettableAsReaderOps, Stage, UserAnswersReader}
+import models.journeyDomain.{
+  EitherType,
+  GettableAsFilterForNextReaderOps,
+  GettableAsReaderOps,
+  JourneyDomainModel,
+  JsArrayGettableAsReaderOps,
+  Stage,
+  UserAnswersReader
+}
 import models.reference.{Country, TransportChargesMethodOfPayment}
 import pages.external._
 import pages.item._
@@ -39,7 +48,7 @@ import play.api.i18n.Messages
 import play.api.mvc.Call
 
 import java.util.UUID
-import scala.language.implicitConversions
+import scala.language.{existentials, implicitConversions}
 
 case class ItemDomain(
   itemDescription: String,
@@ -215,23 +224,40 @@ object ItemDomain {
     AddSupplyChainActorYesNoPage(itemIndex)
       .filterOptionalDependent(identity)(SupplyChainActorsDomain.userAnswersReader(itemIndex))
 
-  def documentsReader(itemIndex: Index): UserAnswersReader[Option[DocumentsDomain]] =
-    for {
-      transitOperationDeclarationType <- TransitOperationDeclarationTypePage.reader
-      isGBOfficeOfDeparture           <- CustomsOfficeOfDeparturePage.reader.map(_.startsWith(GB))
-      itemDeclarationType             <- DeclarationTypePage(itemIndex).optionalReader
-      isT2OrT2FItemDeclarationType = itemDeclarationType.exists(_.isOneOf(T2, T2F))
-      documents <- DocumentsSection.arrayReader.map(_.validateAsListOf[Document])
-      consignmentLevelPreviousDocumentPresent = documents.exists(
-        x => x.attachToAllItems && x.`type` == Previous
-      )
-      reader <- (transitOperationDeclarationType, isGBOfficeOfDeparture, isT2OrT2FItemDeclarationType, consignmentLevelPreviousDocumentPresent) match {
-        case (T, true, true, true) =>
-          AddDocumentsYesNoPage(itemIndex).filterOptionalDependent(identity)(DocumentsDomain.userAnswersReader(itemIndex))
-        case _ =>
-          DocumentsDomain.userAnswersReader(itemIndex).map(Some(_))
+  private def isConsignmentPreviousDocDefined(itemIndex: Index): UserAnswersReader[Option[DocumentsDomain]] =
+    DocumentsSection.arrayReader
+      .map {
+        _.validateAsListOf[Document]
+          .exists(
+            x => x.attachToAllItems && x.`type` == Previous
+          )
       }
-    } yield reader
+      .flatMap {
+        case true  => AddDocumentsYesNoPage(itemIndex).filterOptionalDependent(identity)(DocumentsDomain.userAnswersReader(itemIndex))
+        case false => DocumentsDomain.userAnswersReader(itemIndex).map(Some(_))
+      }
+
+  def documentsReader(itemIndex: Index): UserAnswersReader[Option[DocumentsDomain]] = {
+
+    val externalPages: UserAnswersReader[(DeclarationType, Boolean)] = for {
+      consignmentDecType    <- TransitOperationDeclarationTypePage.reader
+      isGBOfficeOfDeparture <- CustomsOfficeOfDeparturePage.reader.map(_.startsWith(GB))
+    } yield (consignmentDecType, isGBOfficeOfDeparture)
+
+    ConsignmentAddDocumentsPage.optionalReader.flatMap {
+      case Some(true) | None =>
+        externalPages.flatMap {
+          case (T2 | T2F, true) => isConsignmentPreviousDocDefined(itemIndex)
+          case (_, true) =>
+            DeclarationTypePage(itemIndex).optionalReader.flatMap {
+              case Some(T2) | Some(T2F) => isConsignmentPreviousDocDefined(itemIndex)
+              case _                    => AddDocumentsYesNoPage(itemIndex).filterOptionalDependent(identity)(DocumentsDomain.userAnswersReader(itemIndex))
+            }
+          case _ => AddDocumentsYesNoPage(itemIndex).filterOptionalDependent(identity)(DocumentsDomain.userAnswersReader(itemIndex))
+        }
+      case _ => none[DocumentsDomain].pure[UserAnswersReader]
+    }
+  }
 
   def additionalReferencesReader(itemIndex: Index): UserAnswersReader[Option[AdditionalReferencesDomain]] =
     AddAdditionalReferenceYesNoPage(itemIndex)
