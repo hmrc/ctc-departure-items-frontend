@@ -49,7 +49,7 @@ class DeclarationTypeController @Inject() (
     with I18nSupport {
 
   private def form(declarationTypes: Seq[DeclarationTypeItemLevel]): Form[DeclarationTypeItemLevel] =
-    formProvider[DeclarationTypeItemLevel]("item.declarationTypeItemLevel", declarationTypes)
+    formProvider[DeclarationTypeItemLevel]("item.declarationType", declarationTypes)
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
