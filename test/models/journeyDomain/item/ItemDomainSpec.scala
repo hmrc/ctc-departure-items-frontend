@@ -379,7 +379,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
             "and consignment transport is defined" - {
               "and add ucr is answered yes" in {
                 forAll(nonEmptyString, nonEmptyString, arbitrary[UUID]) {
-                  (ucr, transportDoc, documentUUID) =>
+                  (ucr, _, documentUUID) =>
                     val documents = Json
                       .parse(s"""
                            |[
@@ -1399,40 +1399,112 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
       )
       val nonGgbCustomsOfficeGen = nonEmptyString.retryUntil(!_.startsWith(GB))
 
-      val genForT2OrT2F: Gen[DeclarationTypeItemLevel]    = Gen.oneOf(declarationTypeT2, declarationTypeT2F)
+      val genForT2OrT2F: Gen[DeclarationTypeItemLevel] = Gen.oneOf(declarationTypeT2, declarationTypeT2F)
+      val genForT2OrT2FOld: Gen[DeclarationType]       = Gen.oneOf(DeclarationType.T2, DeclarationType.T2F)
+
       val genForNonT2OrT2F: Gen[DeclarationTypeItemLevel] = Gen.oneOf(declarationTypeT1, declarationTypeTIR, declarationTypeT)
       val genForNonT: Gen[DeclarationType]                = Gen.oneOf(DeclarationType.T2, DeclarationType.T2F, DeclarationType.TIR, DeclarationType.T1)
+      val genForOther                                     = Gen.oneOf(declarationTypeTIR, declarationTypeT1)
+      val genForOtherOld                                  = Gen.oneOf(DeclarationType.TIR, DeclarationType.T1)
 
       "can be read from user answers" - {
-        "when T declaration type, T2/T2F item declaration type, GB office of departure and consignment-level previous document is present" - {
-          "and adding documents" in {
-            forAll(gbCustomsOfficeGen, genForT2OrT2F, arbitrary[UUID]) {
-              (customsOfficeId, declarationType, documentUUID) =>
-                val documents = Json
-                  .parse(s"""
-                       |[
-                       |    {
-                       |      "attachToAllItems" : true,
-                       |      "type" : {
-                       |        "type" : "Previous",
-                       |        "code" : "Code 1",
-                       |        "description" : "Description 1"
-                       |      },
-                       |      "details" : {
-                       |        "documentReferenceNumber" : "Ref no. 1",
-                       |        "uuid" : "$documentUUID"
-                       |      }
-                       |    }
-                       |]
-                       |""".stripMargin)
-                  .as[JsArray]
 
+        "when declaration type is T2 or T2F and GB office of departure" - {
+
+          "and Consignment level previous document is defined for all items" - {
+
+            "and AddDocumentsYesNoPage is true" in {
+
+              forAll(gbCustomsOfficeGen, genForT2OrT2FOld, arbitrary[UUID]) {
+                (customsOfficeId, declarationType, documentUUID) =>
+                  val documents = Json
+                    .parse(s"""
+                         |[
+                         |    {
+                         |      "attachToAllItems" : true,
+                         |      "type" : {
+                         |        "type" : "Previous",
+                         |        "code" : "Code 1",
+                         |        "description" : "Description 1"
+                         |      },
+                         |      "details" : {
+                         |        "documentReferenceNumber" : "Ref no. 1",
+                         |        "uuid" : "$documentUUID"
+                         |      }
+                         |    }
+                         |]
+                         |""".stripMargin)
+                    .as[JsArray]
+
+                  val userAnswers = emptyUserAnswers
+                    .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
+                    .setValue(TransitOperationDeclarationTypePage, declarationType)
+                    .setValue(AddDocumentsYesNoPage(itemIndex), true)
+                    .setValue(DocumentsSection, documents)
+                    .setValue(DocumentPage(itemIndex, Index(0)), documentUUID)
+
+                  val expectedResult = Some(
+                    DocumentsDomain(
+                      Seq(
+                        DocumentDomain(documentUUID)(itemIndex, Index(0))
+                      )
+                    )
+                  )
+
+                  val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
+                    ItemDomain.documentsReader(itemIndex)
+                  ).run(userAnswers)
+
+                  result.value mustBe expectedResult
+              }
+
+            }
+
+            "and AddDocumentsYesNoPage is false" in {
+
+              forAll(gbCustomsOfficeGen, genForT2OrT2FOld, arbitrary[UUID]) {
+                (customsOfficeId, declarationType, documentUUID) =>
+                  val documents = Json
+                    .parse(s"""
+                         |[
+                         |    {
+                         |      "attachToAllItems" : true,
+                         |      "type" : {
+                         |        "type" : "Previous",
+                         |        "code" : "Code 1",
+                         |        "description" : "Description 1"
+                         |      },
+                         |      "details" : {
+                         |        "documentReferenceNumber" : "Ref no. 1",
+                         |        "uuid" : "$documentUUID"
+                         |      }
+                         |    }
+                         |]
+                         |""".stripMargin)
+                    .as[JsArray]
+
+                  val userAnswers = emptyUserAnswers
+                    .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
+                    .setValue(TransitOperationDeclarationTypePage, declarationType)
+                    .setValue(AddDocumentsYesNoPage(itemIndex), false)
+                    .setValue(DocumentsSection, documents)
+
+                  val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
+                    ItemDomain.documentsReader(itemIndex)
+                  ).run(userAnswers)
+
+                  result.value mustBe None
+              }
+            }
+          }
+
+          "and Consignment level previous document is not defined" in {
+
+            forAll(gbCustomsOfficeGen, genForT2OrT2FOld, arbitrary[UUID]) {
+              (customsOfficeId, declarationType, documentUUID) =>
                 val userAnswers = emptyUserAnswers
                   .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
-                  .setValue(TransitOperationDeclarationTypePage, DeclarationType.T)
-                  .setValue(DeclarationTypePage(itemIndex), declarationType)
-                  .setValue(DocumentsSection, documents)
-                  .setValue(AddDocumentsYesNoPage(itemIndex), true)
+                  .setValue(TransitOperationDeclarationTypePage, declarationType)
                   .setValue(DocumentPage(itemIndex, Index(0)), documentUUID)
 
                 val expectedResult = Some(
@@ -1451,14 +1523,15 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
             }
           }
 
-          "and not adding documents" in {
-            forAll(gbCustomsOfficeGen, genForT2OrT2F, arbitrary[UUID]) {
+          "and Consignment level previous document is defined but not for all items" in {
+
+            forAll(gbCustomsOfficeGen, genForT2OrT2FOld, arbitrary[UUID]) {
               (customsOfficeId, declarationType, documentUUID) =>
                 val documents = Json
                   .parse(s"""
                        |[
                        |    {
-                       |      "attachToAllItems" : true,
+                       |      "attachToAllItems" : false,
                        |      "type" : {
                        |        "type" : "Previous",
                        |        "code" : "Code 1",
@@ -1475,12 +1548,17 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                 val userAnswers = emptyUserAnswers
                   .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
-                  .setValue(TransitOperationDeclarationTypePage, DeclarationType.T)
-                  .setValue(DeclarationTypePage(itemIndex), declarationType)
+                  .setValue(TransitOperationDeclarationTypePage, declarationType)
+                  .setValue(DocumentPage(itemIndex, Index(0)), documentUUID)
                   .setValue(DocumentsSection, documents)
-                  .setValue(AddDocumentsYesNoPage(itemIndex), false)
 
-                val expectedResult = None
+                val expectedResult = Some(
+                  DocumentsDomain(
+                    Seq(
+                      DocumentDomain(documentUUID)(itemIndex, Index(0))
+                    )
+                  )
+                )
 
                 val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
                   ItemDomain.documentsReader(itemIndex)
@@ -1491,88 +1569,407 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
           }
         }
 
-        "when not any of T declaration type, T2/T2F item declaration type, GB office of departure and consignment-level previous document not present" in {
+        "when mixed declaration type (T) and GB office of departure" - {
 
-          forAll(nonGgbCustomsOfficeGen, genForNonT, genForNonT2OrT2F, arbitrary[UUID]) {
-            (customsOfficeId, declarationType, itemDeclarationType, documentUUID) =>
-              val documents = Json
-                .parse(s"""
-                       |[
-                       |    {
-                       |      "attachToAllItems" : false,
-                       |      "previousDocumentType" : {
-                       |        "type" : "Type 1",
-                       |        "code" : "Code 1",
-                       |        "description" : "Description 1"
-                       |      },
-                       |      "details" : {
-                       |        "documentReferenceNumber" : "Ref no. 1",
-                       |        "uuid" : "$documentUUID"
-                       |      }
-                       |    }
-                       |]
-                       |""".stripMargin)
-                .as[JsArray]
+          "and item level declaration type is T2 or T2F" - {
 
-              val userAnswers = emptyUserAnswers
-                .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
-                .setValue(TransitOperationDeclarationTypePage, declarationType)
-                .setValue(DeclarationTypePage(itemIndex), itemDeclarationType)
-                .setValue(DocumentsSection, documents)
-                .setValue(DocumentPage(itemIndex, Index(0)), documentUUID)
+            "and Consignment level previous document is defined for all items" - {
 
-              val expectedResult = Some(
-                DocumentsDomain(
-                  Seq(
-                    DocumentDomain(documentUUID)(itemIndex, Index(0))
+              "and AddDocumentsYesNoPage is true" in {
+
+                forAll(gbCustomsOfficeGen, genForT2OrT2F, arbitrary[UUID]) {
+                  (customsOfficeId, declarationType, documentUUID) =>
+                    val documents = Json
+                      .parse(s"""
+                           |[
+                           |    {
+                           |      "attachToAllItems" : true,
+                           |      "type" : {
+                           |        "type" : "Previous",
+                           |        "code" : "Code 1",
+                           |        "description" : "Description 1"
+                           |      },
+                           |      "details" : {
+                           |        "documentReferenceNumber" : "Ref no. 1",
+                           |        "uuid" : "$documentUUID"
+                           |      }
+                           |    }
+                           |]
+                           |""".stripMargin)
+                      .as[JsArray]
+
+                    val userAnswers = emptyUserAnswers
+                      .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
+                      .setValue(TransitOperationDeclarationTypePage, DeclarationType.T)
+                      .setValue(DeclarationTypePage(index), declarationType)
+                      .setValue(AddDocumentsYesNoPage(itemIndex), true)
+                      .setValue(DocumentsSection, documents)
+                      .setValue(DocumentPage(itemIndex, Index(0)), documentUUID)
+
+                    val expectedResult = Some(
+                      DocumentsDomain(
+                        Seq(
+                          DocumentDomain(documentUUID)(itemIndex, Index(0))
+                        )
+                      )
+                    )
+
+                    val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
+                      ItemDomain.documentsReader(itemIndex)
+                    ).run(userAnswers)
+
+                    result.value mustBe expectedResult
+                }
+
+              }
+
+              "and AddDocumentsYesNoPage is false" in {
+
+                forAll(gbCustomsOfficeGen, genForT2OrT2F, arbitrary[UUID]) {
+                  (customsOfficeId, declarationType, documentUUID) =>
+                    val documents = Json
+                      .parse(s"""
+                           |[
+                           |    {
+                           |      "attachToAllItems" : true,
+                           |      "type" : {
+                           |        "type" : "Previous",
+                           |        "code" : "Code 1",
+                           |        "description" : "Description 1"
+                           |      },
+                           |      "details" : {
+                           |        "documentReferenceNumber" : "Ref no. 1",
+                           |        "uuid" : "$documentUUID"
+                           |      }
+                           |    }
+                           |]
+                           |""".stripMargin)
+                      .as[JsArray]
+
+                    val userAnswers = emptyUserAnswers
+                      .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
+                      .setValue(TransitOperationDeclarationTypePage, DeclarationType.T)
+                      .setValue(DeclarationTypePage(index), declarationType)
+                      .setValue(AddDocumentsYesNoPage(itemIndex), false)
+                      .setValue(DocumentsSection, documents)
+
+                    val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
+                      ItemDomain.documentsReader(itemIndex)
+                    ).run(userAnswers)
+
+                    result.value mustBe None
+                }
+              }
+            }
+
+            "and Consignment level previous document is not defined" in {
+
+              forAll(gbCustomsOfficeGen, genForT2OrT2F, arbitrary[UUID]) {
+                (customsOfficeId, declarationType, documentUUID) =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
+                    .setValue(TransitOperationDeclarationTypePage, DeclarationType.T)
+                    .setValue(DeclarationTypePage(index), declarationType)
+                    .setValue(DocumentPage(itemIndex, Index(0)), documentUUID)
+
+                  val expectedResult = Some(
+                    DocumentsDomain(
+                      Seq(
+                        DocumentDomain(documentUUID)(itemIndex, Index(0))
+                      )
+                    )
                   )
-                )
-              )
 
-              val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
-                ItemDomain.documentsReader(itemIndex)
-              ).run(userAnswers)
+                  val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
+                    ItemDomain.documentsReader(itemIndex)
+                  ).run(userAnswers)
 
-              result.value mustBe expectedResult
+                  result.value mustBe expectedResult
+              }
+            }
+
+            "and Consignment level previous document is defined but not for all items" in {
+
+              forAll(gbCustomsOfficeGen, genForT2OrT2F, arbitrary[UUID]) {
+                (customsOfficeId, declarationType, documentUUID) =>
+                  val documents = Json
+                    .parse(s"""
+                         |[
+                         |    {
+                         |      "attachToAllItems" : false,
+                         |      "type" : {
+                         |        "type" : "Previous",
+                         |        "code" : "Code 1",
+                         |        "description" : "Description 1"
+                         |      },
+                         |      "details" : {
+                         |        "documentReferenceNumber" : "Ref no. 1",
+                         |        "uuid" : "$documentUUID"
+                         |      }
+                         |    }
+                         |]
+                         |""".stripMargin)
+                    .as[JsArray]
+
+                  val userAnswers = emptyUserAnswers
+                    .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
+                    .setValue(TransitOperationDeclarationTypePage, DeclarationType.T)
+                    .setValue(DeclarationTypePage(index), declarationType)
+                    .setValue(DocumentPage(itemIndex, Index(0)), documentUUID)
+                    .setValue(DocumentsSection, documents)
+
+                  val expectedResult = Some(
+                    DocumentsDomain(
+                      Seq(
+                        DocumentDomain(documentUUID)(itemIndex, Index(0))
+                      )
+                    )
+                  )
+
+                  val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
+                    ItemDomain.documentsReader(itemIndex)
+                  ).run(userAnswers)
+
+                  result.value mustBe expectedResult
+              }
+            }
+
           }
 
+          "and item level declaration type is not T2 or T2F" - {
+
+            "and ConsignmentAddDocumentsPage is true" - {
+
+              "and AddDocumentsYesNoPage is true" in {
+
+                forAll(gbCustomsOfficeGen, genForNonT2OrT2F, arbitrary[UUID]) {
+                  (customsOfficeId, declarationType, documentUUID) =>
+                    val documents = Json
+                      .parse(s"""
+                           |[
+                           |    {
+                           |      "attachToAllItems" : true,
+                           |      "type" : {
+                           |        "type" : "Previous",
+                           |        "code" : "Code 1",
+                           |        "description" : "Description 1"
+                           |      },
+                           |      "details" : {
+                           |        "documentReferenceNumber" : "Ref no. 1",
+                           |        "uuid" : "$documentUUID"
+                           |      }
+                           |    }
+                           |]
+                           |""".stripMargin)
+                      .as[JsArray]
+
+                    val userAnswers = emptyUserAnswers
+                      .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
+                      .setValue(TransitOperationDeclarationTypePage, DeclarationType.T)
+                      .setValue(DeclarationTypePage(index), declarationType)
+                      .setValue(ConsignmentAddDocumentsPage, true)
+                      .setValue(AddDocumentsYesNoPage(itemIndex), true)
+                      .setValue(DocumentsSection, documents)
+                      .setValue(DocumentPage(itemIndex, Index(0)), documentUUID)
+
+                    val expectedResult = Some(
+                      DocumentsDomain(
+                        Seq(
+                          DocumentDomain(documentUUID)(itemIndex, Index(0))
+                        )
+                      )
+                    )
+
+                    val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
+                      ItemDomain.documentsReader(itemIndex)
+                    ).run(userAnswers)
+
+                    result.value mustBe expectedResult
+                }
+              }
+
+              "and AddDocumentsYesNoPage is false" in {
+
+                forAll(gbCustomsOfficeGen, genForNonT2OrT2F) {
+                  (customsOfficeId, declarationType) =>
+                    val userAnswers = emptyUserAnswers
+                      .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
+                      .setValue(TransitOperationDeclarationTypePage, DeclarationType.T)
+                      .setValue(DeclarationTypePage(index), declarationType)
+                      .setValue(ConsignmentAddDocumentsPage, true)
+                      .setValue(AddDocumentsYesNoPage(itemIndex), false)
+
+                    val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
+                      ItemDomain.documentsReader(itemIndex)
+                    ).run(userAnswers)
+
+                    result.value mustBe None
+                }
+              }
+            }
+
+            "and ConsignmentAddDocumentsPage is false" in {
+
+              forAll(gbCustomsOfficeGen, genForNonT2OrT2F) {
+                (customsOfficeId, declarationType) =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
+                    .setValue(TransitOperationDeclarationTypePage, DeclarationType.T)
+                    .setValue(DeclarationTypePage(index), declarationType)
+                    .setValue(ConsignmentAddDocumentsPage, false)
+
+                  val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
+                    ItemDomain.documentsReader(itemIndex)
+                  ).run(userAnswers)
+
+                  result.value mustBe None
+              }
+            }
+          }
         }
-      }
 
-      "can not be read from user answers" - {
-        "when add documents yes/no is unanswered" in {
-          forAll(gbCustomsOfficeGen, genForT2OrT2F, arbitrary[UUID]) {
-            (customsOfficeId, declarationType, documentUUID) =>
-              val documents = Json
-                .parse(s"""
-                     |[
-                     |    {
-                     |      "attachToAllItems" : true,
-                     |      "previousDocumentType" : {
-                     |        "type" : "Previous",
-                     |        "code" : "Code 1",
-                     |        "description" : "Description 1"
-                     |      },
-                     |      "details" : {
-                     |        "documentReferenceNumber" : "Ref no. 1",
-                     |        "uuid" : "$documentUUID"
-                     |      }
-                     |    }
-                     |]
-                     |""".stripMargin)
-                .as[JsArray]
+        "when any other declaration type" - {
 
-              val userAnswers = emptyUserAnswers
-                .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
-                .setValue(TransitOperationDeclarationTypePage, DeclarationType.T)
-                .setValue(DeclarationTypePage(itemIndex), declarationType)
-                .setValue(DocumentsSection, documents)
+          "and ConsignmentAddDocumentsPage is true" - {
 
-              val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
-                ItemDomain.documentsReader(itemIndex)
-              ).run(userAnswers)
+            "and AddDocumentsYesNoPage is true" in {
 
-              result.left.value.page mustBe AddDocumentsYesNoPage(itemIndex)
+              forAll(gbCustomsOfficeGen, genForOther, genForOtherOld, arbitrary[UUID]) {
+                (customsOfficeId, declarationTypeItemLevel, declarationType, documentUUID) =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
+                    .setValue(TransitOperationDeclarationTypePage, declarationType)
+                    .setValue(DeclarationTypePage(index), declarationTypeItemLevel)
+                    .setValue(ConsignmentAddDocumentsPage, true)
+                    .setValue(AddDocumentsYesNoPage(itemIndex), true)
+                    .setValue(DocumentPage(itemIndex, Index(0)), documentUUID)
+
+                  val expectedResult = Some(
+                    DocumentsDomain(
+                      Seq(
+                        DocumentDomain(documentUUID)(itemIndex, Index(0))
+                      )
+                    )
+                  )
+
+                  val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
+                    ItemDomain.documentsReader(itemIndex)
+                  ).run(userAnswers)
+
+                  result.value mustBe expectedResult
+              }
+            }
+
+            "and AddDocumentsYesNoPage is false" in {
+
+              forAll(gbCustomsOfficeGen, genForOther, genForOtherOld) {
+                (customsOfficeId, declarationTypeItemLevel, declarationType) =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
+                    .setValue(TransitOperationDeclarationTypePage, declarationType)
+                    .setValue(DeclarationTypePage(index), declarationTypeItemLevel)
+                    .setValue(ConsignmentAddDocumentsPage, true)
+                    .setValue(AddDocumentsYesNoPage(itemIndex), false)
+
+                  val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
+                    ItemDomain.documentsReader(itemIndex)
+                  ).run(userAnswers)
+
+                  result.value mustBe None
+              }
+
+            }
+
+          }
+
+          "and ConsignmentAddDocumentsPage is false" in {
+
+            forAll(gbCustomsOfficeGen, genForOther, genForOtherOld) {
+              (customsOfficeId, declarationTypeItemLevel, declarationType) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
+                  .setValue(TransitOperationDeclarationTypePage, declarationType)
+                  .setValue(DeclarationTypePage(index), declarationTypeItemLevel)
+                  .setValue(ConsignmentAddDocumentsPage, false)
+
+                val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
+                  ItemDomain.documentsReader(itemIndex)
+                ).run(userAnswers)
+
+                result.value mustBe None
+            }
+          }
+        }
+
+        "when non GB customs office" - {
+
+          "and ConsignmentAddDocumentsPage is true" - {
+
+            "and AddDocumentsYesNoPage is true" in {
+
+              forAll(nonGgbCustomsOfficeGen, genForT2OrT2F, genForT2OrT2FOld, arbitrary[UUID]) {
+                (customsOfficeId, declarationTypeItemLevel, declarationType, documentUUID) =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
+                    .setValue(TransitOperationDeclarationTypePage, declarationType)
+                    .setValue(DeclarationTypePage(index), declarationTypeItemLevel)
+                    .setValue(ConsignmentAddDocumentsPage, true)
+                    .setValue(AddDocumentsYesNoPage(itemIndex), true)
+                    .setValue(DocumentPage(itemIndex, Index(0)), documentUUID)
+
+                  val expectedResult = Some(
+                    DocumentsDomain(
+                      Seq(
+                        DocumentDomain(documentUUID)(itemIndex, Index(0))
+                      )
+                    )
+                  )
+
+                  val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
+                    ItemDomain.documentsReader(itemIndex)
+                  ).run(userAnswers)
+
+                  result.value mustBe expectedResult
+              }
+            }
+
+            "and AddDocumentsYesNoPage is false" in {
+
+              forAll(nonGgbCustomsOfficeGen, genForT2OrT2FOld, genForT2OrT2F) {
+                (customsOfficeId, declarationType, declarationTypeItemLevel) =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
+                    .setValue(TransitOperationDeclarationTypePage, declarationType)
+                    .setValue(DeclarationTypePage(index), declarationTypeItemLevel)
+                    .setValue(ConsignmentAddDocumentsPage, true)
+                    .setValue(AddDocumentsYesNoPage(itemIndex), false)
+
+                  val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
+                    ItemDomain.documentsReader(itemIndex)
+                  ).run(userAnswers)
+
+                  result.value mustBe None
+              }
+
+            }
+
+            "and ConsignmentAddDocumentsPage is false" in {
+
+              forAll(nonGgbCustomsOfficeGen, genForT2OrT2FOld, genForT2OrT2F) {
+                (customsOfficeId, declarationType, declarationTypeItemLevel) =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
+                    .setValue(TransitOperationDeclarationTypePage, declarationType)
+                    .setValue(DeclarationTypePage(index), declarationTypeItemLevel)
+                    .setValue(ConsignmentAddDocumentsPage, false)
+
+                  val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
+                    ItemDomain.documentsReader(itemIndex)
+                  ).run(userAnswers)
+
+                  result.value mustBe None
+              }
+            }
           }
         }
       }
