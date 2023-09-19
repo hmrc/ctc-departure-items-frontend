@@ -27,7 +27,7 @@ case class DeclarationTypePage(itemIndex: Index) extends QuestionPage[Declaratio
 
   override def path: JsPath = ItemSection(itemIndex).path \ toString
 
-  override def toString: String = "declarationTypeItemLevel"
+  override def toString: String = "declarationType"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.DeclarationTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex))
