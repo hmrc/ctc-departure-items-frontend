@@ -16,10 +16,12 @@
 
 package pages.external
 
-import pages.{preTaskListPath, ReadOnlyPage}
+import pages.{documentsPath, ReadOnlyPage}
 import play.api.libs.json.JsPath
 
-case object TransitOperationDeclarationTypePage extends ReadOnlyPage[String] {
+object ConsignmentAddDocumentsPage extends ReadOnlyPage[Boolean] {
 
-  override def path: JsPath = preTaskListPath \ "declarationType" \ "code"
+  override def path: JsPath = documentsPath \ toString
+
+  override def toString: String = "addDocumentsYesNo"
 }

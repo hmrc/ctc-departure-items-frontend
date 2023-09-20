@@ -18,11 +18,17 @@ package config
 
 object Constants {
   val GB = "GB"
-  val XI = "XI"
-  val AD = "AD"
+
+  val T   = "T"
+  val T1  = "T1"
+  val TIR = "TIR"
+  val T2  = "T2"
+  val T2F = "T2F"
 
   val C651 = "C651"
   val C658 = "C658"
 
   val additionalInformationType30600 = "30600"
+
+  val NoSecurityDetails = "0"
 }

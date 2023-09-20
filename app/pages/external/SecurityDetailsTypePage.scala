@@ -16,13 +16,10 @@
 
 package pages.external
 
-import models.SecurityDetailsType
 import pages.{preTaskListPath, ReadOnlyPage}
 import play.api.libs.json.JsPath
 
-case object SecurityDetailsTypePage extends ReadOnlyPage[SecurityDetailsType] {
+case object SecurityDetailsTypePage extends ReadOnlyPage[String] {
 
-  override def path: JsPath = preTaskListPath \ toString
-
-  override def toString: String = "securityDetailsType"
+  override def path: JsPath = preTaskListPath \ "securityDetailsType" \ "code"
 }
