@@ -176,7 +176,7 @@ object ItemDomain {
     AddDangerousGoodsYesNoPage(itemIndex)
       .filterOptionalDependent(identity)(DangerousGoodsListDomain.userAnswersReader(itemIndex))
 
-  def netWeightReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[Option[BigDecimal]] =
+  def netWeightReader(itemIndex: Index): UserAnswersReader[Option[BigDecimal]] =
     ApprovedOperatorPage.optionalReader.flatMap {
       case Some(true) =>
         none[BigDecimal].pure[UserAnswersReader]
@@ -213,23 +213,40 @@ object ItemDomain {
     AddSupplyChainActorYesNoPage(itemIndex)
       .filterOptionalDependent(identity)(SupplyChainActorsDomain.userAnswersReader(itemIndex))
 
-  def documentsReader(itemIndex: Index): UserAnswersReader[Option[DocumentsDomain]] =
-    for {
-      transitOperationDeclarationType <- TransitOperationDeclarationTypePage.reader
-      isGBOfficeOfDeparture           <- CustomsOfficeOfDeparturePage.reader.map(_.startsWith(GB))
-      itemDeclarationType             <- DeclarationTypePage(itemIndex).optionalReader
-      isT2OrT2FItemDeclarationType = itemDeclarationType.exists(_.isOneOf(DeclarationType.T2, DeclarationType.T2F))
-      documents <- DocumentsSection.arrayReader.map(_.validateAsListOf[Document])
-      consignmentLevelPreviousDocumentPresent = documents.exists(
-        x => x.attachToAllItems && x.`type` == Previous
-      )
-      reader <- (transitOperationDeclarationType, isGBOfficeOfDeparture, isT2OrT2FItemDeclarationType, consignmentLevelPreviousDocumentPresent) match {
-        case (T, true, true, true) =>
-          AddDocumentsYesNoPage(itemIndex).filterOptionalDependent(identity)(DocumentsDomain.userAnswersReader(itemIndex))
-        case _ =>
-          DocumentsDomain.userAnswersReader(itemIndex).map(Some(_))
-      }
-    } yield reader
+  def documentsReader(itemIndex: Index): UserAnswersReader[Option[DocumentsDomain]] = {
+
+    val externalPages: UserAnswersReader[(String, Boolean)] = for {
+      consignmentDecType    <- TransitOperationDeclarationTypePage.reader
+      isGBOfficeOfDeparture <- CustomsOfficeOfDeparturePage.reader.map(_.startsWith(GB))
+    } yield (consignmentDecType, isGBOfficeOfDeparture)
+
+    def isConsignmentPreviousDocDefined(itemIndex: Index): UserAnswersReader[Option[DocumentsDomain]] =
+      DocumentsSection.arrayReader
+        .map {
+          _.validateAsListOf[Document]
+            .exists(
+              x => x.attachToAllItems && x.`type` == Previous
+            )
+        }
+        .flatMap {
+          case true  => AddDocumentsYesNoPage(itemIndex).filterOptionalDependent(identity)(DocumentsDomain.userAnswersReader(itemIndex))
+          case false => DocumentsDomain.userAnswersReader(itemIndex).map(Some(_))
+        }
+
+    ConsignmentAddDocumentsPage.optionalReader.flatMap {
+      case Some(true) | None =>
+        externalPages.flatMap {
+          case (T2 | T2F, true) => isConsignmentPreviousDocDefined(itemIndex)
+          case (_, true) =>
+            DeclarationTypePage(itemIndex).optionalReader.flatMap {
+              case Some(DeclarationType.T2) | Some(DeclarationType.T2F) => isConsignmentPreviousDocDefined(itemIndex)
+              case _                                                    => AddDocumentsYesNoPage(itemIndex).filterOptionalDependent(identity)(DocumentsDomain.userAnswersReader(itemIndex))
+            }
+          case _ => AddDocumentsYesNoPage(itemIndex).filterOptionalDependent(identity)(DocumentsDomain.userAnswersReader(itemIndex))
+        }
+      case _ => none[DocumentsDomain].pure[UserAnswersReader]
+    }
+  }
 
   def additionalReferencesReader(itemIndex: Index): UserAnswersReader[Option[AdditionalReferencesDomain]] =
     AddAdditionalReferenceYesNoPage(itemIndex)

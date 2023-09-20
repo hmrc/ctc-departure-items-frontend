@@ -14,21 +14,14 @@
  * limitations under the License.
  */
 
-package config
+package pages.external
 
-object Constants {
-  val GB = "GB"
+import pages.{documentsPath, ReadOnlyPage}
+import play.api.libs.json.JsPath
 
-  val T   = "T"
-  val T1  = "T1"
-  val TIR = "TIR"
-  val T2  = "T2"
-  val T2F = "T2F"
+object ConsignmentAddDocumentsPage extends ReadOnlyPage[Boolean] {
 
-  val C651 = "C651"
-  val C658 = "C658"
+  override def path: JsPath = documentsPath \ toString
 
-  val additionalInformationType30600 = "30600"
-
-  val NoSecurityDetails = "0"
+  override def toString: String = "addDocumentsYesNo"
 }
