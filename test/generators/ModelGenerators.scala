@@ -51,11 +51,6 @@ trait ModelGenerators {
       Gen.oneOf(DocumentType.values)
     }
 
-  implicit lazy val arbitraryDeclarationType: Arbitrary[DeclarationType] =
-    Arbitrary {
-      Gen.oneOf(DeclarationType.values)
-    }
-
   implicit lazy val arbitraryDeclarationTypeItemLevel: Arbitrary[DeclarationTypeItemLevel] =
     Arbitrary {
       Gen.oneOf(declarationTypeValues)

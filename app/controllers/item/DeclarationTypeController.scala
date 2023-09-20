@@ -20,7 +20,7 @@ import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
-import models.{DeclarationType, DeclarationTypeItemLevel, Index, LocalReferenceNumber, Mode}
+import models.{DeclarationTypeItemLevel, Index, LocalReferenceNumber, Mode}
 import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
 import pages.item.DeclarationTypePage
 import play.api.data.Form

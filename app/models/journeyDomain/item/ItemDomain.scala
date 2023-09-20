@@ -29,7 +29,7 @@ import models.journeyDomain.item.packages.PackagesDomain
 import models.journeyDomain.item.supplyChainActors.SupplyChainActorsDomain
 import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, JsArrayGettableAsReaderOps, Stage, UserAnswersReader}
 import models.reference.{Country, TransportChargesMethodOfPayment}
-import models.{DeclarationType, _}
+import models._
 import pages.external._
 import pages.item._
 import pages.sections.external.{ConsignmentConsigneeSection, DocumentsSection, TransportEquipmentsSection}

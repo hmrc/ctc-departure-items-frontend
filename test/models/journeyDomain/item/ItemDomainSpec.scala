@@ -29,7 +29,7 @@ import models.journeyDomain.item.documents.{DocumentDomain, DocumentsDomain}
 import models.journeyDomain.item.packages.{PackageDomain, PackagesDomain}
 import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.reference._
-import models.{DeclarationType, DeclarationTypeItemLevel, Index, Phase}
+import models.{DeclarationTypeItemLevel, Index, Phase}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen

@@ -17,7 +17,7 @@
 package pages.item
 
 import controllers.item.routes
-import models.{DeclarationType, DeclarationTypeItemLevel, Index, Mode, UserAnswers}
+import models.{DeclarationTypeItemLevel, Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.ItemSection
 import play.api.libs.json.JsPath
