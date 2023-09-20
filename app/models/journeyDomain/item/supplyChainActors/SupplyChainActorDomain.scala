@@ -27,7 +27,7 @@ import cats.implicits._
 
 case class SupplyChainActorDomain(role: SupplyChainActorType, identification: String)(itemIndex: Index, actorIndex: Index) extends JourneyDomainModel {
 
-  def asString(implicit messages: Messages): String = s"${role.toString} - $identification"
+  def asString(implicit messages: Messages): String = s"${role.asString} - $identification"
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] = Some {
     stage match {
