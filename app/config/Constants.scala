@@ -31,4 +31,6 @@ object Constants {
   val TIR = "TIR"
 
   val additionalInformationType30600 = "30600"
+
+  val NoSecurityDetails = "0"
 }

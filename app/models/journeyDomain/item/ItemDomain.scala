@@ -16,39 +16,29 @@
 
 package models.journeyDomain.item
 
-import cats.data.Kleisli
 import cats.implicits._
-import config.Constants.{GB, T, T2, T2F, TIR}
 import config.{Constants, PhaseConfig}
 import models.DeclarationTypeItemLevel._
 import models.DocumentType.{Previous, Transport}
 import models.Phase.{PostTransition, Transition}
-import models.SecurityDetailsType.NoSecurityDetails
-import models._
 import models.journeyDomain.item.additionalInformation.AdditionalInformationListDomain
 import models.journeyDomain.item.additionalReferences.AdditionalReferencesDomain
 import models.journeyDomain.item.dangerousGoods.DangerousGoodsListDomain
 import models.journeyDomain.item.documents.DocumentsDomain
 import models.journeyDomain.item.packages.PackagesDomain
 import models.journeyDomain.item.supplyChainActors.SupplyChainActorsDomain
-import models.journeyDomain.{
-  EitherType,
-  GettableAsFilterForNextReaderOps,
-  GettableAsReaderOps,
-  JourneyDomainModel,
-  JsArrayGettableAsReaderOps,
-  Stage,
-  UserAnswersReader
-}
+import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, JsArrayGettableAsReaderOps, Stage, UserAnswersReader}
 import models.reference.{Country, TransportChargesMethodOfPayment}
+import models.{DeclarationType, _}
 import pages.external._
 import pages.item._
 import pages.sections.external.{ConsignmentConsigneeSection, DocumentsSection, TransportEquipmentsSection}
 import play.api.i18n.Messages
 import play.api.mvc.Call
+import config.Constants
 
 import java.util.UUID
-import scala.language.{existentials, implicitConversions}
+import scala.language.implicitConversions
 
 case class ItemDomain(
   itemDescription: String,
@@ -117,13 +107,13 @@ object ItemDomain {
     }
 
   def declarationTypeReader(itemIndex: Index): UserAnswersReader[Option[DeclarationTypeItemLevel]] =
-    TransitOperationDeclarationTypePage.filterOptionalDependent(_ == models.DeclarationType.T) {
+    TransitOperationDeclarationTypePage.filterOptionalDependent(_ == config.Constants.T) {
       DeclarationTypePage(itemIndex).reader
     }
 
   def countryOfDispatchReader(itemIndex: Index): UserAnswersReader[Option[Country]] =
     TransitOperationDeclarationTypePage
-      .filterOptionalDependent(_ == models.DeclarationType.TIR) {
+      .filterOptionalDependent(_ == config.Constants.TIR) {
         ConsignmentCountryOfDispatchPage.filterDependent(_.isEmpty) {
           CountryOfDispatchPage(itemIndex).reader
         }
@@ -187,7 +177,7 @@ object ItemDomain {
     AddDangerousGoodsYesNoPage(itemIndex)
       .filterOptionalDependent(identity)(DangerousGoodsListDomain.userAnswersReader(itemIndex))
 
-  def netWeightReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[Option[BigDecimal]] =
+  def netWeightReader(itemIndex: Index): UserAnswersReader[Option[BigDecimal]] =
     ApprovedOperatorPage.optionalReader.flatMap {
       case Some(true) =>
         none[BigDecimal].pure[UserAnswersReader]
@@ -224,30 +214,30 @@ object ItemDomain {
     AddSupplyChainActorYesNoPage(itemIndex)
       .filterOptionalDependent(identity)(SupplyChainActorsDomain.userAnswersReader(itemIndex))
 
-  private def isConsignmentPreviousDocDefined(itemIndex: Index): UserAnswersReader[Option[DocumentsDomain]] =
-    DocumentsSection.arrayReader
-      .map {
-        _.validateAsListOf[Document]
-          .exists(
-            x => x.attachToAllItems && x.`type` == Previous
-          )
-      }
-      .flatMap {
-        case true  => AddDocumentsYesNoPage(itemIndex).filterOptionalDependent(identity)(DocumentsDomain.userAnswersReader(itemIndex))
-        case false => DocumentsDomain.userAnswersReader(itemIndex).map(Some(_))
-      }
-
   def documentsReader(itemIndex: Index): UserAnswersReader[Option[DocumentsDomain]] = {
 
-    val externalPages: UserAnswersReader[(DeclarationType, Boolean)] = for {
+    val externalPages: UserAnswersReader[(String, Boolean)] = for {
       consignmentDecType    <- TransitOperationDeclarationTypePage.reader
-      isGBOfficeOfDeparture <- CustomsOfficeOfDeparturePage.reader.map(_.startsWith(GB))
+      isGBOfficeOfDeparture <- CustomsOfficeOfDeparturePage.reader.map(_.startsWith(Constants.GB))
     } yield (consignmentDecType, isGBOfficeOfDeparture)
+
+    def isConsignmentPreviousDocDefined(itemIndex: Index): UserAnswersReader[Option[DocumentsDomain]] =
+      DocumentsSection.arrayReader
+        .map {
+          _.validateAsListOf[Document]
+            .exists(
+              x => x.attachToAllItems && x.`type` == Previous
+            )
+        }
+        .flatMap {
+          case true  => AddDocumentsYesNoPage(itemIndex).filterOptionalDependent(identity)(DocumentsDomain.userAnswersReader(itemIndex))
+          case false => DocumentsDomain.userAnswersReader(itemIndex).map(Some(_))
+        }
 
     ConsignmentAddDocumentsPage.optionalReader.flatMap {
       case Some(true) | None =>
         externalPages.flatMap {
-          case (DeclarationType.T2 | DeclarationType.T2F, true) => isConsignmentPreviousDocDefined(itemIndex)
+          case (Constants.T2 | Constants.T2F, true) => isConsignmentPreviousDocDefined(itemIndex)
           case (_, true) =>
             DeclarationTypePage(itemIndex).optionalReader.flatMap {
               case Some(DeclarationTypeItemLevel(Constants.T2, _)) | Some(DeclarationTypeItemLevel(Constants.T2F, _)) =>
@@ -274,7 +264,7 @@ object ItemDomain {
       isConsignmentTransportChargesDefined <- ConsignmentTransportChargesPage.isDefined
       result <- {
         (securityDetails, isConsignmentTransportChargesDefined, phaseConfig.phase) match {
-          case (NoSecurityDetails, _, Transition) | (_, false, Transition) =>
+          case (Constants.NoSecurityDetails, _, Transition) | (_, false, Transition) =>
             AddTransportChargesYesNoPage(itemIndex).filterOptionalDependent(identity)(TransportChargesMethodOfPaymentPage(itemIndex).reader)
           case _ => UserAnswersReader(None)
         }
