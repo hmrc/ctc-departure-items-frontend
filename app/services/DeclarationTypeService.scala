@@ -27,6 +27,9 @@ class DeclarationTypeService @Inject() (referenceDataConnector: ReferenceDataCon
 
   def getDeclarationTypeItemLevel()(implicit hc: HeaderCarrier): Future[Seq[DeclarationTypeItemLevel]] = referenceDataConnector
     .getDeclarationTypeItemLevel()
+    .map(
+      types => DeclarationTypeItemLevel.itemValues(types)
+    )
     .map(sort)
 
   private def sort(declarationType: Seq[DeclarationTypeItemLevel]): Seq[DeclarationTypeItemLevel] =

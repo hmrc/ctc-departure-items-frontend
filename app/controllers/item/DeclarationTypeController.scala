@@ -60,7 +60,7 @@ class DeclarationTypeController @Inject() (
             case Some(value) => form(declarationTypes).fill(value)
           }
 
-          Ok(view(preparedForm, lrn, DeclarationTypeItemLevel.itemValues(declarationTypes), mode, itemIndex))
+          Ok(view(preparedForm, lrn, declarationTypes, mode, itemIndex))
       }
   }
 
@@ -71,8 +71,7 @@ class DeclarationTypeController @Inject() (
           form(declarationTypes)
             .bindFromRequest()
             .fold(
-              formWithErrors =>
-                Future.successful(BadRequest(view(formWithErrors, lrn, DeclarationTypeItemLevel.itemValues(declarationTypes), mode, itemIndex))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, declarationTypes, mode, itemIndex))),
               value => {
                 implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
                 DeclarationTypePage(itemIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
