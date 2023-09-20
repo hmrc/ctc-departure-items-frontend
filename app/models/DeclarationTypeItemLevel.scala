@@ -30,12 +30,10 @@ object DeclarationTypeItemLevel extends DynamicEnumerableType[DeclarationTypeIte
   implicit val format: Format[DeclarationTypeItemLevel] = Json.format[DeclarationTypeItemLevel]
   val messageKeyPrefix: String                          = "item.declarationType"
 
-  def isOneOf(declarationType: DeclarationTypeItemLevel, allowed: Seq[String]): Boolean = allowed.contains(declarationType.code)
-
   def itemValues(declarationTypes: Seq[DeclarationTypeItemLevel]): Seq[DeclarationTypeItemLevel] = {
-    val allowedList = List(T1, T2, T2F)
+    val allowedTypes = List(T1, T2, T2F)
     declarationTypes.filter(
-      item => allowedList.contains(item.code)
+      item => allowedTypes.contains(item.code)
     )
 
   }

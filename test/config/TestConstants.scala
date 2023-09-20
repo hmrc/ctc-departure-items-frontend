@@ -16,7 +16,7 @@
 
 package config
 
-import config.Constants.{T, T1, T2, T2F, TIR}
+import config.Constants._
 import models.DeclarationTypeItemLevel
 
 object TestConstants {
