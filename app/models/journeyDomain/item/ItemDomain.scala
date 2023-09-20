@@ -35,7 +35,6 @@ import pages.item._
 import pages.sections.external.{ConsignmentConsigneeSection, DocumentsSection, TransportEquipmentsSection}
 import play.api.i18n.Messages
 import play.api.mvc.Call
-import config.Constants
 
 import java.util.UUID
 import scala.language.implicitConversions
@@ -107,13 +106,13 @@ object ItemDomain {
     }
 
   def declarationTypeReader(itemIndex: Index): UserAnswersReader[Option[DeclarationTypeItemLevel]] =
-    TransitOperationDeclarationTypePage.filterOptionalDependent(_ == config.Constants.T) {
+    TransitOperationDeclarationTypePage.filterOptionalDependent(_ == Constants.T) {
       DeclarationTypePage(itemIndex).reader
     }
 
   def countryOfDispatchReader(itemIndex: Index): UserAnswersReader[Option[Country]] =
     TransitOperationDeclarationTypePage
-      .filterOptionalDependent(_ == config.Constants.TIR) {
+      .filterOptionalDependent(_ == Constants.TIR) {
         ConsignmentCountryOfDispatchPage.filterDependent(_.isEmpty) {
           CountryOfDispatchPage(itemIndex).reader
         }

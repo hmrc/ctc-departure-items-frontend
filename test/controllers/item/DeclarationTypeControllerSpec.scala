@@ -51,7 +51,7 @@ class DeclarationTypeControllerSpec extends SpecBase with AppWithDefaultMockFixt
     super.beforeEach()
     reset(mockDeclarationService)
     when(mockDeclarationService.getDeclarationTypeItemLevel()(any()))
-      .thenReturn(Future.successful(declarationTypeValues))
+      .thenReturn(Future.successful(declarationTypeItemValues))
   }
 
   "DeclarationType Controller" - {
