@@ -16,18 +16,17 @@
 
 package models.journeyDomain.item.supplyChainActors
 
+import cats.implicits._
 import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
 import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
-import models.{Index, Mode, Phase, UserAnswers}
 import models.reference.SupplyChainActorType
+import models.{Index, Mode, Phase, UserAnswers}
 import pages.item.supplyChainActors.index.{IdentificationNumberPage, SupplyChainActorTypePage}
-import play.api.i18n.Messages
 import play.api.mvc.Call
-import cats.implicits._
 
 case class SupplyChainActorDomain(role: SupplyChainActorType, identification: String)(itemIndex: Index, actorIndex: Index) extends JourneyDomainModel {
 
-  def asString(implicit messages: Messages): String = s"${role.asString} - $identification"
+  def asString: String = s"${role.toString} - $identification"
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] = Some {
     stage match {
