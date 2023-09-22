@@ -45,6 +45,10 @@ object TaskStatus {
     override val jsonString: String = "error"
   }
 
+  case object Amended extends TaskStatus {
+    override val jsonString: String = "amended"
+  }
+
   implicit val reads: Reads[TaskStatus] = (json: JsValue) => {
     json.validate[String].flatMap {
       case Completed.jsonString      => JsSuccess(Completed)
@@ -52,6 +56,7 @@ object TaskStatus {
       case NotStarted.jsonString     => JsSuccess(NotStarted)
       case CannotStartYet.jsonString => JsSuccess(CannotStartYet)
       case Error.jsonString          => JsSuccess(Error)
+      case Amended.jsonString        => JsSuccess(Amended)
       case x                         => JsError(s"$x is not a valid task status")
     }
   }
