@@ -17,6 +17,7 @@
 package controllers.actions
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import models.LockCheck
 import models.requests.DataRequest
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -44,7 +45,7 @@ class LockActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
     "must return Ok when lock is open" in {
 
-      when(mockLockService.checkLock(any())(any())).thenReturn(Future(true))
+      when(mockLockService.checkLock(any())(any())).thenReturn(Future(LockCheck.Unlocked))
 
       val lockActionProvider = new LockActionProviderImpl(mockLockService)
 
@@ -53,11 +54,20 @@ class LockActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
     "must redirect to lock page when lock is not open" in {
 
-      when(mockLockService.checkLock(any())(any())).thenReturn(Future(false))
+      when(mockLockService.checkLock(any())(any())).thenReturn(Future(LockCheck.Locked))
 
       val lockActionProvider = new LockActionProviderImpl(mockLockService)
 
       harness(lockActionProvider) mustBe Results.SeeOther(frontendAppConfig.lockedUrl)
+    }
+
+    "must redirect to technical difficulties when lock check fails" in {
+
+      when(mockLockService.checkLock(any())(any())).thenReturn(Future(LockCheck.LockCheckFailure))
+
+      val lockActionProvider = new LockActionProviderImpl(mockLockService)
+
+      harness(lockActionProvider) mustBe Results.SeeOther(frontendAppConfig.technicalDifficultiesUrl)
     }
   }
 

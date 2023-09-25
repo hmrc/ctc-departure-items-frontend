@@ -18,6 +18,8 @@ package services
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import connectors.CacheConnector
+import generators.Generators
+import models.LockCheck
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -27,7 +29,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 
 import scala.concurrent.Future
 
-class LockServiceSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks {
+class LockServiceSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   private val mockConnector = mock[CacheConnector]
 
@@ -47,7 +49,7 @@ class LockServiceSpec extends SpecBase with AppWithDefaultMockFixtures with Scal
 
     "when checkLock" - {
       "must call checkLock in connector" in {
-        forAll(arbitrary[Boolean]) {
+        forAll(arbitrary[LockCheck]) {
           response =>
             beforeEach()
 
