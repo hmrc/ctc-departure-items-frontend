@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package services
+package models
 
-import connectors.CacheConnector
-import models.{LockCheck, UserAnswers}
-import uk.gov.hmrc.http.HeaderCarrier
+sealed trait LockCheck
 
-import javax.inject.Inject
-import scala.concurrent.Future
+object LockCheck {
 
-class LockService @Inject() (cacheConnector: CacheConnector) {
+  sealed trait LockCheckSuccess extends LockCheck
 
-  def checkLock(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[LockCheck] =
-    cacheConnector.checkLock(userAnswers)
+  case object LockCheckFailure extends LockCheck
+  case object Locked extends LockCheckSuccess
+  case object Unlocked extends LockCheckSuccess
 }

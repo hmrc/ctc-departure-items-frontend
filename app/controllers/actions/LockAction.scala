@@ -18,6 +18,7 @@ package controllers.actions
 
 import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
+import models.LockCheck.{LockCheckFailure, Locked, Unlocked}
 import models.requests.DataRequest
 import play.api.Logging
 import play.api.mvc.Results.Redirect
@@ -47,11 +48,13 @@ class LockAction(lockService: LockService)(implicit val executionContext: Execut
   override protected def filter[A](request: DataRequest[A]): Future[Option[Result]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
     lockService.checkLock(request.userAnswers).map {
-      case true =>
+      case Unlocked =>
         None
-      case false =>
-        logger.info(s"Someone else is amending draft ${request.userAnswers.lrn}. Redirecting to cannot-open")
+      case Locked =>
+        logger.info(s"Someone else is amending draft ${request.userAnswers.lrn}. Redirecting to /cannot-open")
         Some(Redirect(config.lockedUrl))
+      case LockCheckFailure =>
+        Some(Redirect(config.technicalDifficultiesUrl))
     }
   }
 }
