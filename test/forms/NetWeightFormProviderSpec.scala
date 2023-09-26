@@ -32,17 +32,13 @@ class NetWeightFormProviderSpec extends BigDecimalFieldBehaviours with SpecBase 
   val requiredKey         = s"$prefix.error.required"
   val maxErrorKey         = s"$prefix.error.maximum"
 
-  val generatedBigDecimal: Gen[BigDecimal]  = Gen.choose(BigDecimal(1), maxValue)
-  private val decimalPlaceTransition: Int   = 3
-  private val characterCountTransition: Int = 11
+  val generatedBigDecimal: Gen[BigDecimal] = Gen.choose(BigDecimal(1), maxValue)
 
-  private val decimalPlacePostTransition: Int   = 6
-  private val characterCountPostTransition: Int = 16
+  private val fieldName = "value"
 
   ".value" - {
 
     def runTests(form: Form[BigDecimal], decimalPlaceCount: Int, characterCount: Int, phaseConfig: PhaseConfig): Unit = {
-      val fieldName = "value"
 
       behave like fieldThatBindsValidData(
         form,
@@ -64,33 +60,38 @@ class NetWeightFormProviderSpec extends BigDecimalFieldBehaviours with SpecBase 
         fieldName,
         requiredError = FormError(fieldName, requiredKey)
       )
-
-      "must not bind a value greater than the gross weight" in {
-        val value  = grossWeight + 1
-        val result = form.bind(Map(fieldName -> value.toString)).apply(fieldName)
-        result.errors must contain only FormError(fieldName, maxErrorKey, Seq(grossWeight))
-      }
-
-      "must bind a value equal to the gross weight" in {
-        val value  = grossWeight
-        val result = form.bind(Map(fieldName -> value.toString)).apply(fieldName)
-        result.value.value mustBe value.toString
-      }
-
-      "must bind a value less than the gross weight" in {
-        val value  = grossWeight - 1
-        val result = form.bind(Map(fieldName -> value.toString)).apply(fieldName)
-        result.value.value mustBe value.toString
-      }
     }
 
     "during transition" - {
       val app                          = transitionApplicationBuilder().build()
       val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
       when(mockPhaseConfig.phase).thenReturn(Phase.Transition)
+
+      val decimalPlaces: Int  = 3
+      val characterCount: Int = 11
+
       running(app) {
-        val form = app.injector.instanceOf[NetWeightFormProvider].apply(prefix, grossWeight, decimalPlaceTransition, characterCountTransition)
-        runTests(form, decimalPlaceTransition, characterCountTransition, mockPhaseConfig)
+        val form = app.injector.instanceOf[NetWeightFormProvider].apply(prefix, grossWeight)
+
+        runTests(form, decimalPlaces, characterCount, mockPhaseConfig)
+
+        "must bind a value greater than the gross weight" in {
+          val value  = grossWeight + 1
+          val result = form.bind(Map(fieldName -> value.toString)).apply(fieldName)
+          result.value.value mustBe value.toString
+        }
+
+        "must bind a value equal to the gross weight" in {
+          val value  = grossWeight
+          val result = form.bind(Map(fieldName -> value.toString)).apply(fieldName)
+          result.value.value mustBe value.toString
+        }
+
+        "must bind a value less than the gross weight" in {
+          val value  = grossWeight - 1
+          val result = form.bind(Map(fieldName -> value.toString)).apply(fieldName)
+          result.value.value mustBe value.toString
+        }
       }
     }
 
@@ -99,9 +100,31 @@ class NetWeightFormProviderSpec extends BigDecimalFieldBehaviours with SpecBase 
       val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
       when(mockPhaseConfig.phase).thenReturn(Phase.PostTransition)
 
+      val decimalPlaces: Int  = 6
+      val characterCount: Int = 16
+
       running(app) {
-        val form = app.injector.instanceOf[NetWeightFormProvider].apply(prefix, grossWeight, decimalPlacePostTransition, characterCountPostTransition)
-        runTests(form, decimalPlacePostTransition, characterCountPostTransition, mockPhaseConfig)
+        val form = app.injector.instanceOf[NetWeightFormProvider].apply(prefix, grossWeight)
+
+        runTests(form, decimalPlaces, characterCount, mockPhaseConfig)
+
+        "must not bind a value greater than the gross weight" in {
+          val value  = grossWeight + 1
+          val result = form.bind(Map(fieldName -> value.toString)).apply(fieldName)
+          result.errors must contain only FormError(fieldName, maxErrorKey, Seq(grossWeight))
+        }
+
+        "must bind a value equal to the gross weight" in {
+          val value  = grossWeight
+          val result = form.bind(Map(fieldName -> value.toString)).apply(fieldName)
+          result.value.value mustBe value.toString
+        }
+
+        "must bind a value less than the gross weight" in {
+          val value  = grossWeight - 1
+          val result = form.bind(Map(fieldName -> value.toString)).apply(fieldName)
+          result.value.value mustBe value.toString
+        }
       }
     }
 
