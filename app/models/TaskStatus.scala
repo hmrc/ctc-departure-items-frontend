@@ -22,6 +22,9 @@ sealed trait TaskStatus {
   val jsonString: String
   def isCompleted: Boolean   = this == TaskStatus.Completed
   def isUnavailable: Boolean = this == TaskStatus.Unavailable
+
+  def isError: Boolean = this == TaskStatus.Error
+
 }
 
 object TaskStatus {

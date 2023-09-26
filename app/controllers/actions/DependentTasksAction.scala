@@ -30,7 +30,13 @@ class DependentTasksActionImpl @Inject() (implicit val executionContext: Executi
     with Logging {
 
   override protected def filter[A](request: DataRequest[A]): Future[Option[Result]] = {
-    val incompleteTasks = config.dependentTasks.filterNot(request.userAnswers.tasks.get(_).exists(_.isCompleted))
+    val incompleteTasks = config.dependentTasks.filterNot(
+      request.userAnswers.tasks
+        .get(_)
+        .exists(
+          tasks => tasks.isCompleted || tasks.isError
+        )
+    )
     incompleteTasks match {
       case Nil =>
         Future.successful(None)
