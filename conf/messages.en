@@ -58,6 +58,7 @@ item.checkYourAnswers.supplyChainActor.change.hidden = supply chain actor {0}
 item.checkYourAnswers.supplyChainActors = Supply chain actors
 item.checkYourAnswers.supplyChainActors.addOrRemove = Add or remove supply chain actors
 item.checkYourAnswers.document.label = Document {0}
+item.checkYourAnswers.consignmentDocument.label = Consignment Document {0}
 item.checkYourAnswers.document.change.hidden = document {0}
 item.checkYourAnswers.documents = Documents
 item.checkYourAnswers.documents.addOrRemove = Add or remove documents

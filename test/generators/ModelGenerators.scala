@@ -20,6 +20,7 @@ import config.Constants._
 import config.TestConstants.{declarationTypeItemValues, declarationTypeValues}
 import models.AddressLine.{Country => _, _}
 import models.DocumentType.{Previous, Support, Transport}
+import models.LockCheck.{LockCheckFailure, Locked, Unlocked}
 import models._
 import models.reference._
 import org.scalacheck.Arbitrary.arbitrary
@@ -275,5 +276,10 @@ trait ModelGenerators {
       Json.obj("foo" -> "bar")
     )
   }
+
+  implicit lazy val arbitraryLockCheck: Arbitrary[LockCheck] =
+    Arbitrary {
+      Gen.oneOf(Locked, Unlocked, LockCheckFailure)
+    }
 
 }

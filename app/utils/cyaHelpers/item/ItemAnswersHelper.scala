@@ -34,6 +34,7 @@ import pages.sections.packages.PackagesSection
 import pages.sections.supplyChainActors.SupplyChainActorsSection
 import play.api.i18n.Messages
 import services.{DocumentsService, TransportEquipmentService}
+import uk.gov.hmrc.govukfrontend.views.Aliases.Value
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import utils.cyaHelpers.AnswersHelper
@@ -292,6 +293,14 @@ class ItemAnswersHelper(
           id = Some(s"change-document-${documentIndex.display}"),
           args = documentIndex.display
         )(DocumentDomain.userAnswersReader(itemIndex, documentIndex))
+    }
+
+  def consignmentDocuments()(implicit documentsService: DocumentsService): Seq[SummaryListRow] =
+    documentsService.getConsignmentLevelDocuments(userAnswers).zipWithIndex.map {
+      case (document, i) =>
+        val consignmentIndex = Index(position = i)
+        val prefix           = "item.checkYourAnswers.consignmentDocument"
+        SummaryListRow(key = messages(s"$prefix.label", consignmentIndex.display).toKey, value = Value(formatAsText(document)))
     }
 
   def addOrRemoveDocuments: Option[Link] = buildLink(DocumentsSection(itemIndex)) {

@@ -49,6 +49,7 @@ import pages.sections.packages.PackageSection
 import pages.sections.supplyChainActors.SupplyChainActorSection
 import play.api.libs.json.Json
 import services.{DocumentsService, TransportEquipmentService}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -926,6 +927,39 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
           action.id mustBe "change-add-documents"
         }
       }
+    }
+
+    "consignmentDocuments" - {
+      import org.mockito.ArgumentMatchers.any
+      import org.mockito.Mockito.when
+
+      implicit val mockDocumentsService: DocumentsService = mock[DocumentsService]
+
+      "must return None" - {
+        "when document is undefined" in {
+          when(mockDocumentsService.getConsignmentLevelDocuments(any())).thenReturn(Nil)
+          val helper = new ItemAnswersHelper(emptyUserAnswers, itemIndex)
+          val result = helper.consignmentDocuments
+          result mustBe Nil
+        }
+      }
+
+      "must return List(Row)" - {
+        "when document is defined" in {
+          forAll(arbitrary[Document]) {
+            document =>
+              when(mockDocumentsService.getConsignmentLevelDocuments(any())).thenReturn(List(document))
+              val userAnswers = emptyUserAnswers.setValue(DocumentPage(itemIndex, documentIndex), document.uuid)
+
+              val helper                 = new ItemAnswersHelper(userAnswers, itemIndex)
+              val result: SummaryListRow = helper.consignmentDocuments.head
+
+              result.key.value mustBe "Consignment Document 1"
+              result.value.value mustBe document.toString
+          }
+        }
+      }
+
     }
 
     "document" - {
