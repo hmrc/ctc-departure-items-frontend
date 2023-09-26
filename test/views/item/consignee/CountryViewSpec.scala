@@ -27,7 +27,7 @@ import views.html.item.consignee.CountryView
 
 class CountryViewSpec extends InputSelectViewBehaviours[Country] {
 
-  private val name = Gen.alphaNumStr.sample.value
+  private val name = nonEmptyString.sample.value
 
   override def form: Form[Country] = new SelectableFormProvider()(prefix, SelectableList(values))
 

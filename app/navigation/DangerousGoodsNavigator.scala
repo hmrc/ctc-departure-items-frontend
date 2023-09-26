@@ -37,8 +37,10 @@ trait DangerousGoodsNavigatorProvider {
   def apply(mode: Mode, itemIndex: Index, dangerousGoodsIndex: Index): UserAnswersNavigator
 }
 
-class DangerousGoodsNavigator(override val mode: Mode, itemIndex: Index, dangerousGoodsIndex: Index)(implicit override val config: FrontendAppConfig)
-    extends UserAnswersNavigator {
+class DangerousGoodsNavigator(override val mode: Mode, itemIndex: Index, dangerousGoodsIndex: Index)(implicit
+  override val config: FrontendAppConfig,
+  override val phaseConfig: PhaseConfig
+) extends UserAnswersNavigator {
 
   override type T = DangerousGoodsDomain
 

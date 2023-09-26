@@ -19,6 +19,7 @@ package generators
 import config.Constants._
 import models.AddressLine.{Country => _, _}
 import models.DocumentType.{Previous, Support, Transport}
+import models.LockCheck.{LockCheckFailure, Locked, Unlocked}
 import models._
 import models.reference._
 import org.scalacheck.Arbitrary.arbitrary
@@ -55,14 +56,19 @@ trait ModelGenerators {
       Gen.oneOf(DeclarationType.values)
     }
 
-  lazy val arbitraryNonTDeclarationType: Arbitrary[DeclarationType] =
+  lazy val arbitraryConsignmentDeclarationType: Arbitrary[String] =
     Arbitrary {
-      Gen.oneOf(DeclarationType.values.filterNot(_ == DeclarationType.T))
+      Gen.oneOf("T", "T1", "T2", "T2F", "TIR")
     }
 
-  lazy val arbitraryNonTIRDeclarationType: Arbitrary[DeclarationType] =
+  lazy val arbitraryNonTDeclarationType: Arbitrary[String] =
     Arbitrary {
-      Gen.oneOf(DeclarationType.values.filterNot(_ == DeclarationType.TIR))
+      Gen.oneOf("T1", "T2", "T2F", "TIR")
+    }
+
+  lazy val arbitraryNonTIRDeclarationType: Arbitrary[String] =
+    Arbitrary {
+      Gen.oneOf("T", "T1", "T2", "T2F")
     }
 
   implicit lazy val arbitraryTransportEquipment: Arbitrary[TransportEquipment] =
@@ -253,11 +259,26 @@ trait ModelGenerators {
     Gen.oneOf(TaskStatus.InProgress, TaskStatus.NotStarted, TaskStatus.CannotStartYet)
   }
 
+  lazy val arbitrarySecurityDetailsType: Arbitrary[String] =
+    Arbitrary {
+      Gen.oneOf("0", "1", "2", "3")
+    }
+
+  lazy val arbitrarySomeSecurityDetailsType: Arbitrary[String] =
+    Arbitrary {
+      Gen.oneOf("1", "2", "3")
+    }
+
   implicit lazy val arbitraryJsObject: Arbitrary[JsObject] = Arbitrary {
     Gen.oneOf(
       Json.obj(),
       Json.obj("foo" -> "bar")
     )
   }
+
+  implicit lazy val arbitraryLockCheck: Arbitrary[LockCheck] =
+    Arbitrary {
+      Gen.oneOf(Locked, Unlocked, LockCheckFailure)
+    }
 
 }

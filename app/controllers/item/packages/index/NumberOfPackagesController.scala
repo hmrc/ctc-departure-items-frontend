@@ -20,6 +20,10 @@ import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.IntFormProvider
+import models.PackingType.Unpacked
+import models.Phase.PostTransition
+import models.reference.PackageType
+import models.requests.SpecificDataRequestProvider1
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{PackageNavigatorProvider, UserAnswersNavigator}
 import pages.item.packages.index.{NumberOfPackagesPage, PackageTypePage}
@@ -45,12 +49,16 @@ class NumberOfPackagesController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
+  private type Request = SpecificDataRequestProvider1[PackageType]#SpecificDataRequest[_]
+
+  private def minNumberOfPackages(implicit request: Request): Int = if (request.arg.`type` == Unpacked && phaseConfig.phase == PostTransition) 1 else 0
+
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, packageIndex: Index): Action[AnyContent] = actions
     .requireData(lrn)
     .andThen(getMandatoryPage(PackageTypePage(itemIndex, packageIndex))) {
       implicit request =>
         val packageType = request.arg.toString
-        val form        = formProvider("item.packages.index.numberOfPackages", phaseConfig.maxNumberOfPackages, Seq(packageType))
+        val form        = formProvider("item.packages.index.numberOfPackages", phaseConfig.maxNumberOfPackages, minNumberOfPackages, Seq(packageType))
         val preparedForm = request.userAnswers.get(NumberOfPackagesPage(itemIndex, packageIndex)) match {
           case None        => form
           case Some(value) => form.fill(value)
@@ -64,16 +72,15 @@ class NumberOfPackagesController @Inject() (
     .async {
       implicit request =>
         val packageType = request.arg.toString
-        val form        = formProvider("item.packages.index.numberOfPackages", phaseConfig.maxNumberOfPackages, Seq(packageType))
+        val form        = formProvider("item.packages.index.numberOfPackages", phaseConfig.maxNumberOfPackages, minNumberOfPackages, Seq(packageType))
         form
           .bindFromRequest()
           .fold(
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex, packageIndex, packageType))),
             value => {
               val writes = NumberOfPackagesPage(itemIndex, packageIndex).writeToUserAnswers(value).updateTask().writeToSession()
-              value match {
-                case 0 =>
-                  writes.navigateTo(routes.BeforeYouContinueController.onPageLoad(lrn, mode, itemIndex, packageIndex))
+              phaseConfig.phase match {
+                case PostTransition if value == 0 => writes.navigateTo(routes.BeforeYouContinueController.onPageLoad(lrn, mode, itemIndex, packageIndex))
                 case _ =>
                   implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex, packageIndex)
                   writes.navigate()

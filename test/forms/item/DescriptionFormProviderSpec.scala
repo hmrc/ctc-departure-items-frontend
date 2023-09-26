@@ -18,7 +18,7 @@ package forms.item
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.behaviours.StringFieldBehaviours
-import models.domain.StringFieldRegex.stringFieldRegex
+import models.domain.StringFieldRegex.stringFieldRegexComma
 import org.scalacheck.Gen
 import play.api.data.{Form, FormError}
 import play.api.test.Helpers.running
@@ -62,7 +62,7 @@ class DescriptionFormProviderSpec extends SpecBase with StringFieldBehaviours wi
       behave like fieldWithInvalidCharacters(
         form,
         fieldName,
-        error = FormError(fieldName, invalidKey, Seq(stringFieldRegex.regex)),
+        error = FormError(fieldName, invalidKey, Seq(stringFieldRegexComma.regex)),
         maxItemDescriptionLength
       )
     }

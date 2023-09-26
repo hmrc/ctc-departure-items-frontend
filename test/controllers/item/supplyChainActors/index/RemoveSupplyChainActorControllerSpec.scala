@@ -134,7 +134,7 @@ class RemoveSupplyChainActorControllerSpec extends SpecBase with AppWithDefaultM
     }
   }
 
-  "must redirect to Session Expired for a GET" - {
+  "must redirect for a GET" - {
     "when no existing data found" in {
       setNoExistingUserAnswers()
 
@@ -146,9 +146,22 @@ class RemoveSupplyChainActorControllerSpec extends SpecBase with AppWithDefaultM
 
       redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
     }
+
+    "when no supply chain actor found" in {
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val request = FakeRequest(GET, removeSupplyChainActorRoute)
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual
+        supplyChainActorRoutes.AddAnotherSupplyChainActorController.onPageLoad(lrn, mode, itemIndex).url
+    }
   }
 
-  "must redirect to Session Expired for a POST if no existing data is found" - {
+  "must redirect for a POST" - {
     "when no existing data found" in {
       setNoExistingUserAnswers()
 
@@ -160,6 +173,20 @@ class RemoveSupplyChainActorControllerSpec extends SpecBase with AppWithDefaultM
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+    }
+
+    "when no supply chain actor found" in {
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val request = FakeRequest(POST, removeSupplyChainActorRoute)
+        .withFormUrlEncodedBody(("value", "true"))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual
+        supplyChainActorRoutes.AddAnotherSupplyChainActorController.onPageLoad(lrn, mode, itemIndex).url
     }
   }
 }

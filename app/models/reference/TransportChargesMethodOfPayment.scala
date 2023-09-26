@@ -19,7 +19,7 @@ package models.reference
 import models.{DynamicEnumerableType, Radioable}
 import play.api.libs.json.{Format, Json}
 
-case class TransportChargesMethodOfPayment(code: String, description: String) extends Radioable[TransportChargesMethodOfPayment] {
+case class TransportChargesMethodOfPayment(method: String, description: String) extends Radioable[TransportChargesMethodOfPayment] {
 
   override def toString: String = description
 
@@ -29,5 +29,5 @@ case class TransportChargesMethodOfPayment(code: String, description: String) ex
 object TransportChargesMethodOfPayment extends DynamicEnumerableType[TransportChargesMethodOfPayment] {
   implicit val format: Format[TransportChargesMethodOfPayment] = Json.format[TransportChargesMethodOfPayment]
 
-  val messageKeyPrefix = "methodOfPayment"
+  val messageKeyPrefix = "transportMethodOfPayment"
 }

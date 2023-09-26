@@ -37,8 +37,10 @@ trait DocumentNavigatorProvider {
   def apply(mode: Mode, itemIndex: Index, documentIndex: Index): UserAnswersNavigator
 }
 
-class DocumentNavigator(override val mode: Mode, itemIndex: Index, documentIndex: Index)(implicit override val config: FrontendAppConfig)
-    extends UserAnswersNavigator {
+class DocumentNavigator(override val mode: Mode, itemIndex: Index, documentIndex: Index)(implicit
+  override val config: FrontendAppConfig,
+  override val phaseConfig: PhaseConfig
+) extends UserAnswersNavigator {
 
   override type T = DocumentDomain
 

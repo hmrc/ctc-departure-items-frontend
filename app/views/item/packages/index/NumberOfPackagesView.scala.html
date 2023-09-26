@@ -25,7 +25,8 @@
     formHelper: FormWithCSRF,
     inputText: InputText,
     errorSummary: ErrorSummary,
-    button: Button
+    button: Button,
+    govukInsetText : GovukInsetText
 )
 
 @(form: Form[Int], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, packageIndex: Index, packageType: String)(implicit request: Request[_], messages: Messages)
@@ -42,9 +43,10 @@
 
         @inputText(
             field = form("value"),
-            inputTextType = OrdinaryTextInput(
+            inputTextType = TextInputWithHiddenLabel(
                 heading = messages("item.packages.index.numberOfPackages.heading", packageType),
-                caption = Some(messages("item.packages.caption", itemIndex.display))
+                caption = Some(messages("item.packages.caption", itemIndex.display)),
+                additionalHtml = govukInsetText(InsetText(content = Text( messages("item.packages.index.numberOfPackages.inset.text", packageType)  )))
             ),
             inputClass = InputSize.Width20
         )

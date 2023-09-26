@@ -20,6 +20,7 @@ import models._
 import models.reference._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
+import pages.external.ConsignmentAddDocumentsPage
 import play.api.libs.json._
 import queries.Gettable
 
@@ -40,12 +41,13 @@ trait UserAnswersEntryGenerators {
     {
       case CustomsOfficeOfDeparturePage               => Gen.alphaNumStr.map(JsString)
       case CustomsOfficeOfDepartureInCL112Page        => arbitrary[Boolean].map(JsBoolean)
-      case TransitOperationDeclarationTypePage        => arbitrary[DeclarationType].map(Json.toJson(_))
+      case TransitOperationDeclarationTypePage        => arbitrary[String](arbitraryConsignmentDeclarationType).map(Json.toJson(_))
       case TransitOperationTIRCarnetNumberPage        => Gen.alphaNumStr.map(JsString)
       case ConsignmentUCRPage                         => Gen.alphaNumStr.map(JsString)
       case ConsignmentCountryOfDispatchPage           => arbitrary[Country].map(Json.toJson(_))
       case ConsignmentCountryOfDestinationPage        => arbitrary[Country].map(Json.toJson(_))
       case ApprovedOperatorPage                       => arbitrary[Boolean].map(JsBoolean)
+      case SecurityDetailsTypePage                    => arbitrary[String](arbitrarySecurityDetailsType).map(Json.toJson(_))
       case ConsignmentConsigneeSection                => arbitrary[JsObject]
       case ConsignmentCountryOfDestinationInCL009Page => arbitrary[Boolean].map(JsBoolean)
     }
@@ -74,8 +76,11 @@ trait UserAnswersEntryGenerators {
       case SupplementaryUnitsPage(_)               => arbitrary[BigDecimal].map(Json.toJson(_))
       case AddSupplyChainActorYesNoPage(_)         => arbitrary[Boolean].map(JsBoolean)
       case AddDocumentsYesNoPage(_)                => arbitrary[Boolean].map(JsBoolean)
+      case ConsignmentAddDocumentsPage             => arbitrary[Boolean].map(JsBoolean)
       case AddAdditionalReferenceYesNoPage(_)      => arbitrary[Boolean].map(JsBoolean)
       case AddAdditionalInformationYesNoPage(_)    => arbitrary[Boolean].map(JsBoolean)
+      case AddTransportChargesYesNoPage(_)         => arbitrary[Boolean].map(JsBoolean)
+      case TransportChargesMethodOfPaymentPage(_)  => arbitrary[TransportChargesMethodOfPayment].map(Json.toJson(_))
     }
     pf orElse
       generateDangerousGoodsAnswer orElse

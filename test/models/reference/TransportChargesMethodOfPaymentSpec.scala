@@ -29,11 +29,11 @@ class TransportChargesMethodOfPaymentSpec extends AnyFreeSpec with Matchers with
 
     "must serialise" in {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-        (code, description) =>
-          val methodOfPayment = TransportChargesMethodOfPayment(code, description)
+        (method, description) =>
+          val methodOfPayment = TransportChargesMethodOfPayment(method, description)
           Json.toJson(methodOfPayment) mustBe Json.parse(s"""
                |{
-               |  "code": "$code",
+               |  "method": "$method",
                |  "description": "$description"
                |}
                |""".stripMargin)
@@ -42,12 +42,12 @@ class TransportChargesMethodOfPaymentSpec extends AnyFreeSpec with Matchers with
 
     "must deserialise" in {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-        (code, description) =>
-          val methodOfPayment = TransportChargesMethodOfPayment(code, description)
+        (method, description) =>
+          val methodOfPayment = TransportChargesMethodOfPayment(method, description)
           Json
             .parse(s"""
                  |{
-                 |  "code": "$code",
+                 |  "method": "$method",
                  |  "description": "$description"
                  |}
                  |""".stripMargin)
@@ -57,8 +57,8 @@ class TransportChargesMethodOfPaymentSpec extends AnyFreeSpec with Matchers with
 
     "must format as string" in {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-        (code, description) =>
-          val methodOfPayment = TransportChargesMethodOfPayment(code, description)
+        (method, description) =>
+          val methodOfPayment = TransportChargesMethodOfPayment(method, description)
           methodOfPayment.toString mustBe description
       }
     }

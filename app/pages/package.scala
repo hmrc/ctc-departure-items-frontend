@@ -18,10 +18,13 @@ import play.api.libs.json.{__, JsPath}
 
 package object pages {
 
-  lazy val preTaskListPath: JsPath   = __ \ "preTaskList"
-  lazy val traderDetailsPath: JsPath = __ \ "traderDetails"
-  lazy val transportPath: JsPath     = __ \ "transportDetails"
-  lazy val preRequisitesPath: JsPath = transportPath \ "preRequisites"
-  lazy val equipmentsPath: JsPath    = transportPath \ "equipmentsAndCharges"
-  lazy val consignmentPath: JsPath   = traderDetailsPath \ "consignment"
+  lazy val preTaskListPath: JsPath         = __ \ "preTaskList"
+  lazy val traderDetailsPath: JsPath       = __ \ "traderDetails"
+  lazy val transportPath: JsPath           = __ \ "transportDetails"
+  lazy val documentsPath: JsPath           = __ \ "documents"
+  lazy val preRequisitesPath: JsPath       = transportPath \ "preRequisites"
+  lazy val equipmentsPath: JsPath          = transportPath \ "equipmentsAndCharges"
+  lazy val consignmentPath: JsPath         = traderDetailsPath \ "consignment"
+  lazy val equipmentAndChargesPath: JsPath = transportPath \ "equipmentsAndCharges"
+
 }

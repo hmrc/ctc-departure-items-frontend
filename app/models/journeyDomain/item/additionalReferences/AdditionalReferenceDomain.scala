@@ -21,7 +21,7 @@ import config.Constants._
 import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
 import models.journeyDomain.{EitherType, GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
 import models.reference.AdditionalReference
-import models.{Index, Mode, UserAnswers}
+import models.{Index, Mode, Phase, UserAnswers}
 import pages.item.additionalReference.index._
 import pages.sections.additionalReference.AdditionalReferencesSection
 import play.api.mvc.Call
@@ -34,7 +34,7 @@ case class AdditionalReferenceDomain(
 
   override def toString: String = AdditionalReferenceDomain.asString(`type`, number)
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some {
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] = Some {
     stage match {
       case AccessingJourney =>
         controllers.item.additionalReference.index.routes.AdditionalReferenceController.onPageLoad(userAnswers.lrn, mode, itemIndex, additionalReferenceIndex)
