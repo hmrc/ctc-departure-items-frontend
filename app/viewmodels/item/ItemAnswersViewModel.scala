@@ -109,7 +109,7 @@ object ItemAnswersViewModel {
 
       val documentsSection = Section(
         sectionTitle = messages("item.checkYourAnswers.documents"),
-        rows = helper.documentsYesNo.toList ++ helper.documents,
+        rows = helper.documentsYesNo.toList ++ helper.consignmentDocuments ++ helper.documents,
         addAnotherLink = helper.addOrRemoveDocuments
       )
 

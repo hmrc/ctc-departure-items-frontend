@@ -18,7 +18,7 @@ package connectors
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import com.github.tomakehurst.wiremock.client.WireMock._
-import models.UserAnswers
+import models.{LockCheck, UserAnswers}
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks.forAll
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -114,21 +114,32 @@ class CacheConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with W
 
       val url = s"/manage-transit-movements-departure-cache/user-answers/${userAnswers.lrn.toString}/lock"
 
-      "must return true when status is Ok" in {
+      "must return Unlocked when status is Ok (200)" in {
         server.stubFor(get(urlEqualTo(url)) willReturn aResponse().withStatus(OK))
 
-        val result: Boolean = await(connector.checkLock(userAnswers))
+        val result: LockCheck = await(connector.checkLock(userAnswers))
 
-        result mustBe true
+        result mustBe LockCheck.Unlocked
       }
 
-      "return false for other responses" in {
+      "must return Locked when status is Locked (423)" in {
+        server.stubFor(get(urlEqualTo(url)) willReturn aResponse().withStatus(LOCKED))
 
-        server.stubFor(get(urlEqualTo(url)) willReturn aResponse().withStatus(BAD_REQUEST))
+        val result: LockCheck = await(connector.checkLock(userAnswers))
 
-        val result: Boolean = await(connector.checkLock(userAnswers))
+        result mustBe LockCheck.Locked
+      }
 
-        result mustBe false
+      "return LockCheckFailure for other 4xx/5xx responses" in {
+
+        forAll(Gen.choose(400: Int, 599: Int).retryUntil(_ != LOCKED)) {
+          errorStatus =>
+            server.stubFor(get(urlEqualTo(url)) willReturn aResponse().withStatus(errorStatus))
+
+            val result: LockCheck = await(connector.checkLock(userAnswers))
+
+            result mustBe LockCheck.LockCheckFailure
+        }
       }
     }
   }
