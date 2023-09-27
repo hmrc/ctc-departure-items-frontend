@@ -20,17 +20,20 @@ import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
-import models.{DeclarationType, Index, LocalReferenceNumber, Mode}
+import models.{DeclarationTypeItemLevel, Index, LocalReferenceNumber, Mode}
 import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
 import pages.item.DeclarationTypePage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.DeclarationTypeService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.item.DeclarationTypeView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import config.Constants.{T, T1, T2, T2F, TIR}
 
 class DeclarationTypeController @Inject() (
   override val messagesApi: MessagesApi,
@@ -38,34 +41,42 @@ class DeclarationTypeController @Inject() (
   navigatorProvider: ItemNavigatorProvider,
   actions: Actions,
   formProvider: EnumerableFormProvider,
+  declarationTypeService: DeclarationTypeService,
   val controllerComponents: MessagesControllerComponents,
   view: DeclarationTypeView
 )(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider[DeclarationType]("item.declarationType")
+  private def form(declarationTypes: Seq[DeclarationTypeItemLevel]): Form[DeclarationTypeItemLevel] =
+    formProvider[DeclarationTypeItemLevel]("item.declarationType", declarationTypes)
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(DeclarationTypePage(itemIndex)) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+      declarationTypeService.getDeclarationTypeItemLevel().map {
+        declarationTypes =>
+          val preparedForm = request.userAnswers.get(DeclarationTypePage(itemIndex)) match {
+            case None        => form(declarationTypes)
+            case Some(value) => form(declarationTypes).fill(value)
+          }
 
-      Ok(view(preparedForm, lrn, DeclarationType.itemValues, mode, itemIndex))
+          Ok(view(preparedForm, lrn, declarationTypes, mode, itemIndex))
+      }
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, DeclarationType.itemValues, mode, itemIndex))),
-          value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
-            DeclarationTypePage(itemIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
-          }
-        )
+      declarationTypeService.getDeclarationTypeItemLevel().flatMap {
+        declarationTypes =>
+          form(declarationTypes)
+            .bindFromRequest()
+            .fold(
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, declarationTypes, mode, itemIndex))),
+              value => {
+                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
+                DeclarationTypePage(itemIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+              }
+            )
+      }
   }
 }

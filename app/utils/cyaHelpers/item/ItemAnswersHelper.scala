@@ -24,7 +24,7 @@ import models.journeyDomain.item.documents.DocumentDomain
 import models.journeyDomain.item.packages.PackageDomain
 import models.journeyDomain.item.supplyChainActors.SupplyChainActorDomain
 import models.reference.{Country, TransportChargesMethodOfPayment}
-import models.{CheckMode, DeclarationType, DynamicAddress, Index, UserAnswers}
+import models.{CheckMode, DeclarationTypeItemLevel, DynamicAddress, Index, UserAnswers}
 import pages.item._
 import pages.sections.additionalInformation.AdditionalInformationListSection
 import pages.sections.additionalReference.AdditionalReferencesSection
@@ -69,9 +69,9 @@ class ItemAnswersHelper(
         )
     }
 
-  def declarationType: Option[SummaryListRow] = getAnswerAndBuildRow[DeclarationType](
+  def declarationType: Option[SummaryListRow] = getAnswerAndBuildRow[DeclarationTypeItemLevel](
     page = DeclarationTypePage(itemIndex),
-    formatAnswer = formatEnumAsText(DeclarationType.messageKeyPrefix),
+    formatAnswer = formatAsText,
     prefix = "item.declarationType",
     id = Some("change-declaration-type"),
     args = itemIndex.display
