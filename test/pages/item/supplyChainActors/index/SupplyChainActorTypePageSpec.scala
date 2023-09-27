@@ -17,6 +17,8 @@
 package pages.item.supplyChainActors.index
 
 import models.reference.SupplyChainActorType
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import pages.behaviours.PageBehaviours
 
 class SupplyChainActorTypePageSpec extends PageBehaviours {
@@ -28,5 +30,42 @@ class SupplyChainActorTypePageSpec extends PageBehaviours {
     beSettable[SupplyChainActorType](SupplyChainActorTypePage(itemIndex, actorIndex))
 
     beRemovable[SupplyChainActorType](SupplyChainActorTypePage(itemIndex, actorIndex))
+
+    "cleanup" - {
+      val identificationNumber = Gen.alphaNumStr.sample.value
+
+      "when value changes" - {
+        "must clean up identification number page" in {
+          forAll(arbitrary[SupplyChainActorType]) {
+            value =>
+              forAll(arbitrary[SupplyChainActorType].retryUntil(_ != value)) {
+                differentValue =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(SupplyChainActorTypePage(itemIndex, actorIndex), value)
+                    .setValue(IdentificationNumberPage(itemIndex, actorIndex), identificationNumber)
+
+                  val result = userAnswers.setValue(SupplyChainActorTypePage(itemIndex, actorIndex), differentValue)
+
+                  result.get(IdentificationNumberPage(itemIndex, actorIndex)) mustNot be(defined)
+              }
+          }
+        }
+      }
+
+      "when value has not changed" - {
+        "must not clean up identification number page" in {
+          forAll(arbitrary[SupplyChainActorType]) {
+            value =>
+              val userAnswers = emptyUserAnswers
+                .setValue(SupplyChainActorTypePage(itemIndex, actorIndex), value)
+                .setValue(IdentificationNumberPage(itemIndex, actorIndex), identificationNumber)
+
+              val result = userAnswers.setValue(SupplyChainActorTypePage(itemIndex, actorIndex), value)
+
+              result.get(IdentificationNumberPage(itemIndex, actorIndex)) must be(defined)
+          }
+        }
+      }
+    }
   }
 }
