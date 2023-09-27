@@ -20,7 +20,7 @@ import play.api.libs.json.{JsError, JsString, JsSuccess, JsValue, Reads, Writes}
 
 sealed trait TaskStatus {
   val jsonString: String
-  def isCompleted: Boolean   = this == TaskStatus.Completed
+  def isCompleted: Boolean   = this == TaskStatus.Completed || isUnavailable || isError
   def isUnavailable: Boolean = this == TaskStatus.Unavailable
 
   def isError: Boolean = this == TaskStatus.Error
