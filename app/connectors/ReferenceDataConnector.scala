@@ -17,6 +17,7 @@
 package connectors
 
 import config.FrontendAppConfig
+import models.DeclarationTypeItemLevel
 import models.PackingType.{Bulk, Other, Unpacked}
 import models.reference._
 import play.api.Logging
@@ -73,6 +74,11 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   def getTransportChargesMethodOfPaymentTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[TransportChargesMethodOfPayment]] = {
     val serviceUrl = s"${config.referenceDataUrl}/lists/TransportChargesMethodOfPayment"
     http.GET[Seq[TransportChargesMethodOfPayment]](serviceUrl, headers = version2Header)
+  }
+
+  def getDeclarationTypeItemLevel()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[DeclarationTypeItemLevel]] = {
+    val serviceUrl = s"${config.referenceDataUrl}/lists/DeclarationTypeItemLevel"
+    http.GET[Seq[DeclarationTypeItemLevel]](serviceUrl, headers = version2Header)
   }
 
   def getSupplyChainActorTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[SupplyChainActorType]] = {

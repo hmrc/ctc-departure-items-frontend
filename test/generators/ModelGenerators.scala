@@ -17,6 +17,7 @@
 package generators
 
 import config.Constants._
+import config.TestConstants.declarationTypeItemValues
 import models.AddressLine.{Country => _, _}
 import models.DocumentType.{Previous, Support, Transport}
 import models.LockCheck.{LockCheckFailure, Locked, Unlocked}
@@ -54,9 +55,9 @@ trait ModelGenerators {
       Gen.oneOf(DocumentType.values)
     }
 
-  implicit lazy val arbitraryDeclarationType: Arbitrary[DeclarationType] =
+  implicit lazy val arbitraryDeclarationTypeItemLevel: Arbitrary[DeclarationTypeItemLevel] =
     Arbitrary {
-      Gen.oneOf(DeclarationType.values)
+      Gen.oneOf(declarationTypeItemValues)
     }
 
   lazy val arbitraryConsignmentDeclarationType: Arbitrary[String] =

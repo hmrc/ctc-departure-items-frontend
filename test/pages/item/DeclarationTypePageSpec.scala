@@ -16,17 +16,17 @@
 
 package pages.item
 
-import models.DeclarationType
+import models.DeclarationTypeItemLevel
 import pages.behaviours.PageBehaviours
 
 class DeclarationTypePageSpec extends PageBehaviours {
 
   "DeclarationTypePage" - {
 
-    beRetrievable[DeclarationType](DeclarationTypePage(itemIndex))
+    beRetrievable[DeclarationTypeItemLevel](DeclarationTypePage(itemIndex))
 
-    beSettable[DeclarationType](DeclarationTypePage(itemIndex))
+    beSettable[DeclarationTypeItemLevel](DeclarationTypePage(itemIndex))
 
-    beRemovable[DeclarationType](DeclarationTypePage(itemIndex))
+    beRemovable[DeclarationTypeItemLevel](DeclarationTypePage(itemIndex))
   }
 }
