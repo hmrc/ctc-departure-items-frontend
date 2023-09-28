@@ -16,6 +16,7 @@
 
 package controllers.item.additionalReference.index
 
+import config.PhaseConfig
 import controllers.actions._
 import controllers.item.additionalReference.routes
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
@@ -29,7 +30,7 @@ import pages.sections.additionalReference.AdditionalReferenceSection
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.item.additionalReference.index.RemoveAdditionalReferenceView
@@ -45,7 +46,7 @@ class RemoveAdditionalReferenceController @Inject() (
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: RemoveAdditionalReferenceView
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
@@ -60,9 +61,12 @@ class RemoveAdditionalReferenceController @Inject() (
 
   private val form: Form[Boolean] = formProvider("item.additionalReference.index.removeAdditionalReference")
 
+  private def addAnother(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Call =
+    routes.AddAnotherAdditionalReferenceController.onPageLoad(lrn, mode, itemIndex)
+
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, additionalReferenceIndex: Index): Action[AnyContent] =
     actions
-      .requireData(lrn)
+      .requireIndex(lrn, AdditionalReferenceSection(itemIndex, additionalReferenceIndex), addAnother(lrn, mode, itemIndex))
       .andThen(getMandatoryPage(AdditionalReferencePage(itemIndex, additionalReferenceIndex))) {
         implicit request =>
           Ok(view(form, lrn, mode, itemIndex, additionalReferenceIndex, additionalReference(itemIndex, additionalReferenceIndex)))
@@ -70,11 +74,10 @@ class RemoveAdditionalReferenceController @Inject() (
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, additionalReferenceIndex: Index): Action[AnyContent] =
     actions
-      .requireData(lrn)
+      .requireIndex(lrn, AdditionalReferenceSection(itemIndex, additionalReferenceIndex), addAnother(lrn, mode, itemIndex))
       .andThen(getMandatoryPage(AdditionalReferencePage(itemIndex, additionalReferenceIndex)))
       .async {
         implicit request =>
-          lazy val redirect = routes.AddAnotherAdditionalReferenceController.onPageLoad(lrn, mode, itemIndex)
           form
             .bindFromRequest()
             .fold(
@@ -88,9 +91,9 @@ class RemoveAdditionalReferenceController @Inject() (
                     .removeFromUserAnswers()
                     .updateTask()
                     .writeToSession()
-                    .navigateTo(redirect)
+                    .navigateTo(addAnother(lrn, mode, itemIndex))
                 case false =>
-                  Future.successful(Redirect(redirect))
+                  Future.successful(Redirect(addAnother(lrn, mode, itemIndex)))
               }
             )
       }

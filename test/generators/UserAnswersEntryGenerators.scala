@@ -16,10 +16,11 @@
 
 package generators
 
-import models.{DeclarationType, SupplyChainActorType}
-import models.reference.{AdditionalInformation, AdditionalReference, Country, PackageType}
+import models._
+import models.reference._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
+import pages.external.ConsignmentAddDocumentsPage
 import play.api.libs.json._
 import queries.Gettable
 
@@ -36,15 +37,19 @@ trait UserAnswersEntryGenerators {
 
   private def generateExternalAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.external._
+    import pages.sections.external._
     {
-      case CustomsOfficeOfDeparturePage        => Gen.alphaNumStr.map(JsString)
-      case CustomsOfficeOfDepartureInCL112Page => arbitrary[Boolean].map(JsBoolean)
-      case TransitOperationDeclarationTypePage => arbitrary[DeclarationType].map(Json.toJson(_))
-      case TransitOperationTIRCarnetNumberPage => Gen.alphaNumStr.map(JsString)
-      case ConsignmentUCRPage                  => Gen.alphaNumStr.map(JsString)
-      case ConsignmentCountryOfDispatchPage    => arbitrary[Country].map(Json.toJson(_))
-      case ConsignmentCountryOfDestinationPage => arbitrary[Country].map(Json.toJson(_))
-      case ApprovedOperatorPage                => arbitrary[Boolean].map(JsBoolean)
+      case CustomsOfficeOfDeparturePage               => Gen.alphaNumStr.map(JsString)
+      case CustomsOfficeOfDepartureInCL112Page        => arbitrary[Boolean].map(JsBoolean)
+      case TransitOperationDeclarationTypePage        => arbitrary[String](arbitraryConsignmentDeclarationType).map(Json.toJson(_))
+      case TransitOperationTIRCarnetNumberPage        => Gen.alphaNumStr.map(JsString)
+      case ConsignmentUCRPage                         => Gen.alphaNumStr.map(JsString)
+      case ConsignmentCountryOfDispatchPage           => arbitrary[Country].map(Json.toJson(_))
+      case ConsignmentCountryOfDestinationPage        => arbitrary[Country].map(Json.toJson(_))
+      case ApprovedOperatorPage                       => arbitrary[Boolean].map(JsBoolean)
+      case SecurityDetailsTypePage                    => arbitrary[String](arbitrarySecurityDetailsType).map(Json.toJson(_))
+      case ConsignmentConsigneeSection                => arbitrary[JsObject]
+      case ConsignmentCountryOfDestinationInCL009Page => arbitrary[Boolean].map(JsBoolean)
     }
   }
 
@@ -52,7 +57,7 @@ trait UserAnswersEntryGenerators {
     import pages.item._
     val pf: PartialFunction[Gettable[_], Gen[JsValue]] = {
       case DescriptionPage(_)                      => Gen.alphaNumStr.map(JsString)
-      case DeclarationTypePage(_)                  => arbitrary[DeclarationType].map(Json.toJson(_))
+      case DeclarationTypePage(_)                  => arbitrary[DeclarationTypeItemLevel].map(Json.toJson(_))
       case CountryOfDispatchPage(_)                => arbitrary[Country].map(Json.toJson(_))
       case CountryOfDestinationPage(_)             => arbitrary[Country].map(Json.toJson(_))
       case AddCombinedNomenclatureCodeYesNoPage(_) => arbitrary[Boolean].map(JsBoolean)
@@ -71,12 +76,16 @@ trait UserAnswersEntryGenerators {
       case SupplementaryUnitsPage(_)               => arbitrary[BigDecimal].map(Json.toJson(_))
       case AddSupplyChainActorYesNoPage(_)         => arbitrary[Boolean].map(JsBoolean)
       case AddDocumentsYesNoPage(_)                => arbitrary[Boolean].map(JsBoolean)
+      case ConsignmentAddDocumentsPage             => arbitrary[Boolean].map(JsBoolean)
       case AddAdditionalReferenceYesNoPage(_)      => arbitrary[Boolean].map(JsBoolean)
       case AddAdditionalInformationYesNoPage(_)    => arbitrary[Boolean].map(JsBoolean)
+      case AddTransportChargesYesNoPage(_)         => arbitrary[Boolean].map(JsBoolean)
+      case TransportChargesMethodOfPaymentPage(_)  => arbitrary[TransportChargesMethodOfPayment].map(Json.toJson(_))
     }
     pf orElse
       generateDangerousGoodsAnswer orElse
       generatePackageAnswer orElse
+      generateConsigneeAnswer orElse
       generateSupplyChainActorAnswer orElse
       generateDocumentsAnswer orElse
       generateAdditionalReferenceAnswer orElse
@@ -98,6 +107,17 @@ trait UserAnswersEntryGenerators {
       case NumberOfPackagesPage(_, _)     => Gen.posNum[Int].map(Json.toJson(_))
       case AddShippingMarkYesNoPage(_, _) => arbitrary[Boolean].map(JsBoolean)
       case ShippingMarkPage(_, _)         => Gen.alphaNumStr.map(JsString)
+    }
+  }
+
+  private def generateConsigneeAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
+    import pages.item.consignee._
+    {
+      case AddConsigneeEoriNumberYesNoPage(_) => arbitrary[Boolean].map(JsBoolean)
+      case IdentificationNumberPage(_)        => Gen.alphaNumStr.map(JsString)
+      case NamePage(_)                        => Gen.alphaNumStr.map(JsString)
+      case CountryPage(_)                     => arbitrary[Country].map(Json.toJson(_))
+      case AddressPage(_)                     => arbitrary[DynamicAddress].map(Json.toJson(_))
     }
   }
 

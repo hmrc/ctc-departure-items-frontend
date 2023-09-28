@@ -16,24 +16,45 @@
 
 package services
 
+import config.PhaseConfig
 import connectors.ReferenceDataConnector
-import models.SelectableList
+import models.{Phase, SelectableList}
 import models.reference.AdditionalInformation
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AdditionalInformationService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
+sealed trait AdditionalInformationService {
 
-  def getAdditionalInformationTypes()(implicit hc: HeaderCarrier): Future[SelectableList[AdditionalInformation]] =
+  val referenceDataConnector: ReferenceDataConnector
+
+  implicit val ec: ExecutionContext
+
+  def predicate: AdditionalInformation => Boolean
+
+  def getAdditionalInformationTypes()(implicit phaseConfig: PhaseConfig, hc: HeaderCarrier): Future[SelectableList[AdditionalInformation]] =
     referenceDataConnector
       .getAdditionalInformationTypes()
-      .map {
-        _.filter(_.code != "30600")
-      }
+      .map(_.filter(predicate))
       .map(sort)
 
-  private def sort(additionalInformationTypes: Seq[AdditionalInformation]): SelectableList[AdditionalInformation] =
+  def sort(additionalInformationTypes: Seq[AdditionalInformation]): SelectableList[AdditionalInformation] =
     SelectableList(additionalInformationTypes.sortBy(_.description.toLowerCase))
+}
+
+class TransitionAdditionalInformationService @Inject() (
+  override val referenceDataConnector: ReferenceDataConnector
+)(implicit override val ec: ExecutionContext)
+    extends AdditionalInformationService {
+
+  override def predicate: AdditionalInformation => Boolean = _ => true
+}
+
+class PostTransitionAdditionalInformationService @Inject() (
+  override val referenceDataConnector: ReferenceDataConnector
+)(implicit override val ec: ExecutionContext)
+    extends AdditionalInformationService {
+  override def predicate: AdditionalInformation => Boolean = _.code != "30600"
+
 }

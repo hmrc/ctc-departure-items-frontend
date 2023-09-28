@@ -16,21 +16,33 @@
 
 package views.item
 
+import base.AppWithDefaultMockFixtures
 import forms.NetWeightFormProvider
 import models.NormalMode
 import org.scalacheck.Arbitrary
+import play.api.Application
 import play.api.data.Form
+import play.api.test.Helpers.running
 import play.twirl.api.HtmlFormat
 import viewmodels.InputSize
 import views.behaviours.InputTextViewBehaviours
 import views.html.item.NetWeightView
 
-class NetWeightViewSpec extends InputTextViewBehaviours[BigDecimal] {
+class NetWeightViewSpec extends InputTextViewBehaviours[BigDecimal] with AppWithDefaultMockFixtures {
 
-  override def form: Form[BigDecimal] = new NetWeightFormProvider()(prefix, grossWeight)
+  private def formProvider(app: Application): Form[BigDecimal] =
+    app.injector.instanceOf[NetWeightFormProvider].apply(prefix, grossWeight)
+
+  override def form: Form[BigDecimal] = formProvider(app)
 
   override def applyView(form: Form[BigDecimal]): HtmlFormat.Appendable =
-    injector.instanceOf[NetWeightView].apply(form, lrn, NormalMode, itemIndex)(fakeRequest, messages)
+    applyView(app, form)
+
+  private def applyView(app: Application): HtmlFormat.Appendable =
+    applyView(app, formProvider(app))
+
+  private def applyView(app: Application, form: Form[BigDecimal]): HtmlFormat.Appendable =
+    app.injector.instanceOf[NetWeightView].apply(form, lrn, NormalMode, itemIndex)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[BigDecimal] = Arbitrary(positiveBigDecimals)
 
@@ -46,9 +58,23 @@ class NetWeightViewSpec extends InputTextViewBehaviours[BigDecimal] {
 
   behave like pageWithHeading()
 
-  behave like pageWithHint("Enter the weight in kilograms (kg), up to 6 decimal places.")
-
   behave like pageWithInputText(Some(InputSize.Width20))
 
   behave like pageWithSubmitButton("Save and continue")
+
+  "when during transition" - {
+    val app = transitionApplicationBuilder().build()
+    running(app) {
+      val doc = parseView(applyView(app))
+      behave like pageWithHint(doc, "Enter the weight in kilograms (kg), up to 3 decimal places.")
+    }
+  }
+
+  "when post transition" - {
+    val app = postTransitionApplicationBuilder().build()
+    running(app) {
+      val doc = parseView(applyView(app))
+      behave like pageWithHint(doc, "Enter the weight in kilograms (kg), up to 6 decimal places.")
+    }
+  }
 }

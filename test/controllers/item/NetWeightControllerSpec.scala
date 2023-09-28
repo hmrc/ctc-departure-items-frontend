@@ -18,6 +18,7 @@ package controllers.item
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.NetWeightFormProvider
+import generators.Generators
 import models.NormalMode
 import navigation.ItemNavigatorProvider
 import org.mockito.ArgumentMatchers.any
@@ -31,9 +32,9 @@ import views.html.item.NetWeightView
 
 import scala.concurrent.Future
 
-class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val formProvider        = new NetWeightFormProvider()
+  private val formProvider        = app.injector.instanceOf[NetWeightFormProvider]
   private val grossWeight         = BigDecimal(2)
   private val form                = formProvider("item.netWeight", grossWeight)
   private val mode                = NormalMode

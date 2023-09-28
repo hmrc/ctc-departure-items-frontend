@@ -16,6 +16,7 @@
 
 package controllers.item.additionalInformation.index
 
+import config.PhaseConfig
 import controllers.actions._
 import controllers.item.additionalInformation.routes
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
@@ -23,8 +24,9 @@ import forms.YesNoFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import pages.item.additionalInformation.index.AdditionalInformationTypePage
 import pages.sections.additionalInformation.AdditionalInformationSection
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.item.additionalInformation.index.RemoveAdditionalInformationView
@@ -40,43 +42,42 @@ class RemoveAdditionalInformationController @Inject() (
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: RemoveAdditionalInformationView
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
+  private val form: Form[Boolean] = formProvider("item.additionalInformation.index.removeAdditionalInformation")
+
+  private def addAnother(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Call =
+    routes.AddAnotherAdditionalInformationController.onPageLoad(lrn, mode, itemIndex)
+
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, additionalInformationIndex: Index): Action[AnyContent] =
     actions
-      .requireData(lrn)
+      .requireIndex(lrn, AdditionalInformationSection(itemIndex, additionalInformationIndex), addAnother(lrn, mode, itemIndex))
       .andThen(getMandatoryPage(AdditionalInformationTypePage(itemIndex, additionalInformationIndex))) {
         implicit request =>
-          val additionalInformationType = request.arg.toString
-          val form                      = formProvider("item.additionalInformation.index.removeAdditionalInformation")
-          Ok(view(form, lrn, mode, itemIndex, additionalInformationIndex, additionalInformationType))
+          Ok(view(form, lrn, mode, itemIndex, additionalInformationIndex, request.arg.toString))
       }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, additionalInformationIndex: Index): Action[AnyContent] =
     actions
-      .requireData(lrn)
+      .requireIndex(lrn, AdditionalInformationSection(itemIndex, additionalInformationIndex), addAnother(lrn, mode, itemIndex))
       .andThen(getMandatoryPage(AdditionalInformationTypePage(itemIndex, additionalInformationIndex)))
       .async {
         implicit request =>
-          lazy val redirect             = routes.AddAnotherAdditionalInformationController.onPageLoad(lrn, mode, itemIndex)
-          val additionalInformationType = request.arg.toString
-          val form                      = formProvider("item.additionalInformation.index.removeAdditionalInformation")
           form
             .bindFromRequest()
             .fold(
-              formWithErrors =>
-                Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex, additionalInformationIndex, additionalInformationType))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex, additionalInformationIndex, request.arg.toString))),
               {
                 case true =>
                   AdditionalInformationSection(itemIndex, additionalInformationIndex)
                     .removeFromUserAnswers()
                     .updateTask()
                     .writeToSession()
-                    .navigateTo(redirect)
+                    .navigateTo(addAnother(lrn, mode, itemIndex))
                 case false =>
-                  Future.successful(Redirect(redirect))
+                  Future.successful(Redirect(addAnother(lrn, mode, itemIndex)))
               }
             )
       }

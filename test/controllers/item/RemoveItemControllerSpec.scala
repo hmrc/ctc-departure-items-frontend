@@ -19,16 +19,18 @@ package controllers.item
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.{routes => itemRoutes}
 import forms.YesNoFormProvider
+import generators.Generators
 import models.{Index, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, verify}
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.sections.ItemSection
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.item.RemoveItemView
 
-class RemoveItemControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class RemoveItemControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   private val formProvider           = new YesNoFormProvider()
   private def form(itemIndex: Index) = formProvider("item.removeItem", itemIndex.display)
@@ -38,79 +40,90 @@ class RemoveItemControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
   "RemoveItem Controller" - {
 
     "must return OK and the correct view for a GET" in {
+      forAll(arbitraryItemAnswers(emptyUserAnswers, itemIndex)) {
+        userAnswers =>
+          setExistingUserAnswers(userAnswers)
 
-      setExistingUserAnswers(emptyUserAnswers)
+          val request = FakeRequest(GET, removeItemRoute)
+          val result  = route(app, request).value
 
-      val request = FakeRequest(GET, removeItemRoute)
-      val result  = route(app, request).value
+          val view = injector.instanceOf[RemoveItemView]
 
-      val view = injector.instanceOf[RemoveItemView]
+          status(result) mustEqual OK
 
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(form(itemIndex), lrn, itemIndex)(request, messages).toString
+          contentAsString(result) mustEqual
+            view(form(itemIndex), lrn, itemIndex)(request, messages).toString
+      }
     }
 
     "must redirect to the next page" - {
       "when yes is submitted" in {
+        forAll(arbitraryItemAnswers(emptyUserAnswers, itemIndex)) {
+          userAnswers =>
+            beforeEach()
 
-        setExistingUserAnswers(emptyUserAnswers)
+            setExistingUserAnswers(userAnswers)
 
-        val request = FakeRequest(POST, removeItemRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+            val request = FakeRequest(POST, removeItemRoute)
+              .withFormUrlEncodedBody(("value", "true"))
 
-        val result = route(app, request).value
+            val result = route(app, request).value
 
-        status(result) mustEqual SEE_OTHER
+            status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual
-          itemRoutes.AddAnotherItemController.onPageLoad(lrn).url
+            redirectLocation(result).value mustEqual
+              itemRoutes.AddAnotherItemController.onPageLoad(lrn).url
 
-        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-        verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
+            val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+            verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
 
-        userAnswersCaptor.getValue.get(ItemSection(itemIndex)) mustNot be(defined)
+            userAnswersCaptor.getValue.get(ItemSection(itemIndex)) mustNot be(defined)
+        }
       }
 
       "when no is submitted" in {
+        forAll(arbitraryItemAnswers(emptyUserAnswers, itemIndex)) {
+          userAnswers =>
+            beforeEach()
 
-        setExistingUserAnswers(emptyUserAnswers)
+            setExistingUserAnswers(userAnswers)
 
-        val request = FakeRequest(POST, removeItemRoute)
-          .withFormUrlEncodedBody(("value", "false"))
+            val request = FakeRequest(POST, removeItemRoute)
+              .withFormUrlEncodedBody(("value", "false"))
 
-        val result = route(app, request).value
+            val result = route(app, request).value
 
-        status(result) mustEqual SEE_OTHER
+            status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual
-          itemRoutes.AddAnotherItemController.onPageLoad(lrn).url
+            redirectLocation(result).value mustEqual
+              itemRoutes.AddAnotherItemController.onPageLoad(lrn).url
 
-        verify(mockSessionRepository, never()).set(any())(any())
+            verify(mockSessionRepository, never()).set(any())(any())
+        }
       }
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
+      forAll(arbitraryItemAnswers(emptyUserAnswers, itemIndex)) {
+        userAnswers =>
+          setExistingUserAnswers(userAnswers)
 
-      setExistingUserAnswers(emptyUserAnswers)
+          val request   = FakeRequest(POST, removeItemRoute).withFormUrlEncodedBody(("value", ""))
+          val boundForm = form(itemIndex).bind(Map("value" -> ""))
 
-      val request   = FakeRequest(POST, removeItemRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form(itemIndex).bind(Map("value" -> ""))
+          val result = route(app, request).value
 
-      val result = route(app, request).value
+          status(result) mustEqual BAD_REQUEST
 
-      status(result) mustEqual BAD_REQUEST
+          val view = injector.instanceOf[RemoveItemView]
 
-      val view = injector.instanceOf[RemoveItemView]
-
-      contentAsString(result) mustEqual
-        view(boundForm, lrn, itemIndex)(request, messages).toString
+          contentAsString(result) mustEqual
+            view(boundForm, lrn, itemIndex)(request, messages).toString
+      }
     }
 
-    "must redirect to Session Expired for a GET" - {
-      "if no existing data is found" in {
-
+    "must redirect for a GET" - {
+      "when no existing data is found" in {
         setNoExistingUserAnswers()
 
         val request = FakeRequest(GET, removeItemRoute)
@@ -121,11 +134,23 @@ class RemoveItemControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
         redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
       }
+
+      "when no item is found" in {
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(GET, removeItemRoute)
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual
+          controllers.routes.AddAnotherItemController.onPageLoad(lrn).url
+      }
     }
 
-    "must redirect to Session Expired for a POST" - {
-      "if no existing data is found" in {
-
+    "must redirect for a POST" - {
+      "when no existing data is found" in {
         setNoExistingUserAnswers()
 
         val request = FakeRequest(POST, removeItemRoute)
@@ -136,6 +161,20 @@ class RemoveItemControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      }
+
+      "when no item is found" in {
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(POST, removeItemRoute)
+          .withFormUrlEncodedBody(("value", "true"))
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual
+          controllers.routes.AddAnotherItemController.onPageLoad(lrn).url
       }
     }
   }

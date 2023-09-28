@@ -16,8 +16,9 @@
 
 package base
 
+import config.{PostTransitionModule, TransitionModule}
 import controllers.actions._
-import models.{Index, Mode, UserAnswers}
+import models.{Index, LockCheck, Mode, UserAnswers}
 import navigation._
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -40,7 +41,7 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
     reset(mockSessionRepository); reset(mockDataRetrievalActionProvider); reset(mockLockService)
 
     when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
-    when(mockLockService.checkLock(any())(any())).thenReturn(Future.successful(true))
+    when(mockLockService.checkLock(any())(any())).thenReturn(Future.successful(LockCheck.Unlocked))
   }
 
   final val mockSessionRepository: SessionRepository                     = mock[SessionRepository]
@@ -91,7 +92,7 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
     (mode: Mode, itemIndex: Index, additionalInformationIndex: Index) =>
       new FakeAdditionalInformationNavigator(onwardRoute, mode, itemIndex, additionalInformationIndex)
 
-  def guiceApplicationBuilder(): GuiceApplicationBuilder =
+  private def defaultApplicationBuilder(): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .overrides(
         bind[DataRequiredAction].to[DataRequiredActionImpl],
@@ -102,4 +103,17 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[DependentTasksAction].to[FakeDependentTasksAction],
         bind[LockService].toInstance(mockLockService)
       )
+
+  protected def guiceApplicationBuilder(): GuiceApplicationBuilder =
+    defaultApplicationBuilder()
+
+  protected def transitionApplicationBuilder(): GuiceApplicationBuilder =
+    guiceApplicationBuilder()
+      .disable[PostTransitionModule]
+      .bindings(new TransitionModule)
+
+  protected def postTransitionApplicationBuilder(): GuiceApplicationBuilder =
+    guiceApplicationBuilder()
+      .disable[TransitionModule]
+      .bindings(new PostTransitionModule)
 }

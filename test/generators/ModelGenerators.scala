@@ -17,12 +17,15 @@
 package generators
 
 import config.Constants._
+import config.TestConstants.declarationTypeValues
 import models.AddressLine.{Country => _, _}
 import models.DocumentType.{Previous, Support, Transport}
+import models.LockCheck.{LockCheckFailure, Locked, Unlocked}
 import models._
 import models.reference._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import uk.gov.hmrc.http.HttpVerbs._
 
@@ -30,6 +33,14 @@ import java.util.UUID
 
 trait ModelGenerators {
   self: Generators =>
+
+  implicit lazy val arbitraryMethodOfPayment: Arbitrary[TransportChargesMethodOfPayment] =
+    Arbitrary {
+      for {
+        code        <- nonEmptyString
+        description <- nonEmptyString
+      } yield TransportChargesMethodOfPayment(code, description)
+    }
 
   implicit lazy val arbitrarySupplyChainActorType: Arbitrary[SupplyChainActorType] =
     Arbitrary {
@@ -41,19 +52,24 @@ trait ModelGenerators {
       Gen.oneOf(DocumentType.values)
     }
 
-  implicit lazy val arbitraryDeclarationType: Arbitrary[DeclarationType] =
+  implicit lazy val arbitraryDeclarationTypeItemLevel: Arbitrary[DeclarationTypeItemLevel] =
     Arbitrary {
-      Gen.oneOf(DeclarationType.values)
+      Gen.oneOf(declarationTypeValues)
     }
 
-  lazy val arbitraryNonTDeclarationType: Arbitrary[DeclarationType] =
+  lazy val arbitraryConsignmentDeclarationType: Arbitrary[String] =
     Arbitrary {
-      Gen.oneOf(DeclarationType.values.filterNot(_ == DeclarationType.T))
+      Gen.oneOf("T", "T1", "T2", "T2F", "TIR")
     }
 
-  lazy val arbitraryNonTIRDeclarationType: Arbitrary[DeclarationType] =
+  lazy val arbitraryNonTDeclarationType: Arbitrary[String] =
     Arbitrary {
-      Gen.oneOf(DeclarationType.values.filterNot(_ == DeclarationType.TIR))
+      Gen.oneOf("T1", "T2", "T2F", "TIR")
+    }
+
+  lazy val arbitraryNonTIRDeclarationType: Arbitrary[String] =
+    Arbitrary {
+      Gen.oneOf("T", "T1", "T2", "T2F")
     }
 
   implicit lazy val arbitraryTransportEquipment: Arbitrary[TransportEquipment] =
@@ -243,5 +259,27 @@ trait ModelGenerators {
   lazy val arbitraryIncompleteTaskStatus: Arbitrary[TaskStatus] = Arbitrary {
     Gen.oneOf(TaskStatus.InProgress, TaskStatus.NotStarted, TaskStatus.CannotStartYet)
   }
+
+  lazy val arbitrarySecurityDetailsType: Arbitrary[String] =
+    Arbitrary {
+      Gen.oneOf("0", "1", "2", "3")
+    }
+
+  lazy val arbitrarySomeSecurityDetailsType: Arbitrary[String] =
+    Arbitrary {
+      Gen.oneOf("1", "2", "3")
+    }
+
+  implicit lazy val arbitraryJsObject: Arbitrary[JsObject] = Arbitrary {
+    Gen.oneOf(
+      Json.obj(),
+      Json.obj("foo" -> "bar")
+    )
+  }
+
+  implicit lazy val arbitraryLockCheck: Arbitrary[LockCheck] =
+    Arbitrary {
+      Gen.oneOf(Locked, Unlocked, LockCheckFailure)
+    }
 
 }

@@ -17,7 +17,7 @@
 package pages.external
 
 import models.reference.Country
-import pages.ReadOnlyPage
+import pages.{preRequisitesPath, ReadOnlyPage}
 import play.api.libs.json.JsPath
 
 case object ConsignmentCountryOfDispatchPage extends ReadOnlyPage[Country] {

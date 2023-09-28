@@ -16,7 +16,7 @@
 
 package views.item
 
-import forms.Constants.maxItemDescriptionLength
+import base.SpecBase
 import forms.item.DescriptionFormProvider
 import models.NormalMode
 import play.api.data.Form
@@ -24,9 +24,11 @@ import play.twirl.api.HtmlFormat
 import views.behaviours.CharacterCountViewBehaviours
 import views.html.item.DescriptionView
 
-class DescriptionViewSpec extends CharacterCountViewBehaviours {
+class DescriptionViewSpec extends SpecBase with CharacterCountViewBehaviours {
 
-  override def form: Form[String] = new DescriptionFormProvider()(prefix, itemIndex.display)
+  private val formProvider = new DescriptionFormProvider()(phaseConfig)
+
+  override def form: Form[String] = formProvider(prefix, itemIndex.display)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
     injector.instanceOf[DescriptionView].apply(form, lrn, NormalMode, itemIndex)(fakeRequest, messages)
@@ -43,7 +45,7 @@ class DescriptionViewSpec extends CharacterCountViewBehaviours {
 
   behave like pageWithContent("p", "This should be clear and detailed enough for anyone involved in the transit movement to understand its contents.")
 
-  behave like pageWithCharacterCount(maxItemDescriptionLength)
+  behave like pageWithCharacterCount(phaseConfig.maxItemDescriptionLength)
 
   behave like pageWithSubmitButton("Save and continue")
 }

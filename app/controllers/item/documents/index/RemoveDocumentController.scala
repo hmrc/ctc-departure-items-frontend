@@ -16,7 +16,7 @@
 
 package controllers.item.documents.index
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import controllers.actions._
 import controllers.item.documents.routes
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
@@ -26,7 +26,7 @@ import pages.sections.documents.DocumentSection
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc._
 import repositories.SessionRepository
 import services.DocumentsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -44,45 +44,50 @@ class RemoveDocumentController @Inject() (
   view: RemoveDocumentView,
   service: DocumentsService,
   config: FrontendAppConfig
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport
     with Logging {
 
   private val form: Form[Boolean] = formProvider("item.documents.index.removeDocument")
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
-    implicit request =>
-      service.getDocument(request.userAnswers, itemIndex, documentIndex) match {
-        case Some(document) => Ok(view(form, lrn, mode, itemIndex, documentIndex, document))
-        case None           => handleError
-      }
-  }
+  private def addAnother(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Call =
+    routes.AddAnotherDocumentController.onPageLoad(lrn, mode, itemIndex)
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
-    implicit request =>
-      lazy val redirect = routes.AddAnotherDocumentController.onPageLoad(lrn, mode, itemIndex)
-      service.getDocument(request.userAnswers, itemIndex, documentIndex) match {
-        case Some(document) =>
-          form
-            .bindFromRequest()
-            .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex, documentIndex, document))),
-              {
-                case true =>
-                  DocumentSection(itemIndex, documentIndex)
-                    .removeFromUserAnswers()
-                    .updateTask()
-                    .writeToSession()
-                    .navigateTo(redirect)
-                case false =>
-                  Future.successful(Redirect(redirect))
-              }
-            )
-        case None =>
-          Future.successful(handleError)
-      }
-  }
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, documentIndex: Index): Action[AnyContent] = actions
+    .requireIndex(lrn, DocumentSection(itemIndex, documentIndex), addAnother(lrn, mode, itemIndex)) {
+      implicit request =>
+        service.getDocument(request.userAnswers, itemIndex, documentIndex) match {
+          case Some(document) => Ok(view(form, lrn, mode, itemIndex, documentIndex, document))
+          case None           => handleError
+        }
+    }
+
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, documentIndex: Index): Action[AnyContent] = actions
+    .requireIndex(lrn, DocumentSection(itemIndex, documentIndex), addAnother(lrn, mode, itemIndex))
+    .async {
+      implicit request =>
+        service.getDocument(request.userAnswers, itemIndex, documentIndex) match {
+          case Some(document) =>
+            form
+              .bindFromRequest()
+              .fold(
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex, documentIndex, document))),
+                {
+                  case true =>
+                    DocumentSection(itemIndex, documentIndex)
+                      .removeFromUserAnswers()
+                      .updateTask()
+                      .writeToSession()
+                      .navigateTo(addAnother(lrn, mode, itemIndex))
+                  case false =>
+                    Future.successful(Redirect(addAnother(lrn, mode, itemIndex)))
+                }
+              )
+          case None =>
+            Future.successful(handleError)
+        }
+    }
 
   private def handleError: Result = {
     logger.error("Failed to find document")

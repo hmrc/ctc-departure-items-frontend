@@ -16,6 +16,7 @@
 
 package controllers.item.dangerousGoods.index
 
+import config.PhaseConfig
 import controllers.actions._
 import controllers.item.dangerousGoods.routes
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
@@ -26,7 +27,7 @@ import pages.item.dangerousGoods.index.UNNumberPage
 import pages.sections.dangerousGoods.DangerousGoodsSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.item.dangerousGoods.index.RemoveUNNumberView
@@ -42,7 +43,7 @@ class RemoveUNNumberController @Inject() (
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: RemoveUNNumberView
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -51,20 +52,21 @@ class RemoveUNNumberController @Inject() (
   private def form(implicit request: Request): Form[Boolean] =
     formProvider("item.dangerousGoods.index.removeUNNumber", request.arg)
 
+  private def addAnother(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Call =
+    routes.AddAnotherDangerousGoodsController.onPageLoad(lrn, mode, itemIndex)
+
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, dangerousGoodsIndex: Index): Action[AnyContent] = actions
-    .requireData(lrn)
+    .requireIndex(lrn, DangerousGoodsSection(itemIndex, dangerousGoodsIndex), addAnother(lrn, mode, itemIndex))
     .andThen(getMandatoryPage(UNNumberPage(itemIndex, dangerousGoodsIndex))) {
       implicit request =>
         Ok(view(form, lrn, mode, itemIndex, dangerousGoodsIndex, request.arg))
     }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, dangerousGoodsIndex: Index): Action[AnyContent] = actions
-    .requireData(lrn)
+    .requireIndex(lrn, DangerousGoodsSection(itemIndex, dangerousGoodsIndex), addAnother(lrn, mode, itemIndex))
     .andThen(getMandatoryPage(UNNumberPage(itemIndex, dangerousGoodsIndex)))
     .async {
       implicit request =>
-        lazy val redirect = routes.AddAnotherDangerousGoodsController.onPageLoad(lrn, mode, itemIndex)
-
         form
           .bindFromRequest()
           .fold(
@@ -75,9 +77,9 @@ class RemoveUNNumberController @Inject() (
                   .removeFromUserAnswers()
                   .updateTask()
                   .writeToSession()
-                  .navigateTo(redirect)
+                  .navigateTo(addAnother(lrn, mode, itemIndex))
               case false =>
-                Future.successful(Redirect(redirect))
+                Future.successful(Redirect(addAnother(lrn, mode, itemIndex)))
             }
           )
     }

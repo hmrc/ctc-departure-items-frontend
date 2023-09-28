@@ -29,7 +29,9 @@ class SupplementaryUnitsViewSpec extends InputTextViewBehaviours[BigDecimal] {
 
   override val prefix: String = "item.supplementaryUnits"
 
-  override def form: Form[BigDecimal] = new BigDecimalFormProvider()(prefix)
+  private val decimalPlace: Int       = positiveInts.sample.value
+  private val characterCount: Int     = positiveInts.sample.value
+  override def form: Form[BigDecimal] = app.injector.instanceOf[BigDecimalFormProvider].apply(prefix, decimalPlace, characterCount)
 
   override def applyView(form: Form[BigDecimal]): HtmlFormat.Appendable =
     injector.instanceOf[SupplementaryUnitsView].apply(form, lrn, NormalMode, itemIndex)(fakeRequest, messages)

@@ -16,7 +16,7 @@
 
 package viewmodels.item.documents
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import controllers.item.documents.routes
 import models.{Document, Index, ItemLevelDocuments, Mode, UserAnswers}
 import play.api.i18n.Messages
@@ -51,7 +51,8 @@ object AddAnotherDocumentViewModel {
 
     def apply(userAnswers: UserAnswers, mode: Mode, itemIndex: Index, documents: Seq[Document])(implicit
       messages: Messages,
-      config: FrontendAppConfig
+      config: FrontendAppConfig,
+      phaseConfig: PhaseConfig
     ): AddAnotherDocumentViewModel = {
       val helper = new DocumentAnswersHelper(userAnswers, mode, itemIndex)
 

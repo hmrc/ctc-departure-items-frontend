@@ -16,7 +16,7 @@
 
 package utils.cyaHelpers.item.additionalReference
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import controllers.item.additionalReference.index.routes
 import models.journeyDomain.item.additionalReferences.AdditionalReferenceDomain
 import models.{Index, Mode, UserAnswers}
@@ -26,8 +26,11 @@ import play.api.i18n.Messages
 import utils.cyaHelpers.AnswersHelper
 import viewmodels.ListItem
 
-class AdditionalReferenceAnswersHelper(userAnswers: UserAnswers, mode: Mode, itemIndex: Index)(implicit messages: Messages, config: FrontendAppConfig)
-    extends AnswersHelper(userAnswers, mode) {
+class AdditionalReferenceAnswersHelper(userAnswers: UserAnswers, mode: Mode, itemIndex: Index)(implicit
+  messages: Messages,
+  config: FrontendAppConfig,
+  phaseConfig: PhaseConfig
+) extends AnswersHelper(userAnswers, mode) {
 
   def listItems: Seq[Either[ListItem, ListItem]] =
     buildListItems(AdditionalReferencesSection(itemIndex)) {

@@ -19,7 +19,7 @@ package connectors
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
 import helper.WireMockServerHandler
-import models.PackingType
+import models.{DeclarationTypeItemLevel, PackingType}
 import models.reference._
 import org.scalacheck.Gen
 import org.scalatest.Assertion
@@ -41,19 +41,19 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
   private lazy val connector: ReferenceDataConnector = app.injector.instanceOf[ReferenceDataConnector]
 
-  private val countriesResponseJson: String =
+  private def countriesResponseJson(listName: String): String =
     s"""
        |{
        |  "_links": {
        |    "self": {
-       |      "href": "/customs-reference-data/lists/CountryCodesFullList"
+       |      "href": "/customs-reference-data/lists/$listName"
        |    }
        |  },
        |  "meta": {
        |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
        |    "snapshotDate": "2023-01-01"
        |  },
-       |  "id": "CountryCodesFullList",
+       |  "id": "$listName",
        |  "data": [
        |    {
        |      "activeFrom": "2023-01-23",
@@ -149,13 +149,84 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       |}
       |""".stripMargin
 
+  private val methodOfPaymentJson: String =
+    """
+      |{
+      |  "_links": {
+      |    "self": {
+      |      "href": "/customs-reference-data/lists/TransportChargesMethodOfPayment"
+      |    }
+      |  },
+      |  "meta": {
+      |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+      |    "snapshotDate": "2023-01-01"
+      |  },
+      |  "id": "MethodOfPayment",
+      |  "data": [
+      | {
+      |    "method": "A",
+      |    "description": "Payment By Card"
+      |  },
+      |  {
+      |    "method": "B",
+      |    "description": "PayPal"
+      |  }
+      |]
+      |}
+      |""".stripMargin
+
+  private val declarationTypesResponseJson: String =
+    """
+      |{
+      |  "_links": {
+      |    "self": {
+      |      "href": "/customs-reference-data/lists/DeclarationTypeItemLevel"
+      |    }
+      |  },
+      |  "meta": {
+      |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+      |    "snapshotDate": "2023-01-01"
+      |  },
+      |  "id": "DeclarationTypeItemLevel",
+      |  "data": [
+      |    {
+      |      "code": "T2",
+      |      "description": "Goods having the customs status of Union goods, which are placed under the common transit procedure"
+      |    },
+      |    {
+      |      "code": "TIR",
+      |      "description": "TIR carnet"
+      |    }
+      |  ]
+      |}
+      |""".stripMargin
+
   "Reference Data" - {
+
+    "getDeclarationTypeItemLevel" - {
+      val url = s"/$baseUrl/lists/DeclarationTypeItemLevel"
+      "must return Seq of declaration types when successful" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(declarationTypesResponseJson))
+        )
+
+        val expectedResult: Seq[DeclarationTypeItemLevel] = Seq(
+          DeclarationTypeItemLevel("T2", "Goods having the customs status of Union goods, which are placed under the common transit procedure"),
+          DeclarationTypeItemLevel("TIR", "TIR carnet")
+        )
+
+        val res = connector.getDeclarationTypeItemLevel().futureValue
+
+        res mustEqual expectedResult
+      }
+    }
 
     "getCountries" - {
       "must return Seq of Country when successful" in {
         server.stubFor(
           get(urlEqualTo(s"/$baseUrl/lists/CountryCodesFullList"))
-            .willReturn(okJson(countriesResponseJson))
+            .willReturn(okJson(countriesResponseJson("CountryCodesFullList")))
         )
 
         val expectedResult: Seq[Country] = Seq(
@@ -168,6 +239,46 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
       "must return an exception when an error response is returned" in {
         checkErrorResponse(s"/$baseUrl/lists/CountryCodesFullList", connector.getCountries)
+      }
+    }
+
+    "getCountryCodesForAddress" - {
+      "must return Seq of Country when successful" in {
+        server.stubFor(
+          get(urlEqualTo(s"/$baseUrl/lists/CountryCodesForAddress"))
+            .willReturn(okJson(countriesResponseJson("CountryCodesForAddress")))
+        )
+
+        val expectedResult: Seq[Country] = Seq(
+          Country(CountryCode("GB"), "United Kingdom"),
+          Country(CountryCode("AD"), "Andorra")
+        )
+
+        connector.getCountryCodesForAddress.futureValue mustEqual expectedResult
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(s"/$baseUrl/lists/CountryCodesFullList", connector.getCountries)
+      }
+    }
+
+    "getCountriesWithoutZip" - {
+      "must return Seq of Country when successful" in {
+        server.stubFor(
+          get(urlEqualTo(s"/$baseUrl/lists/CountryWithoutZip"))
+            .willReturn(okJson(countriesResponseJson("CountryWithoutZip")))
+        )
+
+        val expectedResult: Seq[CountryCode] = Seq(
+          CountryCode("GB"),
+          CountryCode("AD")
+        )
+
+        connector.getCountriesWithoutZip().futureValue mustEqual expectedResult
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(s"/$baseUrl/country-without-zip", connector.getCountriesWithoutZip())
       }
     }
 
@@ -283,6 +394,26 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         checkErrorResponse(s"/$baseUrl/lists/AdditionalInformation", connector.getAdditionalInformationTypes())
       }
 
+    }
+
+    "getMethodOfPaymentTypes" - {
+      "must return Seq of MethodOfPayments when successful" in {
+        server.stubFor(
+          get(urlEqualTo(s"/$baseUrl/lists/TransportChargesMethodOfPayment"))
+            .willReturn(okJson(methodOfPaymentJson))
+        )
+
+        val expectedResult: Seq[TransportChargesMethodOfPayment] = Seq(
+          TransportChargesMethodOfPayment("A", "Payment By Card"),
+          TransportChargesMethodOfPayment("B", "PayPal")
+        )
+
+        connector.getTransportChargesMethodOfPaymentTypes().futureValue mustEqual expectedResult
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(s"/$baseUrl/lists/TransportChargesMethodOfPayment", connector.getTransportChargesMethodOfPaymentTypes())
+      }
     }
 
   }

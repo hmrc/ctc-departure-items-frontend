@@ -46,7 +46,7 @@ class AdditionalInformationTypeViewSpec extends InputSelectViewBehaviours[Additi
 
   behave like pageWithSelect()
 
-  behave like pageWithoutHint()
-
   behave like pageWithSubmitButton("Save and continue")
+
+  behave like pageWithHint("Enter the information name or code, like Export or 20300.")
 }

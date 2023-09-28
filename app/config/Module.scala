@@ -30,6 +30,7 @@ class Module extends AbstractModule {
     bind(classOf[DataRequiredAction]).to(classOf[DataRequiredActionImpl]).asEagerSingleton()
     bind(classOf[LockActionProvider]).to(classOf[LockActionProviderImpl]).asEagerSingleton()
     bind(classOf[DependentTasksAction]).to(classOf[DependentTasksActionImpl]).asEagerSingleton()
+    bind(classOf[IndexRequiredActionProvider]).to(classOf[IndexRequiredActionProviderImpl]).asEagerSingleton()
 
     bind(classOf[ItemsNavigatorProvider]).to(classOf[ItemsNavigatorProviderImpl])
     bind(classOf[ItemNavigatorProvider]).to(classOf[ItemNavigatorProviderImpl])

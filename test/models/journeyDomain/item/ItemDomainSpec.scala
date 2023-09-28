@@ -17,17 +17,20 @@
 package models.journeyDomain.item
 
 import base.SpecBase
-import config.Constants.GB
+import config.Constants
+import config.PhaseConfig
+import config.TestConstants
 import generators.Generators
-import models.DeclarationType._
+import models.DeclarationTypeItemLevel._
 import models.journeyDomain.item.additionalInformation.{AdditionalInformationDomain, AdditionalInformationListDomain}
 import models.journeyDomain.item.additionalReferences.{AdditionalReferenceDomain, AdditionalReferencesDomain}
 import models.journeyDomain.item.dangerousGoods.{DangerousGoodsDomain, DangerousGoodsListDomain}
 import models.journeyDomain.item.documents.{DocumentDomain, DocumentsDomain}
 import models.journeyDomain.item.packages.{PackageDomain, PackagesDomain}
 import models.journeyDomain.{EitherType, UserAnswersReader}
-import models.reference.{AdditionalInformation, AdditionalReference, Country, PackageType}
-import models.{DeclarationType, Index}
+import models.reference._
+import models.{DeclarationTypeItemLevel, Index, Phase}
+import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -38,7 +41,7 @@ import pages.item.additionalReference.index._
 import pages.item.dangerousGoods.index.UNNumberPage
 import pages.item.documents.index.DocumentPage
 import pages.item.packages.index._
-import pages.sections.external.{DocumentsSection, TransportEquipmentsSection}
+import pages.sections.external.{ConsignmentConsigneeSection, DocumentsSection, TransportEquipmentsSection}
 import play.api.libs.json.{JsArray, Json}
 
 import java.util.UUID
@@ -46,8 +49,11 @@ import java.util.UUID
 class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   "Item Domain" - {
+    val mockTransitionPhaseConfig = mock[PhaseConfig]
+    when(mockTransitionPhaseConfig.phase).thenReturn(Phase.Transition)
 
-    "can be read from user answers" - {}
+    val mockPostTransitionPhaseConfig = mock[PhaseConfig]
+    when(mockPostTransitionPhaseConfig.phase).thenReturn(Phase.PostTransition)
 
     "userAnswersReader" - {
       "can not be read from user answers" - {
@@ -128,14 +134,14 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
     "declarationTypeReader" - {
       "can be read from user answers" - {
         "when declaration type is not T" in {
-          forAll(arbitrary[DeclarationType](arbitraryNonTDeclarationType)) {
+          forAll(arbitrary[String](arbitraryNonTDeclarationType)) {
             declarationType =>
               val userAnswers = emptyUserAnswers
                 .setValue(TransitOperationDeclarationTypePage, declarationType)
 
               val expectedResult = None
 
-              val result: EitherType[Option[DeclarationType]] = UserAnswersReader[Option[DeclarationType]](
+              val result: EitherType[Option[DeclarationTypeItemLevel]] = UserAnswersReader[Option[DeclarationTypeItemLevel]](
                 ItemDomain.declarationTypeReader(itemIndex)
               ).run(userAnswers)
 
@@ -144,15 +150,15 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         }
 
         "when declaration type is T" in {
-          forAll(arbitrary[DeclarationType]) {
+          forAll(arbitrary[DeclarationTypeItemLevel]) {
             declarationType =>
               val userAnswers = emptyUserAnswers
-                .setValue(TransitOperationDeclarationTypePage, DeclarationType.T)
+                .setValue(TransitOperationDeclarationTypePage, config.Constants.T)
                 .setValue(DeclarationTypePage(itemIndex), declarationType)
 
               val expectedResult = Some(declarationType)
 
-              val result: EitherType[Option[DeclarationType]] = UserAnswersReader[Option[DeclarationType]](
+              val result: EitherType[Option[DeclarationTypeItemLevel]] = UserAnswersReader[Option[DeclarationTypeItemLevel]](
                 ItemDomain.declarationTypeReader(itemIndex)
               ).run(userAnswers)
 
@@ -165,9 +171,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         "when transit operation declaration type is T" - {
           "and declaration type is unanswered" in {
             val userAnswers = emptyUserAnswers
-              .setValue(TransitOperationDeclarationTypePage, DeclarationType.T)
+              .setValue(TransitOperationDeclarationTypePage, config.Constants.T)
 
-            val result: EitherType[Option[DeclarationType]] = UserAnswersReader[Option[DeclarationType]](
+            val result: EitherType[Option[DeclarationTypeItemLevel]] = UserAnswersReader[Option[DeclarationTypeItemLevel]](
               ItemDomain.declarationTypeReader(itemIndex)
             ).run(userAnswers)
 
@@ -180,7 +186,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
     "countryOfDispatchReader" - {
       "can be read from user answers" - {
         "when transit operation declaration type is not TIR" in {
-          forAll(arbitrary[DeclarationType](arbitraryNonTIRDeclarationType)) {
+          forAll(arbitrary[String](arbitraryNonTIRDeclarationType)) {
             declarationType =>
               val userAnswers = emptyUserAnswers
                 .setValue(TransitOperationDeclarationTypePage, declarationType)
@@ -200,7 +206,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
             forAll(arbitrary[Country]) {
               country =>
                 val userAnswers = emptyUserAnswers
-                  .setValue(TransitOperationDeclarationTypePage, DeclarationType.TIR)
+                  .setValue(TransitOperationDeclarationTypePage, config.Constants.TIR)
                   .setValue(ConsignmentCountryOfDispatchPage, country)
 
                 val expectedResult = None
@@ -217,7 +223,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
             forAll(arbitrary[Country]) {
               country =>
                 val userAnswers = emptyUserAnswers
-                  .setValue(TransitOperationDeclarationTypePage, DeclarationType.TIR)
+                  .setValue(TransitOperationDeclarationTypePage, config.Constants.TIR)
                   .setValue(CountryOfDispatchPage(itemIndex), country)
 
                 val expectedResult = Some(country)
@@ -236,7 +242,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         "when transit operation declaration type is TIR" - {
           "and consignment country of dispatch is undefined" in {
             val userAnswers = emptyUserAnswers
-              .setValue(TransitOperationDeclarationTypePage, DeclarationType.TIR)
+              .setValue(TransitOperationDeclarationTypePage, config.Constants.TIR)
 
             val result: EitherType[Option[Country]] = UserAnswersReader[Option[Country]](
               ItemDomain.countryOfDispatchReader(itemIndex)
@@ -254,7 +260,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
           forAll(arbitrary[Country]) {
             country =>
               val userAnswers = emptyUserAnswers
-                .setValue(TransitOperationDeclarationTypePage, DeclarationType.TIR)
+                .setValue(TransitOperationDeclarationTypePage, config.Constants.TIR)
                 .setValue(ConsignmentCountryOfDestinationPage, country)
 
               val expectedResult = None
@@ -271,7 +277,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
           forAll(arbitrary[Country]) {
             country =>
               val userAnswers = emptyUserAnswers
-                .setValue(TransitOperationDeclarationTypePage, DeclarationType.TIR)
+                .setValue(TransitOperationDeclarationTypePage, config.Constants.TIR)
                 .setValue(CountryOfDestinationPage(itemIndex), country)
 
               val expectedResult = Some(country)
@@ -288,7 +294,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
       "can not be read from user answers" - {
         "when consignment country of destination is undefined" in {
           val userAnswers = emptyUserAnswers
-            .setValue(TransitOperationDeclarationTypePage, DeclarationType.TIR)
+            .setValue(TransitOperationDeclarationTypePage, config.Constants.TIR)
 
           val result: EitherType[Option[Country]] = UserAnswersReader[Option[Country]](
             ItemDomain.countryOfDestinationReader(itemIndex)
@@ -301,47 +307,272 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
     "ucrReader" - {
       "can be read from user answers" - {
-        "when consignment UCR is defined" in {
-          forAll(nonEmptyString) {
-            ucr =>
+
+        "when in transition" - {
+          "when consignment UCR is defined" in {
+            forAll(nonEmptyString) {
+              ucr =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(ConsignmentUCRPage, ucr)
+
+                val expectedResult = None
+
+                val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                  ItemDomain.ucrReader(itemIndex)(mockTransitionPhaseConfig)
+                ).run(userAnswers)
+
+                result.value mustBe expectedResult
+            }
+          }
+
+          "when consignment UCR is undefined" - {
+            "and add ucr is answered yes" in {
+              forAll(nonEmptyString) {
+                ucr =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(AddUCRYesNoPage(itemIndex), true)
+                    .setValue(UniqueConsignmentReferencePage(itemIndex), ucr)
+
+                  val expectedResult = Some(ucr)
+
+                  val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                    ItemDomain.ucrReader(itemIndex)(mockTransitionPhaseConfig)
+                  ).run(userAnswers)
+
+                  result.value mustBe expectedResult
+              }
+            }
+
+            "and add ucr is answered no" in {
               val userAnswers = emptyUserAnswers
-                .setValue(ConsignmentUCRPage, ucr)
+                .setValue(AddUCRYesNoPage(itemIndex), false)
 
               val expectedResult = None
 
               val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                ItemDomain.ucrReader(itemIndex)
+                ItemDomain.ucrReader(itemIndex)(mockTransitionPhaseConfig)
               ).run(userAnswers)
 
               result.value mustBe expectedResult
+            }
           }
         }
 
-        "when consignment UCR is undefined" in {
-          forAll(nonEmptyString) {
-            ucr =>
-              val userAnswers = emptyUserAnswers
-                .setValue(UniqueConsignmentReferencePage(itemIndex), ucr)
+        "when in post-transition" - {
+          "when consignment UCR is defined" in {
+            forAll(nonEmptyString) {
+              ucr =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(ConsignmentUCRPage, ucr)
 
-              val expectedResult = Some(ucr)
+                val expectedResult = None
 
-              val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                ItemDomain.ucrReader(itemIndex)
-              ).run(userAnswers)
+                val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                  ItemDomain.ucrReader(itemIndex)(mockPostTransitionPhaseConfig)
+                ).run(userAnswers)
 
-              result.value mustBe expectedResult
+                result.value mustBe expectedResult
+            }
+          }
+
+          "when consignment UCR is undefined" - {
+            "and consignment transport is defined" - {
+              "and add ucr is answered yes" in {
+                forAll(nonEmptyString, arbitrary[UUID]) {
+                  (ucr, documentUUID) =>
+                    val documents = Json
+                      .parse(s"""
+                           |[
+                           |    {
+                           |      "attachToAllItems" : true,
+                           |      "type" : {
+                           |        "type" : "Transport",
+                           |        "code" : "Code 1",
+                           |        "description" : "Description 1"
+                           |      },
+                           |      "details" : {
+                           |        "documentReferenceNumber" : "Ref no. 1",
+                           |        "uuid" : "$documentUUID"
+                           |      }
+                           |    }
+                           |]
+                           |""".stripMargin)
+                      .as[JsArray]
+
+                    val userAnswers = emptyUserAnswers
+                      .setValue(DocumentsSection, documents)
+                      .setValue(AddUCRYesNoPage(itemIndex), true)
+                      .setValue(UniqueConsignmentReferencePage(itemIndex), ucr)
+
+                    val expectedResult = Some(ucr)
+
+                    val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                      ItemDomain.ucrReader(itemIndex)(mockPostTransitionPhaseConfig)
+                    ).run(userAnswers)
+
+                    result.value mustBe expectedResult
+                }
+              }
+
+              "and add ucr is answered no" in {
+                forAll(arbitrary[UUID]) {
+                  documentUUID =>
+                    val documents = Json
+                      .parse(s"""
+                           |[
+                           |    {
+                           |      "attachToAllItems" : true,
+                           |      "type" : {
+                           |        "type" : "Transport",
+                           |        "code" : "Code 1",
+                           |        "description" : "Description 1"
+                           |      },
+                           |      "details" : {
+                           |        "documentReferenceNumber" : "Ref no. 1",
+                           |        "uuid" : "$documentUUID"
+                           |      }
+                           |    }
+                           |]
+                           |""".stripMargin)
+                      .as[JsArray]
+                    val userAnswers = emptyUserAnswers
+                      .setValue(DocumentsSection, documents)
+                      .setValue(AddUCRYesNoPage(itemIndex), false)
+
+                    val expectedResult = None
+
+                    val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                      ItemDomain.ucrReader(itemIndex)(mockPostTransitionPhaseConfig)
+                    ).run(userAnswers)
+
+                    result.value mustBe expectedResult
+                }
+              }
+            }
+
+            "and consignment transport is undefined" in {
+              forAll(nonEmptyString) {
+                ucr =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(UniqueConsignmentReferencePage(itemIndex), ucr)
+
+                  val expectedResult = Some(ucr)
+
+                  val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                    ItemDomain.ucrReader(itemIndex)(mockPostTransitionPhaseConfig)
+                  ).run(userAnswers)
+
+                  result.value mustBe expectedResult
+              }
+            }
+
           }
         }
       }
 
       "cannot be read from user answers" - {
-        "when consignment UCR is undefined" - {
-          "and UCR page is unanswered" in {
-            val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-              ItemDomain.ucrReader(itemIndex)
-            ).run(emptyUserAnswers)
+        "when in transition" - {
+          "when consignment UCR is undefined" - {
+            "and UCRYesNo page is unanswered" in {
+              val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                ItemDomain.ucrReader(itemIndex)(mockTransitionPhaseConfig)
+              ).run(emptyUserAnswers)
 
-            result.left.value.page mustBe UniqueConsignmentReferencePage(itemIndex)
+              result.left.value.page mustBe AddUCRYesNoPage(itemIndex)
+            }
+
+            "and UCR page is unanswered" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(AddUCRYesNoPage(itemIndex), true)
+
+              val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                ItemDomain.ucrReader(itemIndex)(mockTransitionPhaseConfig)
+              ).run(userAnswers)
+
+              result.left.value.page mustBe UniqueConsignmentReferencePage(itemIndex)
+            }
+          }
+        }
+        "when in post-transition" - {
+          "when consignment UCR is undefined" - {
+            "and consignment transport is undefined" - {
+              "and UCR page is unanswered" in {
+                val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                  ItemDomain.ucrReader(itemIndex)(mockPostTransitionPhaseConfig)
+                ).run(emptyUserAnswers)
+
+                result.left.value.page mustBe UniqueConsignmentReferencePage(itemIndex)
+              }
+            }
+
+            "and consignment transport is defined" - {
+
+              "and AddUCRYesNo page is unanswered" in {
+
+                forAll(arbitrary[UUID]) {
+                  documentUUID =>
+                    val documents = Json
+                      .parse(s"""
+                           |[
+                           |    {
+                           |      "attachToAllItems" : true,
+                           |      "type" : {
+                           |        "type" : "Transport",
+                           |        "code" : "Code 1",
+                           |        "description" : "Description 1"
+                           |      },
+                           |      "details" : {
+                           |        "documentReferenceNumber" : "Ref no. 1",
+                           |        "uuid" : "$documentUUID"
+                           |      }
+                           |    }
+                           |]
+                           |""".stripMargin)
+                      .as[JsArray]
+                    val userAnswers = emptyUserAnswers
+                      .setValue(DocumentsSection, documents)
+
+                    val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                      ItemDomain.ucrReader(itemIndex)(mockPostTransitionPhaseConfig)
+                    ).run(userAnswers)
+
+                    result.left.value.page mustBe AddUCRYesNoPage(itemIndex)
+                }
+              }
+              "and UCR page is unanswered" in {
+
+                forAll(arbitrary[UUID]) {
+                  documentUUID =>
+                    val documents = Json
+                      .parse(s"""
+                           |[
+                           |    {
+                           |      "attachToAllItems" : true,
+                           |      "type" : {
+                           |        "type" : "Transport",
+                           |        "code" : "Code 1",
+                           |        "description" : "Description 1"
+                           |      },
+                           |      "details" : {
+                           |        "documentReferenceNumber" : "Ref no. 1",
+                           |        "uuid" : "$documentUUID"
+                           |      }
+                           |    }
+                           |]
+                           |""".stripMargin)
+                      .as[JsArray]
+                    val userAnswers = emptyUserAnswers
+                      .setValue(DocumentsSection, documents)
+                      .setValue(AddUCRYesNoPage(itemIndex), true)
+
+                    val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                      ItemDomain.ucrReader(itemIndex)(mockPostTransitionPhaseConfig)
+                    ).run(userAnswers)
+
+                    result.left.value.page mustBe UniqueConsignmentReferencePage(itemIndex)
+                }
+              }
+            }
           }
         }
       }
@@ -406,100 +637,161 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
     "commodityCodeReader" - {
 
       "can be read from user answers" - {
-        "when TIR Carnet reference number is defined" - {
+        "when in transition" - {
           "and commodity code has been provided" in {
-            forAll(nonEmptyString, nonEmptyString) {
-              (tirReference, commodityCode) =>
+            forAll(nonEmptyString) {
+              commodityCode =>
                 val userAnswers = emptyUserAnswers
-                  .setValue(TransitOperationTIRCarnetNumberPage, tirReference)
                   .setValue(AddCommodityCodeYesNoPage(itemIndex), true)
                   .setValue(CommodityCodePage(itemIndex), commodityCode)
 
                 val expectedResult = Some(commodityCode)
 
                 val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                  ItemDomain.commodityCodeReader(itemIndex)
+                  ItemDomain.commodityCodeReader(itemIndex)(mockTransitionPhaseConfig)
                 ).run(userAnswers)
 
                 result.value mustBe expectedResult
+
             }
+
           }
-
           "and commodity code has not been provided" in {
-            forAll(nonEmptyString) {
-              tirReference =>
-                val userAnswers = emptyUserAnswers
-                  .setValue(TransitOperationTIRCarnetNumberPage, tirReference)
-                  .setValue(AddCommodityCodeYesNoPage(itemIndex), false)
+            val userAnswers = emptyUserAnswers
+              .setValue(AddCommodityCodeYesNoPage(itemIndex), false)
 
-                val expectedResult = None
+            val expectedResult = None
 
-                val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                  ItemDomain.commodityCodeReader(itemIndex)
-                ).run(userAnswers)
+            val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+              ItemDomain.commodityCodeReader(itemIndex)(mockTransitionPhaseConfig)
+            ).run(userAnswers)
 
-                result.value mustBe expectedResult
-            }
+            result.value mustBe expectedResult
           }
         }
+        "when in post-transition" - {
+          "and TIR Carnet reference number is defined" - {
+            "and commodity code has been provided" in {
+              forAll(nonEmptyString, nonEmptyString) {
+                (tirReference, commodityCode) =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(TransitOperationTIRCarnetNumberPage, tirReference)
+                    .setValue(AddCommodityCodeYesNoPage(itemIndex), true)
+                    .setValue(CommodityCodePage(itemIndex), commodityCode)
 
-        "when TIR Carnet reference number is undefined" in {
-          forAll(nonEmptyString) {
-            commodityCode =>
-              val userAnswers = emptyUserAnswers
-                .setValue(CommodityCodePage(itemIndex), commodityCode)
+                  val expectedResult = Some(commodityCode)
 
-              val expectedResult = Some(commodityCode)
+                  val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                    ItemDomain.commodityCodeReader(itemIndex)(mockPostTransitionPhaseConfig)
+                  ).run(userAnswers)
 
-              val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                ItemDomain.commodityCodeReader(itemIndex)
-              ).run(userAnswers)
+                  result.value mustBe expectedResult
+              }
+            }
 
-              result.value mustBe expectedResult
+            "and commodity code has not been provided" in {
+              forAll(nonEmptyString) {
+                tirReference =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(TransitOperationTIRCarnetNumberPage, tirReference)
+                    .setValue(AddCommodityCodeYesNoPage(itemIndex), false)
+
+                  val expectedResult = None
+
+                  val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                    ItemDomain.commodityCodeReader(itemIndex)(mockPostTransitionPhaseConfig)
+                  ).run(userAnswers)
+
+                  result.value mustBe expectedResult
+              }
+            }
+          }
+
+          "when TIR Carnet reference number is undefined" in {
+            forAll(nonEmptyString) {
+              commodityCode =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(CommodityCodePage(itemIndex), commodityCode)
+
+                val expectedResult = Some(commodityCode)
+
+                val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                  ItemDomain.commodityCodeReader(itemIndex)(mockPostTransitionPhaseConfig)
+                ).run(userAnswers)
+
+                result.value mustBe expectedResult
+            }
           }
         }
       }
 
       "can not be read from user answers" - {
 
-        "when TIR Carnet reference number is defined" - {
-          "and add commodity code yes/no is unanswered" in {
-            forAll(nonEmptyString) {
-              tirReference =>
-                val userAnswers = emptyUserAnswers
-                  .setValue(TransitOperationTIRCarnetNumberPage, tirReference)
+        "when in transition" - {
+          "and commodity code yes/no is unanswered" in {
 
-                val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                  ItemDomain.commodityCodeReader(itemIndex)
-                ).run(userAnswers)
-
-                result.left.value.page mustBe AddCommodityCodeYesNoPage(itemIndex)
-            }
-          }
-
-          "and commodity code is unanswered" in {
-            forAll(nonEmptyString) {
-              tirReference =>
-                val userAnswers = emptyUserAnswers
-                  .setValue(TransitOperationTIRCarnetNumberPage, tirReference)
-                  .setValue(AddCommodityCodeYesNoPage(itemIndex), true)
-
-                val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                  ItemDomain.commodityCodeReader(itemIndex)
-                ).run(userAnswers)
-
-                result.left.value.page mustBe CommodityCodePage(itemIndex)
-            }
-          }
-        }
-
-        "when TIR Carnet reference number is undefined" - {
-          "and commodity code is unanswered" in {
             val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-              ItemDomain.commodityCodeReader(itemIndex)
+              ItemDomain.commodityCodeReader(itemIndex)(mockTransitionPhaseConfig)
             ).run(emptyUserAnswers)
 
+            result.left.value.page mustBe AddCommodityCodeYesNoPage(itemIndex)
+          }
+
+          "and commodity code is unanswered" in {
+
+            val userAnswers = emptyUserAnswers
+              .setValue(AddCommodityCodeYesNoPage(itemIndex), true)
+
+            val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+              ItemDomain.commodityCodeReader(itemIndex)(mockTransitionPhaseConfig)
+            ).run(userAnswers)
+
             result.left.value.page mustBe CommodityCodePage(itemIndex)
+
+          }
+
+        }
+
+        "when in post-transition" - {
+          "and TIR Carnet reference number is defined" - {
+            "and add commodity code yes/no is unanswered" in {
+              forAll(nonEmptyString) {
+                tirReference =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(TransitOperationTIRCarnetNumberPage, tirReference)
+
+                  val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                    ItemDomain.commodityCodeReader(itemIndex)
+                  ).run(userAnswers)
+
+                  result.left.value.page mustBe AddCommodityCodeYesNoPage(itemIndex)
+              }
+            }
+
+            "and commodity code is unanswered" in {
+              forAll(nonEmptyString) {
+                tirReference =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(TransitOperationTIRCarnetNumberPage, tirReference)
+                    .setValue(AddCommodityCodeYesNoPage(itemIndex), true)
+
+                  val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                    ItemDomain.commodityCodeReader(itemIndex)(mockPostTransitionPhaseConfig)
+                  ).run(userAnswers)
+
+                  result.left.value.page mustBe CommodityCodePage(itemIndex)
+              }
+            }
+          }
+
+          "when TIR Carnet reference number is undefined" - {
+            "and commodity code is unanswered" in {
+              val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                ItemDomain.commodityCodeReader(itemIndex)(mockPostTransitionPhaseConfig)
+              ).run(emptyUserAnswers)
+
+              result.left.value.page mustBe CommodityCodePage(itemIndex)
+            }
           }
         }
       }
@@ -795,84 +1087,170 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
     "packagesReader" - {
       "can be read from user answers" - {
-        "when unpacked packageType added" in {
-          forAll(arbitrary[PackageType](arbitraryUnpackedPackageType), Gen.posNum[Int].sample.value, arbitrary[String]) {
-            (packageType, quantity, shippingMark) =>
-              val userAnswers = emptyUserAnswers
-                .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
-                .setValue(NumberOfPackagesPage(itemIndex, packageIndex), quantity)
-                .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
-                .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
+        "when in transition" - {
+          "when unpacked packageType added" in {
+            forAll(arbitrary[PackageType](arbitraryUnpackedPackageType), Gen.posNum[Int].sample.value, arbitrary[String]) {
+              (packageType, quantity, shippingMark) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+                  .setValue(NumberOfPackagesPage(itemIndex, packageIndex), quantity)
+                  .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
+                  .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
 
-              val expectedResult =
-                PackagesDomain(
-                  Seq(
-                    PackageDomain(
-                      packageType,
-                      Some(quantity),
-                      Some(shippingMark)
-                    )(itemIndex, packageIndex)
+                val expectedResult =
+                  PackagesDomain(
+                    Seq(
+                      PackageDomain(
+                        packageType,
+                        Some(quantity),
+                        Some(shippingMark)
+                      )(itemIndex, packageIndex)
+                    )
                   )
-                )
 
-              val result: EitherType[PackagesDomain] = UserAnswersReader[PackagesDomain](
-                ItemDomain.packagesReader(itemIndex)
-              ).run(userAnswers)
+                val result: EitherType[PackagesDomain] = UserAnswersReader[PackagesDomain](
+                  ItemDomain.packagesReader(itemIndex)(mockTransitionPhaseConfig)
+                ).run(userAnswers)
 
-              result.value mustBe expectedResult
+                result.value mustBe expectedResult
+            }
+          }
+
+          "when bulk packageType added" in {
+            forAll(arbitrary[PackageType](arbitraryBulkPackageType), arbitrary[String]) {
+              (packageType, shippingMark) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+                  .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
+                  .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
+
+                val expectedResult =
+                  PackagesDomain(
+                    Seq(
+                      PackageDomain(
+                        packageType,
+                        None,
+                        Some(shippingMark)
+                      )(itemIndex, packageIndex)
+                    )
+                  )
+
+                val result: EitherType[PackagesDomain] = UserAnswersReader[PackagesDomain](
+                  ItemDomain.packagesReader(itemIndex)(mockTransitionPhaseConfig)
+                ).run(userAnswers)
+
+                result.value mustBe expectedResult
+            }
+          }
+
+          "when other packageType added" in {
+            forAll(arbitrary[PackageType](arbitraryOtherPackageType), arbitrary[Int], arbitrary[String]) {
+              (packageType, numberOfPackages, shippingMark) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+                  .setValue(NumberOfPackagesPage(itemIndex, packageIndex), numberOfPackages)
+                  .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
+
+                val expectedResult =
+                  PackagesDomain(
+                    Seq(
+                      PackageDomain(
+                        packageType,
+                        Some(numberOfPackages),
+                        Some(shippingMark)
+                      )(itemIndex, packageIndex)
+                    )
+                  )
+
+                val result: EitherType[PackagesDomain] = UserAnswersReader[PackagesDomain](
+                  ItemDomain.packagesReader(itemIndex)(mockTransitionPhaseConfig)
+                ).run(userAnswers)
+
+                result.value mustBe expectedResult
+            }
           }
         }
+        "when in post-transition" - {
+          "when unpacked packageType added" in {
+            forAll(arbitrary[PackageType](arbitraryUnpackedPackageType), Gen.posNum[Int].sample.value, arbitrary[String]) {
+              (packageType, quantity, shippingMark) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+                  .setValue(NumberOfPackagesPage(itemIndex, packageIndex), quantity)
+                  .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
+                  .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
 
-        "when bulk packageType added" in {
-          forAll(arbitrary[PackageType](arbitraryBulkPackageType), arbitrary[String]) {
-            (packageType, shippingMark) =>
-              val userAnswers = emptyUserAnswers
-                .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
-                .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
-                .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
-
-              val expectedResult =
-                PackagesDomain(
-                  Seq(
-                    PackageDomain(
-                      packageType,
-                      None,
-                      Some(shippingMark)
-                    )(itemIndex, packageIndex)
+                val expectedResult =
+                  PackagesDomain(
+                    Seq(
+                      PackageDomain(
+                        packageType,
+                        Some(quantity),
+                        Some(shippingMark)
+                      )(itemIndex, packageIndex)
+                    )
                   )
-                )
 
-              val result: EitherType[PackagesDomain] = UserAnswersReader[PackagesDomain](
-                ItemDomain.packagesReader(itemIndex)
-              ).run(userAnswers)
+                val result: EitherType[PackagesDomain] = UserAnswersReader[PackagesDomain](
+                  ItemDomain.packagesReader(itemIndex)(mockPostTransitionPhaseConfig)
+                ).run(userAnswers)
 
-              result.value mustBe expectedResult
+                result.value mustBe expectedResult
+            }
           }
-        }
 
-        "when other packageType added" in {
-          forAll(arbitrary[PackageType](arbitraryOtherPackageType), arbitrary[String]) {
-            (packageType, shippingMark) =>
-              val userAnswers = emptyUserAnswers
-                .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
-                .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
+          "when bulk packageType added" in {
+            forAll(arbitrary[PackageType](arbitraryBulkPackageType), arbitrary[String]) {
+              (packageType, shippingMark) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+                  .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
+                  .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
 
-              val expectedResult =
-                PackagesDomain(
-                  Seq(
-                    PackageDomain(
-                      packageType,
-                      None,
-                      Some(shippingMark)
-                    )(itemIndex, packageIndex)
+                val expectedResult =
+                  PackagesDomain(
+                    Seq(
+                      PackageDomain(
+                        packageType,
+                        None,
+                        Some(shippingMark)
+                      )(itemIndex, packageIndex)
+                    )
                   )
-                )
 
-              val result: EitherType[PackagesDomain] = UserAnswersReader[PackagesDomain](
-                ItemDomain.packagesReader(itemIndex)
-              ).run(userAnswers)
+                val result: EitherType[PackagesDomain] = UserAnswersReader[PackagesDomain](
+                  ItemDomain.packagesReader(itemIndex)(mockPostTransitionPhaseConfig)
+                ).run(userAnswers)
 
-              result.value mustBe expectedResult
+                result.value mustBe expectedResult
+            }
+          }
+
+          "when other packageType added" in {
+            forAll(arbitrary[PackageType](arbitraryOtherPackageType), arbitrary[String], arbitrary[Int]) {
+              (packageType, shippingMark, numberOfPackages) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+                  .setValue(NumberOfPackagesPage(itemIndex, packageIndex), numberOfPackages)
+                  .setValue(ShippingMarkPage(itemIndex, packageIndex), shippingMark)
+
+                val expectedResult =
+                  PackagesDomain(
+                    Seq(
+                      PackageDomain(
+                        packageType,
+                        Some(numberOfPackages),
+                        Some(shippingMark)
+                      )(itemIndex, packageIndex)
+                    )
+                  )
+
+                val result: EitherType[PackagesDomain] = UserAnswersReader[PackagesDomain](
+                  ItemDomain.packagesReader(itemIndex)(mockPostTransitionPhaseConfig)
+                ).run(userAnswers)
+
+                result.value mustBe expectedResult
+            }
           }
         }
       }
@@ -888,46 +1266,239 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
       }
     }
 
+    "consigneeReader" - {
+      "when post-transition" - {
+        val mockPhaseConfig = mock[PhaseConfig]
+        when(mockPhaseConfig.phase).thenReturn(Phase.PostTransition)
+
+        "then result must not be defined" in {
+          forAll(arbitraryConsigneeAnswers(emptyUserAnswers, itemIndex)) {
+            userAnswers =>
+              val result = UserAnswersReader[Option[ConsigneeDomain]](
+                ItemDomain.consigneeReader(itemIndex)(mockPhaseConfig)
+              ).run(userAnswers)
+
+              result.value must not be defined
+          }
+        }
+      }
+
+      "when during transition" - {
+        val mockPhaseConfig = mock[PhaseConfig]
+        when(mockPhaseConfig.phase).thenReturn(Phase.Transition)
+
+        "and consignee info present at consignment level" - {
+          "and country of destination is in set CL009" - {
+            "then result must not be defined" in {
+              val initialAnswers = emptyUserAnswers
+                .setValue(ConsignmentConsigneeSection, Json.obj("foo" -> "bar"))
+                .setValue(ConsignmentCountryOfDestinationInCL009Page, true)
+
+              forAll(arbitraryConsigneeAnswers(initialAnswers, itemIndex)) {
+                userAnswers =>
+                  val result = UserAnswersReader[Option[ConsigneeDomain]](
+                    ItemDomain.consigneeReader(itemIndex)(mockPhaseConfig)
+                  ).run(userAnswers)
+
+                  result.value must not be defined
+              }
+            }
+          }
+
+          "and country of destination is not in set CL009" - {
+            "then result must be defined" in {
+              val initialAnswers = emptyUserAnswers
+                .setValue(ConsignmentConsigneeSection, Json.obj("foo" -> "bar"))
+                .setValue(ConsignmentCountryOfDestinationInCL009Page, false)
+
+              forAll(arbitraryConsigneeAnswers(initialAnswers, itemIndex)) {
+                userAnswers =>
+                  val result = UserAnswersReader[Option[ConsigneeDomain]](
+                    ItemDomain.consigneeReader(itemIndex)(mockPhaseConfig)
+                  ).run(userAnswers)
+
+                  result.value must be(defined)
+              }
+            }
+          }
+
+          "and country of destination is undefined" - {
+            "then result must be defined" in {
+              val initialAnswers = emptyUserAnswers
+                .setValue(ConsignmentConsigneeSection, Json.obj("foo" -> "bar"))
+
+              forAll(arbitraryConsigneeAnswers(initialAnswers, itemIndex)) {
+                userAnswers =>
+                  val result = UserAnswersReader[Option[ConsigneeDomain]](
+                    ItemDomain.consigneeReader(itemIndex)(mockPhaseConfig)
+                  ).run(userAnswers)
+
+                  result.value must be(defined)
+              }
+            }
+          }
+        }
+
+        "and consignee info not present at consignment level" - {
+          "and country of destination is in set CL009" - {
+            "then result must be defined" in {
+              val initialAnswers = emptyUserAnswers
+                .setValue(ConsignmentCountryOfDestinationInCL009Page, true)
+
+              forAll(arbitraryConsigneeAnswers(initialAnswers, itemIndex)) {
+                userAnswers =>
+                  val result = UserAnswersReader[Option[ConsigneeDomain]](
+                    ItemDomain.consigneeReader(itemIndex)(mockPhaseConfig)
+                  ).run(userAnswers)
+
+                  result.value must be(defined)
+              }
+            }
+          }
+
+          "and country of destination is not in set CL009" - {
+            "then result must be defined" in {
+              val initialAnswers = emptyUserAnswers
+                .setValue(ConsignmentCountryOfDestinationInCL009Page, false)
+
+              forAll(arbitraryConsigneeAnswers(initialAnswers, itemIndex)) {
+                userAnswers =>
+                  val result = UserAnswersReader[Option[ConsigneeDomain]](
+                    ItemDomain.consigneeReader(itemIndex)(mockPhaseConfig)
+                  ).run(userAnswers)
+
+                  result.value must be(defined)
+              }
+            }
+          }
+
+          "and country of destination is undefined" - {
+            "then result must be defined" in {
+              forAll(arbitraryConsigneeAnswers(emptyUserAnswers, itemIndex)) {
+                userAnswers =>
+                  val result = UserAnswersReader[Option[ConsigneeDomain]](
+                    ItemDomain.consigneeReader(itemIndex)(mockPhaseConfig)
+                  ).run(userAnswers)
+
+                  result.value must be(defined)
+              }
+            }
+          }
+        }
+      }
+    }
+
     "documentsReader" - {
       val gbCustomsOfficeGen = nonEmptyString.map(
-        x => s"$GB$x"
+        x => s"${Constants.GB}$x"
       )
-      val nonGgbCustomsOfficeGen = nonEmptyString.retryUntil(!_.startsWith(GB))
+      val nonGgbCustomsOfficeGen = nonEmptyString.retryUntil(!_.startsWith(Constants.GB))
 
-      val genForT2OrT2F    = Gen.oneOf(T2, T2F)
-      val genForNonT2OrT2F = Gen.oneOf(T1, TIR, T)
-      val genForNonT       = Gen.oneOf(T2, T2F, TIR, T1)
+      val genForT2OrT2FConsignmentLevel                         = Gen.oneOf(config.Constants.T2, config.Constants.T2F)
+      val genForT2OrT2FItemLevel: Gen[DeclarationTypeItemLevel] = Gen.oneOf(TestConstants.declarationTypeT2, TestConstants.declarationTypeT2F)
+      val genForNonT2OrT2F: Gen[DeclarationTypeItemLevel] =
+        Gen.oneOf(TestConstants.declarationTypeT1, TestConstants.declarationTypeTIR, TestConstants.declarationTypeT)
+      val genForOtherConsignmentLevel: Gen[String]            = Gen.oneOf(config.Constants.TIR, config.Constants.T1)
+      val genForOtherItemLevel: Gen[DeclarationTypeItemLevel] = Gen.oneOf(TestConstants.declarationTypeTIR, TestConstants.declarationTypeT1)
 
       "can be read from user answers" - {
-        "when T declaration type, T2/T2F item declaration type, GB office of departure and consignment-level previous document is present" - {
-          "and adding documents" in {
-            forAll(gbCustomsOfficeGen, genForT2OrT2F, arbitrary[UUID]) {
-              (customsOfficeId, declarationType, documentUUID) =>
-                val documents = Json
-                  .parse(s"""
-                       |[
-                       |    {
-                       |      "attachToAllItems" : true,
-                       |      "type" : {
-                       |        "type" : "Previous",
-                       |        "code" : "Code 1",
-                       |        "description" : "Description 1"
-                       |      },
-                       |      "details" : {
-                       |        "documentReferenceNumber" : "Ref no. 1",
-                       |        "uuid" : "$documentUUID"
-                       |      }
-                       |    }
-                       |]
-                       |""".stripMargin)
-                  .as[JsArray]
 
+        "when declaration type is T2 or T2F and GB office of departure" - {
+
+          "and Consignment level previous document is defined for all items" - {
+
+            "and AddDocumentsYesNoPage is true" in {
+
+              forAll(gbCustomsOfficeGen, genForT2OrT2FConsignmentLevel, arbitrary[UUID]) {
+                (customsOfficeId, declarationType, documentUUID) =>
+                  val documents = Json
+                    .parse(s"""
+                         |[
+                         |    {
+                         |      "attachToAllItems" : true,
+                         |      "type" : {
+                         |        "type" : "Previous",
+                         |        "code" : "Code 1",
+                         |        "description" : "Description 1"
+                         |      },
+                         |      "details" : {
+                         |        "documentReferenceNumber" : "Ref no. 1",
+                         |        "uuid" : "$documentUUID"
+                         |      }
+                         |    }
+                         |]
+                         |""".stripMargin)
+                    .as[JsArray]
+
+                  val userAnswers = emptyUserAnswers
+                    .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
+                    .setValue(TransitOperationDeclarationTypePage, declarationType)
+                    .setValue(AddDocumentsYesNoPage(itemIndex), true)
+                    .setValue(DocumentsSection, documents)
+                    .setValue(DocumentPage(itemIndex, Index(0)), documentUUID)
+
+                  val expectedResult = Some(
+                    DocumentsDomain(
+                      Seq(
+                        DocumentDomain(documentUUID)(itemIndex, Index(0))
+                      )
+                    )
+                  )
+
+                  val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
+                    ItemDomain.documentsReader(itemIndex)
+                  ).run(userAnswers)
+
+                  result.value mustBe expectedResult
+              }
+
+            }
+
+            "and AddDocumentsYesNoPage is false" in {
+
+              forAll(gbCustomsOfficeGen, genForT2OrT2FConsignmentLevel, arbitrary[UUID]) {
+                (customsOfficeId, declarationType, documentUUID) =>
+                  val documents = Json
+                    .parse(s"""
+                         |[
+                         |    {
+                         |      "attachToAllItems" : true,
+                         |      "type" : {
+                         |        "type" : "Previous",
+                         |        "code" : "Code 1",
+                         |        "description" : "Description 1"
+                         |      },
+                         |      "details" : {
+                         |        "documentReferenceNumber" : "Ref no. 1",
+                         |        "uuid" : "$documentUUID"
+                         |      }
+                         |    }
+                         |]
+                         |""".stripMargin)
+                    .as[JsArray]
+
+                  val userAnswers = emptyUserAnswers
+                    .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
+                    .setValue(TransitOperationDeclarationTypePage, declarationType)
+                    .setValue(AddDocumentsYesNoPage(itemIndex), false)
+                    .setValue(DocumentsSection, documents)
+
+                  val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
+                    ItemDomain.documentsReader(itemIndex)
+                  ).run(userAnswers)
+
+                  result.value mustBe None
+              }
+            }
+          }
+
+          "and Consignment level previous document is not defined" in {
+
+            forAll(gbCustomsOfficeGen, genForT2OrT2FConsignmentLevel, arbitrary[UUID]) {
+              (customsOfficeId, declarationType, documentUUID) =>
                 val userAnswers = emptyUserAnswers
                   .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
-                  .setValue(TransitOperationDeclarationTypePage, DeclarationType.T)
-                  .setValue(DeclarationTypePage(itemIndex), declarationType)
-                  .setValue(DocumentsSection, documents)
-                  .setValue(AddDocumentsYesNoPage(itemIndex), true)
+                  .setValue(TransitOperationDeclarationTypePage, declarationType)
                   .setValue(DocumentPage(itemIndex, Index(0)), documentUUID)
 
                 val expectedResult = Some(
@@ -946,14 +1517,15 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
             }
           }
 
-          "and not adding documents" in {
-            forAll(gbCustomsOfficeGen, genForT2OrT2F, arbitrary[UUID]) {
+          "and Consignment level previous document is defined but not for all items" in {
+
+            forAll(gbCustomsOfficeGen, genForT2OrT2FConsignmentLevel, arbitrary[UUID]) {
               (customsOfficeId, declarationType, documentUUID) =>
                 val documents = Json
                   .parse(s"""
                        |[
                        |    {
-                       |      "attachToAllItems" : true,
+                       |      "attachToAllItems" : false,
                        |      "type" : {
                        |        "type" : "Previous",
                        |        "code" : "Code 1",
@@ -970,12 +1542,17 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                 val userAnswers = emptyUserAnswers
                   .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
-                  .setValue(TransitOperationDeclarationTypePage, DeclarationType.T)
-                  .setValue(DeclarationTypePage(itemIndex), declarationType)
+                  .setValue(TransitOperationDeclarationTypePage, declarationType)
+                  .setValue(DocumentPage(itemIndex, Index(0)), documentUUID)
                   .setValue(DocumentsSection, documents)
-                  .setValue(AddDocumentsYesNoPage(itemIndex), false)
 
-                val expectedResult = None
+                val expectedResult = Some(
+                  DocumentsDomain(
+                    Seq(
+                      DocumentDomain(documentUUID)(itemIndex, Index(0))
+                    )
+                  )
+                )
 
                 val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
                   ItemDomain.documentsReader(itemIndex)
@@ -986,88 +1563,407 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
           }
         }
 
-        "when not any of T declaration type, T2/T2F item declaration type, GB office of departure and consignment-level previous document not present" in {
+        "when mixed declaration type (T) and GB office of departure" - {
 
-          forAll(nonGgbCustomsOfficeGen, genForNonT, genForNonT2OrT2F, arbitrary[UUID]) {
-            (customsOfficeId, declarationType, itemDeclarationType, documentUUID) =>
-              val documents = Json
-                .parse(s"""
-                       |[
-                       |    {
-                       |      "attachToAllItems" : false,
-                       |      "previousDocumentType" : {
-                       |        "type" : "Type 1",
-                       |        "code" : "Code 1",
-                       |        "description" : "Description 1"
-                       |      },
-                       |      "details" : {
-                       |        "documentReferenceNumber" : "Ref no. 1",
-                       |        "uuid" : "$documentUUID"
-                       |      }
-                       |    }
-                       |]
-                       |""".stripMargin)
-                .as[JsArray]
+          "and item level declaration type is T2 or T2F" - {
 
-              val userAnswers = emptyUserAnswers
-                .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
-                .setValue(TransitOperationDeclarationTypePage, declarationType)
-                .setValue(DeclarationTypePage(itemIndex), itemDeclarationType)
-                .setValue(DocumentsSection, documents)
-                .setValue(DocumentPage(itemIndex, Index(0)), documentUUID)
+            "and Consignment level previous document is defined for all items" - {
 
-              val expectedResult = Some(
-                DocumentsDomain(
-                  Seq(
-                    DocumentDomain(documentUUID)(itemIndex, Index(0))
+              "and AddDocumentsYesNoPage is true" in {
+
+                forAll(gbCustomsOfficeGen, genForT2OrT2FItemLevel, arbitrary[UUID]) {
+                  (customsOfficeId, declarationType, documentUUID) =>
+                    val documents = Json
+                      .parse(s"""
+                           |[
+                           |    {
+                           |      "attachToAllItems" : true,
+                           |      "type" : {
+                           |        "type" : "Previous",
+                           |        "code" : "Code 1",
+                           |        "description" : "Description 1"
+                           |      },
+                           |      "details" : {
+                           |        "documentReferenceNumber" : "Ref no. 1",
+                           |        "uuid" : "$documentUUID"
+                           |      }
+                           |    }
+                           |]
+                           |""".stripMargin)
+                      .as[JsArray]
+
+                    val userAnswers = emptyUserAnswers
+                      .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
+                      .setValue(TransitOperationDeclarationTypePage, config.Constants.T)
+                      .setValue(DeclarationTypePage(index), declarationType)
+                      .setValue(AddDocumentsYesNoPage(itemIndex), true)
+                      .setValue(DocumentsSection, documents)
+                      .setValue(DocumentPage(itemIndex, Index(0)), documentUUID)
+
+                    val expectedResult = Some(
+                      DocumentsDomain(
+                        Seq(
+                          DocumentDomain(documentUUID)(itemIndex, Index(0))
+                        )
+                      )
+                    )
+
+                    val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
+                      ItemDomain.documentsReader(itemIndex)
+                    ).run(userAnswers)
+
+                    result.value mustBe expectedResult
+                }
+
+              }
+
+              "and AddDocumentsYesNoPage is false" in {
+
+                forAll(gbCustomsOfficeGen, genForT2OrT2FItemLevel, arbitrary[UUID]) {
+                  (customsOfficeId, declarationType, documentUUID) =>
+                    val documents = Json
+                      .parse(s"""
+                           |[
+                           |    {
+                           |      "attachToAllItems" : true,
+                           |      "type" : {
+                           |        "type" : "Previous",
+                           |        "code" : "Code 1",
+                           |        "description" : "Description 1"
+                           |      },
+                           |      "details" : {
+                           |        "documentReferenceNumber" : "Ref no. 1",
+                           |        "uuid" : "$documentUUID"
+                           |      }
+                           |    }
+                           |]
+                           |""".stripMargin)
+                      .as[JsArray]
+
+                    val userAnswers = emptyUserAnswers
+                      .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
+                      .setValue(TransitOperationDeclarationTypePage, config.Constants.T)
+                      .setValue(DeclarationTypePage(index), declarationType)
+                      .setValue(AddDocumentsYesNoPage(itemIndex), false)
+                      .setValue(DocumentsSection, documents)
+
+                    val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
+                      ItemDomain.documentsReader(itemIndex)
+                    ).run(userAnswers)
+
+                    result.value mustBe None
+                }
+              }
+            }
+
+            "and Consignment level previous document is not defined" in {
+
+              forAll(gbCustomsOfficeGen, genForT2OrT2FItemLevel, arbitrary[UUID]) {
+                (customsOfficeId, declarationType, documentUUID) =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
+                    .setValue(TransitOperationDeclarationTypePage, config.Constants.T)
+                    .setValue(DeclarationTypePage(index), declarationType)
+                    .setValue(DocumentPage(itemIndex, Index(0)), documentUUID)
+
+                  val expectedResult = Some(
+                    DocumentsDomain(
+                      Seq(
+                        DocumentDomain(documentUUID)(itemIndex, Index(0))
+                      )
+                    )
                   )
-                )
-              )
 
-              val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
-                ItemDomain.documentsReader(itemIndex)
-              ).run(userAnswers)
+                  val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
+                    ItemDomain.documentsReader(itemIndex)
+                  ).run(userAnswers)
 
-              result.value mustBe expectedResult
+                  result.value mustBe expectedResult
+              }
+            }
+
+            "and Consignment level previous document is defined but not for all items" in {
+
+              forAll(gbCustomsOfficeGen, genForT2OrT2FItemLevel, arbitrary[UUID]) {
+                (customsOfficeId, declarationType, documentUUID) =>
+                  val documents = Json
+                    .parse(s"""
+                         |[
+                         |    {
+                         |      "attachToAllItems" : false,
+                         |      "type" : {
+                         |        "type" : "Previous",
+                         |        "code" : "Code 1",
+                         |        "description" : "Description 1"
+                         |      },
+                         |      "details" : {
+                         |        "documentReferenceNumber" : "Ref no. 1",
+                         |        "uuid" : "$documentUUID"
+                         |      }
+                         |    }
+                         |]
+                         |""".stripMargin)
+                    .as[JsArray]
+
+                  val userAnswers = emptyUserAnswers
+                    .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
+                    .setValue(TransitOperationDeclarationTypePage, config.Constants.T)
+                    .setValue(DeclarationTypePage(index), declarationType)
+                    .setValue(DocumentPage(itemIndex, Index(0)), documentUUID)
+                    .setValue(DocumentsSection, documents)
+
+                  val expectedResult = Some(
+                    DocumentsDomain(
+                      Seq(
+                        DocumentDomain(documentUUID)(itemIndex, Index(0))
+                      )
+                    )
+                  )
+
+                  val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
+                    ItemDomain.documentsReader(itemIndex)
+                  ).run(userAnswers)
+
+                  result.value mustBe expectedResult
+              }
+            }
+
           }
 
+          "and item level declaration type is not T2 or T2F" - {
+
+            "and ConsignmentAddDocumentsPage is true" - {
+
+              "and AddDocumentsYesNoPage is true" in {
+
+                forAll(gbCustomsOfficeGen, genForNonT2OrT2F, arbitrary[UUID]) {
+                  (customsOfficeId, declarationType, documentUUID) =>
+                    val documents = Json
+                      .parse(s"""
+                           |[
+                           |    {
+                           |      "attachToAllItems" : true,
+                           |      "type" : {
+                           |        "type" : "Previous",
+                           |        "code" : "Code 1",
+                           |        "description" : "Description 1"
+                           |      },
+                           |      "details" : {
+                           |        "documentReferenceNumber" : "Ref no. 1",
+                           |        "uuid" : "$documentUUID"
+                           |      }
+                           |    }
+                           |]
+                           |""".stripMargin)
+                      .as[JsArray]
+
+                    val userAnswers = emptyUserAnswers
+                      .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
+                      .setValue(TransitOperationDeclarationTypePage, config.Constants.T)
+                      .setValue(DeclarationTypePage(index), declarationType)
+                      .setValue(ConsignmentAddDocumentsPage, true)
+                      .setValue(AddDocumentsYesNoPage(itemIndex), true)
+                      .setValue(DocumentsSection, documents)
+                      .setValue(DocumentPage(itemIndex, Index(0)), documentUUID)
+
+                    val expectedResult = Some(
+                      DocumentsDomain(
+                        Seq(
+                          DocumentDomain(documentUUID)(itemIndex, Index(0))
+                        )
+                      )
+                    )
+
+                    val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
+                      ItemDomain.documentsReader(itemIndex)
+                    ).run(userAnswers)
+
+                    result.value mustBe expectedResult
+                }
+              }
+
+              "and AddDocumentsYesNoPage is false" in {
+
+                forAll(gbCustomsOfficeGen, genForNonT2OrT2F) {
+                  (customsOfficeId, declarationType) =>
+                    val userAnswers = emptyUserAnswers
+                      .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
+                      .setValue(TransitOperationDeclarationTypePage, config.Constants.T)
+                      .setValue(DeclarationTypePage(index), declarationType)
+                      .setValue(ConsignmentAddDocumentsPage, true)
+                      .setValue(AddDocumentsYesNoPage(itemIndex), false)
+
+                    val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
+                      ItemDomain.documentsReader(itemIndex)
+                    ).run(userAnswers)
+
+                    result.value mustBe None
+                }
+              }
+            }
+
+            "and ConsignmentAddDocumentsPage is false" in {
+
+              forAll(gbCustomsOfficeGen, genForNonT2OrT2F) {
+                (customsOfficeId, declarationType) =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
+                    .setValue(TransitOperationDeclarationTypePage, config.Constants.T)
+                    .setValue(DeclarationTypePage(index), declarationType)
+                    .setValue(ConsignmentAddDocumentsPage, false)
+
+                  val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
+                    ItemDomain.documentsReader(itemIndex)
+                  ).run(userAnswers)
+
+                  result.value mustBe None
+              }
+            }
+          }
         }
-      }
 
-      "can not be read from user answers" - {
-        "when add documents yes/no is unanswered" in {
-          forAll(gbCustomsOfficeGen, genForT2OrT2F, arbitrary[UUID]) {
-            (customsOfficeId, declarationType, documentUUID) =>
-              val documents = Json
-                .parse(s"""
-                     |[
-                     |    {
-                     |      "attachToAllItems" : true,
-                     |      "previousDocumentType" : {
-                     |        "type" : "Previous",
-                     |        "code" : "Code 1",
-                     |        "description" : "Description 1"
-                     |      },
-                     |      "details" : {
-                     |        "documentReferenceNumber" : "Ref no. 1",
-                     |        "uuid" : "$documentUUID"
-                     |      }
-                     |    }
-                     |]
-                     |""".stripMargin)
-                .as[JsArray]
+        "when any other declaration type" - {
 
-              val userAnswers = emptyUserAnswers
-                .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
-                .setValue(TransitOperationDeclarationTypePage, DeclarationType.T)
-                .setValue(DeclarationTypePage(itemIndex), declarationType)
-                .setValue(DocumentsSection, documents)
+          "and ConsignmentAddDocumentsPage is true" - {
 
-              val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
-                ItemDomain.documentsReader(itemIndex)
-              ).run(userAnswers)
+            "and AddDocumentsYesNoPage is true" in {
 
-              result.left.value.page mustBe AddDocumentsYesNoPage(itemIndex)
+              forAll(gbCustomsOfficeGen, genForOtherConsignmentLevel, genForOtherItemLevel, arbitrary[UUID]) {
+                (customsOfficeId, declarationTypeConsignmentLevel, declarationTypeItemLevel, documentUUID) =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
+                    .setValue(TransitOperationDeclarationTypePage, declarationTypeConsignmentLevel)
+                    .setValue(DeclarationTypePage(index), declarationTypeItemLevel)
+                    .setValue(ConsignmentAddDocumentsPage, true)
+                    .setValue(AddDocumentsYesNoPage(itemIndex), true)
+                    .setValue(DocumentPage(itemIndex, Index(0)), documentUUID)
+
+                  val expectedResult = Some(
+                    DocumentsDomain(
+                      Seq(
+                        DocumentDomain(documentUUID)(itemIndex, Index(0))
+                      )
+                    )
+                  )
+
+                  val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
+                    ItemDomain.documentsReader(itemIndex)
+                  ).run(userAnswers)
+
+                  result.value mustBe expectedResult
+              }
+            }
+
+            "and AddDocumentsYesNoPage is false" in {
+
+              forAll(gbCustomsOfficeGen, genForOtherConsignmentLevel, genForOtherItemLevel) {
+                (customsOfficeId, declarationTypeConsignmentLevel, declarationTypeItemLevel) =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
+                    .setValue(TransitOperationDeclarationTypePage, declarationTypeConsignmentLevel)
+                    .setValue(DeclarationTypePage(index), declarationTypeItemLevel)
+                    .setValue(ConsignmentAddDocumentsPage, true)
+                    .setValue(AddDocumentsYesNoPage(itemIndex), false)
+
+                  val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
+                    ItemDomain.documentsReader(itemIndex)
+                  ).run(userAnswers)
+
+                  result.value mustBe None
+              }
+
+            }
+
+          }
+
+          "and ConsignmentAddDocumentsPage is false" in {
+
+            forAll(gbCustomsOfficeGen, genForOtherConsignmentLevel, genForOtherItemLevel) {
+              (customsOfficeId, declarationTypeConsignmentLevel, declarationTypeItemLevel) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
+                  .setValue(TransitOperationDeclarationTypePage, declarationTypeConsignmentLevel)
+                  .setValue(DeclarationTypePage(index), declarationTypeItemLevel)
+                  .setValue(ConsignmentAddDocumentsPage, false)
+
+                val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
+                  ItemDomain.documentsReader(itemIndex)
+                ).run(userAnswers)
+
+                result.value mustBe None
+            }
+          }
+        }
+
+        "when non GB customs office" - {
+
+          "and ConsignmentAddDocumentsPage is true" - {
+
+            "and AddDocumentsYesNoPage is true" in {
+
+              forAll(nonGgbCustomsOfficeGen, genForT2OrT2FConsignmentLevel, genForT2OrT2FItemLevel, arbitrary[UUID]) {
+                (customsOfficeId, declarationTypeConsignmentLevel, declarationTypeItemLevel, documentUUID) =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
+                    .setValue(TransitOperationDeclarationTypePage, declarationTypeConsignmentLevel)
+                    .setValue(DeclarationTypePage(index), declarationTypeItemLevel)
+                    .setValue(ConsignmentAddDocumentsPage, true)
+                    .setValue(AddDocumentsYesNoPage(itemIndex), true)
+                    .setValue(DocumentPage(itemIndex, Index(0)), documentUUID)
+
+                  val expectedResult = Some(
+                    DocumentsDomain(
+                      Seq(
+                        DocumentDomain(documentUUID)(itemIndex, Index(0))
+                      )
+                    )
+                  )
+
+                  val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
+                    ItemDomain.documentsReader(itemIndex)
+                  ).run(userAnswers)
+
+                  result.value mustBe expectedResult
+              }
+            }
+
+            "and AddDocumentsYesNoPage is false" in {
+
+              forAll(nonGgbCustomsOfficeGen, genForT2OrT2FConsignmentLevel, genForT2OrT2FItemLevel) {
+                (customsOfficeId, declarationTypeConsignmentLevel, declarationTypeItemLevel) =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
+                    .setValue(TransitOperationDeclarationTypePage, declarationTypeConsignmentLevel)
+                    .setValue(DeclarationTypePage(index), declarationTypeItemLevel)
+                    .setValue(ConsignmentAddDocumentsPage, true)
+                    .setValue(AddDocumentsYesNoPage(itemIndex), false)
+
+                  val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
+                    ItemDomain.documentsReader(itemIndex)
+                  ).run(userAnswers)
+
+                  result.value mustBe None
+              }
+
+            }
+
+            "and ConsignmentAddDocumentsPage is false" in {
+
+              forAll(nonGgbCustomsOfficeGen, genForT2OrT2FConsignmentLevel, genForT2OrT2FItemLevel) {
+                (customsOfficeId, declarationTypeConsignmentLevel, declarationTypeItemLevel) =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
+                    .setValue(TransitOperationDeclarationTypePage, declarationTypeConsignmentLevel)
+                    .setValue(DeclarationTypePage(index), declarationTypeItemLevel)
+                    .setValue(ConsignmentAddDocumentsPage, false)
+
+                  val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
+                    ItemDomain.documentsReader(itemIndex)
+                  ).run(userAnswers)
+
+                  result.value mustBe None
+              }
+            }
           }
         }
       }
@@ -1174,6 +2070,130 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         }
       }
     }
-  }
 
+    "transportChargesReader" - {
+      "can be read from user answers" - {
+        "when in post-transition" in {
+          forAll(arbitrary[String](arbitrarySecurityDetailsType)) {
+            securityDetails =>
+              val userAnswers = emptyUserAnswers
+                .setValue(SecurityDetailsTypePage, securityDetails)
+
+              val expectedResult = None
+
+              val result: EitherType[Option[TransportChargesMethodOfPayment]] = UserAnswersReader[Option[TransportChargesMethodOfPayment]](
+                ItemDomain.transportChargesReader(itemIndex)(mockPostTransitionPhaseConfig)
+              ).run(userAnswers)
+
+              result.value mustBe expectedResult
+          }
+        }
+
+        "when in transition" - {
+          "and security is 0" - {
+            "and add transport charges is answered yes" in {
+              forAll(arbitrary[TransportChargesMethodOfPayment](arbitraryMethodOfPayment)) {
+                transportCharge =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(SecurityDetailsTypePage, Constants.NoSecurityDetails)
+                    .setValue(AddTransportChargesYesNoPage(itemIndex), true)
+                    .setValue(TransportChargesMethodOfPaymentPage(itemIndex), transportCharge)
+
+                  val expectedResult = Some(transportCharge)
+
+                  val result: EitherType[Option[TransportChargesMethodOfPayment]] = UserAnswersReader[Option[TransportChargesMethodOfPayment]](
+                    ItemDomain.transportChargesReader(itemIndex)(mockTransitionPhaseConfig)
+                  ).run(userAnswers)
+
+                  result.value mustBe expectedResult
+              }
+            }
+
+            "and add transport charges is answered no" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(SecurityDetailsTypePage, Constants.NoSecurityDetails)
+                .setValue(AddTransportChargesYesNoPage(itemIndex), false)
+
+              val expectedResult = None
+
+              val result: EitherType[Option[TransportChargesMethodOfPayment]] = UserAnswersReader[Option[TransportChargesMethodOfPayment]](
+                ItemDomain.transportChargesReader(itemIndex)(mockTransitionPhaseConfig)
+              ).run(userAnswers)
+
+              result.value mustBe expectedResult
+            }
+          }
+
+          "or if consignmentTransportCharges is not present" in {
+            forAll(arbitrary[String](arbitrarySecurityDetailsType), arbitrary[TransportChargesMethodOfPayment]) {
+              (securityDetailType, transportCharges) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(SecurityDetailsTypePage, securityDetailType)
+                  .setValue(AddTransportChargesYesNoPage(itemIndex), true)
+                  .setValue(TransportChargesMethodOfPaymentPage(itemIndex), transportCharges)
+
+                val expectedResult = Some(transportCharges)
+
+                val result: EitherType[Option[TransportChargesMethodOfPayment]] = UserAnswersReader[Option[TransportChargesMethodOfPayment]](
+                  ItemDomain.transportChargesReader(itemIndex)(mockTransitionPhaseConfig)
+                ).run(userAnswers)
+
+                result.value mustBe expectedResult
+
+            }
+
+          }
+
+          "or if consignmentTransportCharges is present" in {
+            forAll(arbitrary[String](arbitrarySomeSecurityDetailsType), nonEmptyString) {
+              (securityDetailType, consignmentTransportCharges) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(SecurityDetailsTypePage, securityDetailType)
+                  .setValue(ConsignmentTransportChargesPage, consignmentTransportCharges)
+
+                val expectedResult = None
+
+                val result: EitherType[Option[TransportChargesMethodOfPayment]] = UserAnswersReader[Option[TransportChargesMethodOfPayment]](
+                  ItemDomain.transportChargesReader(itemIndex)(mockTransitionPhaseConfig)
+                ).run(userAnswers)
+
+                result.value mustBe expectedResult
+
+            }
+
+          }
+
+        }
+
+      }
+    }
+
+    "can not be read from user answers" - {
+      "when in transition" - {
+        "and security is 0" - {
+          "and add transport charges is unanswered" in {
+            val userAnswers = emptyUserAnswers
+              .setValue(SecurityDetailsTypePage, Constants.NoSecurityDetails)
+
+            val result: EitherType[Option[TransportChargesMethodOfPayment]] = UserAnswersReader[Option[TransportChargesMethodOfPayment]](
+              ItemDomain.transportChargesReader(itemIndex)(mockTransitionPhaseConfig)
+            ).run(userAnswers)
+
+            result.left.value.page mustBe AddTransportChargesYesNoPage(itemIndex)
+          }
+          "and transport charges is unanswered" in {
+            val userAnswers = emptyUserAnswers
+              .setValue(SecurityDetailsTypePage, Constants.NoSecurityDetails)
+              .setValue(AddTransportChargesYesNoPage(itemIndex), true)
+
+            val result: EitherType[Option[TransportChargesMethodOfPayment]] = UserAnswersReader[Option[TransportChargesMethodOfPayment]](
+              ItemDomain.transportChargesReader(itemIndex)(mockTransitionPhaseConfig)
+            ).run(userAnswers)
+
+            result.left.value.page mustBe TransportChargesMethodOfPaymentPage(itemIndex)
+          }
+        }
+      }
+    }
+  }
 }

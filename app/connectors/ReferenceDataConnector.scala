@@ -17,6 +17,7 @@
 package connectors
 
 import config.FrontendAppConfig
+import models.DeclarationTypeItemLevel
 import models.PackingType.{Bulk, Other, Unpacked}
 import models.reference._
 import play.api.Logging
@@ -33,6 +34,16 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   def getCountries()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Country]] = {
     val serviceUrl = s"${config.referenceDataUrl}/lists/CountryCodesFullList"
     http.GET[Seq[Country]](serviceUrl, headers = version2Header)
+  }
+
+  def getCountryCodesForAddress()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Country]] = {
+    val serviceUrl = s"${config.referenceDataUrl}/lists/CountryCodesForAddress"
+    http.GET[Seq[Country]](serviceUrl, headers = version2Header)
+  }
+
+  def getCountriesWithoutZip()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[CountryCode]] = {
+    val serviceUrl = s"${config.referenceDataUrl}/lists/CountryWithoutZip"
+    http.GET[Seq[CountryCode]](serviceUrl, headers = version2Header)
   }
 
   def getPackageTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[PackageType]] = {
@@ -58,6 +69,16 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   def getAdditionalInformationTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[AdditionalInformation]] = {
     val serviceUrl = s"${config.referenceDataUrl}/lists/AdditionalInformation"
     http.GET[Seq[AdditionalInformation]](serviceUrl, headers = version2Header)
+  }
+
+  def getTransportChargesMethodOfPaymentTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[TransportChargesMethodOfPayment]] = {
+    val serviceUrl = s"${config.referenceDataUrl}/lists/TransportChargesMethodOfPayment"
+    http.GET[Seq[TransportChargesMethodOfPayment]](serviceUrl, headers = version2Header)
+  }
+
+  def getDeclarationTypeItemLevel()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[DeclarationTypeItemLevel]] = {
+    val serviceUrl = s"${config.referenceDataUrl}/lists/DeclarationTypeItemLevel"
+    http.GET[Seq[DeclarationTypeItemLevel]](serviceUrl, headers = version2Header)
   }
 
   private def version2Header: Seq[(String, String)] = Seq(

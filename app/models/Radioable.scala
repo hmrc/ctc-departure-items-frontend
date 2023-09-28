@@ -25,16 +25,19 @@ trait Radioable[T] {
   val messageKeyPrefix: String
   def asString(implicit messages: Messages): String = messages(s"$messageKeyPrefix.$this")
 
-  def toRadioItem(index: Int, formKey: String, checked: Boolean)(implicit messages: Messages): RadioItem = RadioItem(
-    content = Text(messages(s"$messageKeyPrefix.$this")),
-    id = Some(if (index == 0) formKey else s"${formKey}_$index"),
-    value = Some(this.toString),
-    checked = checked,
-    hint = {
-      val hintKey = s"$messageKeyPrefix.$this.hint"
-      if (messages.isDefinedAt(hintKey)) Some(Hint(content = Text(messages(hintKey)))) else None
-    }
-  )
+  def toRadioItem(index: Int, formKey: String, checked: Boolean)(implicit messages: Messages): RadioItem = {
+    val contentKey = s"$messageKeyPrefix.$this"
+    RadioItem(
+      content = Text(if (messages.isDefinedAt(contentKey)) messages(contentKey) else this.toString),
+      id = Some(if (index == 0) formKey else s"${formKey}_$index"),
+      value = Some(this.toString),
+      checked = checked,
+      hint = {
+        val hintKey = s"$messageKeyPrefix.$this.hint"
+        if (messages.isDefinedAt(hintKey)) Some(Hint(content = Text(messages(hintKey)))) else None
+      }
+    )
+  }
 }
 
 object Radioable {

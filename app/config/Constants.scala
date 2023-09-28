@@ -24,5 +24,13 @@ object Constants {
   val C651 = "C651"
   val C658 = "C658"
 
+  val T1  = "T1"
+  val T2  = "T2"
+  val T2F = "T2F"
+  val T   = "T"
+  val TIR = "TIR"
+
   val additionalInformationType30600 = "30600"
+
+  val NoSecurityDetails = "0"
 }

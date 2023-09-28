@@ -16,7 +16,7 @@
 
 package views.item.additionalReference.index
 
-import forms.Constants.maxAdditionalReferenceNumLength
+import base.SpecBase
 import forms.item.additionalReference.AdditionalReferenceNumberFormProvider
 import generators.Generators
 import models.NormalMode
@@ -27,13 +27,15 @@ import viewmodels.item.additionalReference.AdditionalReferenceNumberViewModel
 import views.behaviours.CharacterCountViewBehaviours
 import views.html.item.additionalReference.index.AdditionalReferenceNumberView
 
-class AdditionalReferenceNumberViewSpec extends CharacterCountViewBehaviours with Generators {
+class AdditionalReferenceNumberViewSpec extends SpecBase with CharacterCountViewBehaviours with Generators {
 
   override val prefix: String = "item.additionalReference.index.additionalReferenceNumber"
 
   private val viewModel = arbitrary[AdditionalReferenceNumberViewModel].sample.value
 
-  override def form: Form[String] = new AdditionalReferenceNumberFormProvider()(prefix, viewModel.otherAdditionalReferenceNumbers)
+  private val formProvider = new AdditionalReferenceNumberFormProvider()(phaseConfig)
+
+  override def form: Form[String] = formProvider(prefix, viewModel.otherAdditionalReferenceNumbers)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
     injector
@@ -48,9 +50,9 @@ class AdditionalReferenceNumberViewSpec extends CharacterCountViewBehaviours wit
 
   behave like pageWithHeading()
 
-  behave like pageWithHint(s"You can enter up to $maxAdditionalReferenceNumLength characters")
+  behave like pageWithHint(s"You can enter up to ${phaseConfig.maxAdditionalReferenceNumLength} characters")
 
-  behave like pageWithCharacterCount(maxAdditionalReferenceNumLength)
+  behave like pageWithCharacterCount(phaseConfig.maxAdditionalReferenceNumLength)
 
   behave like pageWithSubmitButton("Save and continue")
 

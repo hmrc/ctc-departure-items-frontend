@@ -17,10 +17,10 @@
 package pages.sections.supplyChainActors
 
 import models.Index
-import pages.QuestionPage
+import pages.sections.Section
 import play.api.libs.json.{JsObject, JsPath}
 
-case class SupplyChainActorSection(itemIndex: Index, actorIndex: Index) extends QuestionPage[JsObject] {
+case class SupplyChainActorSection(itemIndex: Index, actorIndex: Index) extends Section[JsObject] {
 
   override def path: JsPath = SupplyChainActorsSection(itemIndex).path \ actorIndex.position
 }

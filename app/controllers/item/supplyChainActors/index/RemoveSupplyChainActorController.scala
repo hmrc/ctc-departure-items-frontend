@@ -16,6 +16,7 @@
 
 package controllers.item.supplyChainActors.index
 
+import config.PhaseConfig
 import controllers.actions._
 import controllers.item.supplyChainActors.routes
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
@@ -23,7 +24,7 @@ import forms.YesNoFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import pages.sections.supplyChainActors.SupplyChainActorSection
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.item.supplyChainActors.index.RemoveSupplyChainActorView
@@ -38,34 +39,39 @@ class RemoveSupplyChainActorController @Inject() (
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: RemoveSupplyChainActorView
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
   private val form = formProvider("item.supplyChainActors.index.removeSupplyChainActor")
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, actorIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
-    implicit request =>
-      Ok(view(form, lrn, mode, itemIndex, actorIndex))
-  }
+  private def addAnother(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Call =
+    routes.AddAnotherSupplyChainActorController.onPageLoad(lrn, mode, itemIndex)
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, actorIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
-    implicit request =>
-      lazy val redirect = routes.AddAnotherSupplyChainActorController.onPageLoad(lrn, mode, itemIndex)
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex, actorIndex))),
-          {
-            case true =>
-              SupplyChainActorSection(itemIndex, actorIndex)
-                .removeFromUserAnswers()
-                .updateTask()
-                .writeToSession()
-                .navigateTo(redirect)
-            case false =>
-              Future.successful(Redirect(redirect))
-          }
-        )
-  }
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, actorIndex: Index): Action[AnyContent] = actions
+    .requireIndex(lrn, SupplyChainActorSection(itemIndex, actorIndex), addAnother(lrn, mode, itemIndex)) {
+      implicit request =>
+        Ok(view(form, lrn, mode, itemIndex, actorIndex))
+    }
+
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, actorIndex: Index): Action[AnyContent] = actions
+    .requireIndex(lrn, SupplyChainActorSection(itemIndex, actorIndex), addAnother(lrn, mode, itemIndex))
+    .async {
+      implicit request =>
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex, actorIndex))),
+            {
+              case true =>
+                SupplyChainActorSection(itemIndex, actorIndex)
+                  .removeFromUserAnswers()
+                  .updateTask()
+                  .writeToSession()
+                  .navigateTo(addAnother(lrn, mode, itemIndex))
+              case false =>
+                Future.successful(Redirect(addAnother(lrn, mode, itemIndex)))
+            }
+          )
+    }
 }

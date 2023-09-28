@@ -48,23 +48,10 @@ trait Constraints {
     Constraint {
       input =>
         import ev._
-
         if (input <= maximum) {
           Valid
         } else {
           Invalid(errorKey, maximum)
-        }
-    }
-
-  protected def inRange[A](minimum: A, maximum: A, errorKey: String)(implicit ev: Ordering[A]): Constraint[A] =
-    Constraint {
-      input =>
-        import ev._
-
-        if (input >= minimum && input <= maximum) {
-          Valid
-        } else {
-          Invalid(errorKey, minimum, maximum)
         }
     }
 
@@ -102,14 +89,6 @@ trait Constraints {
         Invalid(errorKey, args: _*)
       case _ =>
         Valid
-    }
-
-  protected def nonEmptySet(errorKey: String): Constraint[Set[_]] =
-    Constraint {
-      case set if set.nonEmpty =>
-        Valid
-      case _ =>
-        Invalid(errorKey)
     }
 
   private def lengthConstraint(errorKey: String, predicate: String => Boolean, args: Seq[Any]): Constraint[String] =

@@ -16,8 +16,8 @@
 
 package controllers.item.dangerousGoods.index
 
-import controllers.item.dangerousGoods.{routes => dangerousGoodsRoutes}
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import controllers.item.dangerousGoods.{routes => dangerousGoodsRoutes}
 import forms.YesNoFormProvider
 import generators.Generators
 import models.{NormalMode, UserAnswers}
@@ -118,7 +118,6 @@ class RemoveUNNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
     "must redirect to Session Expired for a GET" - {
       "if no existing data is found" in {
-
         setNoExistingUserAnswers()
 
         val request = FakeRequest(GET, removeUNNumberRoute)
@@ -130,8 +129,7 @@ class RemoveUNNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtu
         redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
       }
 
-      "if no item number is found" in {
-
+      "if no UN number is found" in {
         setExistingUserAnswers(emptyUserAnswers)
 
         val request = FakeRequest(GET, removeUNNumberRoute)
@@ -140,13 +138,13 @@ class RemoveUNNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual
+          dangerousGoodsRoutes.AddAnotherDangerousGoodsController.onPageLoad(lrn, mode, itemIndex).url
       }
     }
 
     "must redirect to Session Expired for a POST" - {
       "if no existing data is found" in {
-
         setNoExistingUserAnswers()
 
         val request = FakeRequest(POST, removeUNNumberRoute)
@@ -159,8 +157,7 @@ class RemoveUNNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtu
         redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
       }
 
-      "if no item number is found" in {
-
+      "if no UN number is found" in {
         setExistingUserAnswers(emptyUserAnswers)
 
         val request = FakeRequest(POST, removeUNNumberRoute)
@@ -170,7 +167,8 @@ class RemoveUNNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual
+          dangerousGoodsRoutes.AddAnotherDangerousGoodsController.onPageLoad(lrn, mode, itemIndex).url
       }
     }
   }

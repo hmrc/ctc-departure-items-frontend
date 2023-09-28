@@ -73,7 +73,8 @@ class RemoveAdditionalInformationControllerSpec extends SpecBase with AppWithDef
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual additionalInformationRoutes.AddAnotherAdditionalInformationController.onPageLoad(lrn, mode, itemIndex).url
+        redirectLocation(result).value mustEqual
+          additionalInformationRoutes.AddAnotherAdditionalInformationController.onPageLoad(lrn, mode, itemIndex).url
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
@@ -92,7 +93,8 @@ class RemoveAdditionalInformationControllerSpec extends SpecBase with AppWithDef
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual additionalInformationRoutes.AddAnotherAdditionalInformationController.onPageLoad(lrn, mode, itemIndex).url
+        redirectLocation(result).value mustEqual
+          additionalInformationRoutes.AddAnotherAdditionalInformationController.onPageLoad(lrn, mode, itemIndex).url
 
         verify(mockSessionRepository, never()).set(any())(any())
       }
@@ -116,7 +118,7 @@ class RemoveAdditionalInformationControllerSpec extends SpecBase with AppWithDef
         view(boundForm, lrn, mode, itemIndex, additionalInformationIndex, additionalInformationType.toString)(request, messages).toString
     }
 
-    "must redirect to Session Expired for a GET" - {
+    "must redirect for a GET" - {
       "if no existing data is found" in {
 
         setNoExistingUserAnswers()
@@ -130,7 +132,7 @@ class RemoveAdditionalInformationControllerSpec extends SpecBase with AppWithDef
         redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
       }
 
-      "if no item number is found" in {
+      "if no additional information is found" in {
 
         setExistingUserAnswers(emptyUserAnswers)
 
@@ -140,11 +142,12 @@ class RemoveAdditionalInformationControllerSpec extends SpecBase with AppWithDef
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual
+          additionalInformationRoutes.AddAnotherAdditionalInformationController.onPageLoad(lrn, mode, itemIndex).url
       }
     }
 
-    "must redirect to Session Expired for a POST" - {
+    "must redirect for a POST" - {
       "if no existing data is found" in {
 
         setNoExistingUserAnswers()
@@ -159,7 +162,7 @@ class RemoveAdditionalInformationControllerSpec extends SpecBase with AppWithDef
         redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
       }
 
-      "if no item number is found" in {
+      "if no additional information is found" in {
 
         setExistingUserAnswers(emptyUserAnswers)
 
@@ -170,7 +173,8 @@ class RemoveAdditionalInformationControllerSpec extends SpecBase with AppWithDef
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual
+          additionalInformationRoutes.AddAnotherAdditionalInformationController.onPageLoad(lrn, mode, itemIndex).url
       }
     }
   }

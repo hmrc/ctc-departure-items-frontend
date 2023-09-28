@@ -15,7 +15,7 @@
  *@
 
 @import controllers.item.routes
-@import models.{DeclarationType, LocalReferenceNumber}
+@import models.{DeclarationTypeItemLevel, LocalReferenceNumber}
 @import views.html.components.{Button, ErrorSummary, InputRadio}
 @import viewmodels.components.InputRadioViewModel
 @import viewmodels.components.InputRadioViewModel._
@@ -28,7 +28,7 @@
     button: Button
 )
 
-@(form: Form[DeclarationType], lrn: LocalReferenceNumber, itemValues: Seq[DeclarationType], mode: Mode, itemIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[DeclarationTypeItemLevel], lrn: LocalReferenceNumber, itemValues: Seq[DeclarationTypeItemLevel], mode: Mode, itemIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("item.declarationType.title"),

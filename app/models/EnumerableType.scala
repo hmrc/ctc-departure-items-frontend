@@ -16,14 +16,9 @@
 
 package models
 
-trait EnumerableType[T] extends Enumerable.Implicits {
+trait EnumerableType[T] extends DynamicEnumerableType[T] {
 
   val values: Seq[T]
+  implicit def enumerable: Enumerable[T] = enumerable(values)
 
-  implicit def enumerable: Enumerable[T] =
-    Enumerable(
-      values.map(
-        v => v.toString -> v
-      ): _*
-    )
 }

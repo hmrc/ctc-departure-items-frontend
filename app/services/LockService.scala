@@ -17,7 +17,7 @@
 package services
 
 import connectors.CacheConnector
-import models.UserAnswers
+import models.{LockCheck, UserAnswers}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -25,6 +25,6 @@ import scala.concurrent.Future
 
 class LockService @Inject() (cacheConnector: CacheConnector) {
 
-  def checkLock(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Boolean] =
+  def checkLock(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[LockCheck] =
     cacheConnector.checkLock(userAnswers)
 }

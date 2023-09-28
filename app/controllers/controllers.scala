@@ -15,6 +15,7 @@
  */
 
 import cats.data.ReaderT
+import config.PhaseConfig
 import models.TaskStatus.{Completed, InProgress}
 import models.UserAnswers
 import models.journeyDomain.{ItemsDomain, UserAnswersReader, WriterError}
@@ -36,7 +37,36 @@ package object controllers {
   type UserAnswersWriter[A] = ReaderT[EitherType, UserAnswers, A]
   type Write[A]             = (QuestionPage[A], UserAnswers)
 
+  private object UserAnswersWriter {
+
+    def updateTask[A](page: QuestionPage[A])(f: String => EitherType[Write[A]]): EitherType[Write[A]] =
+      page.path.path.headOption.map(_.toJsonString) match {
+        case Some(section) => f(section)
+        case None          => Left(WriterError(page, Some(s"Failed to find section in JSON path ${page.path}")))
+      }
+
+    def updateTask[A](page: QuestionPage[A], section: String, userAnswers: UserAnswers)(implicit phaseConfig: PhaseConfig): EitherType[Write[A]] = {
+      val status = UserAnswersReader[ItemsDomain].run(userAnswers) match {
+        case Left(_)  => InProgress
+        case Right(_) => Completed
+      }
+      Right((page, userAnswers.updateTask(section, status)))
+    }
+  }
+
   implicit class SettableOps[A](page: QuestionPage[A]) {
+
+    def updateTask()(implicit phaseConfig: PhaseConfig): UserAnswersWriter[Write[A]] =
+      ReaderT[EitherType, UserAnswers, Write[A]] {
+        userAnswers =>
+          UserAnswersWriter.updateTask(page) {
+            section =>
+              userAnswers.tasks.get(section) match {
+                case Some(Completed | InProgress) => UserAnswersWriter.updateTask(page, section, userAnswers)
+                case _                            => Right((page, userAnswers))
+              }
+          }
+      }
 
     def writeToUserAnswers(value: A)(implicit format: Format[A]): UserAnswersWriter[Write[A]] =
       ReaderT[EitherType, UserAnswers, Write[A]](
@@ -77,18 +107,11 @@ package object controllers {
           }
       }
 
-    def updateTask(): UserAnswersWriter[Write[A]] =
+    def updateTask()(implicit phaseConfig: PhaseConfig): UserAnswersWriter[Write[A]] =
       userAnswersWriter.flatMapF {
         case (page, userAnswers) =>
-          page.path.path.headOption.map(_.toJsonString) match {
-            case Some(section) =>
-              val status = UserAnswersReader[ItemsDomain].run(userAnswers) match {
-                case Left(_)  => InProgress
-                case Right(_) => Completed
-              }
-              Right((page, userAnswers.updateTask(section, status)))
-            case None =>
-              Left(WriterError(page, Some(s"Failed to find section in JSON path ${page.path}")))
+          UserAnswersWriter.updateTask(page) {
+            section => UserAnswersWriter.updateTask(page, section, userAnswers)
           }
       }
 

@@ -16,6 +16,7 @@
 
 package controllers.item.additionalReference.index
 
+import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.SelectableFormProvider
@@ -41,7 +42,7 @@ class AdditionalReferenceController @Inject() (
   service: AdditionalReferencesService,
   val controllerComponents: MessagesControllerComponents,
   view: AdditionalReferenceView
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
