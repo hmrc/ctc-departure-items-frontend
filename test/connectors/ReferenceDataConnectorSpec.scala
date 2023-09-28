@@ -36,7 +36,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
   override def guiceApplicationBuilder(): GuiceApplicationBuilder = super
     .guiceApplicationBuilder()
     .configure(
-      conf = "microservice.services.customsReferenceData.port" -> server.port()
+      conf = "microservice.services.customs-reference-data.port" -> server.port()
     )
 
   private lazy val connector: ReferenceDataConnector = app.injector.instanceOf[ReferenceDataConnector]
