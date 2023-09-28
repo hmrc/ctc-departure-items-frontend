@@ -17,7 +17,7 @@
 package generators
 
 import config.Constants._
-import config.TestConstants.{declarationTypeItemValues, declarationTypeValues}
+import config.TestConstants.declarationTypeValues
 import models.AddressLine.{Country => _, _}
 import models.DocumentType.{Previous, Support, Transport}
 import models.LockCheck.{LockCheckFailure, Locked, Unlocked}

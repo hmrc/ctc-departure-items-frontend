@@ -17,7 +17,7 @@
 package models
 
 import base.SpecBase
-import config.TestConstants.{declarationTypeItemValues, declarationTypeValues}
+import config.TestConstants.declarationTypeValues
 import generators.Generators
 import models.DeclarationTypeItemLevel._
 import org.scalacheck.Arbitrary.arbitrary

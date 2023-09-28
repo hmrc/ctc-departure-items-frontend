@@ -33,7 +33,6 @@ import views.html.item.DeclarationTypeView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import config.Constants.{T, T1, T2, T2F, TIR}
 
 class DeclarationTypeController @Inject() (
   override val messagesApi: MessagesApi,
