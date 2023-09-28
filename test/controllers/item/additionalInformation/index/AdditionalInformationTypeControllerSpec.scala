@@ -17,7 +17,6 @@
 package controllers.item.additionalInformation.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import connectors.ReferenceDataConnector
 import forms.SelectableFormProvider
 import generators.Generators
 import models.{NormalMode, SelectableList}
