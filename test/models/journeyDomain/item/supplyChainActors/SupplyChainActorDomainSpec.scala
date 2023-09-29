@@ -18,8 +18,9 @@ package models.journeyDomain.item.supplyChainActors
 
 import base.SpecBase
 import generators.Generators
+import models.Index
 import models.journeyDomain.{EitherType, UserAnswersReader}
-import models.{Index, SupplyChainActorType}
+import models.reference.SupplyChainActorType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.item.supplyChainActors.index.{IdentificationNumberPage, SupplyChainActorTypePage}

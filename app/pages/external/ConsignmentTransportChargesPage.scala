@@ -21,7 +21,5 @@ import play.api.libs.json.JsPath
 
 case object ConsignmentTransportChargesPage extends ReadOnlyPage[String] {
 
-  override def path: JsPath = equipmentAndChargesPath \ toString
-
-  override def toString: String = "paymentMethod"
+  override def path: JsPath = equipmentAndChargesPath \ "paymentMethod" \ "method"
 }

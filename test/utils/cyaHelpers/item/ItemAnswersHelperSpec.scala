@@ -29,7 +29,7 @@ import controllers.item.routes._
 import controllers.item.supplyChainActors.index.routes.SupplyChainActorTypeController
 import generators.Generators
 import models.reference._
-import models.{CheckMode, DeclarationTypeItemLevel, Document, DynamicAddress, Index, Mode, Phase, SupplyChainActorType, TransportEquipment}
+import models.{CheckMode, DeclarationTypeItemLevel, Document, DynamicAddress, Index, Mode, Phase, TransportEquipment}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -861,7 +861,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               val result = helper.supplyChainActor(actorIndex).get
 
               result.key.value mustBe "Supply chain actor 1"
-              result.value.value mustBe s"${actorType.asString} - $identificationNumber"
+              result.value.value mustBe s"${actorType.toString} - $identificationNumber"
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
