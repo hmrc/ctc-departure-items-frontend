@@ -20,8 +20,11 @@ import controllers.item.routes
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.ItemSection
+import pages.sections.supplyChainActors.SupplyChainActorsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+
+import scala.util.Try
 
 case class AddSupplyChainActorYesNoPage(itemIndex: Index) extends QuestionPage[Boolean] {
 
@@ -31,4 +34,9 @@ case class AddSupplyChainActorYesNoPage(itemIndex: Index) extends QuestionPage[B
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.AddSupplyChainActorYesNoController.onPageLoad(userAnswers.lrn, mode, itemIndex))
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = value match {
+    case Some(false) => userAnswers.remove(SupplyChainActorsSection(itemIndex))
+    case _           => super.cleanup(value, userAnswers)
+  }
 }

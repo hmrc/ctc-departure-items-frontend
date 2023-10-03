@@ -17,6 +17,8 @@
 package pages.item
 
 import pages.behaviours.PageBehaviours
+import pages.sections.supplyChainActors.SupplyChainActorsSection
+import play.api.libs.json.{JsArray, Json}
 
 class AddSupplyChainActorYesNoPageSpec extends PageBehaviours {
 
@@ -27,5 +29,31 @@ class AddSupplyChainActorYesNoPageSpec extends PageBehaviours {
     beSettable[Boolean](AddSupplyChainActorYesNoPage(itemIndex))
 
     beRemovable[Boolean](AddSupplyChainActorYesNoPage(itemIndex))
+
+    "cleanup" - {
+      "when no selected" - {
+        "must remove supply chain actors" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(AddSupplyChainActorYesNoPage(itemIndex), true)
+            .setValue(SupplyChainActorsSection(itemIndex), JsArray(Seq(Json.obj("foo" -> "bar"))))
+
+          val result = userAnswers.setValue(AddSupplyChainActorYesNoPage(itemIndex), false)
+
+          result.get(SupplyChainActorsSection(itemIndex)) must not be defined
+        }
+      }
+
+      "when yes selected" - {
+        "must do nothing" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(AddSupplyChainActorYesNoPage(itemIndex), true)
+            .setValue(SupplyChainActorsSection(itemIndex), JsArray(Seq(Json.obj("foo" -> "bar"))))
+
+          val result = userAnswers.setValue(AddSupplyChainActorYesNoPage(itemIndex), true)
+
+          result.get(SupplyChainActorsSection(itemIndex)) must be(defined)
+        }
+      }
+    }
   }
 }

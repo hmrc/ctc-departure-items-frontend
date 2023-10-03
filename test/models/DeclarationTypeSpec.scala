@@ -17,8 +17,9 @@
 package models
 
 import base.SpecBase
+import config.TestConstants.declarationTypeValues
 import generators.Generators
-import models.DeclarationType._
+import models.DeclarationTypeItemLevel._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatest.OptionValues
@@ -33,47 +34,43 @@ class DeclarationTypeSpec extends AnyFreeSpec with Matchers with ScalaCheckPrope
 
     "must deserialise valid values" in {
 
-      val gen = Gen.oneOf(DeclarationType.values)
-
-      forAll(gen) {
-        declarationType =>
-          JsString(declarationType.toString).validate[DeclarationType].asOpt.value mustEqual declarationType
+      forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+        (code, description) =>
+          val declarationType = DeclarationTypeItemLevel(code, description)
+          Json
+            .parse(s"""
+                 |{
+                 |  "code": "$code",
+                 |  "description": "$description"
+                 |}
+                 |""".stripMargin)
+            .as[DeclarationTypeItemLevel] mustBe declarationType
       }
     }
 
     "must fail to deserialise invalid values" in {
 
-      val gen = arbitrary[String] suchThat (!DeclarationType.values.map(_.toString).contains(_))
+      val gen = arbitrary[String] suchThat (!declarationTypeValues.map(_.toString).contains(_))
 
       forAll(gen) {
         invalidValue =>
-          JsString(invalidValue).validate[DeclarationType] mustEqual JsError("error.invalid")
+          JsString(invalidValue).validate[DeclarationTypeItemLevel] mustEqual JsError("error.expected.jsobject")
       }
     }
 
     "must serialise" in {
-
-      val gen = Gen.oneOf(DeclarationType.values)
-
-      forAll(gen) {
-        declarationType =>
-          Json.toJson(declarationType) mustEqual JsString(declarationType.toString)
+      forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+        (code, description) =>
+          val declarationType = DeclarationTypeItemLevel(code, description)
+          Json.toJson(declarationType) mustBe Json.parse(s"""
+               |{
+               |  "code": "$code",
+               |  "description": "$description"
+               |}
+               |""".stripMargin)
       }
     }
 
-    "values" - {
-      "must return all declaration types" in {
-        DeclarationType.values mustBe Seq(T1, T2, T2F, TIR, T)
-      }
-    }
-
-    "valuesU" - {
-      "must return T1, T2 and T2F" in {
-        forAll(arbitrary[UserAnswers]) {
-          userAnswers =>
-            DeclarationType.itemValues mustBe Seq(T1, T2, T2F)
-        }
-      }
-    }
   }
+
 }

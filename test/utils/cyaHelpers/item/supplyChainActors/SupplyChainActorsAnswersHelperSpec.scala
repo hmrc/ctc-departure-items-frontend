@@ -17,9 +17,10 @@
 package utils.cyaHelpers.item.supplyChainActors
 
 import base.SpecBase
-import generators.Generators
 import controllers.item.supplyChainActors.index.routes
-import models.{Index, Mode, SupplyChainActorType}
+import generators.Generators
+import models.{Index, Mode}
+import models.reference.SupplyChainActorType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -60,14 +61,14 @@ class SupplyChainActorsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
               helper.listItems mustBe Seq(
                 Right(
                   ListItem(
-                    name = s"${actorRole.asString} - $actorId",
+                    name = s"${actorRole.toString} - $actorId",
                     changeUrl = routes.SupplyChainActorTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url,
                     removeUrl = Some(routes.RemoveSupplyChainActorController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url)
                   )
                 ),
                 Right(
                   ListItem(
-                    name = s"${actorRole.asString} - $actorId",
+                    name = s"${actorRole.toString} - $actorId",
                     changeUrl = routes.SupplyChainActorTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url,
                     removeUrl = Some(routes.RemoveSupplyChainActorController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url)
                   )
@@ -89,7 +90,7 @@ class SupplyChainActorsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
             helper.listItems mustBe Seq(
               Left(
                 ListItem(
-                  name = s"${actorRole.asString}",
+                  name = s"${actorRole.toString}",
                   changeUrl = routes.IdentificationNumberController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url,
                   removeUrl = Some(routes.RemoveSupplyChainActorController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url)
                 )

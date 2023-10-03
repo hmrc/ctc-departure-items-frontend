@@ -17,11 +17,14 @@
 package pages.item.supplyChainActors.index
 
 import controllers.item.supplyChainActors.index.routes
-import models.{Index, Mode, SupplyChainActorType, UserAnswers}
+import models.reference.SupplyChainActorType
+import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.supplyChainActors.SupplyChainActorSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+
+import scala.util.Try
 
 case class SupplyChainActorTypePage(itemIndex: Index, actorIndex: Index) extends QuestionPage[SupplyChainActorType] {
 
@@ -31,4 +34,10 @@ case class SupplyChainActorTypePage(itemIndex: Index, actorIndex: Index) extends
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.SupplyChainActorTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, actorIndex))
+
+  override def cleanup(value: Option[SupplyChainActorType], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(_) => userAnswers.remove(IdentificationNumberPage(itemIndex, actorIndex))
+      case None    => super.cleanup(value, userAnswers)
+    }
 }

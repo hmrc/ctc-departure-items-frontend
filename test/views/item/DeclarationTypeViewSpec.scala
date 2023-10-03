@@ -16,27 +16,28 @@
 
 package views.item
 
+import config.TestConstants.{declarationTypeItemValues, declarationTypeValues}
 import forms.EnumerableFormProvider
-import models.{DeclarationType, NormalMode}
+import models.{DeclarationTypeItemLevel, NormalMode}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import views.behaviours.RadioViewBehaviours
 import views.html.item.DeclarationTypeView
 
-class DeclarationTypeViewSpec extends RadioViewBehaviours[DeclarationType] {
+class DeclarationTypeViewSpec extends RadioViewBehaviours[DeclarationTypeItemLevel] {
 
-  override def form: Form[DeclarationType] = new EnumerableFormProvider()(prefix)
+  override def form: Form[DeclarationTypeItemLevel] = new EnumerableFormProvider()(prefix)(declarationTypeValues)
 
-  override def applyView(form: Form[DeclarationType]): HtmlFormat.Appendable =
+  override def applyView(form: Form[DeclarationTypeItemLevel]): HtmlFormat.Appendable =
     injector.instanceOf[DeclarationTypeView].apply(form, lrn, values, NormalMode, itemIndex)(fakeRequest, messages)
 
   override val prefix: String = "item.declarationType"
 
-  override def radioItems(fieldId: String, checkedValue: Option[DeclarationType] = None): Seq[RadioItem] =
+  override def radioItems(fieldId: String, checkedValue: Option[DeclarationTypeItemLevel] = None): Seq[RadioItem] =
     values.toRadioItems(fieldId, checkedValue)
 
-  override def values: Seq[DeclarationType] = DeclarationType.itemValues
+  override def values: Seq[DeclarationTypeItemLevel] = declarationTypeItemValues
 
   behave like pageWithTitle()
 

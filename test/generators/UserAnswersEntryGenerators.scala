@@ -57,7 +57,7 @@ trait UserAnswersEntryGenerators {
     import pages.item._
     val pf: PartialFunction[Gettable[_], Gen[JsValue]] = {
       case DescriptionPage(_)                      => Gen.alphaNumStr.map(JsString)
-      case DeclarationTypePage(_)                  => arbitrary[DeclarationType].map(Json.toJson(_))
+      case DeclarationTypePage(_)                  => arbitrary[DeclarationTypeItemLevel].map(Json.toJson(_))
       case CountryOfDispatchPage(_)                => arbitrary[Country].map(Json.toJson(_))
       case CountryOfDestinationPage(_)             => arbitrary[Country].map(Json.toJson(_))
       case AddCombinedNomenclatureCodeYesNoPage(_) => arbitrary[Boolean].map(JsBoolean)

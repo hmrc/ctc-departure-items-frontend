@@ -19,8 +19,8 @@ package connectors
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
 import helper.WireMockServerHandler
-import models.PackingType
 import models.reference._
+import models.{DeclarationTypeItemLevel, PackingType}
 import org.scalacheck.Gen
 import org.scalatest.Assertion
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -175,7 +175,78 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       |}
       |""".stripMargin
 
+  private val declarationTypesResponseJson: String =
+    """
+      |{
+      |  "_links": {
+      |    "self": {
+      |      "href": "/customs-reference-data/lists/DeclarationTypeItemLevel"
+      |    }
+      |  },
+      |  "meta": {
+      |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+      |    "snapshotDate": "2023-01-01"
+      |  },
+      |  "id": "DeclarationTypeItemLevel",
+      |  "data": [
+      |    {
+      |      "code": "T2",
+      |      "description": "Goods having the customs status of Union goods, which are placed under the common transit procedure"
+      |    },
+      |    {
+      |      "code": "TIR",
+      |      "description": "TIR carnet"
+      |    }
+      |  ]
+      |}
+      |""".stripMargin
+
+  val supplyChainActorTypesResponseJson: String =
+    """
+      |{
+      |  "_links": {
+      |    "self": {
+      |      "href": "/customs-reference-data/lists/AdditionalSupplyChainActorRoleCode"
+      |    }
+      |  },
+      |  "meta": {
+      |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+      |    "snapshotDate": "2023-01-01"
+      |  },
+      |  "id": "AdditionalSupplyChainActorRoleCode",
+      |  "data": [
+      |    {
+      |      "role":"CS",
+      |      "description":"Consolidator"
+      |    },
+      |    {
+      |      "role":"MF",
+      |      "description":"Manufacturer"
+      |    }
+      |  ]
+      |}
+      |""".stripMargin
+
   "Reference Data" - {
+
+    "getDeclarationTypeItemLevel" - {
+      val url = s"/$baseUrl/lists/DeclarationTypeItemLevel"
+      "must return Seq of declaration types when successful" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(declarationTypesResponseJson))
+        )
+
+        val expectedResult: Seq[DeclarationTypeItemLevel] = Seq(
+          DeclarationTypeItemLevel("T2", "Goods having the customs status of Union goods, which are placed under the common transit procedure"),
+          DeclarationTypeItemLevel("TIR", "TIR carnet")
+        )
+
+        val res = connector.getDeclarationTypeItemLevel().futureValue
+
+        res mustEqual expectedResult
+      }
+    }
 
     "getCountries" - {
       "must return Seq of Country when successful" in {
@@ -371,6 +442,27 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       }
     }
 
+    "getSupplyChainActorTypes" - {
+      val url: String = s"/$baseUrl/lists/AdditionalSupplyChainActorRoleCode"
+
+      "must return Seq of SupplyChainActorType when successful" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(supplyChainActorTypesResponseJson))
+        )
+
+        val expectedResult: Seq[SupplyChainActorType] = Seq(
+          SupplyChainActorType("CS", "Consolidator"),
+          SupplyChainActorType("MF", "Manufacturer")
+        )
+
+        connector.getSupplyChainActorTypes().futureValue mustEqual expectedResult
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getSupplyChainActorTypes())
+      }
+    }
   }
 
   private def checkErrorResponse(url: String, result: => Future[_]): Assertion = {
