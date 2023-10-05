@@ -48,6 +48,7 @@ trait SpecBase
 
   val eoriNumber: EoriNumber    = EoriNumber("GB1234567891234")
   val lrn: LocalReferenceNumber = LocalReferenceNumber("ABCD1234567890123").get
+  val departureId               = "departureId123"
 
   val index: Index                      = Index(0)
   val itemIndex: Index                  = Index(0)
