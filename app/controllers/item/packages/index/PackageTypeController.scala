@@ -50,7 +50,7 @@ class PackageTypeController @Inject() (
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, packageIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      service.getPackageTypes.map {
+      service.getPackageTypes().map {
         packageTypeList =>
           val form = formProvider(prefix, packageTypeList)
           val preparedForm = request.userAnswers.get(index.PackageTypePage(itemIndex, packageIndex)) match {
@@ -64,7 +64,7 @@ class PackageTypeController @Inject() (
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, packageIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      service.getPackageTypes.flatMap {
+      service.getPackageTypes().flatMap {
         packageTypeList =>
           val form = formProvider(prefix, packageTypeList)
           form

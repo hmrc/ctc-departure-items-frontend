@@ -52,7 +52,7 @@ class AdditionalReferenceController @Inject() (
     .requireData(lrn)
     .async {
       implicit request =>
-        service.getAdditionalReferences.map {
+        service.getAdditionalReferences().map {
           additionalReferences =>
             val form = formProvider(prefix, additionalReferences)
             val preparedForm = request.userAnswers.get(AdditionalReferencePage(itemIndex, additionalReferenceIndex)) match {
@@ -66,7 +66,7 @@ class AdditionalReferenceController @Inject() (
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, additionalReferenceIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      service.getAdditionalReferences.flatMap {
+      service.getAdditionalReferences().flatMap {
         additionalReferences =>
           val form = formProvider(prefix, additionalReferences)
           form

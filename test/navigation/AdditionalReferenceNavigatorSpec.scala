@@ -50,12 +50,12 @@ class AdditionalReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyC
       val navigator         = navigatorProvider.apply(mode, itemIndex, additionalReferenceIndex)
 
       "when answers complete" - {
-        "must redirect to item answers" ignore {
+        "must redirect to item answers" in {
           forAll(arbitraryItemAnswers(emptyUserAnswers, itemIndex)) {
             answers =>
               navigator
                 .nextPage(answers)
-                .mustBe(???)
+                .mustBe(controllers.item.routes.CheckYourAnswersController.onPageLoad(answers.lrn, itemIndex))
           }
         }
       }

@@ -17,20 +17,30 @@
 package config
 
 object Constants {
-  val GB = "GB"
-  val XI = "XI"
-  val AD = "AD"
 
-  val C651 = "C651"
-  val C658 = "C658"
+  object CountryCode {
+    val GB = "GB"
+    val AD = "AD"
+  }
 
-  val T1  = "T1"
-  val T2  = "T2"
-  val T2F = "T2F"
-  val T   = "T"
-  val TIR = "TIR"
+  object AdditionalReference {
+    val C651 = "C651"
+    val C658 = "C658"
+  }
 
-  val additionalInformationType30600 = "30600"
+  object DeclarationType {
+    val T1  = "T1"
+    val T2  = "T2"
+    val T2F = "T2F"
+    val T   = "T"
+    val TIR = "TIR"
+  }
 
-  val NoSecurityDetails = "0"
+  object AdditionalInformation {
+    val Type30600 = "30600"
+  }
+
+  object SecurityType {
+    val NoSecurityDetails = "0"
+  }
 }

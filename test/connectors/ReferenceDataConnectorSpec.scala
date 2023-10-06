@@ -260,11 +260,11 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
           Country(CountryCode("AD"), "Andorra")
         )
 
-        connector.getCountries.futureValue mustEqual expectedResult
+        connector.getCountries().futureValue mustEqual expectedResult
       }
 
       "must return an exception when an error response is returned" in {
-        checkErrorResponse(s"/$baseUrl/lists/CountryCodesFullList", connector.getCountries)
+        checkErrorResponse(s"/$baseUrl/lists/CountryCodesFullList", connector.getCountries())
       }
     }
 
@@ -280,11 +280,11 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
           Country(CountryCode("AD"), "Andorra")
         )
 
-        connector.getCountryCodesForAddress.futureValue mustEqual expectedResult
+        connector.getCountryCodesForAddress().futureValue mustEqual expectedResult
       }
 
       "must return an exception when an error response is returned" in {
-        checkErrorResponse(s"/$baseUrl/lists/CountryCodesFullList", connector.getCountries)
+        checkErrorResponse(s"/$baseUrl/lists/CountryCodesFullList", connector.getCountries())
       }
     }
 
@@ -321,7 +321,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
           PackageType("UC", Some("Uncaged"), PackingType.Other)
         )
 
-        connector.getPackageTypes.futureValue mustEqual expectResult
+        connector.getPackageTypes().futureValue mustEqual expectResult
       }
 
       "must return an exception when an error response is returned" in {

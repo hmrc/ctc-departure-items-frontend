@@ -16,7 +16,7 @@
 
 package config
 
-import config.Constants._
+import config.Constants.DeclarationType._
 import models.DeclarationTypeItemLevel
 
 object TestConstants {

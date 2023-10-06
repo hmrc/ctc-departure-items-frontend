@@ -17,10 +17,14 @@
 package models.journeyDomain.item
 
 import cats.implicits._
-import config.{Constants, PhaseConfig}
+import config.Constants.CountryCode._
+import config.Constants.DeclarationType._
+import config.Constants.SecurityType._
+import config.PhaseConfig
 import models.DeclarationTypeItemLevel._
 import models.DocumentType.{Previous, Transport}
 import models.Phase.{PostTransition, Transition}
+import models._
 import models.journeyDomain.item.additionalInformation.AdditionalInformationListDomain
 import models.journeyDomain.item.additionalReferences.AdditionalReferencesDomain
 import models.journeyDomain.item.dangerousGoods.DangerousGoodsListDomain
@@ -29,7 +33,6 @@ import models.journeyDomain.item.packages.PackagesDomain
 import models.journeyDomain.item.supplyChainActors.SupplyChainActorsDomain
 import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, JsArrayGettableAsReaderOps, Stage, UserAnswersReader}
 import models.reference.{Country, TransportChargesMethodOfPayment}
-import models._
 import pages.external._
 import pages.item._
 import pages.sections.external.{ConsignmentConsigneeSection, DocumentsSection, TransportEquipmentsSection}
@@ -37,7 +40,6 @@ import play.api.i18n.Messages
 import play.api.mvc.Call
 
 import java.util.UUID
-import scala.language.implicitConversions
 
 case class ItemDomain(
   itemDescription: String,
@@ -106,13 +108,13 @@ object ItemDomain {
     }
 
   def declarationTypeReader(itemIndex: Index): UserAnswersReader[Option[DeclarationTypeItemLevel]] =
-    TransitOperationDeclarationTypePage.filterOptionalDependent(_ == Constants.T) {
+    TransitOperationDeclarationTypePage.filterOptionalDependent(_ == T) {
       DeclarationTypePage(itemIndex).reader
     }
 
   def countryOfDispatchReader(itemIndex: Index): UserAnswersReader[Option[Country]] =
     TransitOperationDeclarationTypePage
-      .filterOptionalDependent(_ == Constants.TIR) {
+      .filterOptionalDependent(_ == TIR) {
         ConsignmentCountryOfDispatchPage.filterDependent(_.isEmpty) {
           CountryOfDispatchPage(itemIndex).reader
         }
@@ -217,7 +219,7 @@ object ItemDomain {
 
     val externalPages: UserAnswersReader[(String, Boolean)] = for {
       consignmentDecType    <- TransitOperationDeclarationTypePage.reader
-      isGBOfficeOfDeparture <- CustomsOfficeOfDeparturePage.reader.map(_.startsWith(Constants.GB))
+      isGBOfficeOfDeparture <- CustomsOfficeOfDeparturePage.reader.map(_.startsWith(GB))
     } yield (consignmentDecType, isGBOfficeOfDeparture)
 
     def isConsignmentPreviousDocDefined(itemIndex: Index): UserAnswersReader[Option[DocumentsDomain]] =
@@ -236,10 +238,10 @@ object ItemDomain {
     ConsignmentAddDocumentsPage.optionalReader.flatMap {
       case Some(true) | None =>
         externalPages.flatMap {
-          case (Constants.T2 | Constants.T2F, true) => isConsignmentPreviousDocDefined(itemIndex)
+          case (T2 | T2F, true) => isConsignmentPreviousDocDefined(itemIndex)
           case (_, true) =>
             DeclarationTypePage(itemIndex).optionalReader.flatMap {
-              case Some(DeclarationTypeItemLevel(Constants.T2, _)) | Some(DeclarationTypeItemLevel(Constants.T2F, _)) =>
+              case Some(DeclarationTypeItemLevel(T2, _)) | Some(DeclarationTypeItemLevel(T2F, _)) =>
                 isConsignmentPreviousDocDefined(itemIndex)
               case _ => AddDocumentsYesNoPage(itemIndex).filterOptionalDependent(identity)(DocumentsDomain.userAnswersReader(itemIndex))
             }
@@ -263,7 +265,7 @@ object ItemDomain {
       isConsignmentTransportChargesDefined <- ConsignmentTransportChargesPage.isDefined
       result <- {
         (securityDetails, isConsignmentTransportChargesDefined, phaseConfig.phase) match {
-          case (Constants.NoSecurityDetails, _, Transition) | (_, false, Transition) =>
+          case (NoSecurityDetails, _, Transition) | (_, false, Transition) =>
             AddTransportChargesYesNoPage(itemIndex).filterOptionalDependent(identity)(TransportChargesMethodOfPaymentPage(itemIndex).reader)
           case _ => UserAnswersReader(None)
         }

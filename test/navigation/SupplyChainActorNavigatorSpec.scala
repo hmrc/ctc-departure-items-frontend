@@ -50,12 +50,12 @@ class SupplyChainActorNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
       val navigator         = navigatorProvider.apply(mode, itemIndex, actorIndex)
 
       "when answers complete" - {
-        "must redirect to item answers" ignore {
+        "must redirect to item answers" in {
           forAll(arbitraryItemAnswers(emptyUserAnswers, itemIndex)) {
             answers =>
               navigator
                 .nextPage(answers)
-                .mustBe(???)
+                .mustBe(controllers.item.routes.CheckYourAnswersController.onPageLoad(answers.lrn, itemIndex))
           }
         }
       }

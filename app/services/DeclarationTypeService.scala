@@ -17,7 +17,7 @@
 package services
 
 import connectors.ReferenceDataConnector
-import models.{DeclarationTypeItemLevel, UserAnswers}
+import models.DeclarationTypeItemLevel
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
