@@ -16,8 +16,6 @@
 
 package models
 
-import scala.language.implicitConversions
-
 trait DynamicEnumerableType[T] extends Enumerable.Implicits {
 
   implicit def enumerable(values: Seq[T]): Enumerable[T] =

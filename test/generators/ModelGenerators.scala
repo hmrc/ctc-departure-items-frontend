@@ -16,7 +16,8 @@
 
 package generators
 
-import config.Constants._
+import config.Constants.AdditionalInformation._
+import config.Constants.AdditionalReference._
 import config.TestConstants.declarationTypeItemValues
 import models.AddressLine.{Country => _, _}
 import models.DocumentType.{Previous, Support, Transport}
@@ -87,7 +88,7 @@ trait ModelGenerators {
   implicit lazy val arbitraryCountryCode: Arbitrary[CountryCode] =
     Arbitrary {
       Gen
-        .pick(CountryCode.Constants.countryCodeLength, 'A' to 'Z')
+        .pick(2, 'A' to 'Z')
         .map(
           code => CountryCode(code.mkString)
         )
@@ -254,7 +255,7 @@ trait ModelGenerators {
     Arbitrary {
       for {
         description <- nonEmptyString
-      } yield AdditionalInformation(additionalInformationType30600, description)
+      } yield AdditionalInformation(Type30600, description)
     }
 
   val arbitraryAdditionalInformationNon30600: Arbitrary[AdditionalInformation] = arbitraryAdditionalInformation

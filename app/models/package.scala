@@ -19,7 +19,6 @@ import models.journeyDomain.UserAnswersReader
 import play.api.libs.json._
 
 import scala.annotation.nowarn
-import scala.language.implicitConversions
 
 package object models {
 

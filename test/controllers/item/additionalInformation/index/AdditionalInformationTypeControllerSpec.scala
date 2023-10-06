@@ -44,7 +44,8 @@ class AdditionalInformationTypeControllerSpec extends SpecBase with AppWithDefau
   private val mode         = NormalMode
 
   private val mockAdditionalInformationService: AdditionalInformationService = mock[TransitionAdditionalInformationService]
-  private lazy val additionalInformationTypeRoute                            = routes.AdditionalInformationTypeController.onPageLoad(lrn, mode, itemIndex, additionalInformationIndex).url
+
+  private lazy val additionalInformationTypeRoute = routes.AdditionalInformationTypeController.onPageLoad(lrn, mode, itemIndex, additionalInformationIndex).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -56,7 +57,7 @@ class AdditionalInformationTypeControllerSpec extends SpecBase with AppWithDefau
 
     "must return OK and the correct view for a GET" in {
 
-      when(mockAdditionalInformationService.getAdditionalInformationTypes()(any(), any())).thenReturn(Future.successful(additionalInformationList))
+      when(mockAdditionalInformationService.getAdditionalInformationTypes()(any())).thenReturn(Future.successful(additionalInformationList))
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, additionalInformationTypeRoute)
@@ -73,7 +74,7 @@ class AdditionalInformationTypeControllerSpec extends SpecBase with AppWithDefau
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      when(mockAdditionalInformationService.getAdditionalInformationTypes()(any(), any())).thenReturn(Future.successful(additionalInformationList))
+      when(mockAdditionalInformationService.getAdditionalInformationTypes()(any())).thenReturn(Future.successful(additionalInformationList))
       val userAnswers = emptyUserAnswers.setValue(AdditionalInformationTypePage(itemIndex, additionalInformationIndex), additionalInformation1)
       setExistingUserAnswers(userAnswers)
 
@@ -93,7 +94,7 @@ class AdditionalInformationTypeControllerSpec extends SpecBase with AppWithDefau
 
     "must redirect to the next page when valid data is submitted" in {
 
-      when(mockAdditionalInformationService.getAdditionalInformationTypes()(any(), any())).thenReturn(Future.successful(additionalInformationList))
+      when(mockAdditionalInformationService.getAdditionalInformationTypes()(any())).thenReturn(Future.successful(additionalInformationList))
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
@@ -110,7 +111,7 @@ class AdditionalInformationTypeControllerSpec extends SpecBase with AppWithDefau
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      when(mockAdditionalInformationService.getAdditionalInformationTypes()(any(), any())).thenReturn(Future.successful(additionalInformationList))
+      when(mockAdditionalInformationService.getAdditionalInformationTypes()(any())).thenReturn(Future.successful(additionalInformationList))
       setExistingUserAnswers(emptyUserAnswers)
 
       val request   = FakeRequest(POST, additionalInformationTypeRoute).withFormUrlEncodedBody(("value", "invalid value"))

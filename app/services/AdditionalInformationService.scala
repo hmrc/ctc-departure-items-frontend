@@ -16,9 +16,9 @@
 
 package services
 
-import config.PhaseConfig
+import config.Constants.AdditionalInformation._
 import connectors.ReferenceDataConnector
-import models.{Phase, SelectableList}
+import models.SelectableList
 import models.reference.AdditionalInformation
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -33,7 +33,7 @@ sealed trait AdditionalInformationService {
 
   def predicate: AdditionalInformation => Boolean
 
-  def getAdditionalInformationTypes()(implicit phaseConfig: PhaseConfig, hc: HeaderCarrier): Future[SelectableList[AdditionalInformation]] =
+  def getAdditionalInformationTypes()(implicit hc: HeaderCarrier): Future[SelectableList[AdditionalInformation]] =
     referenceDataConnector
       .getAdditionalInformationTypes()
       .map(_.filter(predicate))
@@ -55,6 +55,6 @@ class PostTransitionAdditionalInformationService @Inject() (
   override val referenceDataConnector: ReferenceDataConnector
 )(implicit override val ec: ExecutionContext)
     extends AdditionalInformationService {
-  override def predicate: AdditionalInformation => Boolean = _.code != "30600"
+  override def predicate: AdditionalInformation => Boolean = _.code != Type30600
 
 }

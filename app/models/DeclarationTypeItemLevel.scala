@@ -16,7 +16,7 @@
 
 package models
 
-import config.Constants.{T1, T2, T2F}
+import config.Constants.DeclarationType.{T1, T2, T2F}
 import play.api.libs.json.{Format, Json}
 
 case class DeclarationTypeItemLevel(code: String, description: String) extends Radioable[DeclarationTypeItemLevel] {

@@ -16,8 +16,6 @@
 
 package pages
 
-import scala.language.implicitConversions
-
 trait Page
 
 object Page {

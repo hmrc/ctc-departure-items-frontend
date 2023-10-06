@@ -17,7 +17,7 @@
 package models.journeyDomain.item.additionalReferences
 
 import cats.implicits._
-import config.Constants._
+import config.Constants.AdditionalReference._
 import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
 import models.journeyDomain.{EitherType, GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
 import models.reference.AdditionalReference
@@ -46,7 +46,7 @@ case class AdditionalReferenceDomain(
 
 object AdditionalReferenceDomain {
 
-  def asString(`type`: AdditionalReference, number: Option[String]): String = `type` + number.fold("") {
+  def asString(`type`: AdditionalReference, number: Option[String]): String = `type`.toString + number.fold("") {
     value => s" - $value"
   }
 
