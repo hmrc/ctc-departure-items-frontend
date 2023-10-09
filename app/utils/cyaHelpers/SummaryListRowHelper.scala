@@ -53,7 +53,7 @@ private[utils] class SummaryListRowHelper(implicit messages: Messages) {
   protected def formatEnumAsString[T](messageKeyPrefix: String)(answer: T): String =
     messages(s"$messageKeyPrefix.$answer")
 
-  protected def formatAsCountry(country: Country): Content = country.description.toText
+  protected def formatAsCountry(country: Country): Content = country.toString.toText
 
   protected def buildRow(
     prefix: String,
