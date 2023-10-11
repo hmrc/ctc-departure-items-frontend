@@ -640,8 +640,10 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
       "can be read from user answers" - {
         "when status is set to amend " - {
           "and commodity code should not be set" in {
+            val commodityCode = nonEmptyString.sample
             val userAnswers = emptyUserAnswers
               .copy(status = SubmissionState.Amended)
+              .setValue(CommodityCodePage(itemIndex), commodityCode)
 
             val expectedResult = None
 
@@ -652,6 +654,28 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
             result.value mustBe expectedResult
           }
         }
+
+        "when status is not set to amend " - {
+          "and commodity code should be set" in {
+            forAll(nonEmptyString) {
+              commodityCode =>
+                val userAnswers = emptyUserAnswers
+                  .copy(status = SubmissionState.NotSubmitted)
+                  .setValue(AddCommodityCodeYesNoPage(itemIndex), true)
+                  .setValue(CommodityCodePage(itemIndex), commodityCode)
+
+                val expectedResult = Some(commodityCode)
+
+                val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+                  ItemDomain.commodityCodeReader(itemIndex)(mockTransitionPhaseConfig)
+                ).run(userAnswers)
+
+                result.value mustBe expectedResult
+            }
+
+          }
+        }
+
         "when in transition" - {
           "and commodity code has been provided" in {
             forAll(nonEmptyString) {
