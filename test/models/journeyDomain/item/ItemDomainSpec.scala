@@ -642,7 +642,6 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
           "and commodity code should not be set" in {
             val userAnswers = emptyUserAnswers
               .copy(status = SubmissionState.Amended)
-//              .setValue(AddCommodityCodeYesNoPage(itemIndex), arbitrary[Boolean].sample)
 
             val expectedResult = None
 
