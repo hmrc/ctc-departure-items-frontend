@@ -30,7 +30,7 @@ import models.journeyDomain.item.documents.{DocumentDomain, DocumentsDomain}
 import models.journeyDomain.item.packages.{PackageDomain, PackagesDomain}
 import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.reference._
-import models.{DeclarationTypeItemLevel, Index, Phase}
+import models.{DeclarationTypeItemLevel, Index, Phase, SubmissionState}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -638,6 +638,21 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
     "commodityCodeReader" - {
 
       "can be read from user answers" - {
+        "when status is set to amend " - {
+          "and commodity code should not be set" in {
+            val userAnswers = emptyUserAnswers
+              .copy(status = SubmissionState.Amended)
+//              .setValue(AddCommodityCodeYesNoPage(itemIndex), arbitrary[Boolean].sample)
+
+            val expectedResult = None
+
+            val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
+              ItemDomain.commodityCodeReader(itemIndex)(mockTransitionPhaseConfig)
+            ).run(userAnswers)
+
+            result.value mustBe expectedResult
+          }
+        }
         "when in transition" - {
           "and commodity code has been provided" in {
             forAll(nonEmptyString) {
