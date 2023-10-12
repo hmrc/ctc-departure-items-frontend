@@ -20,7 +20,7 @@ import models.Selectable
 import play.api.libs.json.{Json, OFormat}
 
 case class Country(code: CountryCode, description: String) extends Selectable {
-  override def toString: String = description
+  override def toString: String = s"$description - ${code.code}"
 
   override val value: String = code.code
 }

@@ -183,7 +183,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               val result  = helper.countryOfDispatch.get
 
               result.key.value mustBe "Country of dispatch"
-              result.value.value mustBe country.description
+              result.value.value mustBe country.toString
 
               val actions = result.actions.get.items
               actions.size mustBe 1
@@ -215,7 +215,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               val result  = helper.countryOfDestination.get
 
               result.key.value mustBe "Country of destination"
-              result.value.value mustBe country.description
+              result.value.value mustBe country.toString
 
               val actions = result.actions.get.items
               actions.size mustBe 1
@@ -1314,7 +1314,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
           val result = helper.consigneeCountry.get
 
           result.key.value mustBe "Country"
-          result.value.value mustBe country.description
+          result.value.value mustBe country.toString
 
           val actions = result.actions.get.items
           actions.size mustBe 1
