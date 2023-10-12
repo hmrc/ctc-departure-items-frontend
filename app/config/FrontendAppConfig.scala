@@ -32,7 +32,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   val newEnrolmentKey: String              = configuration.get[String]("keys.enrolmentKey")
   val newEnrolmentIdentifierKey: String    = configuration.get[String]("keys.enrolmentIdentifierKey")
 
-  lazy val referenceDataUrl: String = servicesConfig.fullServiceUrl("customsReferenceData")
+  lazy val referenceDataUrl: String = servicesConfig.fullServiceUrl("customs-reference-data")
 
   val loginUrl: String         = configuration.get[String]("urls.login")
   val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
