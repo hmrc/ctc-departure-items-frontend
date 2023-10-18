@@ -37,7 +37,7 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators {
       for {
         lrn        <- arbitrary[LocalReferenceNumber]
         eoriNumber <- arbitrary[EoriNumber]
-        status     <- arbitrary[SubmissionState.Value]
+        status     <- arbitrary[SubmissionState]
         answers    <- buildUserAnswers[ItemsDomain](UserAnswers(lrn, eoriNumber, status = status))
       } yield answers
     }

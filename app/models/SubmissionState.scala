@@ -16,24 +16,56 @@
 
 package models
 
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json._
+import models.TaskStatus.{Amended, Completed}
 
-sealed trait SubmissionState
+sealed trait SubmissionState {
+  val asString: String
 
-object SubmissionState extends Enumeration {
+  def taskStatus: TaskStatus = this match {
+    case SubmissionState.Amendment => Amended
+    case _                         => Completed
+  }
+}
 
-  type SubmissionState = Value
+object SubmissionState {
 
-  val NotSubmitted: SubmissionState.Value           = Value("notSubmitted")
-  val Submitted: SubmissionState.Value              = Value("submitted")
-  val RejectedPendingChanges: SubmissionState.Value = Value("rejectedPendingChanges")
-  val Amended: SubmissionState.Value                = Value("amended") //TODO: Check these are correct once CTCP-3765 is merged
-  val GuaranteeAmended: SubmissionState.Value       = Value("guaranteeAmended") //TODO: Check these are correct once CTCP-3765 is merged
+  case object NotSubmitted extends SubmissionState {
+    override val asString: String = "notSubmitted"
+  }
 
-  implicit val format: Format[SubmissionState.Value] = Json.formatEnum(SubmissionState)
+  case object Submitted extends SubmissionState {
+    override val asString: String = "submitted"
+  }
 
-  implicit class RichSubmissionState(value: Value) {
+  case object RejectedPendingChanges extends SubmissionState {
+    override val asString: String = "rejectedPendingChanges"
+  }
+
+  case object Amendment extends SubmissionState {
+    override val asString: String = "amendment"
+  }
+
+  case object GuaranteeAmendment extends SubmissionState {
+    override val asString: String = "guaranteeAmendment"
+  }
+
+  implicit val reads: Reads[SubmissionState] = Reads {
+    case JsString(NotSubmitted.asString)           => JsSuccess(NotSubmitted)
+    case JsString(Submitted.asString)              => JsSuccess(Submitted)
+    case JsString(RejectedPendingChanges.asString) => JsSuccess(RejectedPendingChanges)
+    case JsString(Amendment.asString)              => JsSuccess(Amendment)
+    case JsString(GuaranteeAmendment.asString)     => JsSuccess(GuaranteeAmendment)
+    case x                                         => JsError(s"Could not read $x as SubmissionState")
+  }
+
+  implicit val writes: Writes[SubmissionState] = Writes {
+    state => JsString(state.asString)
+  }
+
+  implicit class RichSubmissionState(value: SubmissionState) {
 
     def showErrorContent: Boolean = value == RejectedPendingChanges
   }
+
 }

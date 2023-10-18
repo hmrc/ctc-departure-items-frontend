@@ -159,9 +159,9 @@ object ItemDomain {
     }
 
   def commodityCodeReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[Option[String]] = {
-    val status: UserAnswers => EitherType[SubmissionState.Value] = ua => Right(ua.status)
+    val status: UserAnswers => EitherType[SubmissionState] = ua => Right(ua.status)
     UserAnswersReader(status).flatMap {
-      case models.SubmissionState.Amended => none[String].pure[UserAnswersReader]
+      case models.SubmissionState.Amendment => none[String].pure[UserAnswersReader]
       case _ =>
         defaultCommodityCodeReader(itemIndex, phaseConfig)
     }

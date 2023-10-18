@@ -25,7 +25,7 @@ import scala.util.{Failure, Success, Try}
 final case class UserAnswers(
   lrn: LocalReferenceNumber,
   eoriNumber: EoriNumber,
-  status: SubmissionState.Value,
+  status: SubmissionState,
   data: JsObject = Json.obj(),
   tasks: Map[String, TaskStatus] = Map()
 ) {
@@ -74,7 +74,7 @@ object UserAnswers {
     (
       (__ \ "lrn").read[LocalReferenceNumber] and
         (__ \ "eoriNumber").read[EoriNumber] and
-        (__ \ "isSubmitted").read[SubmissionState.Value] and
+        (__ \ "isSubmitted").read[SubmissionState] and
         (__ \ "data").read[JsObject] and
         (__ \ "tasks").read[Map[String, TaskStatus]]
     )(UserAnswers.apply _)
@@ -83,7 +83,7 @@ object UserAnswers {
     (
       (__ \ "lrn").write[LocalReferenceNumber] and
         (__ \ "eoriNumber").write[EoriNumber] and
-        (__ \ "isSubmitted").write[SubmissionState.Value] and
+        (__ \ "isSubmitted").write[SubmissionState] and
         (__ \ "data").write[JsObject] and
         (__ \ "tasks").write[Map[String, TaskStatus]]
     )(unlift(UserAnswers.unapply))

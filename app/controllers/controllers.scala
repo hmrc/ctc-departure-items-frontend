@@ -48,7 +48,7 @@ package object controllers {
     def updateTask[A](page: QuestionPage[A], section: String, userAnswers: UserAnswers)(implicit phaseConfig: PhaseConfig): EitherType[Write[A]] = {
       val status = UserAnswersReader[ItemsDomain].run(userAnswers) match {
         case Left(_)  => InProgress
-        case Right(_) => Completed
+        case Right(_) => userAnswers.status.taskStatus
       }
       Right((page, userAnswers.updateTask(section, status)))
     }

@@ -641,7 +641,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         "when status is set to amend " - {
           "and commodity code should not be set" in {
             val userAnswers = emptyUserAnswers
-              .copy(status = SubmissionState.Amended)
+              .copy(status = SubmissionState.Amendment)
 
             val expectedResult = None
 
