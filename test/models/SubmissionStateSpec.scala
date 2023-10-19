@@ -58,6 +58,24 @@ class SubmissionStateSpec extends AnyFreeSpec with Generators with Matchers with
         val value = SubmissionState.RejectedPendingChanges
         value.showErrorContent mustEqual true
       }
+
+      "when status is non amendment" in {
+        forAll(
+          arbitrary[SubmissionState].filter(
+            _ != SubmissionState.Amendment
+          )
+        ) {
+          state =>
+            state.taskStatus mustBe TaskStatus.Completed
+        }
+      }
+
+      "when status is amendment" in {
+
+        val state = SubmissionState.Amendment
+        state.taskStatus mustBe TaskStatus.Amended
+
+      }
     }
   }
 }
