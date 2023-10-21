@@ -23,10 +23,10 @@ sealed trait SubmissionState {
   val asString: String
 
   def taskStatus: TaskStatus = this match {
-    case SubmissionState.Amendment => Amended
-    case SubmissionState.GuaranteeAmendment => Amended
+    case SubmissionState.Amendment              => Amended
+    case SubmissionState.GuaranteeAmendment     => Amended
     case SubmissionState.RejectedPendingChanges => Amended
-    case _ => Completed
+    case _                                      => Completed
   }
 }
 
@@ -63,11 +63,6 @@ object SubmissionState {
 
   implicit val writes: Writes[SubmissionState] = Writes {
     state => JsString(state.asString)
-  }
-
-  implicit class RichSubmissionState(value: SubmissionState) {
-
-    def showErrorContent: Boolean = value == RejectedPendingChanges
   }
 
 }

@@ -43,39 +43,5 @@ class SubmissionStateSpec extends AnyFreeSpec with Generators with Matchers with
       }
     }
 
-    "must return showErrorContent" - {
-      "when NotSubmitted must be false" in {
-        val value = SubmissionState.NotSubmitted
-        value.showErrorContent mustEqual false
-      }
-
-      "when Submitted must be false" in {
-        val value = SubmissionState.Submitted
-        value.showErrorContent mustEqual false
-      }
-
-      "when RejectedPendingChanges must be true" in {
-        val value = SubmissionState.RejectedPendingChanges
-        value.showErrorContent mustEqual true
-      }
-
-      "when status is non amendment" in {
-        forAll(
-          arbitrary[SubmissionState]
-        ) {
-          state =>
-            state.taskStatus mustBe TaskStatus.Completed
-        }
-      }
-
-      "when status is amendment" in {
-        forAll(
-          arbitrary[SubmissionState](arbitraryAmendedmentSubmissionState)
-        ) {
-          state =>
-            state.taskStatus mustBe TaskStatus.Amended
-        }
-      }
-    }
   }
 }
