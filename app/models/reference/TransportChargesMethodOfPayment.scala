@@ -21,6 +21,8 @@ import play.api.libs.json.{Format, Json}
 
 case class TransportChargesMethodOfPayment(method: String, description: String) extends Radioable[TransportChargesMethodOfPayment] {
 
+  override val code: String = method
+
   override def toString: String = description
 
   override val messageKeyPrefix: String = TransportChargesMethodOfPayment.messageKeyPrefix

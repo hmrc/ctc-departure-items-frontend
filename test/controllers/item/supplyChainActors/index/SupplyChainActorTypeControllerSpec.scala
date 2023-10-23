@@ -37,10 +37,11 @@ import scala.concurrent.Future
 
 class SupplyChainActorTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val supplyChainActorTypes = arbitrary[Seq[SupplyChainActorType]].sample.value
+  private val scas = arbitrary[Seq[SupplyChainActorType]].sample.value
+  private val sca1 = scas.head
 
   private val formProvider                   = new EnumerableFormProvider()
-  private val form                           = formProvider[SupplyChainActorType]("item.supplyChainActors.index.supplyChainActorType", supplyChainActorTypes)
+  private val form                           = formProvider[SupplyChainActorType]("item.supplyChainActors.index.supplyChainActorType", scas)
   private val mode                           = NormalMode
   private lazy val supplyChainActorTypeRoute = routes.SupplyChainActorTypeController.onPageLoad(lrn, mode, itemIndex, actorIndex).url
 
@@ -55,7 +56,7 @@ class SupplyChainActorTypeControllerSpec extends SpecBase with AppWithDefaultMoc
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockSupplyChainActorTypesService)
-    when(mockSupplyChainActorTypesService.getSupplyChainActorTypes()(any())).thenReturn(Future.successful(supplyChainActorTypes))
+    when(mockSupplyChainActorTypesService.getSupplyChainActorTypes()(any())).thenReturn(Future.successful(scas))
   }
 
   "SupplyChainActorType Controller" - {
@@ -73,26 +74,26 @@ class SupplyChainActorTypeControllerSpec extends SpecBase with AppWithDefaultMoc
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, supplyChainActorTypes, mode, itemIndex, actorIndex)(request, messages).toString
+        view(form, lrn, scas, mode, itemIndex, actorIndex)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(SupplyChainActorTypePage(itemIndex, actorIndex), supplyChainActorTypes.head)
+      val userAnswers = emptyUserAnswers.setValue(SupplyChainActorTypePage(itemIndex, actorIndex), sca1)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, supplyChainActorTypeRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> supplyChainActorTypes.head.toString))
+      val filledForm = form.bind(Map("value" -> sca1.code))
 
       val view = injector.instanceOf[SupplyChainActorTypeView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, supplyChainActorTypes, mode, itemIndex, actorIndex)(request, messages).toString
+        view(filledForm, lrn, scas, mode, itemIndex, actorIndex)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -102,7 +103,7 @@ class SupplyChainActorTypeControllerSpec extends SpecBase with AppWithDefaultMoc
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, supplyChainActorTypeRoute)
-        .withFormUrlEncodedBody(("value", supplyChainActorTypes.head.toString))
+        .withFormUrlEncodedBody(("value", sca1.code))
 
       val result = route(app, request).value
 
@@ -125,7 +126,7 @@ class SupplyChainActorTypeControllerSpec extends SpecBase with AppWithDefaultMoc
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, supplyChainActorTypes, mode, itemIndex, actorIndex)(request, messages).toString
+        view(boundForm, lrn, scas, mode, itemIndex, actorIndex)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -145,7 +146,7 @@ class SupplyChainActorTypeControllerSpec extends SpecBase with AppWithDefaultMoc
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, supplyChainActorTypeRoute)
-        .withFormUrlEncodedBody(("value", supplyChainActorTypes.head.toString))
+        .withFormUrlEncodedBody(("value", sca1.code))
 
       val result = route(app, request).value
 

@@ -189,6 +189,12 @@ trait ModelGenerators {
     } yield SelectableList(values.distinctBy(_.value))
   }
 
+  implicit def arbitraryRadioableList[T <: Radioable[T]](implicit arbitrary: Arbitrary[T]): Arbitrary[Seq[T]] = Arbitrary {
+    for {
+      values <- listWithMaxLength[T]()
+    } yield values.distinctBy(_.code)
+  }
+
   implicit lazy val arbitraryIndex: Arbitrary[Index] = Arbitrary {
     for {
       position <- Gen.choose(0: Int, 10: Int)

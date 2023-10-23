@@ -82,7 +82,7 @@ class DeclarationTypeControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> declarationTypeValues.head.toString))
+      val filledForm = form.bind(Map("value" -> declarationTypeValues.head.code))
 
       val view = injector.instanceOf[DeclarationTypeView]
 
@@ -99,7 +99,7 @@ class DeclarationTypeControllerSpec extends SpecBase with AppWithDefaultMockFixt
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, declarationTypeRoute)
-        .withFormUrlEncodedBody(("value", declarationTypeValues.head.toString))
+        .withFormUrlEncodedBody(("value", declarationTypeValues.head.code))
 
       val result = route(app, request).value
 
@@ -143,7 +143,7 @@ class DeclarationTypeControllerSpec extends SpecBase with AppWithDefaultMockFixt
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, declarationTypeRoute)
-        .withFormUrlEncodedBody(("value", declarationTypeValues.head.toString))
+        .withFormUrlEncodedBody(("value", declarationTypeValues.head.code))
 
       val result = route(app, request).value
 

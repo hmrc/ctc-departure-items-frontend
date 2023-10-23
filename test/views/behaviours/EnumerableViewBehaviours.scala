@@ -14,14 +14,10 @@
  * limitations under the License.
  */
 
-package models
+package views.behaviours
 
-trait DynamicEnumerableType[T <: Radioable[T]] extends Enumerable.Implicits {
+import models.Radioable
 
-  implicit def enumerable(values: Seq[T]): Enumerable[T] =
-    Enumerable(
-      values.map(
-        v => v.code -> v
-      ): _*
-    )
+trait EnumerableViewBehaviours[T <: Radioable[T]] extends RadioViewBehaviours[T] {
+  override val getValue: T => String = _.code
 }

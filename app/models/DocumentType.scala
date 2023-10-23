@@ -16,11 +16,13 @@
 
 package models
 
+import play.api.libs.json._
+
 sealed trait DocumentType {
   val display: String
 }
 
-object DocumentType extends EnumerableType[DocumentType] {
+object DocumentType {
 
   case object Support extends DocumentType {
     val display = "Supporting"
@@ -33,5 +35,19 @@ object DocumentType extends EnumerableType[DocumentType] {
   case object Previous extends DocumentType {
     val display = "Previous"
   }
-  override val values: Seq[DocumentType] = Seq(Support, Transport, Previous)
+
+  val values: Seq[DocumentType] = Seq(Support, Transport, Previous)
+
+  implicit val reads: Reads[DocumentType] = Reads {
+    case JsString("Support")   => JsSuccess(Support)
+    case JsString("Transport") => JsSuccess(Transport)
+    case JsString("Previous")  => JsSuccess(Previous)
+    case _                     => JsError("Unexpected document type")
+  }
+
+  implicit val writes: Writes[DocumentType] = Writes {
+    case Support   => JsString("Support")
+    case Transport => JsString("Transport")
+    case Previous  => JsString("Previous")
+  }
 }
