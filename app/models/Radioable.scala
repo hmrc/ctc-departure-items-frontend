@@ -22,22 +22,26 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
 trait Radioable[T] {
 
-  val messageKeyPrefix: String
-  def asString(implicit messages: Messages): String = messages(s"$messageKeyPrefix.$this")
+  def asString(implicit messages: Messages): String =
+    if (messages.isDefinedAt(contentKey)) messages(contentKey) else this.toString
 
-  def toRadioItem(index: Int, formKey: String, checked: Boolean)(implicit messages: Messages): RadioItem = {
-    val contentKey = s"$messageKeyPrefix.$this"
+  val code: String
+
+  val messageKeyPrefix: String
+
+  private lazy val contentKey = s"$messageKeyPrefix.${this.code}"
+
+  def toRadioItem(index: Int, formKey: String, checked: Boolean)(implicit messages: Messages): RadioItem =
     RadioItem(
-      content = Text(if (messages.isDefinedAt(contentKey)) messages(contentKey) else this.toString),
+      content = Text(this.asString),
       id = Some(if (index == 0) formKey else s"${formKey}_$index"),
-      value = Some(this.toString),
+      value = Some(code),
       checked = checked,
       hint = {
-        val hintKey = s"$messageKeyPrefix.$this.hint"
+        val hintKey = s"$contentKey.hint"
         if (messages.isDefinedAt(hintKey)) Some(Hint(content = Text(messages(hintKey)))) else None
       }
     )
-  }
 }
 
 object Radioable {

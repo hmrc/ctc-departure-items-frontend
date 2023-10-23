@@ -16,7 +16,7 @@
 
 package models
 
-trait EnumerableType[T] extends DynamicEnumerableType[T] {
+trait EnumerableType[T <: Radioable[T]] extends DynamicEnumerableType[T] {
 
   val values: Seq[T]
   implicit def enumerable: Enumerable[T] = enumerable(values)

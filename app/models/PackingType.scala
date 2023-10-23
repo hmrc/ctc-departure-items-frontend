@@ -16,12 +16,27 @@
 
 package models
 
+import play.api.libs.json._
+
 sealed trait PackingType
 
-object PackingType extends EnumerableType[PackingType] {
+object PackingType {
   case object Bulk extends PackingType
   case object Unpacked extends PackingType
   case object Other extends PackingType
 
-  override val values: Seq[PackingType] = Seq(Bulk, Unpacked, Other)
+  val values: Seq[PackingType] = Seq(Bulk, Unpacked, Other)
+
+  implicit val reads: Reads[PackingType] = Reads {
+    case JsString("Bulk")     => JsSuccess(Bulk)
+    case JsString("Unpacked") => JsSuccess(Unpacked)
+    case JsString("Other")    => JsSuccess(Other)
+    case _                    => JsError("Unexpected packing type")
+  }
+
+  implicit val writes: Writes[PackingType] = Writes {
+    case Bulk     => JsString("Bulk")
+    case Unpacked => JsString("Unpacked")
+    case Other    => JsString("Other")
+  }
 }

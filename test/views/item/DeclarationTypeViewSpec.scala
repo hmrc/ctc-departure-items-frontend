@@ -22,10 +22,10 @@ import models.{DeclarationTypeItemLevel, NormalMode}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import views.behaviours.RadioViewBehaviours
+import views.behaviours.EnumerableViewBehaviours
 import views.html.item.DeclarationTypeView
 
-class DeclarationTypeViewSpec extends RadioViewBehaviours[DeclarationTypeItemLevel] {
+class DeclarationTypeViewSpec extends EnumerableViewBehaviours[DeclarationTypeItemLevel] {
 
   override def form: Form[DeclarationTypeItemLevel] = new EnumerableFormProvider()(prefix)(declarationTypeValues)
 

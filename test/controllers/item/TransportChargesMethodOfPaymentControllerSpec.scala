@@ -24,26 +24,26 @@ import models.reference.TransportChargesMethodOfPayment
 import navigation.ItemNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalacheck.Arbitrary.arbitrary
 import pages.item.TransportChargesMethodOfPaymentPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.item.TransportMethodOfPaymentView
-import org.scalacheck.Arbitrary.arbitrary
 import services.TransportChargesMethodOfPaymentService
+import views.html.item.TransportMethodOfPaymentView
 
 import scala.concurrent.Future
 
 class TransportChargesMethodOfPaymentControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val mop1                                                               = arbitrary[TransportChargesMethodOfPayment].sample.value
-  private val mop2                                                               = arbitrary[TransportChargesMethodOfPayment].sample.value
-  private val mops                                                               = Seq(mop1, mop2)
-  private val formProvider                                                       = new EnumerableFormProvider()
-  private val form                                                               = formProvider("item.transportMethodOfPayment", mops)
-  private val mode                                                               = NormalMode
-  private lazy val transportMethodOfPaymentRoute                                 = routes.TransportChargesMethodOfPaymentController.onPageLoad(lrn, mode, index).url
+  private val mops                               = arbitrary[Seq[TransportChargesMethodOfPayment]].sample.value
+  private val mop1                               = mops.head
+  private val formProvider                       = new EnumerableFormProvider()
+  private val form                               = formProvider("item.transportMethodOfPayment", mops)
+  private val mode                               = NormalMode
+  private lazy val transportMethodOfPaymentRoute = routes.TransportChargesMethodOfPaymentController.onPageLoad(lrn, mode, index).url
+
   private val mockMethodOfPaymentService: TransportChargesMethodOfPaymentService = mock[TransportChargesMethodOfPaymentService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
@@ -81,7 +81,7 @@ class TransportChargesMethodOfPaymentControllerSpec extends SpecBase with AppWit
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> mop1.toString))
+      val filledForm = form.bind(Map("value" -> mop1.code))
 
       val view = injector.instanceOf[TransportMethodOfPaymentView]
 
@@ -99,7 +99,7 @@ class TransportChargesMethodOfPaymentControllerSpec extends SpecBase with AppWit
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, transportMethodOfPaymentRoute)
-        .withFormUrlEncodedBody(("value", mop1.toString))
+        .withFormUrlEncodedBody(("value", mop1.code))
 
       val result = route(app, request).value
 
@@ -143,7 +143,7 @@ class TransportChargesMethodOfPaymentControllerSpec extends SpecBase with AppWit
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, transportMethodOfPaymentRoute)
-        .withFormUrlEncodedBody(("value", mops.head.toString))
+        .withFormUrlEncodedBody(("value", mop1.code))
 
       val result = route(app, request).value
 

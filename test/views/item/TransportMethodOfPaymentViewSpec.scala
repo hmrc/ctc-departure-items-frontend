@@ -24,10 +24,10 @@ import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import views.behaviours.RadioViewBehaviours
+import views.behaviours.EnumerableViewBehaviours
 import views.html.item.TransportMethodOfPaymentView
 
-class TransportMethodOfPaymentViewSpec extends RadioViewBehaviours[TransportChargesMethodOfPayment] with Generators {
+class TransportMethodOfPaymentViewSpec extends EnumerableViewBehaviours[TransportChargesMethodOfPayment] with Generators {
   private val mop1                                         = arbitrary[TransportChargesMethodOfPayment].sample.value
   private val mop2                                         = arbitrary[TransportChargesMethodOfPayment].sample.value
   private val mops                                         = Seq(mop1, mop2)

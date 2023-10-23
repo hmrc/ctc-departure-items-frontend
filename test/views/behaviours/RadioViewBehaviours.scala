@@ -21,6 +21,8 @@ import uk.gov.hmrc.govukfrontend.views.html.components._
 
 trait RadioViewBehaviours[T] extends QuestionViewBehaviours[T] {
 
+  val getValue: T => String
+
   val fieldId: String = "value"
 
   def radioItems(fieldId: String, checkedValue: Option[T] = None): Seq[RadioItem]
@@ -96,7 +98,7 @@ trait RadioViewBehaviours[T] extends QuestionViewBehaviours[T] {
 
     radioItems(fieldId, Some(answer)) foreach {
       radioItem =>
-        if (radioItem.value.get == answer.toString) {
+        if (radioItem.value.get == getValue(answer)) {
           s"must have ${radioItem.value.get} checked" in {
             assert(doc.getElementById(radioItem.id.get).hasAttr("checked"))
           }
