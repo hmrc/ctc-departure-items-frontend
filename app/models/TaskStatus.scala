@@ -20,10 +20,10 @@ import play.api.libs.json.{JsError, JsString, JsSuccess, JsValue, Reads, Writes}
 
 sealed trait TaskStatus {
   val jsonString: String
-  def isCompleted: Boolean   = this == TaskStatus.Completed || isUnavailable || isError
+  def isCompleted: Boolean   = this == TaskStatus.Completed || isUnavailable || isError || isAmended
   def isUnavailable: Boolean = this == TaskStatus.Unavailable
-
-  def isError: Boolean = this == TaskStatus.Error
+  def isAmended: Boolean     = this == TaskStatus.Amended
+  def isError: Boolean       = this == TaskStatus.Error
 
 }
 
@@ -53,9 +53,14 @@ object TaskStatus {
     override val jsonString: String = "error"
   }
 
+  case object Amended extends TaskStatus {
+    override val jsonString: String = "amended"
+  }
+
   implicit val reads: Reads[TaskStatus] = (json: JsValue) => {
     json.validate[String].flatMap {
       case Completed.jsonString      => JsSuccess(Completed)
+      case Amended.jsonString        => JsSuccess(Amended)
       case InProgress.jsonString     => JsSuccess(InProgress)
       case NotStarted.jsonString     => JsSuccess(NotStarted)
       case CannotStartYet.jsonString => JsSuccess(CannotStartYet)

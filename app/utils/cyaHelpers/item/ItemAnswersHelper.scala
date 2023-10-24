@@ -24,7 +24,7 @@ import models.journeyDomain.item.documents.DocumentDomain
 import models.journeyDomain.item.packages.PackageDomain
 import models.journeyDomain.item.supplyChainActors.SupplyChainActorDomain
 import models.reference.{Country, TransportChargesMethodOfPayment}
-import models.{CheckMode, DeclarationTypeItemLevel, DynamicAddress, Index, UserAnswers}
+import models.{CheckMode, DeclarationTypeItemLevel, DynamicAddress, Index, SubmissionState, UserAnswers}
 import pages.item._
 import pages.sections.additionalInformation.AdditionalInformationListSection
 import pages.sections.additionalReference.AdditionalReferencesSection
@@ -125,20 +125,26 @@ class ItemAnswersHelper(
     args = itemIndex.display
   )
 
-  def commodityCodeYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+  private val amendPredicate = userAnswers.status == SubmissionState.Amendment
+
+  def commodityCodeYesNo: Option[SummaryListRow] = getAnswerAndBuildRowWithDynamicLink[Boolean](
     page = AddCommodityCodeYesNoPage(itemIndex),
     formatAnswer = formatAsYesOrNo,
     prefix = "item.addCommodityCodeYesNo",
     id = Some("change-add-commodity-code"),
     args = itemIndex.display
+  )(
+    _ => amendPredicate
   )
 
-  def commodityCode: Option[SummaryListRow] = getAnswerAndBuildRow[String](
+  def commodityCode: Option[SummaryListRow] = getAnswerAndBuildRowWithDynamicLink[String](
     page = CommodityCodePage(itemIndex),
     formatAnswer = formatAsText,
     prefix = "item.commodityCode",
     id = Some("change-commodity-code"),
     args = itemIndex.display
+  )(
+    _ => amendPredicate
   )
 
   def combinedNomenclatureCodeYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](

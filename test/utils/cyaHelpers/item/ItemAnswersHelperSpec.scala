@@ -29,7 +29,7 @@ import controllers.item.routes._
 import controllers.item.supplyChainActors.index.routes.SupplyChainActorTypeController
 import generators.Generators
 import models.reference._
-import models.{CheckMode, DeclarationTypeItemLevel, Document, DynamicAddress, Index, Mode, Phase, TransportEquipment}
+import models.{CheckMode, DeclarationTypeItemLevel, Document, DynamicAddress, Index, Mode, Phase, SubmissionState, TransportEquipment}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -365,8 +365,11 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
       }
 
       "must return Some(Row)" - {
-        "when AddCommodityCodeYesNoPage is defined" in {
-          val answers = emptyUserAnswers.setValue(AddCommodityCodeYesNoPage(itemIndex), true)
+
+        "when AddCommodityCodeYesNoPage is defined with action" in {
+          val answers = emptyUserAnswers
+            .copy(status = SubmissionState.NotSubmitted)
+            .setValue(AddCommodityCodeYesNoPage(itemIndex), true)
 
           val helper = new ItemAnswersHelper(answers, itemIndex)
           val result = helper.commodityCodeYesNo.get
@@ -382,6 +385,21 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
           action.visuallyHiddenText.get mustBe "if you want to add a commodity code for item 1"
           action.id mustBe "change-add-commodity-code"
         }
+
+        "when AddCommodityCodeYesNoPage is defined without action" in {
+          val answers = emptyUserAnswers
+            .copy(status = SubmissionState.Amendment)
+            .setValue(AddCommodityCodeYesNoPage(itemIndex), true)
+
+          val helper = new ItemAnswersHelper(answers, itemIndex)
+          val result = helper.commodityCodeYesNo.get
+
+          result.key.value mustBe "Do you want to add a commodity code?"
+          result.value.value mustBe "Yes"
+
+          val actions = result.actions
+          actions.isDefined mustBe false
+        }
       }
     }
 
@@ -395,10 +413,12 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
       }
 
       "must return Some(Row)" - {
-        "when CommodityCodePage is defined" in {
+        "when CommodityCodePage is defined with action" in {
           forAll(nonEmptyString) {
             commodityCode =>
-              val answers = emptyUserAnswers.setValue(CommodityCodePage(itemIndex), commodityCode)
+              val answers = emptyUserAnswers
+                .copy(status = SubmissionState.NotSubmitted)
+                .setValue(CommodityCodePage(itemIndex), commodityCode)
 
               val helper = new ItemAnswersHelper(answers, itemIndex)
               val result = helper.commodityCode.get
@@ -413,6 +433,24 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               action.href mustBe CommodityCodeController.onPageLoad(answers.lrn, mode, itemIndex).url
               action.visuallyHiddenText.get mustBe "commodity code for item 1"
               action.id mustBe "change-commodity-code"
+          }
+        }
+
+        "when CommodityCodePage is defined without action" in {
+          forAll(nonEmptyString) {
+            commodityCode =>
+              val answers = emptyUserAnswers
+                .copy(status = SubmissionState.Amendment)
+                .setValue(CommodityCodePage(itemIndex), commodityCode)
+
+              val helper = new ItemAnswersHelper(answers, itemIndex)
+              val result = helper.commodityCode.get
+
+              result.key.value mustBe "Commodity code"
+              result.value.value mustBe commodityCode
+
+              val actions = result.actions
+              actions.isDefined mustBe false
           }
         }
       }

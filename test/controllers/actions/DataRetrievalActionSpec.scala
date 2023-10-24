@@ -18,7 +18,7 @@ package controllers.actions
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import models.requests.{IdentifierRequest, OptionalDataRequest}
-import models.{LocalReferenceNumber, UserAnswers}
+import models.{LocalReferenceNumber, SubmissionState, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import play.api.mvc.{AnyContent, Results}
@@ -61,7 +61,7 @@ class DataRetrievalActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
       "when there are existing answers for this LRN" in {
 
-        when(mockSessionRepository.get(any())(any())) thenReturn Future.successful(Some(UserAnswers(lrn, eoriNumber)))
+        when(mockSessionRepository.get(any())(any())) thenReturn Future.successful(Some(UserAnswers(lrn, eoriNumber, SubmissionState.NotSubmitted)))
 
         harness(lrn) {
           _.userAnswers mustBe defined

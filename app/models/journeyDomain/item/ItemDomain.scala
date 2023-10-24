@@ -16,6 +16,7 @@
 
 package models.journeyDomain.item
 
+import cats.data.Kleisli
 import cats.implicits._
 import config.Constants.CountryCode._
 import config.Constants.DeclarationType._
@@ -31,7 +32,15 @@ import models.journeyDomain.item.dangerousGoods.DangerousGoodsListDomain
 import models.journeyDomain.item.documents.DocumentsDomain
 import models.journeyDomain.item.packages.PackagesDomain
 import models.journeyDomain.item.supplyChainActors.SupplyChainActorsDomain
-import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, JsArrayGettableAsReaderOps, Stage, UserAnswersReader}
+import models.journeyDomain.{
+  EitherType,
+  GettableAsFilterForNextReaderOps,
+  GettableAsReaderOps,
+  JourneyDomainModel,
+  JsArrayGettableAsReaderOps,
+  Stage,
+  UserAnswersReader
+}
 import models.reference.{Country, TransportChargesMethodOfPayment}
 import pages.external._
 import pages.item._
@@ -149,7 +158,17 @@ object ItemDomain {
       CustomsUnionAndStatisticsCodePage(itemIndex).reader
     }
 
-  def commodityCodeReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[Option[String]] =
+  def commodityCodeReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[Option[String]] = {
+    val status: UserAnswers => EitherType[SubmissionState] = ua => Right(ua.status)
+    UserAnswersReader(status).flatMap {
+      case models.SubmissionState.Amendment => none[String].pure[UserAnswersReader]
+      case _ =>
+        defaultCommodityCodeReader(itemIndex, phaseConfig)
+    }
+
+  }
+
+  private def defaultCommodityCodeReader(itemIndex: Index, phaseConfig: PhaseConfig): Kleisli[EitherType, UserAnswers, Option[String]] =
     for {
       isTransitOperationTIRDefined <- TransitOperationTIRCarnetNumberPage.isDefined
       result <- {

@@ -25,7 +25,7 @@ import models.journeyDomain.item.packages.PackageDomain
 import models.journeyDomain.item.supplyChainActors.SupplyChainActorDomain
 import models.journeyDomain.item.{ConsigneeDomain, ItemDomain}
 import models.journeyDomain.{ItemsDomain, ReaderError, UserAnswersReader}
-import models.{EoriNumber, Index, LocalReferenceNumber, RichJsObject, UserAnswers}
+import models.{EoriNumber, Index, LocalReferenceNumber, RichJsObject, SubmissionState, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
@@ -37,7 +37,8 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators {
       for {
         lrn        <- arbitrary[LocalReferenceNumber]
         eoriNumber <- arbitrary[EoriNumber]
-        answers    <- buildUserAnswers[ItemsDomain](UserAnswers(lrn, eoriNumber))
+        status     <- arbitrary[SubmissionState]
+        answers    <- buildUserAnswers[ItemsDomain](UserAnswers(lrn, eoriNumber, status = status))
       } yield answers
     }
 

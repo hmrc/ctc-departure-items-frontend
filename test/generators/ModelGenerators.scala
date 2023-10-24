@@ -292,4 +292,21 @@ trait ModelGenerators {
       Gen.oneOf(Locked, Unlocked, LockCheckFailure)
     }
 
+  lazy val arbitraryAmendedmentSubmissionState: Arbitrary[SubmissionState] = Arbitrary {
+    val values = Seq(
+      SubmissionState.GuaranteeAmendment,
+      SubmissionState.RejectedPendingChanges,
+      SubmissionState.Amendment
+    )
+    Gen.oneOf(values)
+  }
+
+  implicit lazy val arbitraryNonAmendmentSubmissionState: Arbitrary[SubmissionState] = Arbitrary {
+    val values = Seq(
+      SubmissionState.NotSubmitted,
+      SubmissionState.Submitted
+    )
+    Gen.oneOf(values)
+  }
+
 }
