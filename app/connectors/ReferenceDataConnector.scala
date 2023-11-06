@@ -17,12 +17,13 @@
 package connectors
 
 import config.FrontendAppConfig
+import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import models.DeclarationTypeItemLevel
 import models.PackingType.{Bulk, Other, Unpacked}
 import models.reference._
 import play.api.Logging
-import play.api.http.Status.{NOT_FOUND, NO_CONTENT, OK}
-import play.api.libs.json.Reads
+import play.api.http.Status.OK
+import play.api.libs.json.{JsError, JsResultException, JsSuccess, Reads}
 import sttp.model.HeaderNames
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpResponse}
 
@@ -32,53 +33,56 @@ import scala.concurrent.{ExecutionContext, Future}
 class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpClient) extends Logging {
 
   def getCountries()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Country]] = {
-    val serviceUrl = s"${config.referenceDataUrl}/lists/CountryCodesFullList"
-    http.GET[Seq[Country]](serviceUrl, headers = version2Header)
+    val url = s"${config.referenceDataUrl}/lists/CountryCodesFullList"
+    http.GET[Seq[Country]](url, headers = version2Header)
   }
 
   def getCountryCodesForAddress()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Country]] = {
-    val serviceUrl = s"${config.referenceDataUrl}/lists/CountryCodesForAddress"
-    http.GET[Seq[Country]](serviceUrl, headers = version2Header)
+    val url = s"${config.referenceDataUrl}/lists/CountryCodesForAddress"
+    http.GET[Seq[Country]](url, headers = version2Header)
   }
 
   def getCountriesWithoutZip()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[CountryCode]] = {
-    val serviceUrl = s"${config.referenceDataUrl}/lists/CountryWithoutZip"
-    http.GET[Seq[CountryCode]](serviceUrl, headers = version2Header)
+    val url = s"${config.referenceDataUrl}/lists/CountryWithoutZip"
+    http.GET[Seq[CountryCode]](url, headers = version2Header)
   }
 
   def getPackageTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[PackageType]] = {
-    val serviceUrl = s"${config.referenceDataUrl}/lists/KindOfPackages"
-    http.GET[Seq[PackageType]](serviceUrl, headers = version2Header)(PackageType.httpReads(Other), hc, ec)
+    val url                                = s"${config.referenceDataUrl}/lists/KindOfPackages"
+    implicit val reads: Reads[PackageType] = PackageType.reads(Other)
+    http.GET[Seq[PackageType]](url, headers = version2Header)
   }
 
   def getPackageTypesBulk()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[PackageType]] = {
-    val serviceUrl = s"${config.referenceDataUrl}/lists/KindOfPackagesBulk"
-    http.GET[Seq[PackageType]](serviceUrl, headers = version2Header)(PackageType.httpReads(Bulk), hc, ec)
+    val url                                = s"${config.referenceDataUrl}/lists/KindOfPackagesBulk"
+    implicit val reads: Reads[PackageType] = PackageType.reads(Bulk)
+    http.GET[Seq[PackageType]](url, headers = version2Header)
   }
 
   def getPackageTypesUnpacked()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[PackageType]] = {
-    val serviceUrl = s"${config.referenceDataUrl}/lists/KindOfPackagesUnpacked"
-    http.GET[Seq[PackageType]](serviceUrl, headers = version2Header)(PackageType.httpReads(Unpacked), hc, ec)
+    val url                                = s"${config.referenceDataUrl}/lists/KindOfPackagesUnpacked"
+    implicit val reads: Reads[PackageType] = PackageType.reads(Unpacked)
+    http.GET[Seq[PackageType]](url, headers = version2Header)
   }
 
   def getAdditionalReferences()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[AdditionalReference]] = {
-    val serviceUrl = s"${config.referenceDataUrl}/lists/AdditionalReference"
-    http.GET[Seq[AdditionalReference]](serviceUrl, headers = version2Header)
+    val url = s"${config.referenceDataUrl}/lists/AdditionalReference"
+    http.GET[Seq[AdditionalReference]](url, headers = version2Header)
   }
 
   def getAdditionalInformationTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[AdditionalInformation]] = {
-    val serviceUrl = s"${config.referenceDataUrl}/lists/AdditionalInformation"
-    http.GET[Seq[AdditionalInformation]](serviceUrl, headers = version2Header)
+    val url = s"${config.referenceDataUrl}/lists/AdditionalInformation"
+    http.GET[Seq[AdditionalInformation]](url, headers = version2Header)
   }
 
   def getTransportChargesMethodOfPaymentTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[TransportChargesMethodOfPayment]] = {
-    val serviceUrl = s"${config.referenceDataUrl}/lists/TransportChargesMethodOfPayment"
-    http.GET[Seq[TransportChargesMethodOfPayment]](serviceUrl, headers = version2Header)
+    val url = s"${config.referenceDataUrl}/lists/TransportChargesMethodOfPayment"
+    http.GET[Seq[TransportChargesMethodOfPayment]](url, headers = version2Header)
   }
 
   def getDeclarationTypeItemLevel()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[DeclarationTypeItemLevel]] = {
-    val serviceUrl = s"${config.referenceDataUrl}/lists/DeclarationTypeItemLevel"
-    http.GET[Seq[DeclarationTypeItemLevel]](serviceUrl, headers = version2Header)
+    val url = s"${config.referenceDataUrl}/lists/DeclarationTypeItemLevel"
+    http.GET[Seq[DeclarationTypeItemLevel]](url, headers = version2Header)
   }
 
   def getSupplyChainActorTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[SupplyChainActorType]] = {
@@ -94,19 +98,22 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     (_: String, _: String, response: HttpResponse) => {
       response.status match {
         case OK =>
-          val referenceData = (response.json \ "data").getOrElse(
-            throw new IllegalStateException("[ReferenceDataConnector][responseHandlerGeneric] Reference data could not be parsed")
-          )
-
-          referenceData.as[Seq[A]]
-        case NO_CONTENT =>
-          Nil
-        case NOT_FOUND =>
-          logger.warn("[ReferenceDataConnector][responseHandlerGeneric] Reference data call returned NOT_FOUND")
-          throw new IllegalStateException("[ReferenceDataConnector][responseHandlerGeneric] Reference data could not be found")
-        case other =>
-          logger.warn(s"[ReferenceDataConnector][responseHandlerGeneric] Invalid downstream status $other")
-          throw new IllegalStateException(s"[ReferenceDataConnector][responseHandlerGeneric] Invalid Downstream Status $other")
+          (response.json \ "data").validate[Seq[A]] match {
+            case JsSuccess(Nil, _) =>
+              throw new NoReferenceDataFoundException
+            case JsSuccess(value, _) =>
+              value
+            case JsError(errors) =>
+              throw JsResultException(errors)
+          }
+        case e =>
+          logger.warn(s"[ReferenceDataConnector][responseHandlerGeneric] Reference data call returned $e")
+          throw new Exception(s"[ReferenceDataConnector][responseHandlerGeneric] $e - ${response.body}")
       }
     }
+}
+
+object ReferenceDataConnector {
+
+  class NoReferenceDataFoundException extends Exception("The reference data call was successful but the response body is empty.")
 }

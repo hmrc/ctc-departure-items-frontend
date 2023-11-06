@@ -18,6 +18,7 @@ package connectors
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
+import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import helper.WireMockServerHandler
 import models.reference._
 import models.{DeclarationTypeItemLevel, PackingType}
@@ -227,10 +228,18 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       |}
       |""".stripMargin
 
+  private val emptyResponseJson: String =
+    """
+      |{
+      |  "data": []
+      |}
+      |""".stripMargin
+
   "Reference Data" - {
 
     "getDeclarationTypeItemLevel" - {
       val url = s"/$baseUrl/lists/DeclarationTypeItemLevel"
+
       "must return Seq of declaration types when successful" in {
         server.stubFor(
           get(urlEqualTo(url))
@@ -246,12 +255,22 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
         res mustEqual expectedResult
       }
+
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getDeclarationTypeItemLevel())
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getDeclarationTypeItemLevel())
+      }
     }
 
     "getCountries" - {
+      val url = s"/$baseUrl/lists/CountryCodesFullList"
+
       "must return Seq of Country when successful" in {
         server.stubFor(
-          get(urlEqualTo(s"/$baseUrl/lists/CountryCodesFullList"))
+          get(urlEqualTo(url))
             .willReturn(okJson(countriesResponseJson("CountryCodesFullList")))
         )
 
@@ -263,15 +282,21 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         connector.getCountries().futureValue mustEqual expectedResult
       }
 
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getCountries())
+      }
+
       "must return an exception when an error response is returned" in {
-        checkErrorResponse(s"/$baseUrl/lists/CountryCodesFullList", connector.getCountries())
+        checkErrorResponse(url, connector.getCountries())
       }
     }
 
     "getCountryCodesForAddress" - {
+      val url = s"/$baseUrl/lists/CountryCodesForAddress"
+
       "must return Seq of Country when successful" in {
         server.stubFor(
-          get(urlEqualTo(s"/$baseUrl/lists/CountryCodesForAddress"))
+          get(urlEqualTo(url))
             .willReturn(okJson(countriesResponseJson("CountryCodesForAddress")))
         )
 
@@ -283,15 +308,21 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         connector.getCountryCodesForAddress().futureValue mustEqual expectedResult
       }
 
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getCountryCodesForAddress())
+      }
+
       "must return an exception when an error response is returned" in {
-        checkErrorResponse(s"/$baseUrl/lists/CountryCodesFullList", connector.getCountries())
+        checkErrorResponse(url, connector.getCountryCodesForAddress())
       }
     }
 
     "getCountriesWithoutZip" - {
+      val url = s"/$baseUrl/lists/CountryWithoutZip"
+
       "must return Seq of Country when successful" in {
         server.stubFor(
-          get(urlEqualTo(s"/$baseUrl/lists/CountryWithoutZip"))
+          get(urlEqualTo(url))
             .willReturn(okJson(countriesResponseJson("CountryWithoutZip")))
         )
 
@@ -303,16 +334,21 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         connector.getCountriesWithoutZip().futureValue mustEqual expectedResult
       }
 
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getCountriesWithoutZip())
+      }
+
       "must return an exception when an error response is returned" in {
-        checkErrorResponse(s"/$baseUrl/country-without-zip", connector.getCountriesWithoutZip())
+        checkErrorResponse(url, connector.getCountriesWithoutZip())
       }
     }
 
     "getPackageTypes" - {
+      val url = s"/$baseUrl/lists/KindOfPackages"
 
       "must return list of package types when successful" in {
         server.stubFor(
-          get(urlEqualTo(s"/$baseUrl/lists/KindOfPackages"))
+          get(urlEqualTo(url))
             .willReturn(okJson(packageTypeJson("KindOfPackages")))
         )
 
@@ -324,18 +360,21 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         connector.getPackageTypes().futureValue mustEqual expectResult
       }
 
-      "must return an exception when an error response is returned" in {
-
-        checkErrorResponse(s"/$baseUrl/lists/KindOfPackages", connector.getPackageTypes())
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getPackageTypes())
       }
 
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getPackageTypes())
+      }
     }
 
     "getPackageTypesBulk" - {
+      val url = s"/$baseUrl/lists/KindOfPackagesBulk"
 
       "must return list of package types when successful" in {
         server.stubFor(
-          get(urlEqualTo(s"/$baseUrl/lists/KindOfPackagesBulk"))
+          get(urlEqualTo(url))
             .willReturn(okJson(packageTypeJson("KindOfPackagesBulk")))
         )
 
@@ -347,18 +386,21 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         connector.getPackageTypesBulk().futureValue mustEqual expectResult
       }
 
-      "must return an exception when an error response is returned" in {
-
-        checkErrorResponse(s"/$baseUrl/lists/KindOfPackagesBulk", connector.getPackageTypesBulk())
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getPackageTypesBulk())
       }
 
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getPackageTypesBulk())
+      }
     }
 
     "getPackageTypesUnpacked" - {
+      val url = s"/$baseUrl/lists/KindOfPackagesUnpacked"
 
       "must return list of package types when successful" in {
         server.stubFor(
-          get(urlEqualTo(s"/$baseUrl/lists/KindOfPackagesUnpacked"))
+          get(urlEqualTo(url))
             .willReturn(okJson(packageTypeJson("KindOfPackagesUnpacked")))
         )
 
@@ -370,17 +412,21 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         connector.getPackageTypesUnpacked().futureValue mustEqual expectResult
       }
 
-      "must return an exception when an error response is returned" in {
-
-        checkErrorResponse(s"/$baseUrl/lists/KindOfPackagesUnpacked", connector.getPackageTypesUnpacked())
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getPackageTypesUnpacked())
       }
 
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getPackageTypesUnpacked())
+      }
     }
 
     "getAdditionalReferences" - {
+      val url = s"/$baseUrl/lists/AdditionalReference"
+
       "must return Seq of AdditionalReference when successful" in {
         server.stubFor(
-          get(urlEqualTo(s"/$baseUrl/lists/AdditionalReference"))
+          get(urlEqualTo(url))
             .willReturn(okJson(additionalReferenceJson))
         )
 
@@ -392,18 +438,21 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         connector.getAdditionalReferences().futureValue mustEqual expectedResult
       }
 
-      "must return an exception when an error response is returned" in {
-
-        checkErrorResponse(s"/$baseUrl/lists/AdditionalReference", connector.getAdditionalReferences())
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getAdditionalReferences())
       }
 
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getAdditionalReferences())
+      }
     }
 
     "getAdditionalInformationTypes" - {
+      val url = s"/$baseUrl/lists/AdditionalInformation"
 
       "must return list of additional information types when successful" in {
         server.stubFor(
-          get(urlEqualTo(s"/$baseUrl/lists/AdditionalInformation"))
+          get(urlEqualTo(url))
             .willReturn(okJson(additionalInformationJson))
         )
 
@@ -415,17 +464,21 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         connector.getAdditionalInformationTypes().futureValue mustEqual expectResult
       }
 
-      "must return an exception when an error response is returned" in {
-
-        checkErrorResponse(s"/$baseUrl/lists/AdditionalInformation", connector.getAdditionalInformationTypes())
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getAdditionalInformationTypes())
       }
 
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getAdditionalInformationTypes())
+      }
     }
 
     "getMethodOfPaymentTypes" - {
+      val url = s"/$baseUrl/lists/TransportChargesMethodOfPayment"
+
       "must return Seq of MethodOfPayments when successful" in {
         server.stubFor(
-          get(urlEqualTo(s"/$baseUrl/lists/TransportChargesMethodOfPayment"))
+          get(urlEqualTo(url))
             .willReturn(okJson(methodOfPaymentJson))
         )
 
@@ -437,8 +490,12 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         connector.getTransportChargesMethodOfPaymentTypes().futureValue mustEqual expectedResult
       }
 
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getTransportChargesMethodOfPaymentTypes())
+      }
+
       "must return an exception when an error response is returned" in {
-        checkErrorResponse(s"/$baseUrl/lists/TransportChargesMethodOfPayment", connector.getTransportChargesMethodOfPaymentTypes())
+        checkErrorResponse(url, connector.getTransportChargesMethodOfPaymentTypes())
       }
     }
 
@@ -459,16 +516,29 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         connector.getSupplyChainActorTypes().futureValue mustEqual expectedResult
       }
 
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getSupplyChainActorTypes())
+      }
+
       "must return an exception when an error response is returned" in {
         checkErrorResponse(url, connector.getSupplyChainActorTypes())
       }
     }
   }
 
+  private def checkNoReferenceDataFoundResponse(url: String, result: => Future[_]): Assertion = {
+    server.stubFor(
+      get(urlEqualTo(url))
+        .willReturn(okJson(emptyResponseJson))
+    )
+
+    whenReady[Throwable, Assertion](result.failed) {
+      _ mustBe a[NoReferenceDataFoundException]
+    }
+  }
+
   private def checkErrorResponse(url: String, result: => Future[_]): Assertion = {
-    val errorResponses: Gen[Int] = Gen
-      .chooseNum(400: Int, 599: Int)
-      .suchThat(_ != 404)
+    val errorResponses: Gen[Int] = Gen.chooseNum(400: Int, 599: Int)
 
     forAll(errorResponses) {
       errorResponse =>
@@ -480,7 +550,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             )
         )
 
-        whenReady(result.failed) {
+        whenReady[Throwable, Assertion](result.failed) {
           _ mustBe an[Exception]
         }
     }
