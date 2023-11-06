@@ -538,9 +538,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
   }
 
   private def checkErrorResponse(url: String, result: => Future[_]): Assertion = {
-    val errorResponses: Gen[Int] = Gen
-      .chooseNum(400: Int, 599: Int)
-      .suchThat(_ != 404)
+    val errorResponses: Gen[Int] = Gen.chooseNum(400: Int, 599: Int)
 
     forAll(errorResponses) {
       errorResponse =>
