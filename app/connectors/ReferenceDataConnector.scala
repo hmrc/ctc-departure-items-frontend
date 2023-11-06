@@ -33,56 +33,56 @@ import scala.concurrent.{ExecutionContext, Future}
 class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpClient) extends Logging {
 
   def getCountries()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Country]] = {
-    val serviceUrl = s"${config.referenceDataUrl}/lists/CountryCodesFullList"
-    http.GET[Seq[Country]](serviceUrl, headers = version2Header)
+    val url = s"${config.referenceDataUrl}/lists/CountryCodesFullList"
+    http.GET[Seq[Country]](url, headers = version2Header)
   }
 
   def getCountryCodesForAddress()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Country]] = {
-    val serviceUrl = s"${config.referenceDataUrl}/lists/CountryCodesForAddress"
-    http.GET[Seq[Country]](serviceUrl, headers = version2Header)
+    val url = s"${config.referenceDataUrl}/lists/CountryCodesForAddress"
+    http.GET[Seq[Country]](url, headers = version2Header)
   }
 
   def getCountriesWithoutZip()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[CountryCode]] = {
-    val serviceUrl = s"${config.referenceDataUrl}/lists/CountryWithoutZip"
-    http.GET[Seq[CountryCode]](serviceUrl, headers = version2Header)
+    val url = s"${config.referenceDataUrl}/lists/CountryWithoutZip"
+    http.GET[Seq[CountryCode]](url, headers = version2Header)
   }
 
   def getPackageTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[PackageType]] = {
-    val serviceUrl                         = s"${config.referenceDataUrl}/lists/KindOfPackages"
+    val url                                = s"${config.referenceDataUrl}/lists/KindOfPackages"
     implicit val reads: Reads[PackageType] = PackageType.reads(Other)
-    http.GET[Seq[PackageType]](serviceUrl, headers = version2Header)
+    http.GET[Seq[PackageType]](url, headers = version2Header)
   }
 
   def getPackageTypesBulk()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[PackageType]] = {
-    val serviceUrl                         = s"${config.referenceDataUrl}/lists/KindOfPackagesBulk"
+    val url                                = s"${config.referenceDataUrl}/lists/KindOfPackagesBulk"
     implicit val reads: Reads[PackageType] = PackageType.reads(Bulk)
-    http.GET[Seq[PackageType]](serviceUrl, headers = version2Header)
+    http.GET[Seq[PackageType]](url, headers = version2Header)
   }
 
   def getPackageTypesUnpacked()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[PackageType]] = {
-    val serviceUrl                         = s"${config.referenceDataUrl}/lists/KindOfPackagesUnpacked"
+    val url                                = s"${config.referenceDataUrl}/lists/KindOfPackagesUnpacked"
     implicit val reads: Reads[PackageType] = PackageType.reads(Unpacked)
-    http.GET[Seq[PackageType]](serviceUrl, headers = version2Header)
+    http.GET[Seq[PackageType]](url, headers = version2Header)
   }
 
   def getAdditionalReferences()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[AdditionalReference]] = {
-    val serviceUrl = s"${config.referenceDataUrl}/lists/AdditionalReference"
-    http.GET[Seq[AdditionalReference]](serviceUrl, headers = version2Header)
+    val url = s"${config.referenceDataUrl}/lists/AdditionalReference"
+    http.GET[Seq[AdditionalReference]](url, headers = version2Header)
   }
 
   def getAdditionalInformationTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[AdditionalInformation]] = {
-    val serviceUrl = s"${config.referenceDataUrl}/lists/AdditionalInformation"
-    http.GET[Seq[AdditionalInformation]](serviceUrl, headers = version2Header)
+    val url = s"${config.referenceDataUrl}/lists/AdditionalInformation"
+    http.GET[Seq[AdditionalInformation]](url, headers = version2Header)
   }
 
   def getTransportChargesMethodOfPaymentTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[TransportChargesMethodOfPayment]] = {
-    val serviceUrl = s"${config.referenceDataUrl}/lists/TransportChargesMethodOfPayment"
-    http.GET[Seq[TransportChargesMethodOfPayment]](serviceUrl, headers = version2Header)
+    val url = s"${config.referenceDataUrl}/lists/TransportChargesMethodOfPayment"
+    http.GET[Seq[TransportChargesMethodOfPayment]](url, headers = version2Header)
   }
 
   def getDeclarationTypeItemLevel()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[DeclarationTypeItemLevel]] = {
-    val serviceUrl = s"${config.referenceDataUrl}/lists/DeclarationTypeItemLevel"
-    http.GET[Seq[DeclarationTypeItemLevel]](serviceUrl, headers = version2Header)
+    val url = s"${config.referenceDataUrl}/lists/DeclarationTypeItemLevel"
+    http.GET[Seq[DeclarationTypeItemLevel]](url, headers = version2Header)
   }
 
   def getSupplyChainActorTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[SupplyChainActorType]] = {
