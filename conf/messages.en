@@ -42,7 +42,7 @@ item.transportEquipment.withContainerId = ({0}) Transport equipment - {1}
 item.transportEquipment.withoutContainerId = ({0}) Transport equipment
 
 item.checkYourAnswers.heading = Check your answers
-item.checkYourAnswers.title = Check your answers
+item.checkYourAnswers.title = Check your answers - Items
 
 item.checkYourAnswers.dangerousGoods.label = UN number {0}
 item.checkYourAnswers.dangerousGoods.change.hidden = UN number {0}
