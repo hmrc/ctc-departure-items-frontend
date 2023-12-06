@@ -228,6 +228,27 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       |}
       |""".stripMargin
 
+  private val cusCodeResponseJson: String =
+    """
+      |{
+      |  "_links": {
+      |    "self": {
+      |      "href": "/customs-reference-data/filtered-lists/CUSCode"
+      |    }
+      |  },
+      |  "meta": {
+      |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+      |    "snapshotDate": "2023-01-01"
+      |  },
+      |  "id": "CUSCode",
+      |  "data": [
+      |    {
+      |      "code": "0010001-6"
+      |    }
+      |  ]
+      |}
+      |""".stripMargin
+
   private val emptyResponseJson: String =
     """
       |{
@@ -236,6 +257,24 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       |""".stripMargin
 
   "Reference Data" - {
+
+    "getCusCode" - {
+      val cusCode = "0010001-6"
+      val url     = s"/$baseUrl/filtered-lists/CUSCode?data.code=$cusCode"
+
+      "must return CUSCode when successful" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(cusCodeResponseJson))
+        )
+
+        val expectedResult: Seq[CUSCode] = Seq(
+          CUSCode(cusCode)
+        )
+
+        connector.getCUSCode(cusCode).futureValue mustEqual expectedResult
+      }
+    }
 
     "getDeclarationTypeItemLevel" - {
       val url = s"/$baseUrl/lists/DeclarationTypeItemLevel"

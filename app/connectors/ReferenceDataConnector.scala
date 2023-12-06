@@ -70,6 +70,12 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http.GET[Seq[AdditionalReference]](url, headers = version2Header)
   }
 
+  def getCUSCode(cusCode: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[CUSCode]] = {
+    val queryParams: Seq[(String, String)] = Seq("data.code" -> cusCode)
+    val url                                = s"${config.referenceDataUrl}/filtered-lists/CUSCode"
+    http.GET[Seq[CUSCode]](url, headers = version2Header, queryParams = queryParams)
+  }
+
   def getAdditionalInformationTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[AdditionalInformation]] = {
     val url = s"${config.referenceDataUrl}/lists/AdditionalInformation"
     http.GET[Seq[AdditionalInformation]](url, headers = version2Header)

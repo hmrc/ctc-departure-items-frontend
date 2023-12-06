@@ -20,13 +20,14 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.item.CUSCodeFormProvider
 import models.NormalMode
 import navigation.ItemNavigatorProvider
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.when
 import pages.item.CustomsUnionAndStatisticsCodePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.CUSCodeService
 import views.html.item.CustomsUnionAndStatisticsCodeView
 
 import scala.concurrent.Future
@@ -37,11 +38,13 @@ class CustomsUnionAndStatisticsCodeControllerSpec extends SpecBase with AppWithD
   private val form                                    = formProvider("item.customsUnionAndStatisticsCode")
   private val mode                                    = NormalMode
   private lazy val customsUnionAndStatisticsCodeRoute = routes.CustomsUnionAndStatisticsCodeController.onPageLoad(lrn, mode, itemIndex).url
+  private val cusCodeServiceMock: CUSCodeService      = mock[CUSCodeService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[ItemNavigatorProvider]).toInstance(fakeItemNavigatorProvider))
+      .overrides(bind(classOf[CUSCodeService]).toInstance(cusCodeServiceMock))
 
   "CustomsUnionAndStatisticsCode Controller" - {
 
@@ -81,6 +84,8 @@ class CustomsUnionAndStatisticsCodeControllerSpec extends SpecBase with AppWithD
     }
 
     "must redirect to the next page when valid data is submitted" in {
+
+      when(cusCodeServiceMock.doesCUSCodeExist(anyString())(any())).thenReturn(Future.successful(true))
 
       setExistingUserAnswers(emptyUserAnswers)
 

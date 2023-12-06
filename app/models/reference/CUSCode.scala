@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package forms.item
+package models.reference
 
-import forms.Constants.exactCUSCodeLength
-import forms.mappings.Mappings
-import play.api.data.Form
+import models.Selectable
+import play.api.libs.json.{Json, OFormat}
 
-import javax.inject.Inject
+case class CUSCode(code: String) extends Selectable {
 
-class CUSCodeFormProvider @Inject() extends Mappings {
+  override val value: String = code
+}
 
-  def apply(prefix: String): Form[String] =
-    Form(
-      "value" -> textWithSpacesRemoved(s"$prefix.error.required")
-    )
+object CUSCode {
+  implicit val format: OFormat[CUSCode] = Json.format[CUSCode]
 }

@@ -14,18 +14,24 @@
  * limitations under the License.
  */
 
-package forms.item
+package services
 
-import forms.Constants.exactCUSCodeLength
-import forms.mappings.Mappings
-import play.api.data.Form
+import connectors.ReferenceDataConnector
+import connectors.ReferenceDataConnector.NoReferenceDataFoundException
+import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
-class CUSCodeFormProvider @Inject() extends Mappings {
+class CUSCodeService @Inject() (
+  referenceDataConnector: ReferenceDataConnector
+)(implicit ec: ExecutionContext) {
 
-  def apply(prefix: String): Form[String] =
-    Form(
-      "value" -> textWithSpacesRemoved(s"$prefix.error.required")
-    )
+  def doesCUSCodeExist(cusCode: String)(implicit hc: HeaderCarrier): Future[Boolean] =
+    referenceDataConnector
+      .getCUSCode(cusCode)
+      .map(_.nonEmpty)
+      .recover {
+        case _: NoReferenceDataFoundException => false
+      }
 }
