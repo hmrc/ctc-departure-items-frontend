@@ -23,9 +23,11 @@ import forms.item.CUSCodeFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
 import pages.item.CustomsUnionAndStatisticsCodePage
+import play.api.data.FormError
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.CUSCodeService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.item.CustomsUnionAndStatisticsCodeView
 
@@ -37,6 +39,7 @@ class CustomsUnionAndStatisticsCodeController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: ItemNavigatorProvider,
   formProvider: CUSCodeFormProvider,
+  service: CUSCodeService,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: CustomsUnionAndStatisticsCodeView
@@ -61,10 +64,15 @@ class CustomsUnionAndStatisticsCodeController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex))),
-          value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
-            CustomsUnionAndStatisticsCodePage(itemIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
-          }
+          value =>
+            service.doesCUSCodeExist(value).flatMap {
+              case true =>
+                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
+                CustomsUnionAndStatisticsCodePage(itemIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+              case false =>
+                val formWithErrors = form.withError(FormError("value", "item.customsUnionAndStatisticsCode.error.not.exists"))
+                Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex)))
+            }
         )
   }
 }
