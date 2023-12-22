@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package pages.sections.external
+package pages.external
 
-import pages.consignmentPath
-import pages.sections.ReadOnlySection
-import play.api.libs.json.{JsObject, JsPath}
+import pages.{consignmentPath, ReadOnlyPage}
+import play.api.libs.json.JsPath
 
-object ConsignmentConsigneeSection extends ReadOnlySection[JsObject] {
+object MoreThanOneConsigneePage extends ReadOnlyPage[Boolean] {
 
-  override def path: JsPath = consignmentPath \ "consignee"
+  override def path: JsPath = consignmentPath \ "moreThanOneConsignee"
 }
