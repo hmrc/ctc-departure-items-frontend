@@ -20,11 +20,10 @@ import cats.data.Kleisli
 import cats.implicits._
 import config.Constants.CountryCode._
 import config.Constants.DeclarationType._
-import config.Constants.SecurityType._
 import config.PhaseConfig
 import models.DeclarationTypeItemLevel._
 import models.DocumentType.{Previous, Transport}
-import models.Phase.{PostTransition, Transition}
+import models.Phase.PostTransition
 import models._
 import models.journeyDomain.item.additionalInformation.AdditionalInformationListDomain
 import models.journeyDomain.item.additionalReferences.AdditionalReferencesDomain
@@ -279,16 +278,18 @@ object ItemDomain {
       .filterOptionalDependent(identity)(AdditionalInformationListDomain.userAnswersReader(itemIndex))
 
   def transportChargesReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[Option[TransportChargesMethodOfPayment]] =
-    for {
-      securityDetails                      <- SecurityDetailsTypePage.reader
-      isConsignmentTransportChargesDefined <- ConsignmentTransportChargesPage.isDefined
-      result <- {
-        (securityDetails, isConsignmentTransportChargesDefined, phaseConfig.phase) match {
-          case (NoSecurityDetails, _, Transition) | (_, false, Transition) =>
-            AddTransportChargesYesNoPage(itemIndex).filterOptionalDependent(identity)(TransportChargesMethodOfPaymentPage(itemIndex).reader)
-          case _ => UserAnswersReader(None)
+    phaseConfig.phase match {
+      case Phase.Transition =>
+        AddConsignmentTransportChargesYesNoPage.optionalReader.map(_.contains(true)).flatMap {
+          case false =>
+            AddTransportChargesYesNoPage(itemIndex).filterOptionalDependent(identity) {
+              TransportChargesMethodOfPaymentPage(itemIndex).reader
+            }
+          case true =>
+            none[TransportChargesMethodOfPayment].pure[UserAnswersReader]
         }
-      }
-    } yield result
+      case Phase.PostTransition =>
+        none[TransportChargesMethodOfPayment].pure[UserAnswersReader]
+    }
 
 }

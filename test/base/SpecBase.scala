@@ -88,6 +88,9 @@ trait SpecBase
           jsValue => userAnswers.copy(data = jsValue)
         )
 
+    def setValue[T](page: ReadOnlyPage[T], value: Option[T])(implicit format: Format[T]): UserAnswers =
+      value.map(setValue(page, _)).getOrElse(userAnswers)
+
     def setValue[T](page: QuestionPage[T], value: Option[T])(implicit format: Format[T]): UserAnswers =
       value.map(setValue(page, _)).getOrElse(userAnswers)
 
