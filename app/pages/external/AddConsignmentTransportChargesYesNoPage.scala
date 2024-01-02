@@ -19,7 +19,7 @@ package pages.external
 import pages.{equipmentAndChargesPath, ReadOnlyPage}
 import play.api.libs.json.JsPath
 
-case object ConsignmentTransportChargesPage extends ReadOnlyPage[String] {
+case object AddConsignmentTransportChargesYesNoPage extends ReadOnlyPage[Boolean] {
 
-  override def path: JsPath = equipmentAndChargesPath \ "paymentMethod" \ "method"
+  override def path: JsPath = equipmentAndChargesPath \ "addPaymentMethodYesNo"
 }
