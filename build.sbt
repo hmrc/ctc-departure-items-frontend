@@ -13,7 +13,7 @@ lazy val microservice = Project(appName, file("."))
   .settings(automateHeaderSettings(A11yTest))
   .settings(
     majorVersion        := 0,
-    scalaVersion        := "2.13.8",
+    scalaVersion        := "2.13.12",
     name := appName,
     RoutesKeys.routesImport ++= Seq("models._"),
     TwirlKeys.templateImports ++= Seq(
