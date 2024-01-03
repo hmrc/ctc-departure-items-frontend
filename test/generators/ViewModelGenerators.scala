@@ -193,7 +193,7 @@ trait ViewModelGenerators {
 
   implicit lazy val arbitraryAddAnotherDocumentViewModel: Arbitrary[AddAnotherDocumentViewModel] = Arbitrary {
     for {
-      listItems                          <- arbitrary[Seq[ListItem]]
+      listItems                          <- listWithMaxLength[ListItem]()
       onSubmitCall                       <- arbitrary[Call]
       documents                          <- listWithMaxLength[Document]()
       consignmentLevelDocumentsListItems <- arbitrary[Seq[ListItem]]

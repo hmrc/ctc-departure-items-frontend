@@ -18,6 +18,7 @@ package forms
 
 import forms.Constants.maxUCRLength
 import forms.mappings.Mappings
+import models.RichString
 import models.domain.StringFieldRegex.alphaNumericRegex
 import play.api.data.Form
 
@@ -27,7 +28,7 @@ class UCRFormProvider @Inject() extends Mappings {
 
   def apply(prefix: String): Form[String] =
     Form(
-      "value" -> textWithSpacesRemoved(s"$prefix.error.required")
+      "value" -> adaptedText(s"$prefix.error.required")(_.removeSpaces())
         .verifying(
           forms.StopOnFirstFail[String](
             regexp(alphaNumericRegex, s"$prefix.error.invalidCharacters"),

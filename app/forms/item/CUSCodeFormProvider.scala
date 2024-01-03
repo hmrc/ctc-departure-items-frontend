@@ -16,8 +16,8 @@
 
 package forms.item
 
-import forms.Constants.exactCUSCodeLength
 import forms.mappings.Mappings
+import models.RichString
 import play.api.data.Form
 
 import javax.inject.Inject
@@ -26,6 +26,6 @@ class CUSCodeFormProvider @Inject() extends Mappings {
 
   def apply(prefix: String): Form[String] =
     Form(
-      "value" -> textWithSpacesRemoved(s"$prefix.error.required")
+      "value" -> adaptedText(s"$prefix.error.required")(_.removeSpaces())
     )
 }

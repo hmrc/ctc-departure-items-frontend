@@ -18,6 +18,7 @@ package forms
 
 import forms.Constants.maxEoriNumberLength
 import forms.mappings.Mappings
+import models.RichString
 import models.domain.StringFieldRegex._
 import play.api.data.Form
 
@@ -27,7 +28,7 @@ class EoriNumberFormProvider @Inject() extends Mappings {
 
   def apply(prefix: String): Form[String] =
     Form(
-      "value" -> textWithSpacesRemoved(s"$prefix.error.required")
+      "value" -> adaptedText(s"$prefix.error.required")(_.removeSpaces())
         .verifying(
           forms.StopOnFirstFail[String](
             regexp(alphaNumericRegex, s"$prefix.error.invalidCharacters"),
