@@ -22,9 +22,7 @@ case class CountryCode(code: String)
 
 object CountryCode {
 
-  implicit val countryCodeWrites = new Writes[CountryCode] {
-    override def writes(countryCode: CountryCode): JsValue = JsString(countryCode.code)
-  }
+  implicit val countryCodeWrites: Writes[CountryCode] = (countryCode: CountryCode) => JsString(countryCode.code)
 
   implicit val countryCodeReads: Reads[CountryCode] = {
     case JsObject(mapping) => JsSuccess(CountryCode(mapping("code").as[String]))
