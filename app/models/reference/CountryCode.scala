@@ -22,15 +22,12 @@ case class CountryCode(code: String)
 
 object CountryCode {
 
-  implicit val format: Format[CountryCode] =
-    new Format[CountryCode] {
-      override def writes(o: CountryCode): JsValue = JsString(o.code)
+  implicit val countryCodeWrites: Writes[CountryCode] = (countryCode: CountryCode) => JsString(countryCode.code)
 
-      override def reads(json: JsValue): JsResult[CountryCode] = json match {
-        case JsObject(mapping) => JsSuccess(CountryCode(mapping("code").as[String]))
-        case JsString(code)    => JsSuccess(CountryCode(code))
-        case x                 => JsError(s"Expected a string, got a ${x.getClass}")
-      }
-    }
+  implicit val countryCodeReads: Reads[CountryCode] = {
+    case JsObject(mapping) => JsSuccess(CountryCode(mapping("code").as[String]))
+    case JsString(code)    => JsSuccess(CountryCode(code))
+    case x                 => JsError(s"Expected a string, got a ${x.getClass}")
+  }
 
 }
