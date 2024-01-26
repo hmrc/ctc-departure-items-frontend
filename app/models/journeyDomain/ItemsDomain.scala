@@ -18,34 +18,26 @@ package models.journeyDomain
 
 import config.PhaseConfig
 import models.journeyDomain.item.ItemDomain
-import models.{Index, Mode, Phase, RichJsArray, UserAnswers}
-import pages.sections.ItemsSection
-import play.api.mvc.Call
+import models.{Index, RichJsArray, UserAnswers}
+import pages.sections.{ItemsSection, Section}
 
 case class ItemsDomain(item: Seq[ItemDomain]) extends JourneyDomainModel {
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] = Some(
-    controllers.routes.AddAnotherItemController.onPageLoad(userAnswers.lrn)
-  )
+  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(ItemsSection)
 }
 
 object ItemsDomain {
 
   implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): UserAnswersReader[ItemsDomain] = {
 
-    val itemReader: UserAnswersReader[Seq[ItemDomain]] =
-      ItemsSection.arrayReader.flatMap {
+    val itemsReader: Read[Seq[ItemDomain]] =
+      ItemsSection.arrayReader.to {
         case x if x.isEmpty =>
-          UserAnswersReader[ItemDomain](
-            ItemDomain.userAnswersReader(Index(0))
-          ).map(Seq(_))
-
+          ItemDomain.userAnswersReader(Index(0)).toSeq
         case x =>
-          x.traverse[ItemDomain](
-            ItemDomain.userAnswersReader
-          ).map(_.toSeq)
+          x.traverse[ItemDomain](ItemDomain.userAnswersReader(_).apply(_))
       }
 
-    UserAnswersReader[Seq[ItemDomain]](itemReader).map(ItemsDomain(_))
+    itemsReader.map(ItemsDomain.apply).apply(Nil)
   }
 }

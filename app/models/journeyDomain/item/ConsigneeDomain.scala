@@ -16,7 +16,6 @@
 
 package models.journeyDomain.item
 
-import cats.implicits._
 import models.journeyDomain._
 import models.reference.Country
 import models.{DynamicAddress, Index}
@@ -28,10 +27,10 @@ sealed trait ConsigneeDomain extends JourneyDomainModel {
 
 object ConsigneeDomain {
 
-  def userAnswersReader(itemIndex: Index): UserAnswersReader[ConsigneeDomain] =
-    AddConsigneeEoriNumberYesNoPage(itemIndex).reader.flatMap {
-      case true  => ConsigneeDomainWithIdentificationNumber.userAnswersReader(itemIndex).widen[ConsigneeDomain]
-      case false => ConsigneeDomainWithNameAndAddress.userAnswersReader(itemIndex).widen[ConsigneeDomain]
+  def userAnswersReader(itemIndex: Index): Read[ConsigneeDomain] =
+    AddConsigneeEoriNumberYesNoPage(itemIndex).reader.to {
+      case true  => ConsigneeDomainWithIdentificationNumber.userAnswersReader(itemIndex)
+      case false => ConsigneeDomainWithNameAndAddress.userAnswersReader(itemIndex)
     }
 }
 
@@ -42,7 +41,7 @@ case class ConsigneeDomainWithIdentificationNumber(
 
 object ConsigneeDomainWithIdentificationNumber {
 
-  def userAnswersReader(itemIndex: Index): UserAnswersReader[ConsigneeDomainWithIdentificationNumber] =
+  def userAnswersReader(itemIndex: Index): Read[ConsigneeDomain] =
     IdentificationNumberPage(itemIndex).reader.map(ConsigneeDomainWithIdentificationNumber(_)(itemIndex))
 }
 
@@ -55,9 +54,9 @@ case class ConsigneeDomainWithNameAndAddress(
 
 object ConsigneeDomainWithNameAndAddress {
 
-  def userAnswersReader(itemIndex: Index): UserAnswersReader[ConsigneeDomainWithNameAndAddress] = (
+  def userAnswersReader(itemIndex: Index): Read[ConsigneeDomain] = (
     NamePage(itemIndex).reader,
     CountryPage(itemIndex).reader,
     AddressPage(itemIndex).reader
-  ).tupled.map((ConsigneeDomainWithNameAndAddress.apply _).tupled).map(_(itemIndex))
+  ).map(ConsigneeDomainWithNameAndAddress.apply(_, _, _)(itemIndex))
 }

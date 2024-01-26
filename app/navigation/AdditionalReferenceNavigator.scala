@@ -46,5 +46,5 @@ class AdditionalReferenceNavigator(override val mode: Mode, itemIndex: Index, ad
   override type T = AdditionalReferenceDomain
 
   implicit override val reader: UserAnswersReader[AdditionalReferenceDomain] =
-    AdditionalReferenceDomain.userAnswersReader(itemIndex, additionalReferenceIndex)
+    AdditionalReferenceDomain.userAnswersReader(itemIndex, additionalReferenceIndex).apply(Nil)
 }

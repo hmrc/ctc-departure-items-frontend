@@ -18,7 +18,6 @@ package models.journeyDomain.item.additionalInformation
 
 import base.SpecBase
 import generators.Generators
-import models.journeyDomain.EitherType
 import models.reference.AdditionalInformation
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -42,11 +41,9 @@ class AdditionalInformationDomainSpec extends SpecBase with ScalaCheckPropertyCh
               value = value
             )(itemIndex, additionalInformationIndex)
 
-            val result: EitherType[AdditionalInformationDomain] = AdditionalInformationDomain
-              .userAnswersReader(itemIndex, additionalInformationIndex)
-              .run(userAnswers)
+            val result = AdditionalInformationDomain.userAnswersReader(itemIndex, additionalInformationIndex).apply(Nil).run(userAnswers)
 
-            result.value mustBe expectedResult
+            result.value.value mustBe expectedResult
         }
       }
     }
@@ -54,9 +51,7 @@ class AdditionalInformationDomainSpec extends SpecBase with ScalaCheckPropertyCh
     "can not be read from user answers" - {
 
       "when additional information type unanswered" in {
-        val result: EitherType[AdditionalInformationDomain] = AdditionalInformationDomain
-          .userAnswersReader(itemIndex, additionalInformationIndex)
-          .run(emptyUserAnswers)
+        val result = AdditionalInformationDomain.userAnswersReader(itemIndex, additionalInformationIndex).apply(Nil).run(emptyUserAnswers)
 
         result.left.value.page mustBe AdditionalInformationTypePage(itemIndex, additionalInformationIndex)
       }
@@ -67,9 +62,7 @@ class AdditionalInformationDomainSpec extends SpecBase with ScalaCheckPropertyCh
             val userAnswers = emptyUserAnswers
               .setValue(AdditionalInformationTypePage(itemIndex, additionalInformationIndex), `type`)
 
-            val result: EitherType[AdditionalInformationDomain] = AdditionalInformationDomain
-              .userAnswersReader(itemIndex, additionalInformationIndex)
-              .run(userAnswers)
+            val result = AdditionalInformationDomain.userAnswersReader(itemIndex, additionalInformationIndex).apply(Nil).run(userAnswers)
 
             result.left.value.page mustBe AdditionalInformationPage(itemIndex, additionalInformationIndex)
         }

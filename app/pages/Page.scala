@@ -16,7 +16,14 @@
 
 package pages
 
-trait Page
+import models.{Mode, UserAnswers}
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
+
+trait Page {
+  def path: JsPath
+  def route(userAnswers: UserAnswers, mode: Mode): Option[Call] = None
+}
 
 object Page {
 

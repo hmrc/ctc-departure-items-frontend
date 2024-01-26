@@ -16,25 +16,34 @@
 
 package models.journeyDomain.item.documents
 
-import models.journeyDomain.{JsArrayGettableAsReaderOps, UserAnswersReader}
-import models.{Index, RichJsArray}
+import models.journeyDomain._
+import models.{Index, RichJsArray, UserAnswers}
 import pages.item.documents.DocumentsInProgressPage
+import pages.sections.Section
 import pages.sections.documents.DocumentsSection
 
-case class DocumentsDomain(value: Seq[DocumentDomain])
+case class DocumentsDomain(
+  value: Seq[DocumentDomain]
+)(itemIndex: Index)
+    extends JourneyDomainModel {
+
+  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(DocumentsSection(itemIndex))
+}
 
 object DocumentsDomain {
 
-  def userAnswersReader(itemIndex: Index): UserAnswersReader[DocumentsDomain] =
-    DocumentsInProgressPage(itemIndex).reader.flatMap {
+  def userAnswersReader(itemIndex: Index): Read[DocumentsDomain] = {
+    lazy val documentsReader: Read[Seq[DocumentDomain]] =
+      DocumentsSection(itemIndex).arrayReader.to {
+        case x if x.isEmpty =>
+          DocumentDomain.userAnswersReader(itemIndex, Index(0)).toSeq
+        case x =>
+          x.traverse[DocumentDomain](DocumentDomain.userAnswersReader(itemIndex, _).apply(_))
+      }
+
+    DocumentsInProgressPage(itemIndex).reader.to {
       _ =>
-        DocumentsSection(itemIndex).arrayReader
-          .flatMap {
-            case x if x.isEmpty =>
-              UserAnswersReader(DocumentDomain.userAnswersReader(itemIndex, Index(0))).map(Seq(_))
-            case x =>
-              x.traverse[DocumentDomain](DocumentDomain.userAnswersReader(itemIndex, _))
-          }
-          .map(DocumentsDomain(_))
+        documentsReader.map(DocumentsDomain.apply(_)(itemIndex))
     }
+  }
 }

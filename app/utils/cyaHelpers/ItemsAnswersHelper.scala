@@ -37,6 +37,6 @@ class ItemsAnswersHelper(
           nameWhenComplete = _.label,
           nameWhenInProgress = userAnswers.get(DescriptionPage(itemIndex)),
           removeRoute = Some(routes.RemoveItemController.onPageLoad(lrn, itemIndex))
-        )(ItemDomain.userAnswersReader(itemIndex))
+        )(ItemDomain.userAnswersReader(itemIndex).apply(Nil))
     }
 }

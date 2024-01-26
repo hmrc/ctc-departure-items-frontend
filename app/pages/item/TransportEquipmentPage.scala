@@ -18,8 +18,8 @@ package pages.item
 
 import controllers.item.routes
 import models.{Index, Mode, UserAnswers}
-import pages.QuestionPage
 import pages.sections.ItemSection
+import pages.{InferredPage, QuestionPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -48,7 +48,7 @@ case class TransportEquipmentPage(itemIndex: Index) extends BaseTransportEquipme
     userAnswers.remove(InferredTransportEquipmentPage(itemIndex))
 }
 
-case class InferredTransportEquipmentPage(itemIndex: Index) extends BaseTransportEquipmentPage(itemIndex) {
+case class InferredTransportEquipmentPage(itemIndex: Index) extends BaseTransportEquipmentPage(itemIndex) with InferredPage[UUID] {
   override def toString: String = "inferredTransportEquipment"
 
   override def cleanup(userAnswers: UserAnswers): Try[UserAnswers] =

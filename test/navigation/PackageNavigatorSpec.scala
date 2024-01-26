@@ -36,7 +36,7 @@ class PackageNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
           forAll(arbitraryPackageAnswers(emptyUserAnswers, itemIndex, packageIndex)) {
             answers =>
               navigator
-                .nextPage(answers)
+                .nextPage(answers, None)
                 .mustBe(controllers.item.packages.routes.AddAnotherPackageController.onPageLoad(answers.lrn, mode, itemIndex))
           }
         }
@@ -54,7 +54,7 @@ class PackageNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
           forAll(arbitraryItemAnswers(emptyUserAnswers, itemIndex)) {
             answers =>
               navigator
-                .nextPage(answers)
+                .nextPage(answers, None)
                 .mustBe(controllers.item.routes.CheckYourAnswersController.onPageLoad(answers.lrn, itemIndex))
           }
         }

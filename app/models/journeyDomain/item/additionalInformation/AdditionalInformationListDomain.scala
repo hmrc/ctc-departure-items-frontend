@@ -16,21 +16,30 @@
 
 package models.journeyDomain.item.additionalInformation
 
-import models.journeyDomain.{JsArrayGettableAsReaderOps, UserAnswersReader}
-import models.{Index, RichJsArray}
+import models.journeyDomain.{JourneyDomainModel, JsArrayGettableAsReaderOps, Read}
+import models.{Index, RichJsArray, UserAnswers}
+import pages.sections.Section
 import pages.sections.additionalInformation.AdditionalInformationListSection
 
-case class AdditionalInformationListDomain(value: Seq[AdditionalInformationDomain])
+case class AdditionalInformationListDomain(
+  value: Seq[AdditionalInformationDomain]
+)(itemIndex: Index)
+    extends JourneyDomainModel {
+
+  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(AdditionalInformationListSection(itemIndex))
+}
 
 object AdditionalInformationListDomain {
 
-  def userAnswersReader(itemIndex: Index): UserAnswersReader[AdditionalInformationListDomain] =
-    AdditionalInformationListSection(itemIndex).arrayReader
-      .flatMap {
+  def userAnswersReader(itemIndex: Index): Read[AdditionalInformationListDomain] = {
+    val additionalInformationListReader: Read[Seq[AdditionalInformationDomain]] =
+      AdditionalInformationListSection(itemIndex).arrayReader.to {
         case x if x.isEmpty =>
-          UserAnswersReader(AdditionalInformationDomain.userAnswersReader(itemIndex, Index(0))).map(Seq(_))
+          AdditionalInformationDomain.userAnswersReader(itemIndex, Index(0)).toSeq
         case x =>
-          x.traverse[AdditionalInformationDomain](AdditionalInformationDomain.userAnswersReader(itemIndex, _))
+          x.traverse[AdditionalInformationDomain](AdditionalInformationDomain.userAnswersReader(itemIndex, _).apply(_))
       }
-      .map(AdditionalInformationListDomain(_))
+
+    additionalInformationListReader.map(AdditionalInformationListDomain.apply(_)(itemIndex))
+  }
 }

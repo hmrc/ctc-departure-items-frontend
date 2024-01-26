@@ -39,7 +39,7 @@ class SupplyChainActorsAnswersHelper(userAnswers: UserAnswers, mode: Mode, itemI
           nameWhenComplete = _.asString,
           nameWhenInProgress = userAnswers.get(SupplyChainActorTypePage(itemIndex, actorIndex)).map(_.toString),
           removeRoute = Some(routes.RemoveSupplyChainActorController.onPageLoad(userAnswers.lrn, mode, itemIndex, actorIndex))
-        )(SupplyChainActorDomain.userAnswersReader(itemIndex, actorIndex))
+        )(SupplyChainActorDomain.userAnswersReader(itemIndex, actorIndex).apply(Nil))
     }
 
 }

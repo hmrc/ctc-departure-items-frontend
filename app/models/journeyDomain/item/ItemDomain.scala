@@ -16,8 +16,6 @@
 
 package models.journeyDomain.item
 
-import cats.data.Kleisli
-import cats.implicits._
 import config.Constants.CountryCode._
 import config.Constants.DeclarationType._
 import config.PhaseConfig
@@ -32,11 +30,12 @@ import models.journeyDomain.item.documents.DocumentsDomain
 import models.journeyDomain.item.packages.PackagesDomain
 import models.journeyDomain.item.supplyChainActors.SupplyChainActorsDomain
 import models.journeyDomain.{
-  EitherType,
   GettableAsFilterForNextReaderOps,
   GettableAsReaderOps,
   JourneyDomainModel,
   JsArrayGettableAsReaderOps,
+  Pages,
+  Read,
   Stage,
   UserAnswersReader
 }
@@ -82,7 +81,7 @@ case class ItemDomain(
 
 object ItemDomain {
 
-  implicit def userAnswersReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[ItemDomain] =
+  implicit def userAnswersReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): Read[ItemDomain] =
     (
       DescriptionPage(itemIndex).reader,
       transportEquipmentReader(itemIndex),
@@ -104,192 +103,190 @@ object ItemDomain {
       additionalReferencesReader(itemIndex),
       additionalInformationListReader(itemIndex),
       transportChargesReader(itemIndex)
-    ).tupled.map((ItemDomain.apply _).tupled).map(_(itemIndex))
+    ).mapAs(ItemDomain.apply(_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _)(itemIndex))
 
-  def transportEquipmentReader(itemIndex: Index): UserAnswersReader[Option[UUID]] =
-    TransportEquipmentsSection.optionalReader.flatMap {
+  def transportEquipmentReader(itemIndex: Index): Read[Option[UUID]] =
+    TransportEquipmentsSection.optionalReader.to {
       case Some(array) if array.nonEmpty =>
-        val reader = InferredTransportEquipmentPage(itemIndex).reader orElse TransportEquipmentPage(itemIndex).reader
-        reader.map(Some(_))
+        UserAnswersReader.readInferred(TransportEquipmentPage(itemIndex), InferredTransportEquipmentPage(itemIndex)).toOption
       case _ =>
-        none[UUID].pure[UserAnswersReader]
+        UserAnswersReader.none
     }
 
-  def declarationTypeReader(itemIndex: Index): UserAnswersReader[Option[DeclarationTypeItemLevel]] =
+  def declarationTypeReader(itemIndex: Index): Read[Option[DeclarationTypeItemLevel]] =
     TransitOperationDeclarationTypePage.filterOptionalDependent(_ == T) {
       DeclarationTypePage(itemIndex).reader
     }
 
-  def countryOfDispatchReader(itemIndex: Index): UserAnswersReader[Option[Country]] =
+  def countryOfDispatchReader(itemIndex: Index): Read[Option[Country]] =
     TransitOperationDeclarationTypePage
       .filterOptionalDependent(_ == TIR) {
         ConsignmentCountryOfDispatchPage.filterDependent(_.isEmpty) {
           CountryOfDispatchPage(itemIndex).reader
         }
       }
-      .map(_.flatten)
+      .flatten
 
-  def countryOfDestinationReader(itemIndex: Index): UserAnswersReader[Option[Country]] =
+  def countryOfDestinationReader(itemIndex: Index): Read[Option[Country]] =
     ConsignmentCountryOfDestinationPage.filterDependent(_.isEmpty) {
       CountryOfDestinationPage(itemIndex).reader
     }
 
-  def ucrReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[Option[String]] =
-    for {
-      isUCRDefined <- ConsignmentUCRPage.isDefined
-      documents    <- DocumentsSection.arrayReader.map(_.validateAsListOf[Document])
-      isConsignmentTransportDocDefined = documents.exists(
-        x => x.attachToAllItems && x.`type` == Transport
-      )
-      result <- {
-        (isUCRDefined, isConsignmentTransportDocDefined, phaseConfig.phase) match {
-          case (true, _, _) => UserAnswersReader(None)
+  def ucrReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): Read[Option[String]] =
+    (
+      ConsignmentUCRPage.optionalReader,
+      DocumentsSection.arrayReader.apply(_: Pages).map(_.to(_.validateAsListOf[Document]))
+    ).to {
+      case (consignmentUcr, documents) =>
+        val isConsignmentTransportDocDefined = documents.exists(
+          x => x.attachToAllItems && x.`type` == Transport
+        )
+        (consignmentUcr.isDefined, isConsignmentTransportDocDefined, phaseConfig.phase) match {
+          case (true, _, _) =>
+            UserAnswersReader.none
           case (false, false, PostTransition) =>
-            UniqueConsignmentReferencePage(itemIndex).reader.map(Some(_))
+            UniqueConsignmentReferencePage(itemIndex).reader.toOption
           case _ =>
             AddUCRYesNoPage(itemIndex).filterOptionalDependent(identity)(UniqueConsignmentReferencePage(itemIndex).reader)
         }
-      }
-    } yield result
+    }
 
-  def cusCodeReader(itemIndex: Index): UserAnswersReader[Option[String]] =
+  def cusCodeReader(itemIndex: Index): Read[Option[String]] =
     AddCUSCodeYesNoPage(itemIndex).filterOptionalDependent(identity) {
       CustomsUnionAndStatisticsCodePage(itemIndex).reader
     }
 
-  def commodityCodeReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[Option[String]] = {
-    val status: UserAnswers => EitherType[SubmissionState] = ua => Right(ua.status)
-    UserAnswersReader(status).flatMap {
-      case models.SubmissionState.Amendment => none[String].pure[UserAnswersReader]
+  def commodityCodeReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): Read[Option[String]] =
+    UserAnswersReader
+      .success(
+        (userAnswers: UserAnswers) => userAnswers.status
+      )
+      .to {
+        case models.SubmissionState.Amendment => UserAnswersReader.none
+        case _                                => defaultCommodityCodeReader(itemIndex, phaseConfig)
+      }
+
+  private def defaultCommodityCodeReader(itemIndex: Index, phaseConfig: PhaseConfig): Read[Option[String]] =
+    TransitOperationTIRCarnetNumberPage.optionalReader.to {
+      case None if phaseConfig.phase == PostTransition =>
+        CommodityCodePage(itemIndex).reader.toOption
       case _ =>
-        defaultCommodityCodeReader(itemIndex, phaseConfig)
+        AddCommodityCodeYesNoPage(itemIndex).filterOptionalDependent(identity)(CommodityCodePage(itemIndex).reader)
     }
 
-  }
-
-  private def defaultCommodityCodeReader(itemIndex: Index, phaseConfig: PhaseConfig): Kleisli[EitherType, UserAnswers, Option[String]] =
-    for {
-      isTransitOperationTIRDefined <- TransitOperationTIRCarnetNumberPage.isDefined
-      result <- {
-        (isTransitOperationTIRDefined, phaseConfig.phase) match {
-          case (false, PostTransition) => CommodityCodePage(itemIndex).reader.map(Some(_))
-          case _                       => AddCommodityCodeYesNoPage(itemIndex).filterOptionalDependent(identity)(CommodityCodePage(itemIndex).reader)
-        }
-      }
-    } yield result
-
-  def combinedNomenclatureCodeReader(itemIndex: Index): UserAnswersReader[Option[String]] =
-    CommodityCodePage(itemIndex).isDefined.flatMap {
-      case true =>
+  def combinedNomenclatureCodeReader(itemIndex: Index): Read[Option[String]] =
+    CommodityCodePage(itemIndex).optionalReader.to {
+      case Some(_) =>
         CustomsOfficeOfDepartureInCL112Page
           .filterOptionalDependent(!_) {
             AddCombinedNomenclatureCodeYesNoPage(itemIndex).filterOptionalDependent(identity) {
               CombinedNomenclatureCodePage(itemIndex).reader
             }
           }
-          .map(_.flatten)
-      case false =>
-        none[String].pure[UserAnswersReader]
+          .flatten
+      case _ =>
+        UserAnswersReader.none
     }
 
-  def dangerousGoodsReader(itemIndex: Index): UserAnswersReader[Option[DangerousGoodsListDomain]] =
+  def dangerousGoodsReader(itemIndex: Index): Read[Option[DangerousGoodsListDomain]] =
     AddDangerousGoodsYesNoPage(itemIndex)
       .filterOptionalDependent(identity)(DangerousGoodsListDomain.userAnswersReader(itemIndex))
 
-  def netWeightReader(itemIndex: Index): UserAnswersReader[Option[BigDecimal]] =
-    ApprovedOperatorPage.optionalReader.flatMap {
+  def netWeightReader(itemIndex: Index): Read[Option[BigDecimal]] =
+    ApprovedOperatorPage.optionalReader.to {
       case Some(true) =>
-        none[BigDecimal].pure[UserAnswersReader]
+        UserAnswersReader.none
       case _ =>
         AddItemNetWeightYesNoPage(itemIndex).filterOptionalDependent(identity) {
           NetWeightPage(itemIndex).reader
         }
     }
 
-  def supplementaryUnitsReader(itemIndex: Index): UserAnswersReader[Option[BigDecimal]] =
+  def supplementaryUnitsReader(itemIndex: Index): Read[Option[BigDecimal]] =
     AddSupplementaryUnitsYesNoPage(itemIndex).filterOptionalDependent(identity) {
       SupplementaryUnitsPage(itemIndex).reader
     }
 
-  def packagesReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[PackagesDomain] =
+  def packagesReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): Read[PackagesDomain] =
     PackagesDomain.userAnswersReader(itemIndex)
 
-  def consigneeReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[Option[ConsigneeDomain]] =
+  def consigneeReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): Read[Option[ConsigneeDomain]] =
     phaseConfig.phase match {
       case Phase.Transition =>
-        for {
-          moreThanOneConsignee        <- MoreThanOneConsigneePage.optionalReader.map(_.contains(true))
-          countryOfDestinationInCL009 <- ConsignmentCountryOfDestinationInCL009Page.readerWithDefault(false)
-          reader <- (moreThanOneConsignee, countryOfDestinationInCL009) match {
-            case (false, true) => none[ConsigneeDomain].pure[UserAnswersReader]
-            case _             => ConsigneeDomain.userAnswersReader(itemIndex).map(Some(_))
-          }
-        } yield reader
+        (
+          MoreThanOneConsigneePage.optionalReader.apply(_: Pages).map(_.to(_.contains(true))),
+          ConsignmentCountryOfDestinationInCL009Page.optionalReader.apply(_: Pages).map(_.to(_.getOrElse(false)))
+        ).to {
+          case (false, true) => UserAnswersReader.none
+          case _             => ConsigneeDomain.userAnswersReader(itemIndex).toOption
+        }
       case Phase.PostTransition =>
-        none[ConsigneeDomain].pure[UserAnswersReader]
+        UserAnswersReader.none
     }
 
-  def supplyChainActorsReader(itemIndex: Index): UserAnswersReader[Option[SupplyChainActorsDomain]] =
+  def supplyChainActorsReader(itemIndex: Index): Read[Option[SupplyChainActorsDomain]] =
     AddSupplyChainActorYesNoPage(itemIndex)
       .filterOptionalDependent(identity)(SupplyChainActorsDomain.userAnswersReader(itemIndex))
 
-  def documentsReader(itemIndex: Index): UserAnswersReader[Option[DocumentsDomain]] = {
+  def documentsReader(itemIndex: Index): Read[Option[DocumentsDomain]] = {
 
-    val externalPages: UserAnswersReader[(String, Boolean)] = for {
-      consignmentDecType    <- TransitOperationDeclarationTypePage.reader
-      isGBOfficeOfDeparture <- CustomsOfficeOfDeparturePage.reader.map(_.startsWith(GB))
-    } yield (consignmentDecType, isGBOfficeOfDeparture)
+    lazy val externalPages: Read[(String, Boolean)] =
+      (
+        TransitOperationDeclarationTypePage.reader,
+        CustomsOfficeOfDeparturePage.reader.apply(_: Pages).map(_.to(_.startsWith(GB)))
+      ).to {
+        case (consignmentDecType, isGBOfficeOfDeparture) => Read.apply((consignmentDecType, isGBOfficeOfDeparture))
+      }
 
-    def isConsignmentPreviousDocDefined(itemIndex: Index): UserAnswersReader[Option[DocumentsDomain]] =
+    def isConsignmentPreviousDocDefined(itemIndex: Index): Read[Option[DocumentsDomain]] =
       DocumentsSection.arrayReader
-        .map {
+        .to {
           _.validateAsListOf[Document]
-            .exists(
+            .exists {
               x => x.attachToAllItems && x.`type` == Previous
-            )
-        }
-        .flatMap {
-          case true  => AddDocumentsYesNoPage(itemIndex).filterOptionalDependent(identity)(DocumentsDomain.userAnswersReader(itemIndex))
-          case false => DocumentsDomain.userAnswersReader(itemIndex).map(Some(_))
+            } match {
+            case true  => AddDocumentsYesNoPage(itemIndex).filterOptionalDependent(identity)(DocumentsDomain.userAnswersReader(itemIndex))
+            case false => DocumentsDomain.userAnswersReader(itemIndex).toOption
+          }
         }
 
-    ConsignmentAddDocumentsPage.optionalReader.flatMap {
+    ConsignmentAddDocumentsPage.optionalReader.to {
       case Some(true) | None =>
-        externalPages.flatMap {
+        externalPages.to {
           case (T2 | T2F, true) => isConsignmentPreviousDocDefined(itemIndex)
           case (_, true) =>
-            DeclarationTypePage(itemIndex).optionalReader.flatMap {
+            DeclarationTypePage(itemIndex).optionalReader.to {
               case Some(DeclarationTypeItemLevel(T2, _)) | Some(DeclarationTypeItemLevel(T2F, _)) =>
                 isConsignmentPreviousDocDefined(itemIndex)
               case _ => AddDocumentsYesNoPage(itemIndex).filterOptionalDependent(identity)(DocumentsDomain.userAnswersReader(itemIndex))
             }
           case _ => AddDocumentsYesNoPage(itemIndex).filterOptionalDependent(identity)(DocumentsDomain.userAnswersReader(itemIndex))
         }
-      case _ => none[DocumentsDomain].pure[UserAnswersReader]
+      case _ => UserAnswersReader.none
     }
   }
 
-  def additionalReferencesReader(itemIndex: Index): UserAnswersReader[Option[AdditionalReferencesDomain]] =
+  def additionalReferencesReader(itemIndex: Index): Read[Option[AdditionalReferencesDomain]] =
     AddAdditionalReferenceYesNoPage(itemIndex)
       .filterOptionalDependent(identity)(AdditionalReferencesDomain.userAnswersReader(itemIndex))
 
-  def additionalInformationListReader(itemIndex: Index): UserAnswersReader[Option[AdditionalInformationListDomain]] =
+  def additionalInformationListReader(itemIndex: Index): Read[Option[AdditionalInformationListDomain]] =
     AddAdditionalInformationYesNoPage(itemIndex)
       .filterOptionalDependent(identity)(AdditionalInformationListDomain.userAnswersReader(itemIndex))
 
-  def transportChargesReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[Option[TransportChargesMethodOfPayment]] =
+  def transportChargesReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): Read[Option[TransportChargesMethodOfPayment]] =
     phaseConfig.phase match {
       case Phase.Transition =>
-        AddConsignmentTransportChargesYesNoPage.optionalReader.map(_.contains(true)).flatMap {
-          case false =>
+        AddConsignmentTransportChargesYesNoPage.optionalReader.to {
+          case Some(true) =>
+            UserAnswersReader.none
+          case _ =>
             AddTransportChargesYesNoPage(itemIndex).filterOptionalDependent(identity) {
               TransportChargesMethodOfPaymentPage(itemIndex).reader
             }
-          case true =>
-            none[TransportChargesMethodOfPayment].pure[UserAnswersReader]
         }
       case Phase.PostTransition =>
-        none[TransportChargesMethodOfPayment].pure[UserAnswersReader]
+        UserAnswersReader.none
     }
 
 }

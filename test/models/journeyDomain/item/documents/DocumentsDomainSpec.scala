@@ -19,7 +19,6 @@ package models.journeyDomain.item.documents
 import base.SpecBase
 import generators.Generators
 import models.Index
-import models.journeyDomain.{EitherType, UserAnswersReader}
 import org.scalacheck.Gen
 import pages.item.documents.DocumentsInProgressPage
 
@@ -39,11 +38,9 @@ class DocumentsDomainSpec extends SpecBase with Generators {
           })
           .setValue(DocumentsInProgressPage(itemIndex), false)
 
-        val result: EitherType[DocumentsDomain] = UserAnswersReader[DocumentsDomain](
-          DocumentsDomain.userAnswersReader(itemIndex)
-        ).run(userAnswers)
+        val result = DocumentsDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
 
-        result.value.value.length mustBe numberOfDocuments
+        result.value.value.value.length mustBe numberOfDocuments
       }
 
       "when no value set for DocumentsInProgressPage" in {
@@ -54,11 +51,9 @@ class DocumentsDomainSpec extends SpecBase with Generators {
             arbitraryDocumentAnswers(updatedUserAnswers, itemIndex, Index(index)).sample.value
         })
 
-        val result: EitherType[DocumentsDomain] = UserAnswersReader[DocumentsDomain](
-          DocumentsDomain.userAnswersReader(itemIndex)
-        ).run(userAnswers)
+        val result = DocumentsDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
 
-        result.value.value.length mustBe numberOfDocuments
+        result.value.value.value.length mustBe numberOfDocuments
       }
     }
 
@@ -73,9 +68,7 @@ class DocumentsDomainSpec extends SpecBase with Generators {
           })
           .setValue(DocumentsInProgressPage(itemIndex), true)
 
-        val result: EitherType[DocumentsDomain] = UserAnswersReader[DocumentsDomain](
-          DocumentsDomain.userAnswersReader(itemIndex)
-        ).run(userAnswers)
+        val result = DocumentsDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
 
         result.left.value.page mustBe DocumentsInProgressPage(itemIndex)
       }

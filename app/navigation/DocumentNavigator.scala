@@ -45,5 +45,5 @@ class DocumentNavigator(override val mode: Mode, itemIndex: Index, documentIndex
   override type T = DocumentDomain
 
   implicit override val reader: UserAnswersReader[DocumentDomain] =
-    DocumentDomain.userAnswersReader(itemIndex, documentIndex)
+    DocumentDomain.userAnswersReader(itemIndex, documentIndex).apply(Nil)
 }

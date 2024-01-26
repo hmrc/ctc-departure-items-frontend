@@ -17,7 +17,6 @@
 package models.journeyDomain.item.dangerousGoods
 
 import base.SpecBase
-import models.journeyDomain.{EitherType, UserAnswersReader}
 import org.scalacheck.Gen
 import pages.item.dangerousGoods.index.UNNumberPage
 
@@ -34,17 +33,15 @@ class DangerousGoodsDomainSpec extends SpecBase {
 
         val expectedResult = DangerousGoodsDomain(uNNumber)(itemIndex, dangerousGoodsIndex)
 
-        val result: EitherType[DangerousGoodsDomain] =
-          UserAnswersReader[DangerousGoodsDomain](DangerousGoodsDomain.userAnswersReader(itemIndex, dangerousGoodsIndex)).run(userAnswers)
+        val result = DangerousGoodsDomain.userAnswersReader(itemIndex, dangerousGoodsIndex).apply(Nil).run(userAnswers)
 
-        result.value mustBe expectedResult
+        result.value.value mustBe expectedResult
       }
     }
 
     "can not be read from user answers" - {
       "when UNNumber page is unanswered" in {
-        val result: EitherType[DangerousGoodsDomain] =
-          UserAnswersReader[DangerousGoodsDomain](DangerousGoodsDomain.userAnswersReader(itemIndex, dangerousGoodsIndex)).run(emptyUserAnswers)
+        val result = DangerousGoodsDomain.userAnswersReader(itemIndex, dangerousGoodsIndex).apply(Nil).run(emptyUserAnswers)
 
         result.left.value.page mustBe UNNumberPage(itemIndex, dangerousGoodsIndex)
       }

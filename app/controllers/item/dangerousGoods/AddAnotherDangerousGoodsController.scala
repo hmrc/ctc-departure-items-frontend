@@ -21,6 +21,7 @@ import controllers.actions._
 import forms.AddAnotherFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.ItemNavigatorProvider
+import pages.sections.dangerousGoods.DangerousGoodsListSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -67,7 +68,7 @@ class AddAnotherDangerousGoodsController @Inject() (
           formWithErrors => BadRequest(view(formWithErrors, lrn, viewModel, itemIndex)),
           {
             case true  => Redirect(controllers.item.dangerousGoods.index.routes.UNNumberController.onPageLoad(lrn, mode, itemIndex, viewModel.nextIndex))
-            case false => Redirect(navigatorProvider(mode, itemIndex).nextPage(request.userAnswers))
+            case false => Redirect(navigatorProvider(mode, itemIndex).nextPage(request.userAnswers, Some(DangerousGoodsListSection(itemIndex))))
           }
         )
   }

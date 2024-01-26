@@ -17,21 +17,30 @@
 package models.journeyDomain.item.packages
 
 import config.PhaseConfig
-import models.journeyDomain.{JsArrayGettableAsReaderOps, UserAnswersReader}
-import models.{Index, RichJsArray}
+import models.journeyDomain.{JourneyDomainModel, JsArrayGettableAsReaderOps, Read}
+import models.{Index, RichJsArray, UserAnswers}
+import pages.sections.Section
 import pages.sections.packages.PackagesSection
 
-case class PackagesDomain(value: Seq[PackageDomain])
+case class PackagesDomain(
+  value: Seq[PackageDomain]
+)(itemIndex: Index)
+    extends JourneyDomainModel {
+
+  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(PackagesSection(itemIndex))
+}
 
 object PackagesDomain {
 
-  implicit def userAnswersReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[PackagesDomain] =
-    PackagesSection(itemIndex).arrayReader
-      .flatMap {
+  implicit def userAnswersReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): Read[PackagesDomain] = {
+    val packagesReader: Read[Seq[PackageDomain]] =
+      PackagesSection(itemIndex).arrayReader.to {
         case x if x.isEmpty =>
-          UserAnswersReader(PackageDomain.userAnswersReader(itemIndex, Index(0))).map(Seq(_))
+          PackageDomain.userAnswersReader(itemIndex, Index(0)).toSeq
         case x =>
-          x.traverse[PackageDomain](PackageDomain.userAnswersReader(itemIndex, _))
+          x.traverse[PackageDomain](PackageDomain.userAnswersReader(itemIndex, _).apply(_))
       }
-      .map(PackagesDomain(_))
+
+    packagesReader.map(PackagesDomain.apply(_)(itemIndex))
+  }
 }

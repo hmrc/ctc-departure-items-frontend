@@ -16,9 +16,11 @@
 
 package pages.sections.additionalReference
 
-import models.Index
+import controllers.item.additionalReference.routes
+import models.{Index, Mode, UserAnswers}
 import pages.sections.{ItemSection, Section}
 import play.api.libs.json.{JsArray, JsPath}
+import play.api.mvc.Call
 
 case class AdditionalReferencesSection(itemIndex: Index) extends Section[JsArray] {
 
@@ -26,4 +28,6 @@ case class AdditionalReferencesSection(itemIndex: Index) extends Section[JsArray
 
   override def toString: String = "additionalReferences"
 
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.AddAnotherAdditionalReferenceController.onPageLoad(userAnswers.lrn, mode, itemIndex))
 }

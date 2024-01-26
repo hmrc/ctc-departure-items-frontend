@@ -16,9 +16,11 @@
 
 package pages.sections.additionalInformation
 
-import models.Index
+import controllers.item.additionalInformation.routes
+import models.{Index, Mode, UserAnswers}
 import pages.sections.{ItemSection, Section}
 import play.api.libs.json.{JsArray, JsPath}
+import play.api.mvc.Call
 
 case class AdditionalInformationListSection(itemIndex: Index) extends Section[JsArray] {
 
@@ -26,4 +28,6 @@ case class AdditionalInformationListSection(itemIndex: Index) extends Section[Js
 
   override def toString: String = "additionalInformationList"
 
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.AddAnotherAdditionalInformationController.onPageLoad(userAnswers.lrn, mode, itemIndex))
 }

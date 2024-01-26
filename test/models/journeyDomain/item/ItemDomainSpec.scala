@@ -28,7 +28,6 @@ import models.journeyDomain.item.additionalReferences.{AdditionalReferenceDomain
 import models.journeyDomain.item.dangerousGoods.{DangerousGoodsDomain, DangerousGoodsListDomain}
 import models.journeyDomain.item.documents.{DocumentDomain, DocumentsDomain}
 import models.journeyDomain.item.packages.{PackageDomain, PackagesDomain}
-import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.reference._
 import models.{DeclarationTypeItemLevel, Index, Phase, SubmissionState}
 import org.mockito.Mockito.when
@@ -59,10 +58,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
     "userAnswersReader" - {
       "can not be read from user answers" - {
         "when item description page is unanswered" in {
-          val result: EitherType[ItemDomain] =
-            UserAnswersReader[ItemDomain](
-              ItemDomain.userAnswersReader(itemIndex)
-            ).run(emptyUserAnswers)
+          val result = ItemDomain.userAnswersReader(itemIndex).apply(Nil).run(emptyUserAnswers)
 
           result.left.value.page mustBe DescriptionPage(itemIndex)
         }
@@ -97,22 +93,18 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               val expectedResult = Some(uuid)
 
-              val result: EitherType[Option[UUID]] = UserAnswersReader[Option[UUID]](
-                ItemDomain.transportEquipmentReader(itemIndex)
-              ).run(userAnswers)
+              val result = ItemDomain.transportEquipmentReader(itemIndex).apply(Nil).run(userAnswers)
 
-              result.value mustBe expectedResult
+              result.value.value mustBe expectedResult
           }
         }
 
         "when transport equipment sequence is not present" in {
           val expectedResult = None
 
-          val result: EitherType[Option[UUID]] = UserAnswersReader[Option[UUID]](
-            ItemDomain.transportEquipmentReader(itemIndex)
-          ).run(emptyUserAnswers)
+          val result = ItemDomain.transportEquipmentReader(itemIndex).apply(Nil).run(emptyUserAnswers)
 
-          result.value mustBe expectedResult
+          result.value.value mustBe expectedResult
         }
       }
 
@@ -122,9 +114,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
             val userAnswers = emptyUserAnswers
               .setValue(TransportEquipmentsSection, equipments(UUID.randomUUID()))
 
-            val result: EitherType[Option[UUID]] = UserAnswersReader[Option[UUID]](
-              ItemDomain.transportEquipmentReader(itemIndex)
-            ).run(userAnswers)
+            val result = ItemDomain.transportEquipmentReader(itemIndex).apply(Nil).run(userAnswers)
 
             result.left.value.page mustBe TransportEquipmentPage(itemIndex)
           }
@@ -142,11 +132,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               val expectedResult = None
 
-              val result: EitherType[Option[DeclarationTypeItemLevel]] = UserAnswersReader[Option[DeclarationTypeItemLevel]](
-                ItemDomain.declarationTypeReader(itemIndex)
-              ).run(userAnswers)
+              val result = ItemDomain.declarationTypeReader(itemIndex).apply(Nil).run(userAnswers)
 
-              result.value mustBe expectedResult
+              result.value.value mustBe expectedResult
           }
         }
 
@@ -159,11 +147,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               val expectedResult = Some(declarationType)
 
-              val result: EitherType[Option[DeclarationTypeItemLevel]] = UserAnswersReader[Option[DeclarationTypeItemLevel]](
-                ItemDomain.declarationTypeReader(itemIndex)
-              ).run(userAnswers)
+              val result = ItemDomain.declarationTypeReader(itemIndex).apply(Nil).run(userAnswers)
 
-              result.value mustBe expectedResult
+              result.value.value mustBe expectedResult
           }
         }
       }
@@ -174,9 +160,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
             val userAnswers = emptyUserAnswers
               .setValue(TransitOperationDeclarationTypePage, T)
 
-            val result: EitherType[Option[DeclarationTypeItemLevel]] = UserAnswersReader[Option[DeclarationTypeItemLevel]](
-              ItemDomain.declarationTypeReader(itemIndex)
-            ).run(userAnswers)
+            val result = ItemDomain.declarationTypeReader(itemIndex).apply(Nil).run(userAnswers)
 
             result.left.value.page mustBe DeclarationTypePage(itemIndex)
           }
@@ -194,11 +178,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               val expectedResult = None
 
-              val result: EitherType[Option[Country]] = UserAnswersReader[Option[Country]](
-                ItemDomain.countryOfDispatchReader(itemIndex)
-              ).run(userAnswers)
+              val result = ItemDomain.countryOfDispatchReader(itemIndex).apply(Nil).run(userAnswers)
 
-              result.value mustBe expectedResult
+              result.value.value mustBe expectedResult
           }
         }
 
@@ -212,11 +194,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                 val expectedResult = None
 
-                val result: EitherType[Option[Country]] = UserAnswersReader[Option[Country]](
-                  ItemDomain.countryOfDispatchReader(itemIndex)
-                ).run(userAnswers)
+                val result = ItemDomain.countryOfDispatchReader(itemIndex).apply(Nil).run(userAnswers)
 
-                result.value mustBe expectedResult
+                result.value.value mustBe expectedResult
             }
           }
 
@@ -229,11 +209,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                 val expectedResult = Some(country)
 
-                val result: EitherType[Option[Country]] = UserAnswersReader[Option[Country]](
-                  ItemDomain.countryOfDispatchReader(itemIndex)
-                ).run(userAnswers)
+                val result = ItemDomain.countryOfDispatchReader(itemIndex).apply(Nil).run(userAnswers)
 
-                result.value mustBe expectedResult
+                result.value.value mustBe expectedResult
             }
           }
         }
@@ -245,9 +223,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
             val userAnswers = emptyUserAnswers
               .setValue(TransitOperationDeclarationTypePage, TIR)
 
-            val result: EitherType[Option[Country]] = UserAnswersReader[Option[Country]](
-              ItemDomain.countryOfDispatchReader(itemIndex)
-            ).run(userAnswers)
+            val result = ItemDomain.countryOfDispatchReader(itemIndex).apply(Nil).run(userAnswers)
 
             result.left.value.page mustBe CountryOfDispatchPage(itemIndex)
           }
@@ -266,11 +242,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               val expectedResult = None
 
-              val result: EitherType[Option[Country]] = UserAnswersReader[Option[Country]](
-                ItemDomain.countryOfDestinationReader(itemIndex)
-              ).run(userAnswers)
+              val result = ItemDomain.countryOfDestinationReader(itemIndex).apply(Nil).run(userAnswers)
 
-              result.value mustBe expectedResult
+              result.value.value mustBe expectedResult
           }
         }
 
@@ -283,11 +257,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               val expectedResult = Some(country)
 
-              val result: EitherType[Option[Country]] = UserAnswersReader[Option[Country]](
-                ItemDomain.countryOfDestinationReader(itemIndex)
-              ).run(userAnswers)
+              val result = ItemDomain.countryOfDestinationReader(itemIndex).apply(Nil).run(userAnswers)
 
-              result.value mustBe expectedResult
+              result.value.value mustBe expectedResult
           }
         }
       }
@@ -297,9 +269,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
           val userAnswers = emptyUserAnswers
             .setValue(TransitOperationDeclarationTypePage, TIR)
 
-          val result: EitherType[Option[Country]] = UserAnswersReader[Option[Country]](
-            ItemDomain.countryOfDestinationReader(itemIndex)
-          ).run(userAnswers)
+          val result = ItemDomain.countryOfDestinationReader(itemIndex).apply(Nil).run(userAnswers)
 
           result.left.value.page mustBe CountryOfDestinationPage(itemIndex)
         }
@@ -318,11 +288,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                 val expectedResult = None
 
-                val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                  ItemDomain.ucrReader(itemIndex)(mockTransitionPhaseConfig)
-                ).run(userAnswers)
+                val result = ItemDomain.ucrReader(itemIndex)(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
-                result.value mustBe expectedResult
+                result.value.value mustBe expectedResult
             }
           }
 
@@ -336,11 +304,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                   val expectedResult = Some(ucr)
 
-                  val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                    ItemDomain.ucrReader(itemIndex)(mockTransitionPhaseConfig)
-                  ).run(userAnswers)
+                  val result = ItemDomain.ucrReader(itemIndex)(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
-                  result.value mustBe expectedResult
+                  result.value.value mustBe expectedResult
               }
             }
 
@@ -350,11 +316,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               val expectedResult = None
 
-              val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                ItemDomain.ucrReader(itemIndex)(mockTransitionPhaseConfig)
-              ).run(userAnswers)
+              val result = ItemDomain.ucrReader(itemIndex)(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
-              result.value mustBe expectedResult
+              result.value.value mustBe expectedResult
             }
           }
         }
@@ -368,11 +332,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                 val expectedResult = None
 
-                val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                  ItemDomain.ucrReader(itemIndex)(mockPostTransitionPhaseConfig)
-                ).run(userAnswers)
+                val result = ItemDomain.ucrReader(itemIndex)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
-                result.value mustBe expectedResult
+                result.value.value mustBe expectedResult
             }
           }
 
@@ -407,11 +369,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                     val expectedResult = Some(ucr)
 
-                    val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                      ItemDomain.ucrReader(itemIndex)(mockPostTransitionPhaseConfig)
-                    ).run(userAnswers)
+                    val result = ItemDomain.ucrReader(itemIndex)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
-                    result.value mustBe expectedResult
+                    result.value.value mustBe expectedResult
                 }
               }
 
@@ -442,11 +402,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                     val expectedResult = None
 
-                    val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                      ItemDomain.ucrReader(itemIndex)(mockPostTransitionPhaseConfig)
-                    ).run(userAnswers)
+                    val result = ItemDomain.ucrReader(itemIndex)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
-                    result.value mustBe expectedResult
+                    result.value.value mustBe expectedResult
                 }
               }
             }
@@ -459,11 +417,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                   val expectedResult = Some(ucr)
 
-                  val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                    ItemDomain.ucrReader(itemIndex)(mockPostTransitionPhaseConfig)
-                  ).run(userAnswers)
+                  val result = ItemDomain.ucrReader(itemIndex)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
-                  result.value mustBe expectedResult
+                  result.value.value mustBe expectedResult
               }
             }
 
@@ -475,9 +431,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         "when in transition" - {
           "when consignment UCR is undefined" - {
             "and UCRYesNo page is unanswered" in {
-              val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                ItemDomain.ucrReader(itemIndex)(mockTransitionPhaseConfig)
-              ).run(emptyUserAnswers)
+              val result = ItemDomain.ucrReader(itemIndex)(mockTransitionPhaseConfig).apply(Nil).run(emptyUserAnswers)
 
               result.left.value.page mustBe AddUCRYesNoPage(itemIndex)
             }
@@ -486,9 +440,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
               val userAnswers = emptyUserAnswers
                 .setValue(AddUCRYesNoPage(itemIndex), true)
 
-              val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                ItemDomain.ucrReader(itemIndex)(mockTransitionPhaseConfig)
-              ).run(userAnswers)
+              val result = ItemDomain.ucrReader(itemIndex)(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
               result.left.value.page mustBe UniqueConsignmentReferencePage(itemIndex)
             }
@@ -498,9 +450,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
           "when consignment UCR is undefined" - {
             "and consignment transport is undefined" - {
               "and UCR page is unanswered" in {
-                val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                  ItemDomain.ucrReader(itemIndex)(mockPostTransitionPhaseConfig)
-                ).run(emptyUserAnswers)
+                val result = ItemDomain.ucrReader(itemIndex)(mockPostTransitionPhaseConfig).apply(Nil).run(emptyUserAnswers)
 
                 result.left.value.page mustBe UniqueConsignmentReferencePage(itemIndex)
               }
@@ -533,9 +483,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                     val userAnswers = emptyUserAnswers
                       .setValue(DocumentsSection, documents)
 
-                    val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                      ItemDomain.ucrReader(itemIndex)(mockPostTransitionPhaseConfig)
-                    ).run(userAnswers)
+                    val result = ItemDomain.ucrReader(itemIndex)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
                     result.left.value.page mustBe AddUCRYesNoPage(itemIndex)
                 }
@@ -566,9 +514,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                       .setValue(DocumentsSection, documents)
                       .setValue(AddUCRYesNoPage(itemIndex), true)
 
-                    val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                      ItemDomain.ucrReader(itemIndex)(mockPostTransitionPhaseConfig)
-                    ).run(userAnswers)
+                    val result = ItemDomain.ucrReader(itemIndex)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
                     result.left.value.page mustBe UniqueConsignmentReferencePage(itemIndex)
                 }
@@ -588,11 +534,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           val expectedResult = None
 
-          val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-            ItemDomain.cusCodeReader(itemIndex)
-          ).run(userAnswers)
+          val result = ItemDomain.cusCodeReader(itemIndex).apply(Nil).run(userAnswers)
 
-          result.value mustBe expectedResult
+          result.value.value mustBe expectedResult
         }
 
         "when CUS code is answered" in {
@@ -604,20 +548,16 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               val expectedResult = Some(cusCode)
 
-              val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                ItemDomain.cusCodeReader(itemIndex)
-              ).run(userAnswers)
+              val result = ItemDomain.cusCodeReader(itemIndex).apply(Nil).run(userAnswers)
 
-              result.value mustBe expectedResult
+              result.value.value mustBe expectedResult
           }
         }
       }
 
       "can not be read from user answers" - {
         "when add CUS code yes/no is unanswered" in {
-          val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-            ItemDomain.cusCodeReader(itemIndex)
-          ).run(emptyUserAnswers)
+          val result = ItemDomain.cusCodeReader(itemIndex).apply(Nil).run(emptyUserAnswers)
 
           result.left.value.page mustBe AddCUSCodeYesNoPage(itemIndex)
         }
@@ -626,9 +566,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
           val userAnswers = emptyUserAnswers
             .setValue(AddCUSCodeYesNoPage(itemIndex), true)
 
-          val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-            ItemDomain.cusCodeReader(itemIndex)
-          ).run(userAnswers)
+          val result = ItemDomain.cusCodeReader(itemIndex).apply(Nil).run(userAnswers)
 
           result.left.value.page mustBe CustomsUnionAndStatisticsCodePage(itemIndex)
         }
@@ -647,11 +585,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
             val expectedResult = None
 
-            val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-              ItemDomain.commodityCodeReader(itemIndex)(mockTransitionPhaseConfig)
-            ).run(userAnswers)
+            val result = ItemDomain.commodityCodeReader(itemIndex)(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
-            result.value mustBe expectedResult
+            result.value.value mustBe expectedResult
           }
         }
 
@@ -666,11 +602,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                 val expectedResult = Some(commodityCode)
 
-                val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                  ItemDomain.commodityCodeReader(itemIndex)(mockTransitionPhaseConfig)
-                ).run(userAnswers)
+                val result = ItemDomain.commodityCodeReader(itemIndex)(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
-                result.value mustBe expectedResult
+                result.value.value mustBe expectedResult
             }
 
           }
@@ -686,11 +620,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                 val expectedResult = Some(commodityCode)
 
-                val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                  ItemDomain.commodityCodeReader(itemIndex)(mockTransitionPhaseConfig)
-                ).run(userAnswers)
+                val result = ItemDomain.commodityCodeReader(itemIndex)(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
-                result.value mustBe expectedResult
+                result.value.value mustBe expectedResult
 
             }
 
@@ -701,11 +633,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
             val expectedResult = None
 
-            val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-              ItemDomain.commodityCodeReader(itemIndex)(mockTransitionPhaseConfig)
-            ).run(userAnswers)
+            val result = ItemDomain.commodityCodeReader(itemIndex)(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
-            result.value mustBe expectedResult
+            result.value.value mustBe expectedResult
           }
         }
         "when in post-transition" - {
@@ -720,11 +650,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                   val expectedResult = Some(commodityCode)
 
-                  val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                    ItemDomain.commodityCodeReader(itemIndex)(mockPostTransitionPhaseConfig)
-                  ).run(userAnswers)
+                  val result = ItemDomain.commodityCodeReader(itemIndex)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
-                  result.value mustBe expectedResult
+                  result.value.value mustBe expectedResult
               }
             }
 
@@ -737,11 +665,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                   val expectedResult = None
 
-                  val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                    ItemDomain.commodityCodeReader(itemIndex)(mockPostTransitionPhaseConfig)
-                  ).run(userAnswers)
+                  val result = ItemDomain.commodityCodeReader(itemIndex)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
-                  result.value mustBe expectedResult
+                  result.value.value mustBe expectedResult
               }
             }
           }
@@ -754,11 +680,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                 val expectedResult = Some(commodityCode)
 
-                val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                  ItemDomain.commodityCodeReader(itemIndex)(mockPostTransitionPhaseConfig)
-                ).run(userAnswers)
+                val result = ItemDomain.commodityCodeReader(itemIndex)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
-                result.value mustBe expectedResult
+                result.value.value mustBe expectedResult
             }
           }
         }
@@ -769,9 +693,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         "when in transition" - {
           "and commodity code yes/no is unanswered" in {
 
-            val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-              ItemDomain.commodityCodeReader(itemIndex)(mockTransitionPhaseConfig)
-            ).run(emptyUserAnswers)
+            val result = ItemDomain.commodityCodeReader(itemIndex)(mockTransitionPhaseConfig).apply(Nil).run(emptyUserAnswers)
 
             result.left.value.page mustBe AddCommodityCodeYesNoPage(itemIndex)
           }
@@ -781,9 +703,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
             val userAnswers = emptyUserAnswers
               .setValue(AddCommodityCodeYesNoPage(itemIndex), true)
 
-            val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-              ItemDomain.commodityCodeReader(itemIndex)(mockTransitionPhaseConfig)
-            ).run(userAnswers)
+            val result = ItemDomain.commodityCodeReader(itemIndex)(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
             result.left.value.page mustBe CommodityCodePage(itemIndex)
 
@@ -799,9 +719,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                   val userAnswers = emptyUserAnswers
                     .setValue(TransitOperationTIRCarnetNumberPage, tirReference)
 
-                  val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                    ItemDomain.commodityCodeReader(itemIndex)
-                  ).run(userAnswers)
+                  val result = ItemDomain.commodityCodeReader(itemIndex).apply(Nil).run(userAnswers)
 
                   result.left.value.page mustBe AddCommodityCodeYesNoPage(itemIndex)
               }
@@ -814,9 +732,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                     .setValue(TransitOperationTIRCarnetNumberPage, tirReference)
                     .setValue(AddCommodityCodeYesNoPage(itemIndex), true)
 
-                  val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                    ItemDomain.commodityCodeReader(itemIndex)(mockPostTransitionPhaseConfig)
-                  ).run(userAnswers)
+                  val result = ItemDomain.commodityCodeReader(itemIndex)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
                   result.left.value.page mustBe CommodityCodePage(itemIndex)
               }
@@ -825,9 +741,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           "when TIR Carnet reference number is undefined" - {
             "and commodity code is unanswered" in {
-              val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                ItemDomain.commodityCodeReader(itemIndex)(mockPostTransitionPhaseConfig)
-              ).run(emptyUserAnswers)
+              val result = ItemDomain.commodityCodeReader(itemIndex)(mockPostTransitionPhaseConfig).apply(Nil).run(emptyUserAnswers)
 
               result.left.value.page mustBe CommodityCodePage(itemIndex)
             }
@@ -846,11 +760,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
             val expectedResult = None
 
-            val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-              ItemDomain.combinedNomenclatureCodeReader(itemIndex)
-            ).run(userAnswers)
+            val result = ItemDomain.combinedNomenclatureCodeReader(itemIndex).apply(Nil).run(userAnswers)
 
-            result.value mustBe expectedResult
+            result.value.value mustBe expectedResult
           }
 
           "and office of departure is not in CL112" in {
@@ -864,11 +776,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                 val expectedResult = Some(combinedNomenclatureCode)
 
-                val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                  ItemDomain.combinedNomenclatureCodeReader(itemIndex)
-                ).run(userAnswers)
+                val result = ItemDomain.combinedNomenclatureCodeReader(itemIndex).apply(Nil).run(userAnswers)
 
-                result.value mustBe expectedResult
+                result.value.value mustBe expectedResult
             }
           }
         }
@@ -876,11 +786,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         "when commodity code is undefined" in {
           val expectedResult = None
 
-          val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-            ItemDomain.combinedNomenclatureCodeReader(itemIndex)
-          ).run(emptyUserAnswers)
+          val result = ItemDomain.combinedNomenclatureCodeReader(itemIndex).apply(Nil).run(emptyUserAnswers)
 
-          result.value mustBe expectedResult
+          result.value.value mustBe expectedResult
         }
       }
 
@@ -893,9 +801,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                 .setValue(CommodityCodePage(itemIndex), commodityCode)
                 .setValue(CustomsOfficeOfDepartureInCL112Page, false)
 
-              val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                ItemDomain.combinedNomenclatureCodeReader(itemIndex)
-              ).run(userAnswers)
+              val result = ItemDomain.combinedNomenclatureCodeReader(itemIndex).apply(Nil).run(userAnswers)
 
               result.left.value.page mustBe AddCombinedNomenclatureCodeYesNoPage(itemIndex)
           }
@@ -909,9 +815,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                 .setValue(CustomsOfficeOfDepartureInCL112Page, false)
                 .setValue(AddCombinedNomenclatureCodeYesNoPage(itemIndex), true)
 
-              val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                ItemDomain.combinedNomenclatureCodeReader(itemIndex)
-              ).run(userAnswers)
+              val result = ItemDomain.combinedNomenclatureCodeReader(itemIndex).apply(Nil).run(userAnswers)
 
               result.left.value.page mustBe CombinedNomenclatureCodePage(itemIndex)
           }
@@ -933,14 +837,12 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                   Seq(
                     DangerousGoodsDomain(unNumber)(itemIndex, dangerousGoodsIndex)
                   )
-                )
+                )(itemIndex)
               )
 
-              val result: EitherType[Option[DangerousGoodsListDomain]] = UserAnswersReader[Option[DangerousGoodsListDomain]](
-                ItemDomain.dangerousGoodsReader(itemIndex)
-              ).run(userAnswers)
+              val result = ItemDomain.dangerousGoodsReader(itemIndex).apply(Nil).run(userAnswers)
 
-              result.value mustBe expectedResult
+              result.value.value mustBe expectedResult
           }
         }
 
@@ -950,34 +852,17 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           val expectedResult = None
 
-          val result: EitherType[Option[DangerousGoodsListDomain]] = UserAnswersReader[Option[DangerousGoodsListDomain]](
-            ItemDomain.dangerousGoodsReader(itemIndex)
-          ).run(userAnswers)
+          val result = ItemDomain.dangerousGoodsReader(itemIndex).apply(Nil).run(userAnswers)
 
-          result.value mustBe expectedResult
+          result.value.value mustBe expectedResult
         }
       }
 
       "can not be read from user answers" - {
         "when add dangerous goods yes/no is unanswered" in {
-          val result: EitherType[Option[DangerousGoodsListDomain]] = UserAnswersReader[Option[DangerousGoodsListDomain]](
-            ItemDomain.dangerousGoodsReader(itemIndex)
-          ).run(emptyUserAnswers)
+          val result = ItemDomain.dangerousGoodsReader(itemIndex).apply(Nil).run(emptyUserAnswers)
 
           result.left.value.page mustBe AddDangerousGoodsYesNoPage(itemIndex)
-        }
-      }
-    }
-
-    "grossWeightReader" - {
-
-      "can not be read from user answers" - {
-        "when gross weight is unanswered" in {
-          val result: EitherType[ItemDomain] = UserAnswersReader[ItemDomain](
-            ItemDomain.userAnswersReader(itemIndex)
-          ).run(emptyUserAnswers)
-
-          result.left.value.page mustBe DescriptionPage(itemIndex)
         }
       }
     }
@@ -995,11 +880,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                 val expectedResult = Some(netWeight)
 
-                val result: EitherType[Option[BigDecimal]] = UserAnswersReader[Option[BigDecimal]](
-                  ItemDomain.netWeightReader(itemIndex)
-                ).run(userAnswers)
+                val result = ItemDomain.netWeightReader(itemIndex).apply(Nil).run(userAnswers)
 
-                result.value mustBe expectedResult
+                result.value.value mustBe expectedResult
             }
           }
 
@@ -1009,11 +892,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
             val expectedResult = None
 
-            val result: EitherType[Option[BigDecimal]] = UserAnswersReader[Option[BigDecimal]](
-              ItemDomain.netWeightReader(itemIndex)
-            ).run(userAnswers)
+            val result = ItemDomain.netWeightReader(itemIndex).apply(Nil).run(userAnswers)
 
-            result.value mustBe expectedResult
+            result.value.value mustBe expectedResult
           }
 
           "and reduced indicator is undefined (infer as false)" in {
@@ -1025,11 +906,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                 val expectedResult = Some(netWeight)
 
-                val result: EitherType[Option[BigDecimal]] = UserAnswersReader[Option[BigDecimal]](
-                  ItemDomain.netWeightReader(itemIndex)
-                ).run(userAnswers)
+                val result = ItemDomain.netWeightReader(itemIndex).apply(Nil).run(userAnswers)
 
-                result.value mustBe expectedResult
+                result.value.value mustBe expectedResult
             }
           }
         }
@@ -1041,11 +920,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           val expectedResult = None
 
-          val result: EitherType[Option[BigDecimal]] = UserAnswersReader[Option[BigDecimal]](
-            ItemDomain.netWeightReader(itemIndex)
-          ).run(userAnswers)
+          val result = ItemDomain.netWeightReader(itemIndex).apply(Nil).run(userAnswers)
 
-          result.value mustBe expectedResult
+          result.value.value mustBe expectedResult
         }
 
       }
@@ -1057,9 +934,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
           val userAnswers = emptyUserAnswers
             .setValue(ApprovedOperatorPage, false)
 
-          val result: EitherType[Option[BigDecimal]] = UserAnswersReader[Option[BigDecimal]](
-            ItemDomain.netWeightReader(itemIndex)
-          ).run(userAnswers)
+          val result = ItemDomain.netWeightReader(itemIndex).apply(Nil).run(userAnswers)
 
           result.left.value.page mustBe AddItemNetWeightYesNoPage(itemIndex)
 
@@ -1070,9 +945,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
             .setValue(ApprovedOperatorPage, false)
             .setValue(AddItemNetWeightYesNoPage(itemIndex), true)
 
-          val result: EitherType[Option[BigDecimal]] = UserAnswersReader[Option[BigDecimal]](
-            ItemDomain.netWeightReader(itemIndex)
-          ).run(userAnswers)
+          val result = ItemDomain.netWeightReader(itemIndex).apply(Nil).run(userAnswers)
 
           result.left.value.page mustBe NetWeightPage(itemIndex)
 
@@ -1091,11 +964,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               val expectedResult = Some(supplementaryUnit)
 
-              val result: EitherType[Option[BigDecimal]] = UserAnswersReader[Option[BigDecimal]](
-                ItemDomain.supplementaryUnitsReader(itemIndex)
-              ).run(userAnswers)
+              val result = ItemDomain.supplementaryUnitsReader(itemIndex).apply(Nil).run(userAnswers)
 
-              result.value mustBe expectedResult
+              result.value.value mustBe expectedResult
           }
         }
 
@@ -1105,19 +976,15 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           val expectedResult = None
 
-          val result: EitherType[Option[BigDecimal]] = UserAnswersReader[Option[BigDecimal]](
-            ItemDomain.supplementaryUnitsReader(itemIndex)
-          ).run(userAnswers)
+          val result = ItemDomain.supplementaryUnitsReader(itemIndex).apply(Nil).run(userAnswers)
 
-          result.value mustBe expectedResult
+          result.value.value mustBe expectedResult
         }
       }
 
       "can not be read from user answers" - {
         "when add supplementary units yes/no is unanswered" in {
-          val result: EitherType[Option[BigDecimal]] = UserAnswersReader[Option[BigDecimal]](
-            ItemDomain.supplementaryUnitsReader(itemIndex)
-          ).run(emptyUserAnswers)
+          val result = ItemDomain.supplementaryUnitsReader(itemIndex).apply(Nil).run(emptyUserAnswers)
 
           result.left.value.page mustBe AddSupplementaryUnitsYesNoPage(itemIndex)
         }
@@ -1145,13 +1012,11 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                         Some(shippingMark)
                       )(itemIndex, packageIndex)
                     )
-                  )
+                  )(itemIndex)
 
-                val result: EitherType[PackagesDomain] = UserAnswersReader[PackagesDomain](
-                  ItemDomain.packagesReader(itemIndex)(mockTransitionPhaseConfig)
-                ).run(userAnswers)
+                val result = ItemDomain.packagesReader(itemIndex)(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
-                result.value mustBe expectedResult
+                result.value.value mustBe expectedResult
             }
           }
 
@@ -1172,13 +1037,11 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                         Some(shippingMark)
                       )(itemIndex, packageIndex)
                     )
-                  )
+                  )(itemIndex)
 
-                val result: EitherType[PackagesDomain] = UserAnswersReader[PackagesDomain](
-                  ItemDomain.packagesReader(itemIndex)(mockTransitionPhaseConfig)
-                ).run(userAnswers)
+                val result = ItemDomain.packagesReader(itemIndex)(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
-                result.value mustBe expectedResult
+                result.value.value mustBe expectedResult
             }
           }
 
@@ -1199,13 +1062,11 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                         Some(shippingMark)
                       )(itemIndex, packageIndex)
                     )
-                  )
+                  )(itemIndex)
 
-                val result: EitherType[PackagesDomain] = UserAnswersReader[PackagesDomain](
-                  ItemDomain.packagesReader(itemIndex)(mockTransitionPhaseConfig)
-                ).run(userAnswers)
+                val result = ItemDomain.packagesReader(itemIndex)(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
-                result.value mustBe expectedResult
+                result.value.value mustBe expectedResult
             }
           }
         }
@@ -1228,13 +1089,11 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                         Some(shippingMark)
                       )(itemIndex, packageIndex)
                     )
-                  )
+                  )(itemIndex)
 
-                val result: EitherType[PackagesDomain] = UserAnswersReader[PackagesDomain](
-                  ItemDomain.packagesReader(itemIndex)(mockPostTransitionPhaseConfig)
-                ).run(userAnswers)
+                val result = ItemDomain.packagesReader(itemIndex)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
-                result.value mustBe expectedResult
+                result.value.value mustBe expectedResult
             }
           }
 
@@ -1255,13 +1114,11 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                         Some(shippingMark)
                       )(itemIndex, packageIndex)
                     )
-                  )
+                  )(itemIndex)
 
-                val result: EitherType[PackagesDomain] = UserAnswersReader[PackagesDomain](
-                  ItemDomain.packagesReader(itemIndex)(mockPostTransitionPhaseConfig)
-                ).run(userAnswers)
+                val result = ItemDomain.packagesReader(itemIndex)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
-                result.value mustBe expectedResult
+                result.value.value mustBe expectedResult
             }
           }
 
@@ -1282,13 +1139,11 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                         Some(shippingMark)
                       )(itemIndex, packageIndex)
                     )
-                  )
+                  )(itemIndex)
 
-                val result: EitherType[PackagesDomain] = UserAnswersReader[PackagesDomain](
-                  ItemDomain.packagesReader(itemIndex)(mockPostTransitionPhaseConfig)
-                ).run(userAnswers)
+                val result = ItemDomain.packagesReader(itemIndex)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
-                result.value mustBe expectedResult
+                result.value.value mustBe expectedResult
             }
           }
         }
@@ -1296,9 +1151,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
       "can not be read from user answers" - {
         "when packages is not added" in {
-          val result: EitherType[PackagesDomain] = UserAnswersReader[PackagesDomain](
-            ItemDomain.packagesReader(itemIndex)
-          ).run(emptyUserAnswers)
+          val result = ItemDomain.packagesReader(itemIndex).apply(Nil).run(emptyUserAnswers)
 
           result.left.value.page mustBe PackageTypePage(itemIndex, packageIndex)
         }
@@ -1313,11 +1166,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         "then result must not be defined" in {
           forAll(arbitraryConsigneeAnswers(emptyUserAnswers, itemIndex)) {
             userAnswers =>
-              val result = UserAnswersReader[Option[ConsigneeDomain]](
-                ItemDomain.consigneeReader(itemIndex)(mockPhaseConfig)
-              ).run(userAnswers)
+              val result = ItemDomain.consigneeReader(itemIndex)(mockPhaseConfig).apply(Nil).run(userAnswers)
 
-              result.value must not be defined
+              result.value.value must not be defined
           }
         }
       }
@@ -1337,11 +1188,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                   forAll(arbitraryConsigneeAnswers(initialAnswers, itemIndex)) {
                     userAnswers =>
-                      val result = UserAnswersReader[Option[ConsigneeDomain]](
-                        ItemDomain.consigneeReader(itemIndex)(mockPhaseConfig)
-                      ).run(userAnswers)
+                      val result = ItemDomain.consigneeReader(itemIndex)(mockPhaseConfig).apply(Nil).run(userAnswers)
 
-                      result.value must not be defined
+                      result.value.value must not be defined
                   }
               }
             }
@@ -1357,11 +1206,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                   forAll(arbitraryConsigneeAnswers(initialAnswers, itemIndex)) {
                     userAnswers =>
-                      val result = UserAnswersReader[Option[ConsigneeDomain]](
-                        ItemDomain.consigneeReader(itemIndex)(mockPhaseConfig)
-                      ).run(userAnswers)
+                      val result = ItemDomain.consigneeReader(itemIndex)(mockPhaseConfig).apply(Nil).run(userAnswers)
 
-                      result.value must be(defined)
+                      result.value.value must be(defined)
                   }
               }
             }
@@ -1376,11 +1223,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                   forAll(arbitraryConsigneeAnswers(initialAnswers, itemIndex)) {
                     userAnswers =>
-                      val result = UserAnswersReader[Option[ConsigneeDomain]](
-                        ItemDomain.consigneeReader(itemIndex)(mockPhaseConfig)
-                      ).run(userAnswers)
+                      val result = ItemDomain.consigneeReader(itemIndex)(mockPhaseConfig).apply(Nil).run(userAnswers)
 
-                      result.value must be(defined)
+                      result.value.value must be(defined)
                   }
               }
             }
@@ -1396,11 +1241,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               forAll(arbitraryConsigneeAnswers(initialAnswers, itemIndex)) {
                 userAnswers =>
-                  val result = UserAnswersReader[Option[ConsigneeDomain]](
-                    ItemDomain.consigneeReader(itemIndex)(mockPhaseConfig)
-                  ).run(userAnswers)
+                  val result = ItemDomain.consigneeReader(itemIndex)(mockPhaseConfig).apply(Nil).run(userAnswers)
 
-                  result.value must be(defined)
+                  result.value.value must be(defined)
               }
             }
           }
@@ -1413,11 +1256,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               forAll(arbitraryConsigneeAnswers(initialAnswers, itemIndex)) {
                 userAnswers =>
-                  val result = UserAnswersReader[Option[ConsigneeDomain]](
-                    ItemDomain.consigneeReader(itemIndex)(mockPhaseConfig)
-                  ).run(userAnswers)
+                  val result = ItemDomain.consigneeReader(itemIndex)(mockPhaseConfig).apply(Nil).run(userAnswers)
 
-                  result.value must be(defined)
+                  result.value.value must be(defined)
               }
             }
           }
@@ -1429,11 +1270,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               forAll(arbitraryConsigneeAnswers(initialAnswers, itemIndex)) {
                 userAnswers =>
-                  val result = UserAnswersReader[Option[ConsigneeDomain]](
-                    ItemDomain.consigneeReader(itemIndex)(mockPhaseConfig)
-                  ).run(userAnswers)
+                  val result = ItemDomain.consigneeReader(itemIndex)(mockPhaseConfig).apply(Nil).run(userAnswers)
 
-                  result.value must be(defined)
+                  result.value.value must be(defined)
               }
             }
           }
@@ -1495,16 +1334,13 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                       Seq(
                         DocumentDomain(documentUUID)(itemIndex, Index(0))
                       )
-                    )
+                    )(itemIndex)
                   )
 
-                  val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
-                    ItemDomain.documentsReader(itemIndex)
-                  ).run(userAnswers)
+                  val result = ItemDomain.documentsReader(itemIndex).apply(Nil).run(userAnswers)
 
-                  result.value mustBe expectedResult
+                  result.value.value mustBe expectedResult
               }
-
             }
 
             "and AddDocumentsYesNoPage is false" in {
@@ -1536,11 +1372,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                     .setValue(AddDocumentsYesNoPage(itemIndex), false)
                     .setValue(DocumentsSection, documents)
 
-                  val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
-                    ItemDomain.documentsReader(itemIndex)
-                  ).run(userAnswers)
+                  val result = ItemDomain.documentsReader(itemIndex).apply(Nil).run(userAnswers)
 
-                  result.value mustBe None
+                  result.value.value must not be defined
               }
             }
           }
@@ -1559,14 +1393,12 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                     Seq(
                       DocumentDomain(documentUUID)(itemIndex, Index(0))
                     )
-                  )
+                  )(itemIndex)
                 )
 
-                val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
-                  ItemDomain.documentsReader(itemIndex)
-                ).run(userAnswers)
+                val result = ItemDomain.documentsReader(itemIndex).apply(Nil).run(userAnswers)
 
-                result.value mustBe expectedResult
+                result.value.value mustBe expectedResult
             }
           }
 
@@ -1604,14 +1436,12 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                     Seq(
                       DocumentDomain(documentUUID)(itemIndex, Index(0))
                     )
-                  )
+                  )(itemIndex)
                 )
 
-                val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
-                  ItemDomain.documentsReader(itemIndex)
-                ).run(userAnswers)
+                val result = ItemDomain.documentsReader(itemIndex).apply(Nil).run(userAnswers)
 
-                result.value mustBe expectedResult
+                result.value.value mustBe expectedResult
             }
           }
         }
@@ -1658,16 +1488,13 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                         Seq(
                           DocumentDomain(documentUUID)(itemIndex, Index(0))
                         )
-                      )
+                      )(itemIndex)
                     )
 
-                    val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
-                      ItemDomain.documentsReader(itemIndex)
-                    ).run(userAnswers)
+                    val result = ItemDomain.documentsReader(itemIndex).apply(Nil).run(userAnswers)
 
-                    result.value mustBe expectedResult
+                    result.value.value mustBe expectedResult
                 }
-
               }
 
               "and AddDocumentsYesNoPage is false" in {
@@ -1700,11 +1527,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                       .setValue(AddDocumentsYesNoPage(itemIndex), false)
                       .setValue(DocumentsSection, documents)
 
-                    val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
-                      ItemDomain.documentsReader(itemIndex)
-                    ).run(userAnswers)
+                    val result = ItemDomain.documentsReader(itemIndex).apply(Nil).run(userAnswers)
 
-                    result.value mustBe None
+                    result.value.value must not be defined
                 }
               }
             }
@@ -1724,14 +1549,12 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                       Seq(
                         DocumentDomain(documentUUID)(itemIndex, Index(0))
                       )
-                    )
+                    )(itemIndex)
                   )
 
-                  val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
-                    ItemDomain.documentsReader(itemIndex)
-                  ).run(userAnswers)
+                  val result = ItemDomain.documentsReader(itemIndex).apply(Nil).run(userAnswers)
 
-                  result.value mustBe expectedResult
+                  result.value.value mustBe expectedResult
               }
             }
 
@@ -1770,17 +1593,14 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                       Seq(
                         DocumentDomain(documentUUID)(itemIndex, Index(0))
                       )
-                    )
+                    )(itemIndex)
                   )
 
-                  val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
-                    ItemDomain.documentsReader(itemIndex)
-                  ).run(userAnswers)
+                  val result = ItemDomain.documentsReader(itemIndex).apply(Nil).run(userAnswers)
 
-                  result.value mustBe expectedResult
+                  result.value.value mustBe expectedResult
               }
             }
-
           }
 
           "and item level declaration type is not T2 or T2F" - {
@@ -1824,14 +1644,12 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                         Seq(
                           DocumentDomain(documentUUID)(itemIndex, Index(0))
                         )
-                      )
+                      )(itemIndex)
                     )
 
-                    val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
-                      ItemDomain.documentsReader(itemIndex)
-                    ).run(userAnswers)
+                    val result = ItemDomain.documentsReader(itemIndex).apply(Nil).run(userAnswers)
 
-                    result.value mustBe expectedResult
+                    result.value.value mustBe expectedResult
                 }
               }
 
@@ -1846,11 +1664,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                       .setValue(ConsignmentAddDocumentsPage, true)
                       .setValue(AddDocumentsYesNoPage(itemIndex), false)
 
-                    val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
-                      ItemDomain.documentsReader(itemIndex)
-                    ).run(userAnswers)
+                    val result = ItemDomain.documentsReader(itemIndex).apply(Nil).run(userAnswers)
 
-                    result.value mustBe None
+                    result.value.value must not be defined
                 }
               }
             }
@@ -1865,11 +1681,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                     .setValue(DeclarationTypePage(index), declarationType)
                     .setValue(ConsignmentAddDocumentsPage, false)
 
-                  val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
-                    ItemDomain.documentsReader(itemIndex)
-                  ).run(userAnswers)
+                  val result = ItemDomain.documentsReader(itemIndex).apply(Nil).run(userAnswers)
 
-                  result.value mustBe None
+                  result.value.value must not be defined
               }
             }
           }
@@ -1896,14 +1710,12 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                       Seq(
                         DocumentDomain(documentUUID)(itemIndex, Index(0))
                       )
-                    )
+                    )(itemIndex)
                   )
 
-                  val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
-                    ItemDomain.documentsReader(itemIndex)
-                  ).run(userAnswers)
+                  val result = ItemDomain.documentsReader(itemIndex).apply(Nil).run(userAnswers)
 
-                  result.value mustBe expectedResult
+                  result.value.value mustBe expectedResult
               }
             }
 
@@ -1918,15 +1730,11 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                     .setValue(ConsignmentAddDocumentsPage, true)
                     .setValue(AddDocumentsYesNoPage(itemIndex), false)
 
-                  val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
-                    ItemDomain.documentsReader(itemIndex)
-                  ).run(userAnswers)
+                  val result = ItemDomain.documentsReader(itemIndex).apply(Nil).run(userAnswers)
 
-                  result.value mustBe None
+                  result.value.value must not be defined
               }
-
             }
-
           }
 
           "and ConsignmentAddDocumentsPage is false" in {
@@ -1939,11 +1747,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                   .setValue(DeclarationTypePage(index), declarationTypeItemLevel)
                   .setValue(ConsignmentAddDocumentsPage, false)
 
-                val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
-                  ItemDomain.documentsReader(itemIndex)
-                ).run(userAnswers)
+                val result = ItemDomain.documentsReader(itemIndex).apply(Nil).run(userAnswers)
 
-                result.value mustBe None
+                result.value.value must not be defined
             }
           }
         }
@@ -1969,14 +1775,12 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                       Seq(
                         DocumentDomain(documentUUID)(itemIndex, Index(0))
                       )
-                    )
+                    )(itemIndex)
                   )
 
-                  val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
-                    ItemDomain.documentsReader(itemIndex)
-                  ).run(userAnswers)
+                  val result = ItemDomain.documentsReader(itemIndex).apply(Nil).run(userAnswers)
 
-                  result.value mustBe expectedResult
+                  result.value.value mustBe expectedResult
               }
             }
 
@@ -1991,11 +1795,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                     .setValue(ConsignmentAddDocumentsPage, true)
                     .setValue(AddDocumentsYesNoPage(itemIndex), false)
 
-                  val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
-                    ItemDomain.documentsReader(itemIndex)
-                  ).run(userAnswers)
+                  val result = ItemDomain.documentsReader(itemIndex).apply(Nil).run(userAnswers)
 
-                  result.value mustBe None
+                  result.value.value must not be defined
               }
 
             }
@@ -2010,11 +1812,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                     .setValue(DeclarationTypePage(index), declarationTypeItemLevel)
                     .setValue(ConsignmentAddDocumentsPage, false)
 
-                  val result: EitherType[Option[DocumentsDomain]] = UserAnswersReader[Option[DocumentsDomain]](
-                    ItemDomain.documentsReader(itemIndex)
-                  ).run(userAnswers)
+                  val result = ItemDomain.documentsReader(itemIndex).apply(Nil).run(userAnswers)
 
-                  result.value mustBe None
+                  result.value.value must not be defined
               }
             }
           }
@@ -2037,14 +1837,12 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                   Seq(
                     AdditionalReferenceDomain(`type`, None)(itemIndex, additionalReferenceIndex)
                   )
-                )
+                )(itemIndex)
               )
 
-              val result: EitherType[Option[AdditionalReferencesDomain]] = UserAnswersReader[Option[AdditionalReferencesDomain]](
-                ItemDomain.additionalReferencesReader(itemIndex)
-              ).run(userAnswers)
+              val result = ItemDomain.additionalReferencesReader(itemIndex).apply(Nil).run(userAnswers)
 
-              result.value mustBe expectedResult
+              result.value.value mustBe expectedResult
           }
         }
 
@@ -2054,19 +1852,15 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           val expectedResult = None
 
-          val result: EitherType[Option[AdditionalReferencesDomain]] = UserAnswersReader[Option[AdditionalReferencesDomain]](
-            ItemDomain.additionalReferencesReader(itemIndex)
-          ).run(userAnswers)
+          val result = ItemDomain.additionalReferencesReader(itemIndex).apply(Nil).run(userAnswers)
 
-          result.value mustBe expectedResult
+          result.value.value mustBe expectedResult
         }
       }
 
       "can not be read from user answers" - {
         "when add additional references yes/no is unanswered" in {
-          val result: EitherType[Option[AdditionalReferencesDomain]] = UserAnswersReader[Option[AdditionalReferencesDomain]](
-            ItemDomain.additionalReferencesReader(itemIndex)
-          ).run(emptyUserAnswers)
+          val result = ItemDomain.additionalReferencesReader(itemIndex).apply(Nil).run(emptyUserAnswers)
 
           result.left.value.page mustBe AddAdditionalReferenceYesNoPage(itemIndex)
         }
@@ -2088,14 +1882,12 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                   Seq(
                     AdditionalInformationDomain(`type`, value)(itemIndex, additionalInformationIndex)
                   )
-                )
+                )(itemIndex)
               )
 
-              val result: EitherType[Option[AdditionalInformationListDomain]] = ItemDomain
-                .additionalInformationListReader(itemIndex)
-                .run(userAnswers)
+              val result = ItemDomain.additionalInformationListReader(itemIndex).apply(Nil).run(userAnswers)
 
-              result.value mustBe expectedResult
+              result.value.value mustBe expectedResult
           }
         }
 
@@ -2105,19 +1897,15 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           val expectedResult = None
 
-          val result: EitherType[Option[AdditionalInformationListDomain]] = ItemDomain
-            .additionalInformationListReader(itemIndex)
-            .run(userAnswers)
+          val result = ItemDomain.additionalInformationListReader(itemIndex).apply(Nil).run(userAnswers)
 
-          result.value mustBe expectedResult
+          result.value.value mustBe expectedResult
         }
       }
 
       "can not be read from user answers" - {
         "when add additional information yes/no is unanswered" in {
-          val result: EitherType[Option[AdditionalInformationListDomain]] = ItemDomain
-            .additionalInformationListReader(itemIndex)
-            .run(emptyUserAnswers)
+          val result = ItemDomain.additionalInformationListReader(itemIndex).apply(Nil).run(emptyUserAnswers)
 
           result.left.value.page mustBe AddAdditionalInformationYesNoPage(itemIndex)
         }
@@ -2134,11 +1922,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               val expectedResult = None
 
-              val result: EitherType[Option[TransportChargesMethodOfPayment]] = UserAnswersReader[Option[TransportChargesMethodOfPayment]](
-                ItemDomain.transportChargesReader(itemIndex)(mockPostTransitionPhaseConfig)
-              ).run(userAnswers)
+              val result = ItemDomain.transportChargesReader(itemIndex)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
-              result.value mustBe expectedResult
+              result.value.value mustBe expectedResult
           }
         }
 
@@ -2154,11 +1940,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                   val expectedResult = Some(transportCharge)
 
-                  val result: EitherType[Option[TransportChargesMethodOfPayment]] = UserAnswersReader[Option[TransportChargesMethodOfPayment]](
-                    ItemDomain.transportChargesReader(itemIndex)(mockTransitionPhaseConfig)
-                  ).run(userAnswers)
+                  val result = ItemDomain.transportChargesReader(itemIndex)(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
-                  result.value mustBe expectedResult
+                  result.value.value mustBe expectedResult
               }
             }
 
@@ -2171,11 +1955,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                   val expectedResult = None
 
-                  val result: EitherType[Option[TransportChargesMethodOfPayment]] = UserAnswersReader[Option[TransportChargesMethodOfPayment]](
-                    ItemDomain.transportChargesReader(itemIndex)(mockTransitionPhaseConfig)
-                  ).run(userAnswers)
+                  val result = ItemDomain.transportChargesReader(itemIndex)(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
-                  result.value mustBe expectedResult
+                  result.value.value mustBe expectedResult
               }
             }
           }
@@ -2186,11 +1968,9 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
             val expectedResult = None
 
-            val result: EitherType[Option[TransportChargesMethodOfPayment]] = UserAnswersReader[Option[TransportChargesMethodOfPayment]](
-              ItemDomain.transportChargesReader(itemIndex)(mockTransitionPhaseConfig)
-            ).run(userAnswers)
+            val result = ItemDomain.transportChargesReader(itemIndex)(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
-            result.value mustBe expectedResult
+            result.value.value mustBe expectedResult
           }
         }
       }
@@ -2202,9 +1982,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
           val userAnswers = emptyUserAnswers
             .setValue(SecurityDetailsTypePage, NoSecurityDetails)
 
-          val result: EitherType[Option[TransportChargesMethodOfPayment]] = UserAnswersReader[Option[TransportChargesMethodOfPayment]](
-            ItemDomain.transportChargesReader(itemIndex)(mockTransitionPhaseConfig)
-          ).run(userAnswers)
+          val result = ItemDomain.transportChargesReader(itemIndex)(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
           result.left.value.page mustBe AddTransportChargesYesNoPage(itemIndex)
         }
@@ -2214,9 +1992,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
             .setValue(SecurityDetailsTypePage, NoSecurityDetails)
             .setValue(AddTransportChargesYesNoPage(itemIndex), true)
 
-          val result: EitherType[Option[TransportChargesMethodOfPayment]] = UserAnswersReader[Option[TransportChargesMethodOfPayment]](
-            ItemDomain.transportChargesReader(itemIndex)(mockTransitionPhaseConfig)
-          ).run(userAnswers)
+          val result = ItemDomain.transportChargesReader(itemIndex)(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
           result.left.value.page mustBe TransportChargesMethodOfPaymentPage(itemIndex)
         }

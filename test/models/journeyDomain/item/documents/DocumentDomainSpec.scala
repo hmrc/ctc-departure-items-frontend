@@ -18,7 +18,6 @@ package models.journeyDomain.item.documents
 
 import base.SpecBase
 import generators.Generators
-import models.journeyDomain.{EitherType, UserAnswersReader}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.item.documents.index.DocumentPage
@@ -40,20 +39,16 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
               document = document
             )(itemIndex, documentIndex)
 
-            val result: EitherType[DocumentDomain] = UserAnswersReader[DocumentDomain](
-              DocumentDomain.userAnswersReader(itemIndex, documentIndex)
-            ).run(userAnswers)
+            val result = DocumentDomain.userAnswersReader(itemIndex, documentIndex).apply(Nil).run(userAnswers)
 
-            result.value mustBe expectedResult
+            result.value.value mustBe expectedResult
         }
       }
     }
 
     "cannot be read from user answers" - {
       "when document is not answered" in {
-        val result: EitherType[DocumentDomain] = UserAnswersReader[DocumentDomain](
-          DocumentDomain.userAnswersReader(itemIndex, packageIndex)
-        ).run(emptyUserAnswers)
+        val result = DocumentDomain.userAnswersReader(itemIndex, packageIndex).apply(Nil).run(emptyUserAnswers)
 
         result.left.value.page mustBe DocumentPage(itemIndex, documentIndex)
       }

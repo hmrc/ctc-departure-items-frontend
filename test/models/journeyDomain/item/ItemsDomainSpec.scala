@@ -19,7 +19,7 @@ package models.journeyDomain.item
 import base.SpecBase
 import generators.Generators
 import models.Index
-import models.journeyDomain.{EitherType, ItemsDomain, UserAnswersReader}
+import models.journeyDomain.ItemsDomain
 import org.scalacheck.Gen
 
 class ItemsDomainSpec extends SpecBase with Generators {
@@ -35,10 +35,9 @@ class ItemsDomainSpec extends SpecBase with Generators {
           arbitraryItemAnswers(updatedUserAnswers, Index(index)).sample.value
       })
 
-      val result: EitherType[ItemsDomain] = UserAnswersReader[ItemsDomain].run(userAnswers)
+      val result = ItemsDomain.userAnswersReader.run(userAnswers)
 
-      result.value.item.length mustBe numberOfItems
-
+      result.value.value.item.length mustBe numberOfItems
     }
   }
 }

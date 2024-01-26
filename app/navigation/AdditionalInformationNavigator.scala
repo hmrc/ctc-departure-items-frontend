@@ -46,5 +46,5 @@ class AdditionalInformationNavigator(override val mode: Mode, itemIndex: Index, 
   override type T = AdditionalInformationDomain
 
   implicit override val reader: UserAnswersReader[AdditionalInformationDomain] =
-    AdditionalInformationDomain.userAnswersReader(itemIndex, additionalInformationIndex)
+    AdditionalInformationDomain.userAnswersReader(itemIndex, additionalInformationIndex).apply(Nil)
 }

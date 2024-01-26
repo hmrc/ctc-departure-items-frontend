@@ -43,6 +43,10 @@ class BeforeYouContinueController @Inject() (
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, packageIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
       implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex, packageIndex)
-      Redirect(navigator.nextPage(request.userAnswers))
+      // TODO
+      //  create BeforeYouContinuePage
+      //  add =0 logic to domain model
+      //  set BeforeYouContinuePage to true upon acknowledging this page
+      Redirect(navigator.nextPage(request.userAnswers, None))
   }
 }
