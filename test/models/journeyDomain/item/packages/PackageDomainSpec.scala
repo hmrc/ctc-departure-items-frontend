@@ -41,7 +41,7 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
 
         "when package type is unpacked" in {
 
-          forAll(arbitrary[PackageType](arbitraryUnpackedPackageType), arbitrary[Int], nonEmptyString) {
+          forAll(arbitrary[PackageType](arbitraryUnpackedPackageType), positiveInts, nonEmptyString) {
             (packageType, numberOfPackages, shippingMark) =>
               val userAnswers = emptyUserAnswers
                 .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
@@ -83,7 +83,7 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
         }
 
         "when package type is Other" in {
-          forAll(arbitrary[PackageType](arbitraryOtherPackageType), arbitrary[Int], nonEmptyString) {
+          forAll(arbitrary[PackageType](arbitraryOtherPackageType), positiveInts, nonEmptyString) {
             (packageType, numberOfPackages, shippingMark) =>
               val userAnswers = emptyUserAnswers
                 .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
@@ -105,7 +105,7 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
 
       "when in post-transition" - {
         "when package type is Unpacked" in {
-          forAll(arbitrary[PackageType](arbitraryUnpackedPackageType), arbitrary[Int], nonEmptyString) {
+          forAll(arbitrary[PackageType](arbitraryUnpackedPackageType), positiveInts, nonEmptyString) {
             (packageType, numberOfPackages, shippingMark) =>
               val userAnswers = emptyUserAnswers
                 .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
@@ -146,7 +146,7 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
         }
 
         "when package type is Other" in {
-          forAll(arbitrary[PackageType](arbitraryOtherPackageType), nonEmptyString, arbitrary[Int]) {
+          forAll(arbitrary[PackageType](arbitraryOtherPackageType), nonEmptyString, positiveInts) {
             (packageType, shippingMark, numberOfPackages) =>
               val userAnswers = emptyUserAnswers
                 .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
@@ -190,7 +190,7 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
           }
 
           "and add shipping mark yes/no is not answered" in {
-            forAll(arbitrary[PackageType](arbitraryUnpackedPackageType), arbitrary[Int]) {
+            forAll(arbitrary[PackageType](arbitraryUnpackedPackageType), positiveInts) {
               (packageType, numberOfPackages) =>
                 val userAnswers = emptyUserAnswers
                   .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
@@ -203,7 +203,7 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
           }
 
           "and shipping mark is not answered" in {
-            forAll(arbitrary[PackageType](arbitraryUnpackedPackageType), arbitrary[Int]) {
+            forAll(arbitrary[PackageType](arbitraryUnpackedPackageType), positiveInts) {
               (packageType, numberOfPackages) =>
                 val userAnswers = emptyUserAnswers
                   .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
@@ -260,7 +260,7 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
           }
 
           "and shipping mark is not answered" in {
-            forAll(arbitrary[PackageType](arbitraryOtherPackageType), arbitrary[Int]) {
+            forAll(arbitrary[PackageType](arbitraryOtherPackageType), positiveInts) {
               (packageType, numberOfPackages) =>
                 val userAnswers = emptyUserAnswers
                   .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
@@ -295,8 +295,21 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
             }
           }
 
+          "and number of packages is 0" in {
+            forAll(arbitrary[PackageType](arbitraryUnpackedPackageType)) {
+              packageType =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+                  .setValue(NumberOfPackagesPage(itemIndex, packageIndex), 0)
+
+                val result = PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
+
+                result.left.value.page mustBe BeforeYouContinuePage(itemIndex, packageIndex)
+            }
+          }
+
           "and add shipping mark yes/no is not answered" in {
-            forAll(arbitrary[PackageType](arbitraryUnpackedPackageType), arbitrary[Int]) {
+            forAll(arbitrary[PackageType](arbitraryUnpackedPackageType), positiveInts) {
               (packageType, numberOfPackages) =>
                 val userAnswers = emptyUserAnswers
                   .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
@@ -309,7 +322,7 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
           }
 
           "and shipping mark is not answered" in {
-            forAll(arbitrary[PackageType](arbitraryUnpackedPackageType), arbitrary[Int]) {
+            forAll(arbitrary[PackageType](arbitraryUnpackedPackageType), positiveInts) {
               (packageType, numberOfPackages) =>
                 val userAnswers = emptyUserAnswers
                   .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
@@ -365,8 +378,21 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
             }
           }
 
+          "and number of packages is 0" in {
+            forAll(arbitrary[PackageType](arbitraryOtherPackageType)) {
+              packageType =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+                  .setValue(NumberOfPackagesPage(itemIndex, packageIndex), 0)
+
+                val result = PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
+
+                result.left.value.page mustBe BeforeYouContinuePage(itemIndex, packageIndex)
+            }
+          }
+
           "and shipping mark is not answered" in {
-            forAll(arbitrary[PackageType](arbitraryOtherPackageType), arbitrary[Int]) {
+            forAll(arbitrary[PackageType](arbitraryOtherPackageType), positiveInts) {
               (packageType, numberOfPackages) =>
                 val userAnswers = emptyUserAnswers
                   .setValue(PackageTypePage(itemIndex, packageIndex), packageType)

@@ -160,7 +160,7 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
         }
 
         "and package type is not unpacked" - {
-          "must redirect to information page" in {
+          "must redirect to next page" in {
             running(app) {
               val userAnswers = emptyUserAnswers.setValue(PackageTypePage(itemIndex, packageIndex), packageType)
 
@@ -175,8 +175,7 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
 
               status(result) mustEqual SEE_OTHER
 
-              redirectLocation(result).value mustEqual
-                routes.BeforeYouContinueController.onPageLoad(lrn, mode, itemIndex, packageIndex).url
+              redirectLocation(result).value mustEqual onwardRoute.url
             }
           }
         }
