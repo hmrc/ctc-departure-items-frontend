@@ -43,6 +43,10 @@ class ConsigneeDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
             val result = ConsigneeDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
 
             result.value.value mustBe expectedResult
+            result.value.pages mustBe Seq(
+              AddConsigneeEoriNumberYesNoPage(itemIndex),
+              IdentificationNumberPage(itemIndex)
+            )
         }
       }
 
@@ -64,6 +68,12 @@ class ConsigneeDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
             val result = ConsigneeDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
 
             result.value.value mustBe expectedResult
+            result.value.pages mustBe Seq(
+              AddConsigneeEoriNumberYesNoPage(itemIndex),
+              NamePage(itemIndex),
+              CountryPage(itemIndex),
+              AddressPage(itemIndex)
+            )
         }
       }
     }
@@ -73,6 +83,9 @@ class ConsigneeDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
         val result = ConsigneeDomain.userAnswersReader(itemIndex).apply(Nil).run(emptyUserAnswers)
 
         result.left.value.page mustBe AddConsigneeEoriNumberYesNoPage(itemIndex)
+        result.left.value.pages mustBe Seq(
+          AddConsigneeEoriNumberYesNoPage(itemIndex)
+        )
       }
 
       "when EORI/TIN unanswered" in {
@@ -82,6 +95,10 @@ class ConsigneeDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
         val result = ConsigneeDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
 
         result.left.value.page mustBe IdentificationNumberPage(itemIndex)
+        result.left.value.pages mustBe Seq(
+          AddConsigneeEoriNumberYesNoPage(itemIndex),
+          IdentificationNumberPage(itemIndex)
+        )
       }
 
       "when name unanswered" in {
@@ -91,6 +108,10 @@ class ConsigneeDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
         val result = ConsigneeDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
 
         result.left.value.page mustBe NamePage(itemIndex)
+        result.left.value.pages mustBe Seq(
+          AddConsigneeEoriNumberYesNoPage(itemIndex),
+          NamePage(itemIndex)
+        )
       }
 
       "when country unanswered" in {
@@ -101,6 +122,11 @@ class ConsigneeDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
         val result = ConsigneeDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
 
         result.left.value.page mustBe CountryPage(itemIndex)
+        result.left.value.pages mustBe Seq(
+          AddConsigneeEoriNumberYesNoPage(itemIndex),
+          NamePage(itemIndex),
+          CountryPage(itemIndex)
+        )
       }
 
       "when address unanswered" in {
@@ -112,6 +138,12 @@ class ConsigneeDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
         val result = ConsigneeDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
 
         result.left.value.page mustBe AddressPage(itemIndex)
+        result.left.value.pages mustBe Seq(
+          AddConsigneeEoriNumberYesNoPage(itemIndex),
+          NamePage(itemIndex),
+          CountryPage(itemIndex),
+          AddressPage(itemIndex)
+        )
       }
     }
   }

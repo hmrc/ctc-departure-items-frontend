@@ -36,15 +36,14 @@ import models.journeyDomain.{
   JsArrayGettableAsReaderOps,
   Pages,
   Read,
-  Stage,
   UserAnswersReader
 }
 import models.reference.{Country, TransportChargesMethodOfPayment}
 import pages.external._
 import pages.item._
 import pages.sections.external.{DocumentsSection, TransportEquipmentsSection}
+import pages.sections.{ItemSection, Section}
 import play.api.i18n.Messages
-import play.api.mvc.Call
 
 import java.util.UUID
 
@@ -74,9 +73,7 @@ case class ItemDomain(
 
   def label(implicit messages: Messages): String = messages("item.label", index.display, itemDescription)
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] = Some(
-    controllers.item.routes.CheckYourAnswersController.onPageLoad(userAnswers.lrn, index)
-  )
+  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(ItemSection(index))
 }
 
 object ItemDomain {
@@ -162,17 +159,16 @@ object ItemDomain {
         (userAnswers: UserAnswers) => userAnswers.status
       )
       .to {
-        case models.SubmissionState.Amendment => UserAnswersReader.none
-        case _                                => defaultCommodityCodeReader(itemIndex, phaseConfig)
+        case models.SubmissionState.Amendment =>
+          UserAnswersReader.none
+        case _ =>
+          TransitOperationTIRCarnetNumberPage.optionalReader.to {
+            case None if phaseConfig.phase == PostTransition =>
+              CommodityCodePage(itemIndex).reader.toOption
+            case _ =>
+              AddCommodityCodeYesNoPage(itemIndex).filterOptionalDependent(identity)(CommodityCodePage(itemIndex).reader)
+          }
       }
-
-  private def defaultCommodityCodeReader(itemIndex: Index, phaseConfig: PhaseConfig): Read[Option[String]] =
-    TransitOperationTIRCarnetNumberPage.optionalReader.to {
-      case None if phaseConfig.phase == PostTransition =>
-        CommodityCodePage(itemIndex).reader.toOption
-      case _ =>
-        AddCommodityCodeYesNoPage(itemIndex).filterOptionalDependent(identity)(CommodityCodePage(itemIndex).reader)
-    }
 
   def combinedNomenclatureCodeReader(itemIndex: Index): Read[Option[String]] =
     CommodityCodePage(itemIndex).optionalReader.to {

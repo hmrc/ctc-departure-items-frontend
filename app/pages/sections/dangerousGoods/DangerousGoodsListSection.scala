@@ -16,13 +16,18 @@
 
 package pages.sections.dangerousGoods
 
-import models.Index
+import controllers.item.dangerousGoods.routes
+import models.{Index, Mode, UserAnswers}
 import pages.sections.{ItemSection, Section}
 import play.api.libs.json.{JsArray, JsPath}
+import play.api.mvc.Call
 
 case class DangerousGoodsListSection(itemIndex: Index) extends Section[JsArray] {
 
   override def path: JsPath = ItemSection(itemIndex).path \ toString
 
   override def toString: String = "dangerousGoodsList"
+
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.AddAnotherDangerousGoodsController.onPageLoad(userAnswers.lrn, mode, itemIndex))
 }

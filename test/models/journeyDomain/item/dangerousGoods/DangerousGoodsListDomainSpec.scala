@@ -20,6 +20,7 @@ import base.SpecBase
 import models.Index
 import org.scalacheck.Gen
 import pages.item.dangerousGoods.index.UNNumberPage
+import pages.sections.dangerousGoods.DangerousGoodsListSection
 
 class DangerousGoodsListDomainSpec extends SpecBase {
 
@@ -44,6 +45,7 @@ class DangerousGoodsListDomainSpec extends SpecBase {
         val result = DangerousGoodsListDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
 
         result.value.value mustBe expectedResult
+        result.value.pages.last mustBe DangerousGoodsListSection(itemIndex)
       }
     }
 
@@ -52,8 +54,10 @@ class DangerousGoodsListDomainSpec extends SpecBase {
         val result = DangerousGoodsListDomain.userAnswersReader(itemIndex).apply(Nil).run(emptyUserAnswers)
 
         result.left.value.page mustBe UNNumberPage(itemIndex, Index(0))
+        result.left.value.pages mustBe Seq(
+          UNNumberPage(itemIndex, Index(0))
+        )
       }
     }
   }
-
 }

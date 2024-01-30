@@ -21,6 +21,7 @@ import generators.Generators
 import models.Index
 import org.scalacheck.Gen
 import pages.item.documents.DocumentsInProgressPage
+import pages.sections.documents.DocumentsSection
 
 class DocumentsDomainSpec extends SpecBase with Generators {
 
@@ -41,6 +42,7 @@ class DocumentsDomainSpec extends SpecBase with Generators {
         val result = DocumentsDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
 
         result.value.value.value.length mustBe numberOfDocuments
+        result.value.pages.last mustBe DocumentsSection(itemIndex)
       }
 
       "when no value set for DocumentsInProgressPage" in {
@@ -54,6 +56,7 @@ class DocumentsDomainSpec extends SpecBase with Generators {
         val result = DocumentsDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
 
         result.value.value.value.length mustBe numberOfDocuments
+        result.value.pages.last mustBe DocumentsSection(itemIndex)
       }
     }
 
@@ -71,6 +74,9 @@ class DocumentsDomainSpec extends SpecBase with Generators {
         val result = DocumentsDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
 
         result.left.value.page mustBe DocumentsInProgressPage(itemIndex)
+        result.left.value.pages mustBe Seq(
+          DocumentsInProgressPage(itemIndex)
+        )
       }
     }
   }

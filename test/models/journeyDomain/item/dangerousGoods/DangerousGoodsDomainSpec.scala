@@ -36,6 +36,9 @@ class DangerousGoodsDomainSpec extends SpecBase {
         val result = DangerousGoodsDomain.userAnswersReader(itemIndex, dangerousGoodsIndex).apply(Nil).run(userAnswers)
 
         result.value.value mustBe expectedResult
+        result.value.pages mustBe Seq(
+          UNNumberPage(itemIndex, dangerousGoodsIndex)
+        )
       }
     }
 
@@ -44,8 +47,10 @@ class DangerousGoodsDomainSpec extends SpecBase {
         val result = DangerousGoodsDomain.userAnswersReader(itemIndex, dangerousGoodsIndex).apply(Nil).run(emptyUserAnswers)
 
         result.left.value.page mustBe UNNumberPage(itemIndex, dangerousGoodsIndex)
+        result.left.value.pages mustBe Seq(
+          UNNumberPage(itemIndex, dangerousGoodsIndex)
+        )
       }
     }
   }
-
 }

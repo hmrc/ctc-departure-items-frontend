@@ -42,6 +42,9 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
             val result = DocumentDomain.userAnswersReader(itemIndex, documentIndex).apply(Nil).run(userAnswers)
 
             result.value.value mustBe expectedResult
+            result.value.pages mustBe Seq(
+              DocumentPage(itemIndex, documentIndex)
+            )
         }
       }
     }
@@ -51,8 +54,10 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
         val result = DocumentDomain.userAnswersReader(itemIndex, packageIndex).apply(Nil).run(emptyUserAnswers)
 
         result.left.value.page mustBe DocumentPage(itemIndex, documentIndex)
+        result.left.value.pages mustBe Seq(
+          DocumentPage(itemIndex, documentIndex)
+        )
       }
     }
   }
-
 }

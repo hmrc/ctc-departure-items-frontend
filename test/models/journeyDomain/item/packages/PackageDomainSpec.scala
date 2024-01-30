@@ -58,8 +58,13 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
               val result = PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
               result.value.value mustBe expectedResult
+              result.value.pages mustBe Seq(
+                PackageTypePage(itemIndex, packageIndex),
+                NumberOfPackagesPage(itemIndex, packageIndex),
+                AddShippingMarkYesNoPage(itemIndex, packageIndex),
+                ShippingMarkPage(itemIndex, packageIndex)
+              )
           }
-
         }
 
         "when package type is Bulk" in {
@@ -79,6 +84,11 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
               val result = PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
               result.value.value mustBe expectedResult
+              result.value.pages mustBe Seq(
+                PackageTypePage(itemIndex, packageIndex),
+                AddShippingMarkYesNoPage(itemIndex, packageIndex),
+                ShippingMarkPage(itemIndex, packageIndex)
+              )
           }
         }
 
@@ -99,6 +109,11 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
               val result = PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
               result.value.value mustBe expectedResult
+              result.value.pages mustBe Seq(
+                PackageTypePage(itemIndex, packageIndex),
+                NumberOfPackagesPage(itemIndex, packageIndex),
+                ShippingMarkPage(itemIndex, packageIndex)
+              )
           }
         }
       }
@@ -122,6 +137,12 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
               val result = PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
               result.value.value mustBe expectedResult
+              result.value.pages mustBe Seq(
+                PackageTypePage(itemIndex, packageIndex),
+                NumberOfPackagesPage(itemIndex, packageIndex),
+                AddShippingMarkYesNoPage(itemIndex, packageIndex),
+                ShippingMarkPage(itemIndex, packageIndex)
+              )
           }
         }
 
@@ -142,6 +163,11 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
               val result = PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
               result.value.value mustBe expectedResult
+              result.value.pages mustBe Seq(
+                PackageTypePage(itemIndex, packageIndex),
+                AddShippingMarkYesNoPage(itemIndex, packageIndex),
+                ShippingMarkPage(itemIndex, packageIndex)
+              )
           }
         }
 
@@ -162,6 +188,11 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
               val result = PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
               result.value.value mustBe expectedResult
+              result.value.pages mustBe Seq(
+                PackageTypePage(itemIndex, packageIndex),
+                NumberOfPackagesPage(itemIndex, packageIndex),
+                ShippingMarkPage(itemIndex, packageIndex)
+              )
           }
         }
       }
@@ -174,6 +205,9 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
           val result = PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockTransitionPhaseConfig).apply(Nil).run(emptyUserAnswers)
 
           result.left.value.page mustBe PackageTypePage(itemIndex, packageIndex)
+          result.left.value.pages mustBe Seq(
+            PackageTypePage(itemIndex, packageIndex)
+          )
         }
 
         "when package type is Unpacked" - {
@@ -186,6 +220,10 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
                 val result = PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
                 result.left.value.page mustBe NumberOfPackagesPage(itemIndex, packageIndex)
+                result.left.value.pages mustBe Seq(
+                  PackageTypePage(itemIndex, packageIndex),
+                  NumberOfPackagesPage(itemIndex, packageIndex)
+                )
             }
           }
 
@@ -199,6 +237,11 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
                 val result = PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
                 result.left.value.page mustBe AddShippingMarkYesNoPage(itemIndex, packageIndex)
+                result.left.value.pages mustBe Seq(
+                  PackageTypePage(itemIndex, packageIndex),
+                  NumberOfPackagesPage(itemIndex, packageIndex),
+                  AddShippingMarkYesNoPage(itemIndex, packageIndex)
+                )
             }
           }
 
@@ -213,6 +256,12 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
                 val result = PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
                 result.left.value.page mustBe ShippingMarkPage(itemIndex, packageIndex)
+                result.left.value.pages mustBe Seq(
+                  PackageTypePage(itemIndex, packageIndex),
+                  NumberOfPackagesPage(itemIndex, packageIndex),
+                  AddShippingMarkYesNoPage(itemIndex, packageIndex),
+                  ShippingMarkPage(itemIndex, packageIndex)
+                )
             }
           }
         }
@@ -228,6 +277,10 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
                 val result = PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
                 result.left.value.page mustBe AddShippingMarkYesNoPage(itemIndex, packageIndex)
+                result.left.value.pages mustBe Seq(
+                  PackageTypePage(itemIndex, packageIndex),
+                  AddShippingMarkYesNoPage(itemIndex, packageIndex)
+                )
             }
           }
 
@@ -241,6 +294,11 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
                 val result = PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
                 result.left.value.page mustBe ShippingMarkPage(itemIndex, packageIndex)
+                result.left.value.pages mustBe Seq(
+                  PackageTypePage(itemIndex, packageIndex),
+                  AddShippingMarkYesNoPage(itemIndex, packageIndex),
+                  ShippingMarkPage(itemIndex, packageIndex)
+                )
             }
           }
         }
@@ -256,6 +314,10 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
                 val result = PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
                 result.left.value.page mustBe NumberOfPackagesPage(itemIndex, packageIndex)
+                result.left.value.pages mustBe Seq(
+                  PackageTypePage(itemIndex, packageIndex),
+                  NumberOfPackagesPage(itemIndex, packageIndex)
+                )
             }
           }
 
@@ -265,11 +327,15 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
                 val userAnswers = emptyUserAnswers
                   .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
                   .setValue(NumberOfPackagesPage(itemIndex, packageIndex), numberOfPackages)
-                  .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
 
                 val result = PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
                 result.left.value.page mustBe ShippingMarkPage(itemIndex, packageIndex)
+                result.left.value.pages mustBe Seq(
+                  PackageTypePage(itemIndex, packageIndex),
+                  NumberOfPackagesPage(itemIndex, packageIndex),
+                  ShippingMarkPage(itemIndex, packageIndex)
+                )
             }
           }
         }
@@ -280,6 +346,9 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
           val result = PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockPostTransitionPhaseConfig).apply(Nil).run(emptyUserAnswers)
 
           result.left.value.page mustBe PackageTypePage(itemIndex, packageIndex)
+          result.left.value.pages mustBe Seq(
+            PackageTypePage(itemIndex, packageIndex)
+          )
         }
 
         "when package type is Unpacked" - {
@@ -292,6 +361,10 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
                 val result = PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
                 result.left.value.page mustBe NumberOfPackagesPage(itemIndex, packageIndex)
+                result.left.value.pages mustBe Seq(
+                  PackageTypePage(itemIndex, packageIndex),
+                  NumberOfPackagesPage(itemIndex, packageIndex)
+                )
             }
           }
 
@@ -305,6 +378,11 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
                 val result = PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
                 result.left.value.page mustBe BeforeYouContinuePage(itemIndex, packageIndex)
+                result.left.value.pages mustBe Seq(
+                  PackageTypePage(itemIndex, packageIndex),
+                  NumberOfPackagesPage(itemIndex, packageIndex),
+                  BeforeYouContinuePage(itemIndex, packageIndex)
+                )
             }
           }
 
@@ -318,6 +396,11 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
                 val result = PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
                 result.left.value.page mustBe AddShippingMarkYesNoPage(itemIndex, packageIndex)
+                result.left.value.pages mustBe Seq(
+                  PackageTypePage(itemIndex, packageIndex),
+                  NumberOfPackagesPage(itemIndex, packageIndex),
+                  AddShippingMarkYesNoPage(itemIndex, packageIndex)
+                )
             }
           }
 
@@ -332,6 +415,12 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
                 val result = PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
                 result.left.value.page mustBe ShippingMarkPage(itemIndex, packageIndex)
+                result.left.value.pages mustBe Seq(
+                  PackageTypePage(itemIndex, packageIndex),
+                  NumberOfPackagesPage(itemIndex, packageIndex),
+                  AddShippingMarkYesNoPage(itemIndex, packageIndex),
+                  ShippingMarkPage(itemIndex, packageIndex)
+                )
             }
           }
         }
@@ -347,6 +436,10 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
                 val result = PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
                 result.left.value.page mustBe AddShippingMarkYesNoPage(itemIndex, packageIndex)
+                result.left.value.pages mustBe Seq(
+                  PackageTypePage(itemIndex, packageIndex),
+                  AddShippingMarkYesNoPage(itemIndex, packageIndex)
+                )
             }
           }
 
@@ -360,6 +453,11 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
                 val result = PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
                 result.left.value.page mustBe ShippingMarkPage(itemIndex, packageIndex)
+                result.left.value.pages mustBe Seq(
+                  PackageTypePage(itemIndex, packageIndex),
+                  AddShippingMarkYesNoPage(itemIndex, packageIndex),
+                  ShippingMarkPage(itemIndex, packageIndex)
+                )
             }
           }
         }
@@ -375,6 +473,10 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
                 val result = PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
                 result.left.value.page mustBe NumberOfPackagesPage(itemIndex, packageIndex)
+                result.left.value.pages mustBe Seq(
+                  PackageTypePage(itemIndex, packageIndex),
+                  NumberOfPackagesPage(itemIndex, packageIndex)
+                )
             }
           }
 
@@ -388,6 +490,11 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
                 val result = PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
                 result.left.value.page mustBe BeforeYouContinuePage(itemIndex, packageIndex)
+                result.left.value.pages mustBe Seq(
+                  PackageTypePage(itemIndex, packageIndex),
+                  NumberOfPackagesPage(itemIndex, packageIndex),
+                  BeforeYouContinuePage(itemIndex, packageIndex)
+                )
             }
           }
 
@@ -401,6 +508,11 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
                 val result = PackageDomain.userAnswersReader(itemIndex, packageIndex)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
                 result.left.value.page mustBe ShippingMarkPage(itemIndex, packageIndex)
+                result.left.value.pages mustBe Seq(
+                  PackageTypePage(itemIndex, packageIndex),
+                  NumberOfPackagesPage(itemIndex, packageIndex),
+                  ShippingMarkPage(itemIndex, packageIndex)
+                )
             }
           }
         }

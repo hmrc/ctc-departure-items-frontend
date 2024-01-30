@@ -44,6 +44,10 @@ class AdditionalInformationDomainSpec extends SpecBase with ScalaCheckPropertyCh
             val result = AdditionalInformationDomain.userAnswersReader(itemIndex, additionalInformationIndex).apply(Nil).run(userAnswers)
 
             result.value.value mustBe expectedResult
+            result.value.pages mustBe Seq(
+              AdditionalInformationTypePage(itemIndex, additionalInformationIndex),
+              AdditionalInformationPage(itemIndex, additionalInformationIndex)
+            )
         }
       }
     }
@@ -54,6 +58,9 @@ class AdditionalInformationDomainSpec extends SpecBase with ScalaCheckPropertyCh
         val result = AdditionalInformationDomain.userAnswersReader(itemIndex, additionalInformationIndex).apply(Nil).run(emptyUserAnswers)
 
         result.left.value.page mustBe AdditionalInformationTypePage(itemIndex, additionalInformationIndex)
+        result.left.value.pages mustBe Seq(
+          AdditionalInformationTypePage(itemIndex, additionalInformationIndex)
+        )
       }
 
       "when additional information value unanswered" in {
@@ -65,9 +72,12 @@ class AdditionalInformationDomainSpec extends SpecBase with ScalaCheckPropertyCh
             val result = AdditionalInformationDomain.userAnswersReader(itemIndex, additionalInformationIndex).apply(Nil).run(userAnswers)
 
             result.left.value.page mustBe AdditionalInformationPage(itemIndex, additionalInformationIndex)
+            result.left.value.pages mustBe Seq(
+              AdditionalInformationTypePage(itemIndex, additionalInformationIndex),
+              AdditionalInformationPage(itemIndex, additionalInformationIndex)
+            )
         }
       }
     }
   }
-
 }
