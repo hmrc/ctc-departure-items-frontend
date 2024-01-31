@@ -19,7 +19,6 @@ package models.journeyDomain.item.additionalReferences
 import base.SpecBase
 import generators.Generators
 import models.Index
-import models.journeyDomain.{EitherType, UserAnswersReader}
 import models.reference.AdditionalReference
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -44,11 +43,14 @@ class AdditionalReferenceDomainSpec extends SpecBase with ScalaCheckPropertyChec
               number = Some(number)
             )(itemIndex, additionalReferenceIndex)
 
-            val result: EitherType[AdditionalReferenceDomain] = UserAnswersReader[AdditionalReferenceDomain](
-              AdditionalReferenceDomain.userAnswersReader(itemIndex, additionalReferenceIndex)
-            ).run(userAnswers)
+            val result = AdditionalReferenceDomain.userAnswersReader(itemIndex, additionalReferenceIndex).apply(Nil).run(userAnswers)
 
-            result.value mustBe expectedResult
+            result.value.value mustBe expectedResult
+            result.value.pages mustBe Seq(
+              AdditionalReferencePage(itemIndex, additionalReferenceIndex),
+              AddAdditionalReferenceNumberYesNoPage(itemIndex, additionalReferenceIndex),
+              AdditionalReferenceNumberPage(itemIndex, additionalReferenceIndex)
+            )
         }
       }
     }
@@ -56,11 +58,12 @@ class AdditionalReferenceDomainSpec extends SpecBase with ScalaCheckPropertyChec
     "can not be read from user answers" - {
 
       "when reference type unanswered" in {
-        val result: EitherType[AdditionalReferenceDomain] = UserAnswersReader[AdditionalReferenceDomain](
-          AdditionalReferenceDomain.userAnswersReader(itemIndex, additionalReferenceIndex)
-        ).run(emptyUserAnswers)
+        val result = AdditionalReferenceDomain.userAnswersReader(itemIndex, additionalReferenceIndex).apply(Nil).run(emptyUserAnswers)
 
         result.left.value.page mustBe AdditionalReferencePage(itemIndex, additionalReferenceIndex)
+        result.left.value.pages mustBe Seq(
+          AdditionalReferencePage(itemIndex, additionalReferenceIndex)
+        )
       }
 
       "when C651 or C658 reference" - {
@@ -70,11 +73,13 @@ class AdditionalReferenceDomainSpec extends SpecBase with ScalaCheckPropertyChec
               val userAnswers = emptyUserAnswers
                 .setValue(AdditionalReferencePage(itemIndex, additionalReferenceIndex), `type`)
 
-              val result: EitherType[AdditionalReferenceDomain] = UserAnswersReader[AdditionalReferenceDomain](
-                AdditionalReferenceDomain.userAnswersReader(itemIndex, additionalReferenceIndex)
-              ).run(userAnswers)
+              val result = AdditionalReferenceDomain.userAnswersReader(itemIndex, additionalReferenceIndex).apply(Nil).run(userAnswers)
 
               result.left.value.page mustBe AdditionalReferenceNumberPage(itemIndex, additionalReferenceIndex)
+              result.left.value.pages mustBe Seq(
+                AdditionalReferencePage(itemIndex, additionalReferenceIndex),
+                AdditionalReferenceNumberPage(itemIndex, additionalReferenceIndex)
+              )
           }
         }
       }
@@ -86,11 +91,13 @@ class AdditionalReferenceDomainSpec extends SpecBase with ScalaCheckPropertyChec
               val userAnswers = emptyUserAnswers
                 .setValue(AdditionalReferencePage(itemIndex, additionalReferenceIndex), `type`)
 
-              val result: EitherType[AdditionalReferenceDomain] = UserAnswersReader[AdditionalReferenceDomain](
-                AdditionalReferenceDomain.userAnswersReader(itemIndex, additionalReferenceIndex)
-              ).run(userAnswers)
+              val result = AdditionalReferenceDomain.userAnswersReader(itemIndex, additionalReferenceIndex).apply(Nil).run(userAnswers)
 
               result.left.value.page mustBe AddAdditionalReferenceNumberYesNoPage(itemIndex, additionalReferenceIndex)
+              result.left.value.pages mustBe Seq(
+                AdditionalReferencePage(itemIndex, additionalReferenceIndex),
+                AddAdditionalReferenceNumberYesNoPage(itemIndex, additionalReferenceIndex)
+              )
           }
         }
 
@@ -101,11 +108,14 @@ class AdditionalReferenceDomainSpec extends SpecBase with ScalaCheckPropertyChec
                 .setValue(AdditionalReferencePage(itemIndex, additionalReferenceIndex), `type`)
                 .setValue(AddAdditionalReferenceNumberYesNoPage(itemIndex, additionalReferenceIndex), true)
 
-              val result: EitherType[AdditionalReferenceDomain] = UserAnswersReader[AdditionalReferenceDomain](
-                AdditionalReferenceDomain.userAnswersReader(itemIndex, additionalReferenceIndex)
-              ).run(userAnswers)
+              val result = AdditionalReferenceDomain.userAnswersReader(itemIndex, additionalReferenceIndex).apply(Nil).run(userAnswers)
 
               result.left.value.page mustBe AdditionalReferenceNumberPage(itemIndex, additionalReferenceIndex)
+              result.left.value.pages mustBe Seq(
+                AdditionalReferencePage(itemIndex, additionalReferenceIndex),
+                AddAdditionalReferenceNumberYesNoPage(itemIndex, additionalReferenceIndex),
+                AdditionalReferenceNumberPage(itemIndex, additionalReferenceIndex)
+              )
           }
         }
       }
@@ -119,11 +129,13 @@ class AdditionalReferenceDomainSpec extends SpecBase with ScalaCheckPropertyChec
                 .setValue(AddAdditionalReferenceNumberYesNoPage(itemIndex, Index(0)), false)
                 .setValue(AdditionalReferencePage(itemIndex, Index(1)), `type`)
 
-              val result: EitherType[AdditionalReferenceDomain] = UserAnswersReader[AdditionalReferenceDomain](
-                AdditionalReferenceDomain.userAnswersReader(itemIndex, Index(1))
-              ).run(userAnswers)
+              val result = AdditionalReferenceDomain.userAnswersReader(itemIndex, Index(1)).apply(Nil).run(userAnswers)
 
               result.left.value.page mustBe AdditionalReferenceNumberPage(itemIndex, Index(1))
+              result.left.value.pages mustBe Seq(
+                AdditionalReferencePage(itemIndex, Index(1)),
+                AdditionalReferenceNumberPage(itemIndex, Index(1))
+              )
           }
         }
       }

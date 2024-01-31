@@ -16,9 +16,9 @@
 
 package models.journeyDomain.item.dangerousGoods
 
-import models.{Index, Mode, Phase, UserAnswers}
 import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
-import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
+import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Read, Stage}
+import models.{Index, Mode, Phase, UserAnswers}
 import pages.item.dangerousGoods.index.UNNumberPage
 import play.api.mvc.Call
 
@@ -47,6 +47,6 @@ object DangerousGoodsDomain {
     case Phase.Transition     => false
   }
 
-  implicit def userAnswersReader(itemIndex: Index, dangerousGoodsIndex: Index): UserAnswersReader[DangerousGoodsDomain] =
+  implicit def userAnswersReader(itemIndex: Index, dangerousGoodsIndex: Index): Read[DangerousGoodsDomain] =
     UNNumberPage(itemIndex, dangerousGoodsIndex).reader.map(DangerousGoodsDomain(_)(itemIndex, dangerousGoodsIndex))
 }

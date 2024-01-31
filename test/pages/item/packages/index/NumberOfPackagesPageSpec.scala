@@ -27,5 +27,30 @@ class NumberOfPackagesPageSpec extends PageBehaviours {
     beSettable[Int](NumberOfPackagesPage(itemIndex, packageIndex))
 
     beRemovable[Int](NumberOfPackagesPage(itemIndex, packageIndex))
+
+    "cleanup" - {
+      "when value is more than 0" - {
+        "must clean up BeforeYouContinuePage" in {
+          forAll(positiveInts) {
+            numberOfPackages =>
+              val userAnswers = emptyUserAnswers.setValue(BeforeYouContinuePage(itemIndex, packageIndex), true)
+
+              val result = userAnswers.setValue(NumberOfPackagesPage(itemIndex, packageIndex), numberOfPackages)
+
+              result.get(BeforeYouContinuePage(itemIndex, packageIndex)) must not be defined
+          }
+        }
+      }
+
+      "when value is 0" - {
+        "must not clean up BeforeYouContinuePage" in {
+          val userAnswers = emptyUserAnswers.setValue(BeforeYouContinuePage(itemIndex, packageIndex), true)
+
+          val result = userAnswers.setValue(NumberOfPackagesPage(itemIndex, packageIndex), 0)
+
+          result.get(BeforeYouContinuePage(itemIndex, packageIndex)) must be(defined)
+        }
+      }
+    }
   }
 }

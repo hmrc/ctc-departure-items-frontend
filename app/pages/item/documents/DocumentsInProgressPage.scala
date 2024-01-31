@@ -17,7 +17,7 @@
 package pages.item.documents
 
 import controllers.item.documents.routes
-import models.journeyDomain.{EitherType, ReaderError, UserAnswersReader}
+import models.journeyDomain._
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.ItemSection
@@ -33,11 +33,9 @@ case class DocumentsInProgressPage(itemIndex: Index) extends QuestionPage[Boolea
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.AddAnotherDocumentController.onPageLoad(userAnswers.lrn, mode, itemIndex))
 
-  def reader: UserAnswersReader[Boolean] = {
-    val fn: UserAnswers => EitherType[Boolean] = _.get(this) match {
-      case Some(true) => Left(ReaderError(this))
-      case _          => Right(false)
+  def reader: Read[Boolean] =
+    DocumentsInProgressPage(itemIndex).optionalReader.to {
+      case Some(true) => UserAnswersReader.error(this)
+      case _          => UserAnswersReader.success(false)
     }
-    UserAnswersReader(fn)
-  }
 }

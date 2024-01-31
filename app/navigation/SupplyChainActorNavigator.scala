@@ -45,5 +45,5 @@ class SupplyChainActorNavigator(override val mode: Mode, itemIndex: Index, actor
   override type T = SupplyChainActorDomain
 
   implicit override val reader: UserAnswersReader[SupplyChainActorDomain] =
-    SupplyChainActorDomain.userAnswersReader(itemIndex, actorIndex)
+    SupplyChainActorDomain.userAnswersReader(itemIndex, actorIndex).apply(Nil)
 }

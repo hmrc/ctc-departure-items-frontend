@@ -16,8 +16,8 @@
 
 package models.journeyDomain.item.packages
 
-import cats.implicits._
 import config.PhaseConfig
+import models.Phase.PostTransition
 import models.journeyDomain.Stage._
 import models.journeyDomain._
 import models.reference.PackageType
@@ -46,39 +46,45 @@ case class PackageDomain(
 
 object PackageDomain {
 
-  implicit def userAnswersReader(itemIndex: Index, packageIndex: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[PackageDomain] = {
+  implicit def userAnswersReader(itemIndex: Index, packageIndex: Index)(implicit phaseConfig: PhaseConfig): Read[PackageDomain] = {
 
     lazy val shippingMarkReads = AddShippingMarkYesNoPage(itemIndex, packageIndex)
       .filterOptionalDependent(identity)(ShippingMarkPage(itemIndex, packageIndex).reader)
 
-    def numberOfPackagesReads(isPackingTypeInCL182: Boolean, isPackingTypeInCL181: Boolean): UserAnswersReader[Option[Int]] = {
-      val isTransition = phaseConfig.phase == Phase.Transition
-
-      (isTransition, isPackingTypeInCL182, isPackingTypeInCL181) match {
-        case (_, true, _) | (_, false, false) => NumberOfPackagesPage(itemIndex, packageIndex).reader.map(Some(_))
-        case _                                => UserAnswersReader(None)
+    def numberOfPackagesReads(isPackingTypeInCL182: Boolean, isPackingTypeInCL181: Boolean): Read[Option[Int]] =
+      (isPackingTypeInCL182, isPackingTypeInCL181) match {
+        case (true, _) | (false, false) =>
+          NumberOfPackagesPage(itemIndex, packageIndex).reader.to {
+            numberOfPackages =>
+              lazy val reader = Read.apply(numberOfPackages).toOption
+              numberOfPackages match {
+                case 0 if phaseConfig.phase == PostTransition =>
+                  BeforeYouContinuePage(itemIndex, packageIndex).reader.to {
+                    _ => reader
+                  }
+                case _ => reader
+              }
+          }
+        case _ =>
+          UserAnswersReader.none
       }
-    }
 
-    PackageTypePage(itemIndex, packageIndex).reader.flatMap {
+    PackageTypePage(itemIndex, packageIndex).reader.to {
       case value @ PackageType(_, _, PackingType.Unpacked) =>
         (
-          UserAnswersReader(value),
           numberOfPackagesReads(isPackingTypeInCL182 = true, isPackingTypeInCL181 = false),
           shippingMarkReads
-        ).tupled.map((PackageDomain.apply _).tupled).map(_(itemIndex, packageIndex))
+        ).map(PackageDomain.apply(value, _, _)(itemIndex, packageIndex))
       case value @ PackageType(_, _, PackingType.Bulk) =>
         (
-          UserAnswersReader(value),
           numberOfPackagesReads(isPackingTypeInCL182 = false, isPackingTypeInCL181 = true),
           shippingMarkReads
-        ).tupled.map((PackageDomain.apply _).tupled).map(_(itemIndex, packageIndex))
+        ).map(PackageDomain.apply(value, _, _)(itemIndex, packageIndex))
       case value @ PackageType(_, _, PackingType.Other) =>
         (
-          UserAnswersReader(value),
           numberOfPackagesReads(isPackingTypeInCL182 = false, isPackingTypeInCL181 = false),
-          ShippingMarkPage(itemIndex, packageIndex).reader.map(Some(_))
-        ).tupled.map((PackageDomain.apply _).tupled).map(_(itemIndex, packageIndex))
+          ShippingMarkPage(itemIndex, packageIndex).reader.toOption
+        ).map(PackageDomain.apply(value, _, _)(itemIndex, packageIndex))
     }
   }
 }

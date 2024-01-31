@@ -17,6 +17,7 @@
 package generators
 
 import config.PhaseConfig
+import models.journeyDomain.OpsError.ReaderError
 import models.journeyDomain.item.additionalInformation.AdditionalInformationDomain
 import models.journeyDomain.item.additionalReferences.AdditionalReferenceDomain
 import models.journeyDomain.item.dangerousGoods.DangerousGoodsDomain
@@ -24,7 +25,7 @@ import models.journeyDomain.item.documents.DocumentDomain
 import models.journeyDomain.item.packages.PackageDomain
 import models.journeyDomain.item.supplyChainActors.SupplyChainActorDomain
 import models.journeyDomain.item.{ConsigneeDomain, ItemDomain}
-import models.journeyDomain.{ItemsDomain, ReaderError, UserAnswersReader}
+import models.journeyDomain.{ItemsDomain, UserAnswersReader}
 import models.{EoriNumber, Index, LocalReferenceNumber, RichJsObject, SubmissionState, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
@@ -48,7 +49,7 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators {
 
     def rec(userAnswers: UserAnswers): Gen[UserAnswers] =
       userAnswersReader.run(userAnswers) match {
-        case Left(ReaderError(page, _)) =>
+        case Left(ReaderError(page, _, _)) =>
           generateAnswer
             .apply(page)
             .map {
@@ -68,27 +69,43 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators {
     buildUserAnswers[ItemsDomain](userAnswers)
 
   def arbitraryItemAnswers(userAnswers: UserAnswers, index: Index)(implicit phaseConfig: PhaseConfig): Gen[UserAnswers] =
-    buildUserAnswers[ItemDomain](userAnswers)(ItemDomain.userAnswersReader(index))
+    buildUserAnswers[ItemDomain](userAnswers)(
+      ItemDomain.userAnswersReader(index).apply(Nil)
+    )
 
   def arbitraryDangerousGoodsAnswers(userAnswers: UserAnswers, itemIndex: Index, dangerousGoodsIndex: Index): Gen[UserAnswers] =
-    buildUserAnswers[DangerousGoodsDomain](userAnswers)(DangerousGoodsDomain.userAnswersReader(itemIndex, dangerousGoodsIndex))
+    buildUserAnswers[DangerousGoodsDomain](userAnswers)(
+      DangerousGoodsDomain.userAnswersReader(itemIndex, dangerousGoodsIndex).apply(Nil)
+    )
 
   def arbitraryPackageAnswers(userAnswers: UserAnswers, itemIndex: Index, packageIndex: Index)(implicit phaseConfig: PhaseConfig): Gen[UserAnswers] =
-    buildUserAnswers[PackageDomain](userAnswers)(PackageDomain.userAnswersReader(itemIndex, packageIndex))
+    buildUserAnswers[PackageDomain](userAnswers)(
+      PackageDomain.userAnswersReader(itemIndex, packageIndex).apply(Nil)
+    )
 
   def arbitraryConsigneeAnswers(userAnswers: UserAnswers, itemIndex: Index): Gen[UserAnswers] =
-    buildUserAnswers[ConsigneeDomain](userAnswers)(ConsigneeDomain.userAnswersReader(itemIndex))
+    buildUserAnswers[ConsigneeDomain](userAnswers)(
+      ConsigneeDomain.userAnswersReader(itemIndex).apply(Nil)
+    )
 
   def arbitrarySupplyChainActorAnswers(userAnswers: UserAnswers, itemIndex: Index, actorIndex: Index): Gen[UserAnswers] =
-    buildUserAnswers[SupplyChainActorDomain](userAnswers)(SupplyChainActorDomain.userAnswersReader(itemIndex, actorIndex))
+    buildUserAnswers[SupplyChainActorDomain](userAnswers)(
+      SupplyChainActorDomain.userAnswersReader(itemIndex, actorIndex).apply(Nil)
+    )
 
   def arbitraryDocumentAnswers(userAnswers: UserAnswers, itemIndex: Index, documentIndex: Index): Gen[UserAnswers] =
-    buildUserAnswers[DocumentDomain](userAnswers)(DocumentDomain.userAnswersReader(itemIndex, documentIndex))
+    buildUserAnswers[DocumentDomain](userAnswers)(
+      DocumentDomain.userAnswersReader(itemIndex, documentIndex).apply(Nil)
+    )
 
   def arbitraryAdditionalReferenceAnswers(userAnswers: UserAnswers, itemIndex: Index, additionalReferenceIndex: Index): Gen[UserAnswers] =
-    buildUserAnswers[AdditionalReferenceDomain](userAnswers)(AdditionalReferenceDomain.userAnswersReader(itemIndex, additionalReferenceIndex))
+    buildUserAnswers[AdditionalReferenceDomain](userAnswers)(
+      AdditionalReferenceDomain.userAnswersReader(itemIndex, additionalReferenceIndex).apply(Nil)
+    )
 
   def arbitraryAdditionalInformationAnswers(userAnswers: UserAnswers, itemIndex: Index, additionalInformationIndex: Index): Gen[UserAnswers] =
-    buildUserAnswers[AdditionalInformationDomain](userAnswers)(AdditionalInformationDomain.userAnswersReader(itemIndex, additionalInformationIndex))
+    buildUserAnswers[AdditionalInformationDomain](userAnswers)(
+      AdditionalInformationDomain.userAnswersReader(itemIndex, additionalInformationIndex).apply(Nil)
+    )
 
 }

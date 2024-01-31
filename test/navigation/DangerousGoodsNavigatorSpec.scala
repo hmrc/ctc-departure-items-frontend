@@ -44,7 +44,7 @@ class DangerousGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
             forAll(arbitraryDangerousGoodsAnswers(emptyUserAnswers, itemIndex, dangerousGoodsIndex)) {
               answers =>
                 transitionNavigator
-                  .nextPage(answers)
+                  .nextPage(answers, None)
                   .mustBe(controllers.item.routes.GrossWeightController.onPageLoad(answers.lrn, mode, itemIndex))
             }
           }
@@ -56,7 +56,7 @@ class DangerousGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
             forAll(arbitraryDangerousGoodsAnswers(emptyUserAnswers, itemIndex, dangerousGoodsIndex)) {
               answers =>
                 postTransitionNavigator
-                  .nextPage(answers)
+                  .nextPage(answers, None)
                   .mustBe(controllers.item.dangerousGoods.routes.AddAnotherDangerousGoodsController.onPageLoad(answers.lrn, mode, itemIndex))
             }
           }
@@ -75,7 +75,7 @@ class DangerousGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
           forAll(arbitraryItemAnswers(emptyUserAnswers, itemIndex)) {
             answers =>
               navigator
-                .nextPage(answers)
+                .nextPage(answers, None)
                 .mustBe(controllers.item.routes.CheckYourAnswersController.onPageLoad(answers.lrn, itemIndex))
           }
         }

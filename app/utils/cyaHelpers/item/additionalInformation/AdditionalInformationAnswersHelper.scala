@@ -39,7 +39,7 @@ class AdditionalInformationAnswersHelper(userAnswers: UserAnswers, mode: Mode, i
           nameWhenComplete = _.toString,
           nameWhenInProgress = userAnswers.get(AdditionalInformationTypePage(itemIndex, additionalInformationIndex)).map(_.toString),
           removeRoute = Some(routes.RemoveAdditionalInformationController.onPageLoad(userAnswers.lrn, mode, itemIndex, additionalInformationIndex))
-        )(AdditionalInformationDomain.userAnswersReader(itemIndex, additionalInformationIndex))
+        )(AdditionalInformationDomain.userAnswersReader(itemIndex, additionalInformationIndex).apply(Nil))
     }
 
 }

@@ -40,5 +40,5 @@ class ItemNavigator(override val mode: Mode, itemIndex: Index)(implicit override
   override type T = ItemDomain
 
   implicit override val reader: UserAnswersReader[ItemDomain] =
-    ItemDomain.userAnswersReader(itemIndex)
+    ItemDomain.userAnswersReader(itemIndex).apply(Nil)
 }

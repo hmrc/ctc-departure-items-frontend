@@ -18,9 +18,9 @@ package models.journeyDomain.item.dangerousGoods
 
 import base.SpecBase
 import models.Index
-import models.journeyDomain.{EitherType, UserAnswersReader}
 import org.scalacheck.Gen
 import pages.item.dangerousGoods.index.UNNumberPage
+import pages.sections.dangerousGoods.DangerousGoodsListSection
 
 class DangerousGoodsListDomainSpec extends SpecBase {
 
@@ -40,25 +40,24 @@ class DangerousGoodsListDomainSpec extends SpecBase {
             DangerousGoodsDomain(dangerousGoods1)(itemIndex, Index(0)),
             DangerousGoodsDomain(dangerousGoods2)(itemIndex, Index(1))
           )
-        )
+        )(itemIndex)
 
-        val result: EitherType[DangerousGoodsListDomain] = UserAnswersReader[DangerousGoodsListDomain](
-          DangerousGoodsListDomain.userAnswersReader(itemIndex)
-        ).run(userAnswers)
+        val result = DangerousGoodsListDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
 
-        result.value mustBe expectedResult
+        result.value.value mustBe expectedResult
+        result.value.pages.last mustBe DangerousGoodsListSection(itemIndex)
       }
     }
 
     "can not be read from user answers" - {
       "when there aren't any dangerous goods added" in {
-        val result: EitherType[DangerousGoodsListDomain] = UserAnswersReader[DangerousGoodsListDomain](
-          DangerousGoodsListDomain.userAnswersReader(itemIndex)
-        ).run(emptyUserAnswers)
+        val result = DangerousGoodsListDomain.userAnswersReader(itemIndex).apply(Nil).run(emptyUserAnswers)
 
         result.left.value.page mustBe UNNumberPage(itemIndex, Index(0))
+        result.left.value.pages mustBe Seq(
+          UNNumberPage(itemIndex, Index(0))
+        )
       }
     }
   }
-
 }

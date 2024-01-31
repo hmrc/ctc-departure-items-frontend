@@ -16,13 +16,18 @@
 
 package pages.sections.packages
 
-import models.Index
+import controllers.item.packages.routes
+import models.{Index, Mode, UserAnswers}
 import pages.sections.{ItemSection, Section}
 import play.api.libs.json.{JsArray, JsPath}
+import play.api.mvc.Call
 
 case class PackagesSection(itemIndex: Index) extends Section[JsArray] {
 
   override def path: JsPath = ItemSection(itemIndex).path \ toString
 
   override def toString: String = "packages"
+
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.AddAnotherPackageController.onPageLoad(userAnswers.lrn, mode, itemIndex))
 }

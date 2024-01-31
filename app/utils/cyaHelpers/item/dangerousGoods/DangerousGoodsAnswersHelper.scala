@@ -39,7 +39,7 @@ class DangerousGoodsAnswersHelper(userAnswers: UserAnswers, mode: Mode, itemInde
           nameWhenComplete = _.toString,
           nameWhenInProgress = userAnswers.get(UNNumberPage(itemIndex, dangerousGoodsIndex)),
           removeRoute = Option(routes.RemoveUNNumberController.onPageLoad(lrn, mode, itemIndex, dangerousGoodsIndex))
-        )(DangerousGoodsDomain.userAnswersReader(itemIndex, dangerousGoodsIndex))
+        )(DangerousGoodsDomain.userAnswersReader(itemIndex, dangerousGoodsIndex).apply(Nil))
     }
 
 }

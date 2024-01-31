@@ -16,21 +16,30 @@
 
 package models.journeyDomain.item.dangerousGoods
 
-import models.{Index, RichJsArray}
-import models.journeyDomain.{JsArrayGettableAsReaderOps, UserAnswersReader}
+import models.journeyDomain.{JourneyDomainModel, JsArrayGettableAsReaderOps, Read}
+import models.{Index, RichJsArray, UserAnswers}
+import pages.sections.Section
 import pages.sections.dangerousGoods.DangerousGoodsListSection
 
-case class DangerousGoodsListDomain(value: Seq[DangerousGoodsDomain])
+case class DangerousGoodsListDomain(
+  value: Seq[DangerousGoodsDomain]
+)(itemIndex: Index)
+    extends JourneyDomainModel {
+
+  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(DangerousGoodsListSection(itemIndex))
+}
 
 object DangerousGoodsListDomain {
 
-  implicit def userAnswersReader(itemIndex: Index): UserAnswersReader[DangerousGoodsListDomain] =
-    DangerousGoodsListSection(itemIndex).arrayReader
-      .flatMap {
+  implicit def userAnswersReader(itemIndex: Index): Read[DangerousGoodsListDomain] = {
+    val dangerousGoodsListReader: Read[Seq[DangerousGoodsDomain]] =
+      DangerousGoodsListSection(itemIndex).arrayReader.to {
         case x if x.isEmpty =>
-          UserAnswersReader(DangerousGoodsDomain.userAnswersReader(itemIndex, Index(0))).map(Seq(_))
+          DangerousGoodsDomain.userAnswersReader(itemIndex, Index(0)).toSeq
         case x =>
-          x.traverse[DangerousGoodsDomain](DangerousGoodsDomain.userAnswersReader(itemIndex, _))
+          x.traverse[DangerousGoodsDomain](DangerousGoodsDomain.userAnswersReader(itemIndex, _).apply(_))
       }
-      .map(DangerousGoodsListDomain(_))
+
+    dangerousGoodsListReader.map(DangerousGoodsListDomain(_)(itemIndex))
+  }
 }

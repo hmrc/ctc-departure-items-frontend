@@ -180,7 +180,7 @@ class ItemAnswersHelper(
       prefix = "item.checkYourAnswers.dangerousGoods",
       id = Some(s"change-dangerous-goods-${dangerousGoodsIndex.display}"),
       args = dangerousGoodsIndex.display
-    )(DangerousGoodsDomain.userAnswersReader(itemIndex, dangerousGoodsIndex))
+    )(DangerousGoodsDomain.userAnswersReader(itemIndex, dangerousGoodsIndex).apply(Nil))
 
   def addOrRemoveDangerousGoods: Option[Link] = buildLink(DangerousGoodsListSection(itemIndex)) {
     mode =>
@@ -240,7 +240,7 @@ class ItemAnswersHelper(
       prefix = "item.checkYourAnswers.package",
       id = Some(s"change-package-${packageIndex.display}"),
       args = packageIndex.display
-    )(PackageDomain.userAnswersReader(itemIndex, packageIndex))
+    )(PackageDomain.userAnswersReader(itemIndex, packageIndex).apply(Nil))
 
   def addOrRemovePackages: Option[Link] = buildLink(PackagesSection(itemIndex)) {
     mode =>
@@ -268,7 +268,7 @@ class ItemAnswersHelper(
       prefix = "item.checkYourAnswers.supplyChainActor",
       id = Some(s"change-supply-chain-actor-${actorIndex.display}"),
       args = actorIndex.display
-    )(SupplyChainActorDomain.userAnswersReader(itemIndex, actorIndex))
+    )(SupplyChainActorDomain.userAnswersReader(itemIndex, actorIndex).apply(Nil))
 
   def addOrRemoveSupplyChainActors: Option[Link] = buildLink(SupplyChainActorsSection(itemIndex)) {
     mode =>
@@ -298,7 +298,7 @@ class ItemAnswersHelper(
           prefix = "item.checkYourAnswers.document",
           id = Some(s"change-document-${documentIndex.display}"),
           args = documentIndex.display
-        )(DocumentDomain.userAnswersReader(itemIndex, documentIndex))
+        )(DocumentDomain.userAnswersReader(itemIndex, documentIndex).apply(Nil))
     }
 
   def consignmentDocuments(implicit documentsService: DocumentsService): Seq[SummaryListRow] =
@@ -335,7 +335,7 @@ class ItemAnswersHelper(
       prefix = "item.checkYourAnswers.additionalReference",
       id = Some(s"change-additional-reference-${additionalReferenceIndex.display}"),
       args = additionalReferenceIndex.display
-    )(AdditionalReferenceDomain.userAnswersReader(itemIndex, additionalReferenceIndex))
+    )(AdditionalReferenceDomain.userAnswersReader(itemIndex, additionalReferenceIndex).apply(Nil))
 
   def addOrRemoveAdditionalReferences: Option[Link] = buildLink(AdditionalReferencesSection(itemIndex)) {
     mode =>
@@ -362,7 +362,7 @@ class ItemAnswersHelper(
     prefix = "item.checkYourAnswers.additionalInformation",
     id = Some(s"change-additional-information-${additionalInformationIndex.display}"),
     args = additionalInformationIndex.display
-  )(AdditionalInformationDomain.userAnswersReader(itemIndex, additionalInformationIndex))
+  )(AdditionalInformationDomain.userAnswersReader(itemIndex, additionalInformationIndex).apply(Nil))
 
   def addOrRemoveAdditionalInformation: Option[Link] = buildLink(AdditionalInformationListSection(itemIndex)) {
     mode =>

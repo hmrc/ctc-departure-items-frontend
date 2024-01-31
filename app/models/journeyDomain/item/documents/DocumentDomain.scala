@@ -43,6 +43,6 @@ case class DocumentDomain(
 
 object DocumentDomain {
 
-  implicit def userAnswersReader(itemIndex: Index, documentIndex: Index): UserAnswersReader[DocumentDomain] =
+  implicit def userAnswersReader(itemIndex: Index, documentIndex: Index): Read[DocumentDomain] =
     DocumentPage(itemIndex, documentIndex).reader.map(DocumentDomain(_)(itemIndex, documentIndex))
 }

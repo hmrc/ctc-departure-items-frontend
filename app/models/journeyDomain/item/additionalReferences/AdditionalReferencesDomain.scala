@@ -16,21 +16,30 @@
 
 package models.journeyDomain.item.additionalReferences
 
-import models.journeyDomain.{JsArrayGettableAsReaderOps, UserAnswersReader}
-import models.{Index, RichJsArray}
+import models.journeyDomain.{JourneyDomainModel, JsArrayGettableAsReaderOps, Read}
+import models.{Index, RichJsArray, UserAnswers}
+import pages.sections.Section
 import pages.sections.additionalReference.AdditionalReferencesSection
 
-case class AdditionalReferencesDomain(value: Seq[AdditionalReferenceDomain])
+case class AdditionalReferencesDomain(
+  value: Seq[AdditionalReferenceDomain]
+)(itemIndex: Index)
+    extends JourneyDomainModel {
+
+  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(AdditionalReferencesSection(itemIndex))
+}
 
 object AdditionalReferencesDomain {
 
-  def userAnswersReader(itemIndex: Index): UserAnswersReader[AdditionalReferencesDomain] =
-    AdditionalReferencesSection(itemIndex).arrayReader
-      .flatMap {
+  def userAnswersReader(itemIndex: Index): Read[AdditionalReferencesDomain] = {
+    val additionalReferencesReader: Read[Seq[AdditionalReferenceDomain]] =
+      AdditionalReferencesSection(itemIndex).arrayReader.to {
         case x if x.isEmpty =>
-          UserAnswersReader(AdditionalReferenceDomain.userAnswersReader(itemIndex, Index(0))).map(Seq(_))
+          AdditionalReferenceDomain.userAnswersReader(itemIndex, Index(0)).toSeq
         case x =>
-          x.traverse[AdditionalReferenceDomain](AdditionalReferenceDomain.userAnswersReader(itemIndex, _))
+          x.traverse[AdditionalReferenceDomain](AdditionalReferenceDomain.userAnswersReader(itemIndex, _).apply(_))
       }
-      .map(AdditionalReferencesDomain(_))
+
+    additionalReferencesReader.map(AdditionalReferencesDomain.apply(_)(itemIndex))
+  }
 }

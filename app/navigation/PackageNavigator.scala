@@ -45,5 +45,5 @@ class PackageNavigator(override val mode: Mode, itemIndex: Index, packageIndex: 
   override type T = PackageDomain
 
   implicit override val reader: UserAnswersReader[PackageDomain] =
-    PackageDomain.userAnswersReader(itemIndex, packageIndex)
+    PackageDomain.userAnswersReader(itemIndex, packageIndex).apply(Nil)
 }

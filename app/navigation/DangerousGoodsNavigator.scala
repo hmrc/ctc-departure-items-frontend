@@ -45,5 +45,5 @@ class DangerousGoodsNavigator(override val mode: Mode, itemIndex: Index, dangero
   override type T = DangerousGoodsDomain
 
   implicit override val reader: UserAnswersReader[DangerousGoodsDomain] =
-    DangerousGoodsDomain.userAnswersReader(itemIndex, dangerousGoodsIndex)
+    DangerousGoodsDomain.userAnswersReader(itemIndex, dangerousGoodsIndex).apply(Nil)
 }

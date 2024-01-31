@@ -37,9 +37,11 @@ object AdditionalReferenceNumberViewModel {
       additionalReferenceIndex: Index,
       additionalReference: AdditionalReference
     ): AdditionalReferenceNumberViewModel = {
-      val otherAdditionalReferenceNumbers = AdditionalReferenceDomain
+      val otherAdditionalReferenceNumbers: Seq[Option[String]] = AdditionalReferenceDomain
         .otherAdditionalReferenceNumbers(itemIndex, additionalReferenceIndex, additionalReference)
+        .apply(Nil)
         .run(userAnswers)
+        .map(_.value)
         .getOrElse(Nil)
 
       AdditionalReferenceNumberViewModel(

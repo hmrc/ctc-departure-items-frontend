@@ -16,10 +16,9 @@
 
 package models.journeyDomain.item.additionalInformation
 
-import cats.implicits._
 import controllers.item.additionalInformation.index.routes._
 import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
-import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Stage, UserAnswersReader}
+import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Read, Stage}
 import models.reference.AdditionalInformation
 import models.{Index, Mode, Phase, UserAnswers}
 import pages.item.additionalInformation.index._
@@ -45,8 +44,8 @@ case class AdditionalInformationDomain(
 
 object AdditionalInformationDomain {
 
-  def userAnswersReader(itemIndex: Index, additionalInformationIndex: Index): UserAnswersReader[AdditionalInformationDomain] = (
+  def userAnswersReader(itemIndex: Index, additionalInformationIndex: Index): Read[AdditionalInformationDomain] = (
     AdditionalInformationTypePage(itemIndex, additionalInformationIndex).reader,
     AdditionalInformationPage(itemIndex, additionalInformationIndex).reader
-  ).tupled.map((AdditionalInformationDomain.apply _).tupled).map(_(itemIndex, additionalInformationIndex))
+  ).map(AdditionalInformationDomain.apply(_, _)(itemIndex, additionalInformationIndex))
 }

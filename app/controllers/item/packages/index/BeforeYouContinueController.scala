@@ -16,23 +16,30 @@
 
 package controllers.item.packages.index
 
+import config.PhaseConfig
 import controllers.actions._
+import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{PackageNavigatorProvider, UserAnswersNavigator}
+import pages.item.packages.index.BeforeYouContinuePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.item.packages.index.BeforeYouContinueView
 
 import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class BeforeYouContinueController @Inject() (
   override val messagesApi: MessagesApi,
+  implicit val sessionRepository: SessionRepository,
   navigatorProvider: PackageNavigatorProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: BeforeYouContinueView
-) extends FrontendBaseController
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
+    extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, packageIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
@@ -40,9 +47,13 @@ class BeforeYouContinueController @Inject() (
       Ok(view(lrn, mode, itemIndex, packageIndex))
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, packageIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, packageIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
       implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex, packageIndex)
-      Redirect(navigator.nextPage(request.userAnswers))
+      BeforeYouContinuePage(itemIndex, packageIndex)
+        .writeToUserAnswers(true)
+        .updateTask()
+        .writeToSession()
+        .navigate()
   }
 }

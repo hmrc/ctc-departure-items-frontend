@@ -18,9 +18,13 @@ package controllers.item.packages.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
-import models.Mode
+import models.{Mode, UserAnswers}
 import navigation.PackageNavigatorProvider
+import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.verify
 import org.scalacheck.Arbitrary.arbitrary
+import pages.item.packages.index.BeforeYouContinuePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -65,6 +69,10 @@ class BeforeYouContinueControllerSpec extends SpecBase with AppWithDefaultMockFi
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual onwardRoute.url
+
+      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+      verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
+      userAnswersCaptor.getValue.get(BeforeYouContinuePage(itemIndex, packageIndex)).value mustBe true
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

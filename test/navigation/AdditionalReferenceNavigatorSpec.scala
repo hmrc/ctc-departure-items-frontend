@@ -36,7 +36,7 @@ class AdditionalReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyC
           forAll(arbitraryAdditionalReferenceAnswers(emptyUserAnswers, itemIndex, additionalReferenceIndex)) {
             answers =>
               navigator
-                .nextPage(answers)
+                .nextPage(answers, None)
                 .mustBe(controllers.item.additionalReference.routes.AddAnotherAdditionalReferenceController.onPageLoad(answers.lrn, mode, itemIndex))
           }
         }
@@ -54,7 +54,7 @@ class AdditionalReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyC
           forAll(arbitraryItemAnswers(emptyUserAnswers, itemIndex)) {
             answers =>
               navigator
-                .nextPage(answers)
+                .nextPage(answers, None)
                 .mustBe(controllers.item.routes.CheckYourAnswersController.onPageLoad(answers.lrn, itemIndex))
           }
         }

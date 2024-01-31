@@ -16,11 +16,17 @@
 
 package pages.sections
 
+import controllers.routes
+import models.{Mode, UserAnswers}
 import play.api.libs.json.{JsArray, JsPath}
+import play.api.mvc.Call
 
 case object ItemsSection extends Section[JsArray] {
 
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "items"
+
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.AddAnotherItemController.onPageLoad(userAnswers.lrn))
 }

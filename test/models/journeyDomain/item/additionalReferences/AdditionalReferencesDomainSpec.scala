@@ -14,31 +14,31 @@
  * limitations under the License.
  */
 
-package models.journeyDomain.item.supplyChainActors
+package models.journeyDomain.item.additionalReferences
 
 import base.SpecBase
 import generators.Generators
 import models.Index
 import org.scalacheck.Gen
-import pages.sections.supplyChainActors.SupplyChainActorsSection
+import pages.sections.additionalReference.AdditionalReferencesSection
 
-class SupplyChainActorsDomainSpec extends SpecBase with Generators {
+class AdditionalReferencesDomainSpec extends SpecBase with Generators {
 
-  "SupplyChainActorsDomain" - {
+  "AdditionalReferences" - {
 
     "can be parsed from UserAnswers" in {
 
-      val numberOfSupplyChainActors = Gen.choose(1, frontendAppConfig.maxSupplyChainActors).sample.value
+      val numberOfAdditionalReferences = Gen.choose(1, frontendAppConfig.maxAdditionalReferences).sample.value
 
-      val userAnswers = (0 until numberOfSupplyChainActors).foldLeft(emptyUserAnswers)({
+      val userAnswers = (0 until numberOfAdditionalReferences).foldLeft(emptyUserAnswers)({
         case (updatedUserAnswers, index) =>
-          arbitrarySupplyChainActorAnswers(updatedUserAnswers, itemIndex, Index(index)).sample.value
+          arbitraryAdditionalReferenceAnswers(updatedUserAnswers, itemIndex, Index(index)).sample.value
       })
 
-      val result = SupplyChainActorsDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
+      val result = AdditionalReferencesDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
 
-      result.value.value.SupplyChainActorsDomain.length mustBe numberOfSupplyChainActors
-      result.value.pages.last mustBe SupplyChainActorsSection(itemIndex)
+      result.value.value.value.length mustBe numberOfAdditionalReferences
+      result.value.pages.last mustBe AdditionalReferencesSection(itemIndex)
     }
   }
 }

@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package queries
+package models.journeyDomain
 
-import models.UserAnswers
 import pages.Page
+import queries.{Gettable, Settable}
 
-import scala.util.{Success, Try}
+sealed trait OpsError {
+  val page: Page
+  val message: Option[String]
+}
 
-trait Gettable[A] extends Page
-
-trait Settable[A] extends Page {
-
-  def cleanup(value: Option[A], userAnswers: UserAnswers): Try[UserAnswers] =
-    Success(userAnswers)
+object OpsError {
+  case class ReaderError(page: Gettable[_], pages: Pages, message: Option[String] = None) extends OpsError
+  case class WriterError(page: Settable[_], message: Option[String] = None) extends OpsError
 }

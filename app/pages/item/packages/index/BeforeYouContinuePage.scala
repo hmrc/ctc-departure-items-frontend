@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-package pages.sections.additionalReference
+package pages.item.packages.index
 
-import controllers.item.additionalReference.routes
+import controllers.item.packages.index.routes
 import models.{Index, Mode, UserAnswers}
-import pages.sections.{ItemSection, Section}
-import play.api.libs.json.{JsArray, JsPath}
+import pages.QuestionPage
+import pages.sections.packages.PackageSection
+import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class AdditionalReferencesSection(itemIndex: Index) extends Section[JsArray] {
+case class BeforeYouContinuePage(itemIndex: Index, packageIndex: Index) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = ItemSection(itemIndex).path \ toString
+  override def path: JsPath = PackageSection(itemIndex, packageIndex).path \ toString
 
-  override def toString: String = "additionalReferences"
+  override def toString: String = "messageAcknowledged"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.AddAnotherAdditionalReferenceController.onPageLoad(userAnswers.lrn, mode, itemIndex))
+    Some(routes.BeforeYouContinueController.onPageLoad(userAnswers.lrn, mode, itemIndex, packageIndex))
 }

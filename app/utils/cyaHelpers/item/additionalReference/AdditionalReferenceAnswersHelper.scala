@@ -39,7 +39,7 @@ class AdditionalReferenceAnswersHelper(userAnswers: UserAnswers, mode: Mode, ite
           nameWhenComplete = _.toString,
           nameWhenInProgress = userAnswers.get(AdditionalReferencePage(itemIndex, additionalReferenceIndex)).map(_.toString),
           removeRoute = Some(routes.RemoveAdditionalReferenceController.onPageLoad(userAnswers.lrn, mode, itemIndex, additionalReferenceIndex))
-        )(AdditionalReferenceDomain.userAnswersReader(itemIndex, additionalReferenceIndex))
+        )(AdditionalReferenceDomain.userAnswersReader(itemIndex, additionalReferenceIndex).apply(Nil))
     }
 
 }

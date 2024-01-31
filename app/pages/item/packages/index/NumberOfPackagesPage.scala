@@ -23,6 +23,8 @@ import pages.sections.packages.PackageSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
+import scala.util.Try
+
 case class NumberOfPackagesPage(itemIndex: Index, packageIndex: Index) extends QuestionPage[Int] {
 
   override def path: JsPath = PackageSection(itemIndex, packageIndex).path \ toString
@@ -31,4 +33,10 @@ case class NumberOfPackagesPage(itemIndex: Index, packageIndex: Index) extends Q
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.NumberOfPackagesController.onPageLoad(userAnswers.lrn, mode, itemIndex, packageIndex))
+
+  override def cleanup(value: Option[Int], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(value) if value > 0 => userAnswers.remove(BeforeYouContinuePage(itemIndex, packageIndex))
+      case _                        => super.cleanup(value, userAnswers)
+    }
 }
