@@ -16,6 +16,7 @@
 
 package models.reference
 
+import cats.Order
 import models.{DynamicEnumerableType, Radioable}
 import play.api.libs.json.{Format, Json}
 
@@ -25,11 +26,13 @@ case class TransportChargesMethodOfPayment(method: String, description: String) 
 
   override def toString: String = description
 
-  override val messageKeyPrefix: String = TransportChargesMethodOfPayment.messageKeyPrefix
+  override val messageKeyPrefix: String = "transportMethodOfPayment"
 }
 
 object TransportChargesMethodOfPayment extends DynamicEnumerableType[TransportChargesMethodOfPayment] {
   implicit val format: Format[TransportChargesMethodOfPayment] = Json.format[TransportChargesMethodOfPayment]
 
-  val messageKeyPrefix = "transportMethodOfPayment"
+  implicit val order: Order[TransportChargesMethodOfPayment] = (x: TransportChargesMethodOfPayment, y: TransportChargesMethodOfPayment) => {
+    x.method.compareToIgnoreCase(y.method)
+  }
 }

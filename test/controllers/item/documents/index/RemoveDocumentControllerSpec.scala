@@ -167,7 +167,8 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
             status(result) mustEqual SEE_OTHER
 
-            redirectLocation(result).value mustEqual frontendAppConfig.technicalDifficultiesUrl
+            redirectLocation(result).value mustEqual
+              documentRoutes.AddAnotherDocumentController.onPageLoad(userAnswers.lrn, mode, itemIndex).url
         }
       }
 
@@ -214,7 +215,8 @@ class RemoveDocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
             status(result) mustEqual SEE_OTHER
 
-            redirectLocation(result).value mustEqual frontendAppConfig.technicalDifficultiesUrl
+            redirectLocation(result).value mustEqual
+              documentRoutes.AddAnotherDocumentController.onPageLoad(userAnswers.lrn, mode, itemIndex).url
         }
       }
 

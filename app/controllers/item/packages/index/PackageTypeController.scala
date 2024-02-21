@@ -19,7 +19,7 @@ package controllers.item.packages.index
 import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.PackageTypeFormProvider
+import forms.SelectableFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{PackageNavigatorProvider, UserAnswersNavigator}
 import pages.item.packages.index
@@ -38,7 +38,7 @@ class PackageTypeController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: PackageNavigatorProvider,
   actions: Actions,
-  formProvider: PackageTypeFormProvider,
+  formProvider: SelectableFormProvider,
   service: PackagesService,
   val controllerComponents: MessagesControllerComponents,
   view: PackageTypeView
@@ -58,7 +58,7 @@ class PackageTypeController @Inject() (
             case Some(value) => form.fill(value)
           }
 
-          Ok(view(preparedForm, lrn, packageTypeList.packageTypes, mode, itemIndex, packageIndex))
+          Ok(view(preparedForm, lrn, packageTypeList.values, mode, itemIndex, packageIndex))
       }
   }
 
@@ -70,7 +70,7 @@ class PackageTypeController @Inject() (
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, packageTypeList.packageTypes, mode, itemIndex, packageIndex))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, packageTypeList.values, mode, itemIndex, packageIndex))),
               value => {
                 implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex, packageIndex)
                 index.PackageTypePage(itemIndex, packageIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()

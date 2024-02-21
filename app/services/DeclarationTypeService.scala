@@ -16,6 +16,7 @@
 
 package services
 
+import config.Constants.DeclarationType.{T1, T2, T2F}
 import connectors.ReferenceDataConnector
 import models.DeclarationTypeItemLevel
 import uk.gov.hmrc.http.HeaderCarrier
@@ -25,14 +26,9 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationTypeService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
 
-  def getDeclarationTypeItemLevel()(implicit hc: HeaderCarrier): Future[Seq[DeclarationTypeItemLevel]] = referenceDataConnector
-    .getDeclarationTypeItemLevel()
-    .map(
-      types => DeclarationTypeItemLevel.itemValues(types)
-    )
-    .map(sort)
-
-  private def sort(declarationType: Seq[DeclarationTypeItemLevel]): Seq[DeclarationTypeItemLevel] =
-    declarationType.sortBy(_.toString.toLowerCase)
-
+  def getDeclarationTypeItemLevel()(implicit hc: HeaderCarrier): Future[Seq[DeclarationTypeItemLevel]] =
+    referenceDataConnector
+      .getDeclarationTypeItemLevel()
+      .map(_.filter(_.isOneOf(T1, T2, T2F)))
+      .map(_.toSeq)
 }

@@ -26,8 +26,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class SupplyChainActorTypesService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
 
   def getSupplyChainActorTypes()(implicit hc: HeaderCarrier): Future[Seq[SupplyChainActorType]] =
-    referenceDataConnector.getSupplyChainActorTypes().map(sort)
-
-  private def sort(supplyChainActorTypes: Seq[SupplyChainActorType]): Seq[SupplyChainActorType] =
-    supplyChainActorTypes.sortBy(_.code.toLowerCase)
+    referenceDataConnector
+      .getSupplyChainActorTypes()
+      .map(_.toSeq)
 }

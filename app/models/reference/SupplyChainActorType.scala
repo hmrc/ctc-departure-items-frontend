@@ -16,6 +16,7 @@
 
 package models.reference
 
+import cats.Order
 import models.{DynamicEnumerableType, Radioable}
 import org.apache.commons.text.StringEscapeUtils
 import play.api.libs.json.{Format, Json}
@@ -26,12 +27,14 @@ case class SupplyChainActorType(role: String, description: String) extends Radio
 
   override def toString: String = StringEscapeUtils.unescapeXml(description)
 
-  override val messageKeyPrefix: String = SupplyChainActorType.messageKeyPrefix
+  override val messageKeyPrefix: String = "item.supplyChainActors.index.supplyChainActorType"
 
 }
 
 object SupplyChainActorType extends DynamicEnumerableType[SupplyChainActorType] {
   implicit val format: Format[SupplyChainActorType] = Json.format[SupplyChainActorType]
 
-  val messageKeyPrefix = "item.supplyChainActors.index.supplyChainActorType"
+  implicit val order: Order[SupplyChainActorType] = (x: SupplyChainActorType, y: SupplyChainActorType) => {
+    x.code.compareToIgnoreCase(y.code)
+  }
 }

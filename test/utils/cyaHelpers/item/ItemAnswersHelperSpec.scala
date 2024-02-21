@@ -29,7 +29,7 @@ import controllers.item.routes._
 import controllers.item.supplyChainActors.index.routes.SupplyChainActorTypeController
 import generators.Generators
 import models.reference._
-import models.{CheckMode, DeclarationTypeItemLevel, Document, DynamicAddress, Index, Mode, Phase, SubmissionState, TransportEquipment}
+import models.{CheckMode, Document, DynamicAddress, Index, Mode, Phase, SubmissionState, TransportEquipment}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -151,7 +151,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               val result = helper.declarationType.get
 
               result.key.value mustBe "Declaration type"
-              val key = s"${DeclarationTypeItemLevel.messageKeyPrefix}.${declarationType.code}"
+              val key = s"item.declarationType.${declarationType.code}"
               messages.isDefinedAt(key) mustBe true
               val actions = result.actions.get.items
               actions.size mustBe 1

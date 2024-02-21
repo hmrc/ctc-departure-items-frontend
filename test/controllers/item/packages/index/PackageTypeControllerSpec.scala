@@ -17,9 +17,9 @@
 package controllers.item.packages.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.PackageTypeFormProvider
+import forms.SelectableFormProvider
 import generators.Generators
-import models.{NormalMode, PackageTypeList}
+import models.{NormalMode, SelectableList}
 import navigation.PackageNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -37,9 +37,9 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
   private val packageType1    = arbitraryPackageType.arbitrary.sample.get
   private val packageType2    = arbitraryPackageType.arbitrary.sample.get
-  private val packageTypeList = PackageTypeList(Seq(packageType1, packageType2))
+  private val packageTypeList = SelectableList(Seq(packageType1, packageType2))
 
-  private val formProvider = new PackageTypeFormProvider()
+  private val formProvider = new SelectableFormProvider()
   private val form         = formProvider("item.packages.index.packageType", packageTypeList)
   private val mode         = NormalMode
 
@@ -68,7 +68,7 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, packageTypeList.packageTypes, mode, itemIndex, packageIndex)(request, messages).toString
+        view(form, lrn, packageTypeList.values, mode, itemIndex, packageIndex)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -88,7 +88,7 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, packageTypeList.packageTypes, mode, itemIndex, packageIndex)(request, messages).toString
+        view(filledForm, lrn, packageTypeList.values, mode, itemIndex, packageIndex)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -123,7 +123,7 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, packageTypeList.packageTypes, mode, itemIndex, packageIndex)(request, messages).toString
+        view(boundForm, lrn, packageTypeList.values, mode, itemIndex, packageIndex)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

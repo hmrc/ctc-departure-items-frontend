@@ -36,11 +36,9 @@ sealed trait AdditionalInformationService {
   def getAdditionalInformationTypes()(implicit hc: HeaderCarrier): Future[SelectableList[AdditionalInformation]] =
     referenceDataConnector
       .getAdditionalInformationTypes()
+      .map(_.toSeq)
       .map(_.filter(predicate))
-      .map(sort)
-
-  def sort(additionalInformationTypes: Seq[AdditionalInformation]): SelectableList[AdditionalInformation] =
-    SelectableList(additionalInformationTypes.sortBy(_.description.toLowerCase))
+      .map(SelectableList(_))
 }
 
 class TransitionAdditionalInformationService @Inject() (

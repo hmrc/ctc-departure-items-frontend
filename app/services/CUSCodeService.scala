@@ -30,7 +30,9 @@ class CUSCodeService @Inject() (
   def doesCUSCodeExist(cusCode: String)(implicit hc: HeaderCarrier): Future[Boolean] =
     referenceDataConnector
       .getCUSCode(cusCode)
-      .map(_.nonEmpty)
+      .map {
+        _ => true
+      }
       .recover {
         case _: NoReferenceDataFoundException => false
       }

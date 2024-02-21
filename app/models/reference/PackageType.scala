@@ -16,6 +16,7 @@
 
 package models.reference
 
+import cats.Order
 import models.{PackingType, Selectable}
 import org.apache.commons.text.StringEscapeUtils
 import play.api.libs.functional.syntax._
@@ -45,4 +46,8 @@ object PackageType {
   }
 
   implicit val format: OFormat[PackageType] = Json.format[PackageType]
+
+  implicit val order: Order[PackageType] = (x: PackageType, y: PackageType) => {
+    x.toString.compareToIgnoreCase(y.toString)
+  }
 }

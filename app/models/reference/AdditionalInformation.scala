@@ -16,6 +16,7 @@
 
 package models.reference
 
+import cats.Order
 import models.Selectable
 import play.api.libs.json.{Json, OFormat}
 
@@ -28,4 +29,8 @@ case class AdditionalInformation(code: String, description: String) extends Sele
 
 object AdditionalInformation {
   implicit val format: OFormat[AdditionalInformation] = Json.format[AdditionalInformation]
+
+  implicit val order: Order[AdditionalInformation] = (x: AdditionalInformation, y: AdditionalInformation) => {
+    x.description.compareToIgnoreCase(y.description)
+  }
 }
