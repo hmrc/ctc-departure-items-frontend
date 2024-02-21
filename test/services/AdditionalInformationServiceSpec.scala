@@ -17,6 +17,7 @@
 package services
 
 import base.SpecBase
+import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
 import generators.Generators
 import models.SelectableList
@@ -49,7 +50,7 @@ class AdditionalInformationServiceSpec extends SpecBase with BeforeAndAfterEach 
     description = "In EXS, where negotiable bills of lading 'to order blank endorsed' are concerned and the consignee particulars are unknown."
   )
 
-  private val additionalInformationTypes = Seq(additionalInformation1, additionalInformation2, additionalInformation3)
+  private val additionalInformationTypes = NonEmptySet.of(additionalInformation1, additionalInformation2, additionalInformation3)
 
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)

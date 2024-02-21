@@ -17,6 +17,7 @@
 package services
 
 import base.SpecBase
+import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
 import generators.Generators
 import models.SelectableList
@@ -33,12 +34,16 @@ class AdditionalReferencesServiceSpec extends SpecBase with BeforeAndAfterEach w
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
   private val service                                      = new AdditionalReferencesService(mockRefDataConnector)
 
-  private val additionalReference1: AdditionalReference = AdditionalReference("Y015", "The rough diamonds are contained in tamper-resistant containers")
-  private val additionalReference2: AdditionalReference = AdditionalReference("C658", "Consignor / exporter (AEO certificate number)")
+  private val additionalReference1: AdditionalReference =
+    AdditionalReference("Y015", "The rough diamonds are contained in tamper-resistant containers")
+
+  private val additionalReference2: AdditionalReference =
+    AdditionalReference("C658", "Consignor / exporter (AEO certificate number)")
 
   private val additionalReference3: AdditionalReference =
     AdditionalReference("Y016", "Electronic administrative document (e-AD), as referred to in Article 3(1) of Reg. (EC) No 684/2009")
-  private val additionalReferences = Seq(additionalReference2, additionalReference1, additionalReference3)
+
+  private val additionalReferences = NonEmptySet.of(additionalReference2, additionalReference1, additionalReference3)
 
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)

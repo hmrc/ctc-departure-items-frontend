@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-package models
+import cats.data.NonEmptySet
 
-import models.reference.PackageType
+package object services {
 
-case class PackageTypeList(packageTypes: Seq[PackageType]) {
-
-  def getPackageType(code: String): Option[PackageType] =
-    packageTypes.find(_.code == code)
-
+  implicit class RichNonEmptySet[T](value: NonEmptySet[T]) {
+    def toSeq: Seq[T] = value.toNonEmptyList.toList
+  }
 }

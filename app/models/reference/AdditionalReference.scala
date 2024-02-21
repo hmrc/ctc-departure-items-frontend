@@ -16,6 +16,7 @@
 
 package models.reference
 
+import cats.Order
 import models.Selectable
 import play.api.libs.json.{Json, OFormat}
 
@@ -28,4 +29,8 @@ case class AdditionalReference(documentType: String, description: String) extend
 
 object AdditionalReference {
   implicit val format: OFormat[AdditionalReference] = Json.format[AdditionalReference]
+
+  implicit val order: Order[AdditionalReference] = (x: AdditionalReference, y: AdditionalReference) => {
+    x.description.compareToIgnoreCase(y.description)
+  }
 }

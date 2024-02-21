@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 
-package helper
+package itbase
 
 import com.github.tomakehurst.wiremock.WireMockServer
+import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
+import com.github.tomakehurst.wiremock.matching.StringValuePattern
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Suite}
+import play.api.libs.json.{Json, Writes}
 
 trait WireMockServerHandler extends BeforeAndAfterAll with BeforeAndAfterEach {
   this: Suite =>
@@ -39,4 +42,7 @@ trait WireMockServerHandler extends BeforeAndAfterAll with BeforeAndAfterEach {
     super.afterAll()
     server.stop()
   }
+
+  def equalToJson[T](t: T)(implicit writes: Writes[T]): StringValuePattern =
+    WireMock.equalToJson(Json.stringify(Json.toJson(t)))
 }

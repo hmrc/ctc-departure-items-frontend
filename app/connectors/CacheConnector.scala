@@ -21,43 +21,47 @@ import models.LockCheck.{LockCheckFailure, Locked, Unlocked}
 import models.{LocalReferenceNumber, LockCheck, UserAnswers}
 import play.api.Logging
 import play.api.http.Status._
+import play.api.libs.json.Json
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, UpstreamErrorResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps, UpstreamErrorResponse}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CacheConnector @Inject() (
   config: FrontendAppConfig,
-  http: HttpClient
+  http: HttpClientV2
 )(implicit ec: ExecutionContext)
     extends Logging {
 
   private val baseUrl = s"${config.cacheUrl}"
 
   def get(lrn: LocalReferenceNumber)(implicit hc: HeaderCarrier): Future[Option[UserAnswers]] = {
-    val url = s"$baseUrl/user-answers/$lrn"
-
-    http.GET[UserAnswers](url).map {
-      userAnswers => Some(userAnswers)
-    } recover {
-      case e: UpstreamErrorResponse if e.statusCode == NOT_FOUND => None
-    }
+    val url = url"$baseUrl/user-answers/$lrn"
+    http
+      .get(url)
+      .execute[UserAnswers]
+      .map(Some(_))
+      .recover {
+        case e: UpstreamErrorResponse if e.statusCode == NOT_FOUND => None
+      }
   }
 
   def post(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Boolean] = {
-    val url = s"$baseUrl/user-answers/${userAnswers.lrn}"
-
-    http.POST[UserAnswers, HttpResponse](url, userAnswers).map {
-      _.status == OK
-    }
+    val url = url"$baseUrl/user-answers/${userAnswers.lrn}"
+    http
+      .post(url)
+      .withBody(Json.toJson(userAnswers))
+      .execute[HttpResponse]
+      .map(_.status == OK)
   }
 
   def checkLock(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[LockCheck] = {
-    val url = s"$baseUrl/user-answers/${userAnswers.lrn}/lock"
-
+    val url = url"$baseUrl/user-answers/${userAnswers.lrn}/lock"
     http
-      .GET[HttpResponse](url)
+      .get(url)
+      .execute[HttpResponse]
       .map {
         _.status match {
           case OK     => Unlocked

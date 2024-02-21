@@ -59,7 +59,7 @@ class RemoveDocumentController @Inject() (
       implicit request =>
         service.getDocument(request.userAnswers, itemIndex, documentIndex) match {
           case Some(document) => Ok(view(form, lrn, mode, itemIndex, documentIndex, document))
-          case None           => handleError
+          case None           => Redirect(addAnother(lrn, mode, itemIndex))
         }
     }
 
@@ -85,12 +85,7 @@ class RemoveDocumentController @Inject() (
                 }
               )
           case None =>
-            Future.successful(handleError)
+            Future.successful(Redirect(addAnother(lrn, mode, itemIndex)))
         }
     }
-
-  private def handleError: Result = {
-    logger.error("Failed to find document")
-    Redirect(config.technicalDifficultiesUrl)
-  }
 }

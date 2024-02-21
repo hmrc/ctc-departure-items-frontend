@@ -16,10 +16,10 @@
 
 package connectors
 
-import base.{AppWithDefaultMockFixtures, SpecBase}
+import cats.data.NonEmptySet
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
-import helper.WireMockServerHandler
+import itbase.ItSpecBase
 import models.reference._
 import models.{DeclarationTypeItemLevel, PackingType}
 import org.scalacheck.Gen
@@ -30,7 +30,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with WireMockServerHandler with ScalaCheckPropertyChecks {
+class ReferenceDataConnectorSpec extends ItSpecBase with ScalaCheckPropertyChecks {
 
   private val baseUrl = "customs-reference-data/test-only"
 
@@ -233,7 +233,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       |{
       |  "_links": {
       |    "self": {
-      |      "href": "/customs-reference-data/filtered-lists/CUSCode"
+      |      "href": "/customs-reference-data/lists/CUSCode"
       |    }
       |  },
       |  "meta": {
@@ -260,7 +260,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
     "getCusCode" - {
       val cusCode = "0010001-6"
-      val url     = s"/$baseUrl/filtered-lists/CUSCode?data.code=$cusCode"
+      val url     = s"/$baseUrl/lists/CUSCode?data.code=$cusCode"
 
       "must return CUSCode when successful" in {
         server.stubFor(
@@ -268,9 +268,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(cusCodeResponseJson))
         )
 
-        val expectedResult: Seq[CUSCode] = Seq(
-          CUSCode(cusCode)
-        )
+        val expectedResult = CUSCode(cusCode)
 
         connector.getCUSCode(cusCode).futureValue mustEqual expectedResult
       }
@@ -285,7 +283,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(declarationTypesResponseJson))
         )
 
-        val expectedResult: Seq[DeclarationTypeItemLevel] = Seq(
+        val expectedResult = NonEmptySet.of(
           DeclarationTypeItemLevel("T2", "Goods having the customs status of Union goods, which are placed under the common transit procedure"),
           DeclarationTypeItemLevel("TIR", "TIR carnet")
         )
@@ -313,7 +311,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(countriesResponseJson("CountryCodesFullList")))
         )
 
-        val expectedResult: Seq[Country] = Seq(
+        val expectedResult = NonEmptySet.of(
           Country(CountryCode("GB"), "United Kingdom"),
           Country(CountryCode("AD"), "Andorra")
         )
@@ -339,7 +337,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(countriesResponseJson("CountryCodesForAddress")))
         )
 
-        val expectedResult: Seq[Country] = Seq(
+        val expectedResult = NonEmptySet.of(
           Country(CountryCode("GB"), "United Kingdom"),
           Country(CountryCode("AD"), "Andorra")
         )
@@ -365,7 +363,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(countriesResponseJson("CountryWithoutZip")))
         )
 
-        val expectedResult: Seq[CountryCode] = Seq(
+        val expectedResult = NonEmptySet.of(
           CountryCode("GB"),
           CountryCode("AD")
         )
@@ -391,7 +389,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(packageTypeJson("KindOfPackages")))
         )
 
-        val expectResult = Seq(
+        val expectResult = NonEmptySet.of(
           PackageType("VA", Some("Vat"), PackingType.Other),
           PackageType("UC", Some("Uncaged"), PackingType.Other)
         )
@@ -417,7 +415,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(packageTypeJson("KindOfPackagesBulk")))
         )
 
-        val expectResult = Seq(
+        val expectResult = NonEmptySet.of(
           PackageType("VA", Some("Vat"), PackingType.Bulk),
           PackageType("UC", Some("Uncaged"), PackingType.Bulk)
         )
@@ -443,7 +441,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(packageTypeJson("KindOfPackagesUnpacked")))
         )
 
-        val expectResult = Seq(
+        val expectResult = NonEmptySet.of(
           PackageType("VA", Some("Vat"), PackingType.Unpacked),
           PackageType("UC", Some("Uncaged"), PackingType.Unpacked)
         )
@@ -469,7 +467,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(additionalReferenceJson))
         )
 
-        val expectedResult: Seq[AdditionalReference] = Seq(
+        val expectedResult = NonEmptySet.of(
           AdditionalReference("documentType1", "desc1"),
           AdditionalReference("documentType2", "desc2")
         )
@@ -495,7 +493,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(additionalInformationJson))
         )
 
-        val expectResult = Seq(
+        val expectResult = NonEmptySet.of(
           AdditionalInformation("additionalInfoCode1", "additionalInfoDesc1"),
           AdditionalInformation("additionalInfoCode2", "additionalInfoDesc2")
         )
@@ -521,7 +519,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(methodOfPaymentJson))
         )
 
-        val expectedResult: Seq[TransportChargesMethodOfPayment] = Seq(
+        val expectedResult = NonEmptySet.of(
           TransportChargesMethodOfPayment("A", "Payment By Card"),
           TransportChargesMethodOfPayment("B", "PayPal")
         )
@@ -547,7 +545,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(supplyChainActorTypesResponseJson))
         )
 
-        val expectedResult: Seq[SupplyChainActorType] = Seq(
+        val expectedResult = NonEmptySet.of(
           SupplyChainActorType("CS", "Consolidator"),
           SupplyChainActorType("MF", "Manufacturer")
         )
@@ -594,5 +592,4 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         }
     }
   }
-
 }

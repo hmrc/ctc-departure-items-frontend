@@ -16,26 +16,22 @@
 
 package models
 
-import config.Constants.DeclarationType.{T1, T2, T2F}
+import cats.Order
 import play.api.libs.json.{Format, Json}
 
 case class DeclarationTypeItemLevel(code: String, description: String) extends Radioable[DeclarationTypeItemLevel] {
-  override def toString: String         = s"$code - $description"
-  override val messageKeyPrefix: String = DeclarationTypeItemLevel.messageKeyPrefix
+  override def toString: String = s"$code - $description"
 
+  override val messageKeyPrefix: String = "item.declarationType"
+
+  def isOneOf(codes: String*): Boolean = codes.contains(code)
 }
 
 object DeclarationTypeItemLevel extends DynamicEnumerableType[DeclarationTypeItemLevel] {
 
   implicit val format: Format[DeclarationTypeItemLevel] = Json.format[DeclarationTypeItemLevel]
-  val messageKeyPrefix: String                          = "item.declarationType"
 
-  def itemValues(declarationTypes: Seq[DeclarationTypeItemLevel]): Seq[DeclarationTypeItemLevel] = {
-    val allowedTypes = List(T1, T2, T2F)
-    declarationTypes.filter(
-      item => allowedTypes.contains(item.code)
-    )
-
+  implicit val order: Order[DeclarationTypeItemLevel] = (x: DeclarationTypeItemLevel, y: DeclarationTypeItemLevel) => {
+    x.toString.compareToIgnoreCase(y.toString)
   }
-
 }

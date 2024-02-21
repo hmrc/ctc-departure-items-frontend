@@ -29,8 +29,5 @@ class AdditionalReferencesService @Inject() (referenceDataConnector: ReferenceDa
   def getAdditionalReferences()(implicit hc: HeaderCarrier): Future[SelectableList[AdditionalReference]] =
     referenceDataConnector
       .getAdditionalReferences()
-      .map(sort)
-
-  private def sort(additionalReferences: Seq[AdditionalReference]): SelectableList[AdditionalReference] =
-    SelectableList(additionalReferences.sortBy(_.description.toLowerCase))
+      .map(SelectableList(_))
 }

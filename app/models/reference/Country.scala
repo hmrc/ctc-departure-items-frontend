@@ -16,6 +16,7 @@
 
 package models.reference
 
+import cats.Order
 import models.Selectable
 import play.api.libs.json.{Json, OFormat}
 
@@ -27,4 +28,8 @@ case class Country(code: CountryCode, description: String) extends Selectable {
 
 object Country {
   implicit val format: OFormat[Country] = Json.format[Country]
+
+  implicit val order: Order[Country] = (x: Country, y: Country) => {
+    x.description.compareToIgnoreCase(y.description)
+  }
 }

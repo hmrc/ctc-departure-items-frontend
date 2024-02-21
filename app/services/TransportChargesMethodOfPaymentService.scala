@@ -28,4 +28,5 @@ class TransportChargesMethodOfPaymentService @Inject() (referenceDataConnector: 
   def getTransportChargesMethodOfPaymentTypes()(implicit hc: HeaderCarrier): Future[Seq[TransportChargesMethodOfPayment]] =
     referenceDataConnector
       .getTransportChargesMethodOfPaymentTypes()
+      .map(_.toSeq)
 }

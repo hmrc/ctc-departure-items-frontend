@@ -17,6 +17,7 @@
 package services
 
 import base.SpecBase
+import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
 import models.reference.SupplyChainActorType
 import org.mockito.ArgumentMatchers.any
@@ -36,6 +37,9 @@ class SupplyChainActorTypesServiceSpec extends SpecBase with BeforeAndAfterEach 
   private val supplyChainActorType3 = SupplyChainActorType("FW", "Freight Forwarder")
   private val supplyChainActorType4 = SupplyChainActorType("CS", "Consolidator")
 
+  private val supplyChainActorTypes =
+    NonEmptySet.of(supplyChainActorType1, supplyChainActorType2, supplyChainActorType3, supplyChainActorType4)
+
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)
     super.beforeEach()
@@ -46,7 +50,7 @@ class SupplyChainActorTypesServiceSpec extends SpecBase with BeforeAndAfterEach 
     "getTransportModeCodes" - {
       "must return a list of sorted inland modes" in {
         when(mockRefDataConnector.getSupplyChainActorTypes()(any(), any()))
-          .thenReturn(Future.successful(Seq(supplyChainActorType1, supplyChainActorType2, supplyChainActorType3, supplyChainActorType4)))
+          .thenReturn(Future.successful(supplyChainActorTypes))
 
         service.getSupplyChainActorTypes().futureValue mustBe
           Seq(supplyChainActorType4, supplyChainActorType3, supplyChainActorType2, supplyChainActorType1)

@@ -16,6 +16,7 @@
 
 package models.reference
 
+import cats.Order
 import models.Selectable
 import play.api.libs.json.{Json, OFormat}
 
@@ -26,4 +27,8 @@ case class CUSCode(code: String) extends Selectable {
 
 object CUSCode {
   implicit val format: OFormat[CUSCode] = Json.format[CUSCode]
+
+  implicit val order: Order[CUSCode] = (x: CUSCode, y: CUSCode) => {
+    x.code.compareToIgnoreCase(y.code)
+  }
 }
