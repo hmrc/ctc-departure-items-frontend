@@ -209,72 +209,83 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
     }
 
     "countryOfDispatchReader" - {
-      "can be read from user answers" - {
-        "when transit operation declaration type is not TIR" in {
-          forAll(arbitrary[String](arbitraryNonTIRDeclarationType)) {
-            declarationType =>
-              val userAnswers = emptyUserAnswers
-                .setValue(TransitOperationDeclarationTypePage, declarationType)
-
-              val expectedResult = None
-
-              val result = ItemDomain.countryOfDispatchReader(itemIndex).apply(Nil).run(userAnswers)
-
-              result.value.value mustBe expectedResult
-              result.value.pages mustBe Nil
-          }
-        }
-
-        "when transit operation declaration type is TIR" - {
-          "and consignment country of dispatch is defined" in {
-            forAll(arbitrary[Country]) {
-              country =>
+      "when post transition" - {
+        "can be read from user answers" - {
+          "when transit operation declaration type is not TIR" in {
+            forAll(arbitrary[String](arbitraryNonTIRDeclarationType)) {
+              declarationType =>
                 val userAnswers = emptyUserAnswers
-                  .setValue(TransitOperationDeclarationTypePage, TIR)
-                  .setValue(ConsignmentCountryOfDispatchPage, country)
+                  .setValue(TransitOperationDeclarationTypePage, declarationType)
 
                 val expectedResult = None
 
-                val result = ItemDomain.countryOfDispatchReader(itemIndex).apply(Nil).run(userAnswers)
+                val result = ItemDomain.countryOfDispatchReader(itemIndex)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
                 result.value.value mustBe expectedResult
                 result.value.pages mustBe Nil
             }
           }
 
-          "and consignment country of dispatch is undefined" in {
-            forAll(arbitrary[Country]) {
-              country =>
-                val userAnswers = emptyUserAnswers
-                  .setValue(TransitOperationDeclarationTypePage, TIR)
-                  .setValue(CountryOfDispatchPage(itemIndex), country)
+          "when transit operation declaration type is TIR" - {
+            "and consignment country of dispatch is defined" in {
+              forAll(arbitrary[Country]) {
+                country =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(TransitOperationDeclarationTypePage, TIR)
+                    .setValue(ConsignmentCountryOfDispatchPage, country)
 
-                val expectedResult = Some(country)
+                  val expectedResult = None
 
-                val result = ItemDomain.countryOfDispatchReader(itemIndex).apply(Nil).run(userAnswers)
+                  val result = ItemDomain.countryOfDispatchReader(itemIndex)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
-                result.value.value mustBe expectedResult
-                result.value.pages mustBe Seq(
-                  CountryOfDispatchPage(itemIndex)
-                )
+                  result.value.value mustBe expectedResult
+                  result.value.pages mustBe Nil
+              }
+            }
+
+            "and consignment country of dispatch is undefined" in {
+              forAll(arbitrary[Country]) {
+                country =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(TransitOperationDeclarationTypePage, TIR)
+                    .setValue(CountryOfDispatchPage(itemIndex), country)
+
+                  val expectedResult = Some(country)
+
+                  val result = ItemDomain.countryOfDispatchReader(itemIndex)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
+
+                  result.value.value mustBe expectedResult
+                  result.value.pages mustBe Seq(
+                    CountryOfDispatchPage(itemIndex)
+                  )
+              }
+            }
+          }
+        }
+
+        "can not be read from user answers" - {
+          "when transit operation declaration type is TIR" - {
+            "and consignment country of dispatch is undefined" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(TransitOperationDeclarationTypePage, TIR)
+
+              val result = ItemDomain.countryOfDispatchReader(itemIndex)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
+
+              result.left.value.page mustBe CountryOfDispatchPage(itemIndex)
+              result.left.value.pages mustBe Seq(
+                CountryOfDispatchPage(itemIndex)
+              )
             }
           }
         }
       }
 
-      "can not be read from user answers" - {
-        "when transit operation declaration type is TIR" - {
-          "and consignment country of dispatch is undefined" in {
-            val userAnswers = emptyUserAnswers
-              .setValue(TransitOperationDeclarationTypePage, TIR)
+      "when transition" - {
+        "can be read from user answers" in {
+          val result = ItemDomain.countryOfDispatchReader(itemIndex)(mockTransitionPhaseConfig).apply(Nil).run(emptyUserAnswers)
 
-            val result = ItemDomain.countryOfDispatchReader(itemIndex).apply(Nil).run(userAnswers)
-
-            result.left.value.page mustBe CountryOfDispatchPage(itemIndex)
-            result.left.value.pages mustBe Seq(
-              CountryOfDispatchPage(itemIndex)
-            )
-          }
+          result.value.value mustBe None
+          result.value.pages mustBe Nil
         }
       }
     }

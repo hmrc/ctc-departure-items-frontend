@@ -115,14 +115,19 @@ object ItemDomain {
       DeclarationTypePage(itemIndex).reader
     }
 
-  def countryOfDispatchReader(itemIndex: Index): Read[Option[Country]] =
-    TransitOperationDeclarationTypePage
-      .filterOptionalDependent(_ == TIR) {
-        ConsignmentCountryOfDispatchPage.filterDependent(_.isEmpty) {
-          CountryOfDispatchPage(itemIndex).reader
-        }
-      }
-      .flatten
+  def countryOfDispatchReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): Read[Option[Country]] =
+    phaseConfig.phase match {
+      case Phase.Transition =>
+        UserAnswersReader.none
+      case Phase.PostTransition =>
+        TransitOperationDeclarationTypePage
+          .filterOptionalDependent(_ == TIR) {
+            ConsignmentCountryOfDispatchPage.filterDependent(_.isEmpty) {
+              CountryOfDispatchPage(itemIndex).reader
+            }
+          }
+          .flatten
+    }
 
   def countryOfDestinationReader(itemIndex: Index): Read[Option[Country]] =
     ConsignmentCountryOfDestinationPage.filterDependent(_.isEmpty) {
