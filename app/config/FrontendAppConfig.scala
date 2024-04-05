@@ -79,4 +79,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
     val url: String = configuration.get[String]("urls.documentsFrontend")
     url.replace(":lrn", lrn.toString)
   }
+
+  val allowedRedirectUrls: Seq[String] = configuration.get[Seq[String]]("urls.allowedRedirects")
 }

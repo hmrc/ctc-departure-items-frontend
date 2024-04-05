@@ -23,10 +23,11 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.verify
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
 
 class UpdateTaskControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val continueUrl = "foo"
+  private val continueUrl = RedirectUrl("http://localhost:10130/foo")
   private val task        = ".items"
 
   private lazy val updateTaskRoute = routes.UpdateTaskController.updateTask(lrn, continueUrl).url
@@ -42,7 +43,7 @@ class UpdateTaskControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual continueUrl
+        redirectLocation(result).value mustEqual continueUrl.unsafeValue
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
@@ -58,7 +59,7 @@ class UpdateTaskControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual continueUrl
+        redirectLocation(result).value mustEqual continueUrl.unsafeValue
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
@@ -74,7 +75,7 @@ class UpdateTaskControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual continueUrl
+        redirectLocation(result).value mustEqual continueUrl.unsafeValue
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
@@ -90,7 +91,7 @@ class UpdateTaskControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual continueUrl
+        redirectLocation(result).value mustEqual continueUrl.unsafeValue
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
@@ -106,7 +107,7 @@ class UpdateTaskControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual continueUrl
+        redirectLocation(result).value mustEqual continueUrl.unsafeValue
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())

@@ -15,7 +15,7 @@
  */
 
 import cats.data.ReaderT
-import config.PhaseConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import models.TaskStatus.{Completed, InProgress}
 import models.UserAnswers
 import models.journeyDomain.OpsError.WriterError
@@ -28,6 +28,7 @@ import play.api.mvc.Results.Redirect
 import play.api.mvc.{Call, Result}
 import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.bootstrap.binders.{AbsoluteWithHostnameFromAllowlist, RedirectUrl}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
@@ -153,6 +154,15 @@ package object controllers {
       write.map {
         _ => Redirect(url)
       }
+
+    def navigateTo(url: RedirectUrl)(implicit executionContext: ExecutionContext, appConfig: FrontendAppConfig): Future[Result] = {
+      import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl.idFunctor
+      write.map {
+        _ =>
+          val redirectUrlPolicy = AbsoluteWithHostnameFromAllowlist(appConfig.allowedRedirectUrls: _*)
+          Redirect(url.get(redirectUrlPolicy).url)
+      }
+    }
 
     private def navigate(result: Write[A] => Call)(implicit executionContext: ExecutionContext): Future[Result] =
       write.map {
