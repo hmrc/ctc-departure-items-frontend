@@ -21,14 +21,18 @@ import models.{TaskStatus, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.verify
+import org.scalacheck.Gen
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
 
 class UpdateTaskControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val continueUrl = RedirectUrl("http://localhost:10130/foo")
-  private val task        = ".items"
+  private val absoluteUrl = RedirectUrl("http://localhost:10130/foo")
+  private val relativeUrl = RedirectUrl("/foo")
+  private val continueUrl = Gen.oneOf(absoluteUrl, relativeUrl).sample.value
+
+  private val task = ".items"
 
   private lazy val updateTaskRoute = routes.UpdateTaskController.updateTask(lrn, continueUrl).url
 
