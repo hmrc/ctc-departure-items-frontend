@@ -17,7 +17,10 @@ lazy val microservice = Project(appName, file("."))
   .settings(automateHeaderSettings(A11yTest))
   .settings(
     name := appName,
-    RoutesKeys.routesImport ++= Seq("models._"),
+    RoutesKeys.routesImport ++= Seq(
+      "models._",
+      "uk.gov.hmrc.play.bootstrap.binders.RedirectUrl"
+    ),
     TwirlKeys.templateImports ++= Seq(
       "play.twirl.api.HtmlFormat",
       "play.twirl.api.HtmlFormat._",

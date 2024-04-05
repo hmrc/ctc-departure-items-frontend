@@ -17,13 +17,14 @@
 package controllers
 
 import com.google.inject.Inject
-import config.PhaseConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import controllers.actions.Actions
 import models.LocalReferenceNumber
 import pages.sections.ItemsSection
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import scala.concurrent.ExecutionContext
@@ -33,11 +34,11 @@ class UpdateTaskController @Inject() (
   implicit val sessionRepository: SessionRepository,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents
-)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext, appConfig: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
-  def updateTask(lrn: LocalReferenceNumber, continue: String): Action[AnyContent] = actions.requireDataWithNoDependencies(lrn).async {
+  def updateTask(lrn: LocalReferenceNumber, continue: RedirectUrl): Action[AnyContent] = actions.requireDataWithNoDependencies(lrn).async {
     implicit request =>
       ItemsSection.updateTask().writeToSession().navigateTo(continue)
   }
