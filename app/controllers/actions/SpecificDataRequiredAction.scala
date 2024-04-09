@@ -24,9 +24,10 @@ import play.api.libs.json.Reads
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
 import queries.Gettable
-import shapeless.syntax.std.tuple._
+import shapeless.syntax.std.tuple.productTupleOps
 
 import javax.inject.Inject
+import scala.annotation.tailrec
 import scala.concurrent.{ExecutionContext, Future}
 
 // scalastyle:off no.whitespace.after.left.bracket
@@ -84,19 +85,23 @@ trait SpecificDataRequiredActionProvider {
 
 trait SpecificDataRequiredAction extends Logging {
 
-  def defaultRedirect(implicit config: FrontendAppConfig): Result =
-    Redirect(config.sessionExpiredUrl)
-
-  def getPage[T, R](userAnswers: UserAnswers, page: Gettable[T])(block: T => R)(implicit rds: Reads[T], config: FrontendAppConfig): Future[Either[Result, R]] =
-    Future.successful {
-      userAnswers.get(page) match {
-        case Some(value) =>
-          Right(block(value))
-        case None =>
-          logger.warn(s"${page.path} is missing from user answers. Redirecting to session expired.")
-          Left(defaultRedirect)
-      }
+  def getPage[T, R](userAnswers: UserAnswers, pages: Gettable[T]*)(
+    block: T => R
+  )(implicit rds: Reads[T], config: FrontendAppConfig): Future[Either[Result, R]] = {
+    @tailrec
+    def rec(pages: List[Gettable[T]]): Either[Result, R] = pages match {
+      case Nil =>
+        logger.warn(s"${pages.mkString(", ")} are missing from user answers. Redirecting.")
+        Left(Redirect(config.sessionExpiredUrl))
+      case head :: tail =>
+        userAnswers.get(head) match {
+          case Some(value) => Right(block(value))
+          case None        => rec(tail)
+        }
     }
+
+    Future.successful(rec(pages.toList))
+  }
 }
 
 class SpecificDataRequiredAction1[T1](
@@ -110,28 +115,16 @@ class SpecificDataRequiredAction1[T1](
 
   override protected def refine[A](
     request: DataRequest[A]
-  ): Future[Either[Result, SpecificDataRequestProvider1[T1]#SpecificDataRequest[A]]] = {
-    def rec(pages: Seq[Gettable[T1]]): Future[Either[Result, SpecificDataRequestProvider1[T1]#SpecificDataRequest[A]]] =
-      pages match {
-        case Nil =>
-          Future.successful(Left(defaultRedirect))
-        case _ =>
-          getPage(request.userAnswers, pages.head) {
-            value =>
-              new SpecificDataRequestProvider1[T1].SpecificDataRequest(
-                request = request,
-                eoriNumber = request.eoriNumber,
-                userAnswers = request.userAnswers,
-                arg = value
-              )
-          }.flatMap {
-            case Left(_) => rec(pages.tail)
-            case x       => Future.successful(x)
-          }
-      }
-
-    rec(pages)
-  }
+  ): Future[Either[Result, SpecificDataRequestProvider1[T1]#SpecificDataRequest[A]]] =
+    getPage(request.userAnswers, pages: _*) {
+      value =>
+        new SpecificDataRequestProvider1[T1].SpecificDataRequest(
+          request = request,
+          eoriNumber = request.eoriNumber,
+          userAnswers = request.userAnswers,
+          arg = value
+        )
+    }
 }
 
 class SpecificDataRequiredAction2[T1, T2](
