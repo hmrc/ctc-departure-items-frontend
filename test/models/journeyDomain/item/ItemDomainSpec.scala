@@ -2242,56 +2242,87 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         }
 
         "when in transition" - {
-          "and add consignment transport charges is false or undefined" - {
-            "and add item transport charges is answered yes" in {
-              forAll(Gen.oneOf(Some(false), None), arbitrary[TransportChargesMethodOfPayment](arbitraryMethodOfPayment)) {
-                (falseOrUndefined, transportCharge) =>
-                  val userAnswers = emptyUserAnswers
-                    .setValue(AddConsignmentTransportChargesYesNoPage, falseOrUndefined)
-                    .setValue(AddTransportChargesYesNoPage(itemIndex), true)
-                    .setValue(TransportChargesMethodOfPaymentPage(itemIndex), transportCharge)
+          "and security type is not 0" - {
+            "and add consignment transport charges is false or undefined" - {
+              "and add item transport charges is answered yes" in {
+                forAll(
+                  arbitrary[String](arbitrarySomeSecurityDetailsType),
+                  Gen.oneOf(Some(false), None),
+                  arbitrary[TransportChargesMethodOfPayment](arbitraryMethodOfPayment)
+                ) {
+                  (securityDetails, falseOrUndefined, transportCharge) =>
+                    val userAnswers = emptyUserAnswers
+                      .setValue(SecurityDetailsTypePage, securityDetails)
+                      .setValue(AddConsignmentTransportChargesYesNoPage, falseOrUndefined)
+                      .setValue(AddTransportChargesYesNoPage(itemIndex), true)
+                      .setValue(TransportChargesMethodOfPaymentPage(itemIndex), transportCharge)
 
-                  val expectedResult = Some(transportCharge)
+                    val expectedResult = Some(transportCharge)
 
-                  val result = ItemDomain.transportChargesReader(itemIndex)(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
+                    val result = ItemDomain.transportChargesReader(itemIndex)(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
-                  result.value.value mustBe expectedResult
-                  result.value.pages mustBe Seq(
-                    AddTransportChargesYesNoPage(itemIndex),
-                    TransportChargesMethodOfPaymentPage(itemIndex)
-                  )
+                    result.value.value mustBe expectedResult
+                    result.value.pages mustBe Seq(
+                      AddTransportChargesYesNoPage(itemIndex),
+                      TransportChargesMethodOfPaymentPage(itemIndex)
+                    )
+                }
+              }
+
+              "and add item transport charges is answered no" in {
+                forAll(
+                  arbitrary[String](arbitrarySomeSecurityDetailsType),
+                  Gen.oneOf(Some(false), None)
+                ) {
+                  (securityDetails, falseOrUndefined) =>
+                    val userAnswers = emptyUserAnswers
+                      .setValue(SecurityDetailsTypePage, securityDetails)
+                      .setValue(AddConsignmentTransportChargesYesNoPage, falseOrUndefined)
+                      .setValue(AddTransportChargesYesNoPage(itemIndex), false)
+
+                    val expectedResult = None
+
+                    val result = ItemDomain.transportChargesReader(itemIndex)(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
+
+                    result.value.value mustBe expectedResult
+                    result.value.pages mustBe Seq(
+                      AddTransportChargesYesNoPage(itemIndex)
+                    )
+                }
               }
             }
 
-            "and add item transport charges is answered no" in {
-              forAll(Gen.oneOf(Some(false), None)) {
-                falseOrUndefined =>
+            "and add consignment transport charges is true" in {
+              forAll(arbitrary[String](arbitrarySomeSecurityDetailsType)) {
+                securityDetails =>
                   val userAnswers = emptyUserAnswers
-                    .setValue(AddConsignmentTransportChargesYesNoPage, falseOrUndefined)
-                    .setValue(AddTransportChargesYesNoPage(itemIndex), false)
+                    .setValue(SecurityDetailsTypePage, securityDetails)
+                    .setValue(AddConsignmentTransportChargesYesNoPage, true)
 
                   val expectedResult = None
 
                   val result = ItemDomain.transportChargesReader(itemIndex)(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
                   result.value.value mustBe expectedResult
-                  result.value.pages mustBe Seq(
-                    AddTransportChargesYesNoPage(itemIndex)
-                  )
+                  result.value.pages mustBe Nil
               }
             }
           }
+        }
 
-          "and add consignment transport charges is true" in {
-            val userAnswers = emptyUserAnswers
-              .setValue(AddConsignmentTransportChargesYesNoPage, true)
+        "and security type is 0" in {
+          forAll(Gen.oneOf(None, Some(false), Some(true))) {
+            addConsignmentTransportChargesYesNo =>
+              val userAnswers = emptyUserAnswers
+                .setValue(SecurityDetailsTypePage, NoSecurityDetails)
+                .setValue(AddConsignmentTransportChargesYesNoPage, addConsignmentTransportChargesYesNo)
 
-            val expectedResult = None
+              val expectedResult = None
 
-            val result = ItemDomain.transportChargesReader(itemIndex)(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
+              val result = ItemDomain.transportChargesReader(itemIndex)(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
-            result.value.value mustBe expectedResult
-            result.value.pages mustBe Nil
+              result.value.value mustBe expectedResult
+              result.value.pages mustBe Nil
           }
         }
       }
@@ -2300,29 +2331,35 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
     "can not be read from user answers" - {
       "when in transition" - {
         "and add transport charges is unanswered" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(SecurityDetailsTypePage, NoSecurityDetails)
+          forAll(arbitrary[String](arbitrarySomeSecurityDetailsType)) {
+            securityDetails =>
+              val userAnswers = emptyUserAnswers
+                .setValue(SecurityDetailsTypePage, securityDetails)
 
-          val result = ItemDomain.transportChargesReader(itemIndex)(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
+              val result = ItemDomain.transportChargesReader(itemIndex)(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
-          result.left.value.page mustBe AddTransportChargesYesNoPage(itemIndex)
-          result.left.value.pages mustBe Seq(
-            AddTransportChargesYesNoPage(itemIndex)
-          )
+              result.left.value.page mustBe AddTransportChargesYesNoPage(itemIndex)
+              result.left.value.pages mustBe Seq(
+                AddTransportChargesYesNoPage(itemIndex)
+              )
+          }
         }
 
         "and transport charges is unanswered" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(SecurityDetailsTypePage, NoSecurityDetails)
-            .setValue(AddTransportChargesYesNoPage(itemIndex), true)
+          forAll(arbitrary[String](arbitrarySomeSecurityDetailsType)) {
+            securityDetails =>
+              val userAnswers = emptyUserAnswers
+                .setValue(SecurityDetailsTypePage, securityDetails)
+                .setValue(AddTransportChargesYesNoPage(itemIndex), true)
 
-          val result = ItemDomain.transportChargesReader(itemIndex)(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
+              val result = ItemDomain.transportChargesReader(itemIndex)(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
-          result.left.value.page mustBe TransportChargesMethodOfPaymentPage(itemIndex)
-          result.left.value.pages mustBe Seq(
-            AddTransportChargesYesNoPage(itemIndex),
-            TransportChargesMethodOfPaymentPage(itemIndex)
-          )
+              result.left.value.page mustBe TransportChargesMethodOfPaymentPage(itemIndex)
+              result.left.value.pages mustBe Seq(
+                AddTransportChargesYesNoPage(itemIndex),
+                TransportChargesMethodOfPaymentPage(itemIndex)
+              )
+          }
         }
       }
     }
