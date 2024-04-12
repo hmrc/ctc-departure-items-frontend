@@ -18,6 +18,7 @@ package models.journeyDomain.item
 
 import config.Constants.CountryCode._
 import config.Constants.DeclarationType._
+import config.Constants.SecurityType.NoSecurityDetails
 import config.PhaseConfig
 import models.DeclarationTypeItemLevel._
 import models.DocumentType.{Previous, Transport}
@@ -273,8 +274,11 @@ object ItemDomain {
   def transportChargesReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): Read[Option[TransportChargesMethodOfPayment]] =
     phaseConfig.phase match {
       case Phase.Transition =>
-        AddConsignmentTransportChargesYesNoPage.optionalReader.to {
-          case Some(true) =>
+        (
+          SecurityDetailsTypePage.reader,
+          AddConsignmentTransportChargesYesNoPage.optionalReader
+        ).to {
+          case (NoSecurityDetails, _) | (_, Some(true)) =>
             UserAnswersReader.none
           case _ =>
             AddTransportChargesYesNoPage(itemIndex).filterOptionalDependent(identity) {
