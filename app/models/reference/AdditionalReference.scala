@@ -31,6 +31,6 @@ object AdditionalReference {
   implicit val format: OFormat[AdditionalReference] = Json.format[AdditionalReference]
 
   implicit val order: Order[AdditionalReference] = (x: AdditionalReference, y: AdditionalReference) => {
-    x.description.compareToIgnoreCase(y.description)
+    (x, y).compareBy(_.description, _.documentType)
   }
 }

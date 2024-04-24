@@ -30,67 +30,36 @@ class PackageTypeSpec extends SpecBase with ScalaCheckPropertyChecks with Genera
 
   "PackageType" - {
 
-    "must serialise" - {
-      "when description defined" in {
-        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-          (code, description) =>
-            val packageType = PackageType(code, Some(description), Bulk)
-            Json.toJson(packageType) mustBe Json.parse(s"""
-              |{
-              |  "code": "$code",
-              |  "description": "$description",
-              |  "type": "Bulk"
-              |}
-              |""".stripMargin)
-        }
+    "must serialise" in {
+      forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+        (code, description) =>
+          val packageType = PackageType(code, description, Bulk)
+          Json.toJson(packageType) mustBe Json.parse(s"""
+            |{
+            |  "code": "$code",
+            |  "description": "$description",
+            |  "type": "Bulk"
+            |}
+            |""".stripMargin)
       }
-
-      "when description undefined" in {
-        forAll(Gen.alphaNumStr) {
-          code =>
-            val packageType = PackageType(code, None, Unpacked)
-            Json.toJson(packageType) mustBe Json.parse(s"""
-              |{
-              |  "code": "$code",
-              |  "type": "Unpacked"
-              |}
-              |""".stripMargin)
-        }
-      }
-
     }
 
-    "must deserialise" - {
-      "when description defined" in {
-        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-          (code, description) =>
-            val json = Json.parse(s"""
-              |{
-              |  "code": "$code",
-              |  "description": "$description",
-              |  "type": "Bulk"
-              |}
-              |""".stripMargin)
-            json.as[PackageType] mustBe PackageType(code, Some(description), Bulk)
-        }
-      }
-
-      "when description undefined" in {
-        forAll(Gen.alphaNumStr) {
-          code =>
-            val json = Json.parse(s"""
-              |{
-              |  "code": "$code",
-              |  "type": "Unpacked"
-              |}
-              |""".stripMargin)
-            json.as[PackageType] mustBe PackageType(code, None, Unpacked)
-        }
+    "must deserialise" in {
+      forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+        (code, description) =>
+          val json = Json.parse(s"""
+            |{
+            |  "code": "$code",
+            |  "description": "$description",
+            |  "type": "Bulk"
+            |}
+            |""".stripMargin)
+          json.as[PackageType] mustBe PackageType(code, description, Bulk)
       }
     }
 
     "must convert to select item" in {
-      forAll(Gen.alphaNumStr, Gen.option(Gen.alphaNumStr), arbitrary[Boolean], arbitrary[PackingType]) {
+      forAll(Gen.alphaNumStr, Gen.alphaNumStr, arbitrary[Boolean], arbitrary[PackingType]) {
         (code, description, selected, packingType) =>
           val packageType = PackageType(code, description, packingType)
           packageType.toSelectItem(selected) mustBe SelectItem(Some(code), s"$packageType", selected)
@@ -101,29 +70,13 @@ class PackageTypeSpec extends SpecBase with ScalaCheckPropertyChecks with Genera
       "when description defined and non-empty" in {
         forAll(Gen.alphaNumStr, nonEmptyString, arbitrary[PackingType]) {
           (code, description, packingType) =>
-            val packageType = PackageType(code, Some(description), packingType)
+            val packageType = PackageType(code, description, packingType)
             packageType.toString mustBe s"($code) $description"
         }
       }
 
-      "when description defined and empty" in {
-        forAll(Gen.alphaNumStr, arbitrary[PackingType]) {
-          (code, packingType) =>
-            val packageType = PackageType(code, Some(""), packingType)
-            packageType.toString mustBe code
-        }
-      }
-
-      "when description undefined" in {
-        forAll(Gen.alphaNumStr, arbitrary[PackingType]) {
-          (code, packingType) =>
-            val packageType = PackageType(code, None, packingType)
-            packageType.toString mustBe code
-        }
-      }
-
       "when description contains html" in {
-        val packageType = PackageType("VY", Some("Bulk, solid, large particles (&quot;nodules&quot;)"), PackingType.Bulk)
+        val packageType = PackageType("VY", "Bulk, solid, large particles (&quot;nodules&quot;)", PackingType.Bulk)
         packageType.toString mustBe "(VY) Bulk, solid, large particles (\"nodules\")"
       }
     }
