@@ -390,8 +390,8 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         )
 
         val expectResult = NonEmptySet.of(
-          PackageType("VA", Some("Vat"), PackingType.Other),
-          PackageType("UC", Some("Uncaged"), PackingType.Other)
+          PackageType("VA", "Vat", PackingType.Other),
+          PackageType("UC", "Uncaged", PackingType.Other)
         )
 
         connector.getPackageTypes().futureValue mustEqual expectResult
@@ -416,8 +416,8 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         )
 
         val expectResult = NonEmptySet.of(
-          PackageType("VA", Some("Vat"), PackingType.Bulk),
-          PackageType("UC", Some("Uncaged"), PackingType.Bulk)
+          PackageType("VA", "Vat", PackingType.Bulk),
+          PackageType("UC", "Uncaged", PackingType.Bulk)
         )
 
         connector.getPackageTypesBulk().futureValue mustEqual expectResult
@@ -442,8 +442,8 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         )
 
         val expectResult = NonEmptySet.of(
-          PackageType("VA", Some("Vat"), PackingType.Unpacked),
-          PackageType("UC", Some("Uncaged"), PackingType.Unpacked)
+          PackageType("VA", "Vat", PackingType.Unpacked),
+          PackageType("UC", "Uncaged", PackingType.Unpacked)
         )
 
         connector.getPackageTypesUnpacked().futureValue mustEqual expectResult

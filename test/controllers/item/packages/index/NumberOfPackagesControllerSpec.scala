@@ -39,7 +39,7 @@ import scala.concurrent.Future
 class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val packingType = Gen.oneOf(PackingType.values).retryUntil(_ != Unpacked).sample.value
-  private val packageType = PackageType("code", Some("description"), packingType)
+  private val packageType = PackageType("code", "description", packingType)
 
   private def formProvider(minimum: Int) =
     new IntFormProvider().apply("item.packages.index.numberOfPackages", phaseConfig.maxNumberOfPackages, minimum, Seq(packageType.toString))
@@ -139,7 +139,7 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
         "and package type is unpacked" - {
           "must return Bad Request" in {
             running(app) {
-              val packageType = PackageType("Unpacked", Some("Unpacked"), Unpacked)
+              val packageType = PackageType("Unpacked", "Unpacked", Unpacked)
               val userAnswers = emptyUserAnswers.setValue(PackageTypePage(itemIndex, packageIndex), packageType)
 
               setExistingUserAnswers(userAnswers)

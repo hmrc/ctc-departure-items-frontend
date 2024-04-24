@@ -30,6 +30,6 @@ object Country {
   implicit val format: OFormat[Country] = Json.format[Country]
 
   implicit val order: Order[Country] = (x: Country, y: Country) => {
-    x.description.compareToIgnoreCase(y.description)
+    (x, y).compareBy(_.description, _.code.code)
   }
 }

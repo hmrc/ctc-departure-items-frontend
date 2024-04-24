@@ -35,6 +35,6 @@ object SupplyChainActorType extends DynamicEnumerableType[SupplyChainActorType] 
   implicit val format: Format[SupplyChainActorType] = Json.format[SupplyChainActorType]
 
   implicit val order: Order[SupplyChainActorType] = (x: SupplyChainActorType, y: SupplyChainActorType) => {
-    x.code.compareToIgnoreCase(y.code)
+    (x, y).compareBy(_.role)
   }
 }

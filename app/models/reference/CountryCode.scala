@@ -32,6 +32,6 @@ object CountryCode {
   }
 
   implicit val order: Order[CountryCode] = (x: CountryCode, y: CountryCode) => {
-    x.code.compareToIgnoreCase(y.code)
+    (x, y).compareBy(_.code)
   }
 }

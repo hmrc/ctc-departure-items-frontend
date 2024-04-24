@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,23 @@
  * limitations under the License.
  */
 
-package models.reference
+package models
 
-import cats.Order
-import models.Selectable
-import play.api.libs.json.{Json, OFormat}
+package object reference {
 
-case class CUSCode(code: String) extends Selectable {
+  implicit class RichComparison[T](value: (T, T)) {
 
-  override val value: String = code
-}
-
-object CUSCode {
-  implicit val format: OFormat[CUSCode] = Json.format[CUSCode]
-
-  implicit val order: Order[CUSCode] = (x: CUSCode, y: CUSCode) => {
-    (x, y).compareBy(_.code)
+    def compareBy(fs: (T => String)*): Int =
+      value match {
+        case (x, y) =>
+          fs.toList match {
+            case Nil => 0
+            case f :: tail =>
+              f(x).compareToIgnoreCase(f(y)) match {
+                case 0      => compareBy(tail: _*)
+                case result => result
+              }
+          }
+      }
   }
 }
