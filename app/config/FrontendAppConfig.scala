@@ -53,6 +53,8 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
 
   def signOutUrl(lrn: LocalReferenceNumber): String = s"$departureHubUrl/$lrn/delete-lock"
 
+  def sessionExpiredUrl(lrn: LocalReferenceNumber): String = s"$departureHubUrl/this-service-has-been-reset/$lrn"
+
   lazy val maxItems: Int          = configuration.get[Int]("limits.maxItems")
   lazy val maxDangerousGoods: Int = configuration.get[Int]("limits.maxDangerousGoods")
   lazy val maxPackages: Int       = configuration.get[Int]("limits.maxPackages")
