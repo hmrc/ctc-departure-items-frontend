@@ -37,7 +37,7 @@ sealed abstract class NetWeightFormProvider(implicit phaseConfig: PhaseConfig) e
         s"$prefix.error.required",
         s"$prefix.error.invalidCharacters",
         s"$prefix.error.invalidFormat",
-        s"$prefix.error.invalidValue",
+        s"$prefix.error.invalidValue.${phaseConfig.phase}",
         Seq(decimalPlaces.toString, characterCount.toString)
       ).verifying(
         maxValueConstraint(prefix, grossWeight).toSeq: _*
