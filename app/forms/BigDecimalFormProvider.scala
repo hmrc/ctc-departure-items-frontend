@@ -35,7 +35,7 @@ class BigDecimalFormProvider @Inject() (implicit phaseConfig: PhaseConfig) exten
         s"$prefix.error.required",
         s"$prefix.error.invalidCharacters",
         s"$prefix.error.invalidFormat",
-        s"$prefix.error.invalidValue",
+        s"$prefix.error.invalidValue.${phaseConfig.phase}",
         Seq(decimalPlaceCount.toString, characterCount.toString)
       )
     )

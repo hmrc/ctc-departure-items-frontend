@@ -51,7 +51,7 @@ class NetWeightFormProviderSpec extends BigDecimalFieldBehaviours with SpecBase 
         fieldName,
         invalidCharactersError = FormError(fieldName, s"$prefix.error.invalidCharacters", Seq(decimalPlaceCount.toString, characterCount.toString)),
         invalidFormatError = FormError(fieldName, s"$prefix.error.invalidFormat", Seq(decimalPlaceCount.toString, characterCount.toString)),
-        invalidValueError = FormError(fieldName, s"$prefix.error.invalidValue", Seq(decimalPlaceCount.toString, characterCount.toString)),
+        invalidValueError = FormError(fieldName, s"$prefix.error.invalidValue.${phaseConfig.phase}", Seq(decimalPlaceCount.toString, characterCount.toString)),
         Seq(decimalPlaceCount.toString, characterCount.toString)
       )(phaseConfig)
 
