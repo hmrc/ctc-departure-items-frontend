@@ -151,7 +151,7 @@ class RemovePackageControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
       }
 
       "if no package is found" in {
@@ -180,7 +180,7 @@ class RemovePackageControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
       }
 
       "if no package is found" in {
