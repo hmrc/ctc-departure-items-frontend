@@ -47,7 +47,7 @@
             timeout = Some(renderConfig.timeoutSeconds),
             countdown = Some(renderConfig.countdownSeconds),
             keepAliveUrl = Some(appConfig.keepAliveUrl(lrn)),
-            signOutUrl = Some(appConfig.signOutUrl(lrn))
+            signOutUrl = Some(appConfig.sessionExpiredUrl(lrn))
         ))
     }
 
