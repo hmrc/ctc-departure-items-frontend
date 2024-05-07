@@ -132,7 +132,7 @@ class RemoveItemControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
       }
 
       "when no item is found" in {
@@ -160,7 +160,7 @@ class RemoveItemControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
       }
 
       "when no item is found" in {
