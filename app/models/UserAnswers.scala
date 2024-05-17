@@ -72,10 +72,10 @@ final case class UserAnswers(
     if (isCountryOfDestinationInCL009) {
       val numberOfAdditionalInformation = this.getArraySize(ConsignmentAdditionalInformationListSection)
       (0 until numberOfAdditionalInformation).map(Index(_)).foldRight(this) {
-        (additionalReferenceIndex, acc) =>
-          acc.get(ConsignmentAdditionalInformationTypePage(additionalReferenceIndex)) match {
+        (index, acc) =>
+          acc.get(ConsignmentAdditionalInformationTypePage(index)) match {
             case Some(`Type30600`) =>
-              acc.remove(ConsignmentAdditionalInformationSection(additionalReferenceIndex)).getOrElse(acc)
+              acc.remove(ConsignmentAdditionalInformationSection(index)).getOrElse(acc)
             case _ =>
               acc
           }
