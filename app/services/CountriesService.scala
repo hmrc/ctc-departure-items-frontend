@@ -17,6 +17,7 @@
 package services
 
 import connectors.ReferenceDataConnector
+import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import models.SelectableList
 import models.reference.{Country, CountryCode}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -43,4 +44,14 @@ class CountriesService @Inject() (referenceDataConnector: ReferenceDataConnector
 
   def doesCountryRequireZip(country: Country)(implicit hc: HeaderCarrier): Future[Boolean] =
     getCountriesWithoutZip().map(!_.contains(country.code))
+
+  def isCountryInCL009(country: Country)(implicit hc: HeaderCarrier): Future[Boolean] =
+    referenceDataConnector
+      .getCountryCodeCommonTransit(country)
+      .map {
+        _ => true
+      }
+      .recover {
+        case _: NoReferenceDataFoundException => false
+      }
 }

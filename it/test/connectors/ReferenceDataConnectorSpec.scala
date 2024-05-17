@@ -72,6 +72,30 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
        |}
        |""".stripMargin
 
+  private def countryResponseJson(listName: String): String =
+    s"""
+       |{
+       |  "_links": {
+       |    "self": {
+       |      "href": "/customs-reference-data/lists/$listName"
+       |    }
+       |  },
+       |  "meta": {
+       |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+       |    "snapshotDate": "2023-01-01"
+       |  },
+       |  "id": "$listName",
+       |  "data": [
+       |    {
+       |      "activeFrom": "2023-01-23",
+       |      "code": "GB",
+       |      "state": "valid",
+       |      "description": "United Kingdom"
+       |    }
+       |  ]
+       |}
+       |""".stripMargin
+
   private def packageTypeJson(listName: String): String =
     s"""
       |{
@@ -351,6 +375,35 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
       "must return an exception when an error response is returned" in {
         checkErrorResponse(url, connector.getCountryCodesForAddress())
+      }
+    }
+
+    "getCountryCodeCommonTransit" - {
+      def url(code: String) = s"/$baseUrl/lists/CountryCodesCommonTransit?data.code=$code"
+
+      "must return Country when successful" in {
+        val code = "GB"
+
+        server.stubFor(
+          get(urlEqualTo(url(code)))
+            .willReturn(okJson(countryResponseJson("CountryCodesCommonTransit")))
+        )
+
+        val country = Country(CountryCode(code), "United Kingdom")
+
+        connector.getCountryCodeCommonTransit(country).futureValue mustEqual country
+      }
+
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        val code    = "FR"
+        val country = Country(CountryCode(code), "France")
+        checkNoReferenceDataFoundResponse(url(code), connector.getCountryCodeCommonTransit(country))
+      }
+
+      "must return an exception when an error response is returned" in {
+        val code    = "GB"
+        val country = Country(CountryCode(code), "United Kingdom")
+        checkErrorResponse(url(code), connector.getCountryCodeCommonTransit(country))
       }
     }
 

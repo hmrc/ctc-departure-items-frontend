@@ -51,6 +51,16 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
       .execute[NonEmptySet[Country]]
   }
 
+  def getCountryCodeCommonTransit(country: Country)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Country] = {
+    val url = url"${config.referenceDataUrl}/lists/CountryCodesCommonTransit"
+    http
+      .get(url)
+      .transform(_.withQueryStringParameters("data.code" -> country.code.code))
+      .setHeader(version2Header: _*)
+      .execute[NonEmptySet[Country]]
+      .map(_.head)
+  }
+
   def getCountriesWithoutZip()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[CountryCode]] = {
     val url = url"${config.referenceDataUrl}/lists/CountryWithoutZip"
     http
