@@ -73,6 +73,7 @@ class CountryOfDestinationController @Inject() (
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, countryList.values, mode, itemIndex))),
               value => {
                 implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
+                // if value is in CL009 => clean up any additional references in transport details
                 CountryOfDestinationPage(itemIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
               }
             )

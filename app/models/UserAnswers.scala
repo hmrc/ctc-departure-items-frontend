@@ -16,9 +16,12 @@
 
 package models
 
+import config.Constants.AdditionalInformation.Type30600
 import pages.QuestionPage
+import pages.external.ConsignmentAdditionalInformationTypePage
+import pages.sections.external.{ConsignmentAdditionalInformationListSection, ConsignmentAdditionalInformationSection}
 import play.api.libs.json._
-import queries.Gettable
+import queries.{Gettable, Removable}
 
 import scala.util.{Failure, Success, Try}
 
@@ -54,7 +57,7 @@ final case class UserAnswers(
     }
   }
 
-  def remove[A](page: QuestionPage[A]): Try[UserAnswers] = {
+  def remove[A](page: Removable[A]): Try[UserAnswers] = {
     val updatedData    = data.removeObject(page.path).getOrElse(data)
     val updatedAnswers = copy(data = updatedData)
     page.cleanup(None, updatedAnswers)
@@ -64,6 +67,22 @@ final case class UserAnswers(
     val tasks = this.tasks.updated(section, status)
     this.copy(tasks = tasks)
   }
+
+  def removeConsignmentAdditionalInformation(isCountryOfDestinationInCL009: Boolean): UserAnswers =
+    if (isCountryOfDestinationInCL009) {
+      val numberOfAdditionalInformation = this.getArraySize(ConsignmentAdditionalInformationListSection)
+      (0 until numberOfAdditionalInformation).map(Index(_)).foldRight(this) {
+        (additionalReferenceIndex, acc) =>
+          acc.get(ConsignmentAdditionalInformationTypePage(additionalReferenceIndex)) match {
+            case Some(`Type30600`) =>
+              acc.remove(ConsignmentAdditionalInformationSection(additionalReferenceIndex)).getOrElse(acc)
+            case _ =>
+              acc
+          }
+      }
+    } else {
+      this
+    }
 }
 
 object UserAnswers {
