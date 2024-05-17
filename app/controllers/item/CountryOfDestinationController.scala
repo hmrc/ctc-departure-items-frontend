@@ -16,9 +16,9 @@
 
 package controllers.item
 
-import config.PhaseConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import controllers.actions._
-import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
+import controllers.{NavigatorOps, SettableOps, SettableOpsRunner, UpdateOps}
 import forms.SelectableFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
@@ -42,7 +42,7 @@ class CountryOfDestinationController @Inject() (
   service: CountriesService,
   val controllerComponents: MessagesControllerComponents,
   view: CountryOfDestinationView
-)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig, appConfig: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -73,8 +73,17 @@ class CountryOfDestinationController @Inject() (
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, countryList.values, mode, itemIndex))),
               value => {
                 implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
-                // if value is in CL009 => clean up any additional references in transport details
-                CountryOfDestinationPage(itemIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+                service.isCountryInCL009(value).flatMap {
+                  isCountryInCL009 =>
+                    CountryOfDestinationPage(itemIndex)
+                      .writeToUserAnswers(value)
+                      .amendUserAnswers(_.removeConsignmentAdditionalInformation(isCountryInCL009))
+                      .updateTask()
+                      .writeToSession()
+                      .getNextPage()
+                      .updateTransportDetails(lrn)
+                      .navigate()
+                }
               }
             )
       }
