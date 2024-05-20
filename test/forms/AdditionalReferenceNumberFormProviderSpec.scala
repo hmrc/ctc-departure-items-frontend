@@ -31,6 +31,7 @@ class AdditionalReferenceNumberFormProviderSpec extends SpecBase with AppWithDef
   private val invalidKey  = s"$prefix.error.invalidCharacters"
   private val lengthKey   = s"$prefix.error.length"
   private val uniqueKey   = s"$prefix.error.unique"
+  private val cl234Key    = s"$prefix.error.cl234Constraint"
 
   private val values = listWithMaxLength[String]()(Arbitrary(nonEmptyString)).sample.value
 
@@ -79,16 +80,26 @@ class AdditionalReferenceNumberFormProviderSpec extends SpecBase with AppWithDef
     "during transition" - {
       val app = transitionApplicationBuilder().build()
       running(app) {
-        val form = app.injector.instanceOf[AdditionalReferenceNumberFormProvider].apply(prefix, values)
+        val form = app.injector.instanceOf[AdditionalReferenceNumberFormProvider].apply(prefix, values, Some(false))
         runTests(form, maxAdditionalReferenceNumTransitionLength)
       }
     }
 
     "post transition" - {
+
+      val fieldName = "value"
+
       val app = postTransitionApplicationBuilder().build()
       running(app) {
-        val form = app.injector.instanceOf[AdditionalReferenceNumberFormProvider].apply(prefix, values)
+        val form = app.injector.instanceOf[AdditionalReferenceNumberFormProvider].apply(prefix, values, Some(true))
         runTests(form, maxAdditionalReferenceNumPostTransitionLength)
+
+        behave like fieldWithInvalidInputCL234(
+          form,
+          fieldName,
+          error = FormError(fieldName, cl234Key)
+        )
+
       }
     }
   }
