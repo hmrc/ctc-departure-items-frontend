@@ -19,6 +19,7 @@ package forms
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.behaviours.StringFieldBehaviours
 import forms.item.additionalReference.AdditionalReferenceNumberFormProvider
+import models.Phase.{PostTransition, Transition}
 import models.domain.StringFieldRegex.stringFieldRegexComma
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.{Form, FormError}
@@ -80,7 +81,7 @@ class AdditionalReferenceNumberFormProviderSpec extends SpecBase with AppWithDef
     "during transition" - {
       val app = transitionApplicationBuilder().build()
       running(app) {
-        val form = app.injector.instanceOf[AdditionalReferenceNumberFormProvider].apply(prefix, values, Some(false))
+        val form = app.injector.instanceOf[AdditionalReferenceNumberFormProvider].apply(prefix, values, Some(true), Transition)
         runTests(form, maxAdditionalReferenceNumTransitionLength)
       }
     }
@@ -91,7 +92,7 @@ class AdditionalReferenceNumberFormProviderSpec extends SpecBase with AppWithDef
 
       val app = postTransitionApplicationBuilder().build()
       running(app) {
-        val form = app.injector.instanceOf[AdditionalReferenceNumberFormProvider].apply(prefix, values, Some(true))
+        val form = app.injector.instanceOf[AdditionalReferenceNumberFormProvider].apply(prefix, values, Some(true), PostTransition)
         runTests(form, maxAdditionalReferenceNumPostTransitionLength)
 
         behave like fieldWithInvalidInputCL234(
@@ -99,7 +100,6 @@ class AdditionalReferenceNumberFormProviderSpec extends SpecBase with AppWithDef
           fieldName,
           error = FormError(fieldName, cl234Key)
         )
-
       }
     }
   }

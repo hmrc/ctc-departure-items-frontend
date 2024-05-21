@@ -19,6 +19,7 @@ package controllers.item.additionalReference.index
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.item.additionalReference.AdditionalReferenceNumberFormProvider
 import generators.Generators
+import models.Phase.Transition
 import models.reference.AdditionalReference
 import models.{NormalMode, UserAnswers}
 import navigation.AdditionalReferenceNavigatorProvider
@@ -41,8 +42,10 @@ class AdditionalReferenceNumberControllerSpec extends SpecBase with AppWithDefau
 
   private val viewModel = arbitrary[AdditionalReferenceNumberViewModel].sample.value
 
-  private lazy val formProvider                   = new AdditionalReferenceNumberFormProvider()
-  private lazy val form                           = formProvider("item.additionalReference.index.additionalReferenceNumber", viewModel.otherAdditionalReferenceNumbers, Some(false))
+  private lazy val formProvider = new AdditionalReferenceNumberFormProvider()
+
+  private lazy val form =
+    formProvider("item.additionalReference.index.additionalReferenceNumber", viewModel.otherAdditionalReferenceNumbers, Some(false), Transition)
   private val mode                                = NormalMode
   private lazy val additionalReferenceNumberRoute = routes.AdditionalReferenceNumberController.onPageLoad(lrn, mode, itemIndex, additionalReferenceIndex).url
 

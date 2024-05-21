@@ -94,6 +94,16 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
       .execute[NonEmptySet[AdditionalReference]]
   }
 
+  def getDocumentTypeExcise(docType: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[DocTypeExcise] = {
+    val url = url"${config.referenceDataUrl}/lists/DocumentTypeExcise"
+    http
+      .get(url)
+      .transform(_.withQueryStringParameters("data.code" -> docType))
+      .setHeader(version2Header: _*)
+      .execute[NonEmptySet[DocTypeExcise]]
+      .map(_.head)
+  }
+
   def getCUSCode(cusCode: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[CUSCode] = {
     val url = url"${config.referenceDataUrl}/lists/CUSCode"
     http

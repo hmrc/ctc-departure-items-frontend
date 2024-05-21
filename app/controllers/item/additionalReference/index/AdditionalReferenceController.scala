@@ -22,7 +22,7 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.SelectableFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{AdditionalReferenceNavigatorProvider, UserAnswersNavigator}
-import pages.item.additionalReference.index.AdditionalReferencePage
+import pages.item.additionalReference.index.{AdditionalReferenceInCL234Page, AdditionalReferencePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -76,7 +76,15 @@ class AdditionalReferenceController @Inject() (
                 Future.successful(BadRequest(view(formWithErrors, lrn, additionalReferences.values, mode, itemIndex, additionalReferenceIndex))),
               value => {
                 implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex, additionalReferenceIndex)
-                AdditionalReferencePage(itemIndex, additionalReferenceIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+                for {
+                  isInCL234 <- service.isDocumentTypeExcise(value.documentType)
+                  result <- AdditionalReferencePage(itemIndex, additionalReferenceIndex)
+                    .writeToUserAnswers(value)
+                    .appendValue(AdditionalReferenceInCL234Page(itemIndex, additionalReferenceIndex), isInCL234)
+                    .updateTask()
+                    .writeToSession()
+                    .navigate()
+                } yield result
               }
             )
       }

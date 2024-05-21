@@ -21,9 +21,14 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.item.additionalReference.AdditionalReferenceNumberFormProvider
 import models.Phase.PostTransition
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode, Phase}
 import navigation.{AdditionalReferenceNavigatorProvider, UserAnswersNavigator}
-import pages.item.additionalReference.index.{AddAdditionalReferenceNumberYesNoPage, AdditionalReferenceNumberPage, AdditionalReferencePage}
+import pages.item.additionalReference.index.{
+  AddAdditionalReferenceNumberYesNoPage,
+  AdditionalReferenceInCL234Page,
+  AdditionalReferenceNumberPage,
+  AdditionalReferencePage
+}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -49,23 +54,19 @@ class AdditionalReferenceNumberController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(otherAdditionalReferenceNumbers: Seq[String], isDocumentInCL234: Option[Boolean]): Form[String] =
-    formProvider("item.additionalReference.index.additionalReferenceNumber", otherAdditionalReferenceNumbers, isDocumentInCL234)
+  private def form(otherAdditionalReferenceNumbers: Seq[String], isDocumentInCL234: Option[Boolean], phase: Phase): Form[String] =
+    formProvider("item.additionalReference.index.additionalReferenceNumber", otherAdditionalReferenceNumbers, isDocumentInCL234, phase)
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, additionalReferenceIndex: Index): Action[AnyContent] = actions
     .requireData(lrn)
     .andThen(getMandatoryPage(AdditionalReferencePage(itemIndex, additionalReferenceIndex))) {
       implicit request =>
-        val isDocumentInCL234 = request.userAnswers
-          .get(AdditionalReferencePage(itemIndex, additionalReferenceIndex))
-          .map(
-            document => document.documentType == "C651" || document.documentType == "C658" && phaseConfig.phase == PostTransition
-          )
+        val isDocumentTypeInCL234 = request.userAnswers.get(AdditionalReferenceInCL234Page(itemIndex, additionalReferenceIndex))
 
         val viewModel = viewModelProvider.apply(request.userAnswers, itemIndex, additionalReferenceIndex, request.arg)
         val preparedForm = request.userAnswers.get(AdditionalReferenceNumberPage(itemIndex, additionalReferenceIndex)) match {
-          case None        => form(viewModel.otherAdditionalReferenceNumbers, isDocumentInCL234)
-          case Some(value) => form(viewModel.otherAdditionalReferenceNumbers, isDocumentInCL234).fill(value)
+          case None        => form(viewModel.otherAdditionalReferenceNumbers, isDocumentTypeInCL234, phaseConfig.phase)
+          case Some(value) => form(viewModel.otherAdditionalReferenceNumbers, isDocumentTypeInCL234, phaseConfig.phase).fill(value)
         }
         Ok(view(preparedForm, lrn, mode, itemIndex, additionalReferenceIndex, viewModel.isReferenceNumberRequired))
     }
@@ -75,13 +76,11 @@ class AdditionalReferenceNumberController @Inject() (
     .andThen(getMandatoryPage(AdditionalReferencePage(itemIndex, additionalReferenceIndex)))
     .async {
       implicit request =>
-        val isDocumentInCL234 = request.userAnswers
-          .get(AdditionalReferencePage(itemIndex, additionalReferenceIndex))
-          .map(
-            document => (document.documentType == "C651" || document.documentType == "C658") && phaseConfig.phase == PostTransition
-          )
         val viewModel = viewModelProvider.apply(request.userAnswers, itemIndex, additionalReferenceIndex, request.arg)
-        form(viewModel.otherAdditionalReferenceNumbers, isDocumentInCL234)
+
+        val isDocumentTypeInCL234 = request.userAnswers.get(AdditionalReferenceInCL234Page(itemIndex, additionalReferenceIndex))
+
+        form(viewModel.otherAdditionalReferenceNumbers, isDocumentTypeInCL234, phaseConfig.phase)
           .bindFromRequest()
           .fold(
             formWithErrors =>
