@@ -26,7 +26,7 @@ import javax.inject.Inject
 
 class AdditionalReferenceNumberFormProvider @Inject() (implicit phaseConfig: PhaseConfig) extends Mappings {
 
-  def apply(prefix: String, otherAdditionalReferenceNumbers: Seq[String], isDocumentInCL234: Option[Boolean], phase: Phase): Form[String] =
+  def apply(prefix: String, otherAdditionalReferenceNumbers: Seq[String], isDocumentInCL234: Boolean, phase: Phase): Form[String] =
     Form(
       "value" -> text(s"$prefix.error.required")
         .verifying(
@@ -34,7 +34,7 @@ class AdditionalReferenceNumberFormProvider @Inject() (implicit phaseConfig: Pha
             regexp(stringFieldRegexComma, s"$prefix.error.invalidCharacters"),
             maxLength(phaseConfig.maxAdditionalReferenceNumLength, s"$prefix.error.length"),
             notInList(otherAdditionalReferenceNumbers, s"$prefix.error.unique"),
-            cl234Constraint(isDocumentInCL234.getOrElse(false), phase, s"$prefix.error.cl234Constraint")
+            cl234Constraint(isDocumentInCL234, phase, s"$prefix.error.cl234Constraint")
           )
         )
     )

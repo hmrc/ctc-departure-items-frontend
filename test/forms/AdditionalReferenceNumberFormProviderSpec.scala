@@ -81,7 +81,7 @@ class AdditionalReferenceNumberFormProviderSpec extends SpecBase with AppWithDef
     "during transition" - {
       val app = transitionApplicationBuilder().build()
       running(app) {
-        val form = app.injector.instanceOf[AdditionalReferenceNumberFormProvider].apply(prefix, values, Some(true), Transition)
+        val form = app.injector.instanceOf[AdditionalReferenceNumberFormProvider].apply(prefix, values, isDocumentInCL234 = true, Transition)
         runTests(form, maxAdditionalReferenceNumTransitionLength)
       }
     }
@@ -92,7 +92,7 @@ class AdditionalReferenceNumberFormProviderSpec extends SpecBase with AppWithDef
 
       val app = postTransitionApplicationBuilder().build()
       running(app) {
-        val form = app.injector.instanceOf[AdditionalReferenceNumberFormProvider].apply(prefix, values, Some(true), PostTransition)
+        val form = app.injector.instanceOf[AdditionalReferenceNumberFormProvider].apply(prefix, values, isDocumentInCL234 = true, PostTransition)
         runTests(form, maxAdditionalReferenceNumPostTransitionLength)
 
         behave like fieldWithInvalidInputCL234(

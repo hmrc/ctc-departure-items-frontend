@@ -111,9 +111,9 @@ trait Constraints {
 
   protected def cl234Constraint(isDocumentInCL234: Boolean, phase: Phase, errorKey: String): Constraint[String] =
     Constraint {
-      case str if !isDocumentInCL234 || !str.equals("0") || phase != PostTransition =>
-        Valid
-      case _ =>
+      case "0" if isDocumentInCL234 && phase == PostTransition =>
         Invalid(errorKey)
+      case _ =>
+        Valid
     }
 }

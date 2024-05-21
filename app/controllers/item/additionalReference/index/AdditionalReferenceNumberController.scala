@@ -20,7 +20,6 @@ import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.item.additionalReference.AdditionalReferenceNumberFormProvider
-import models.Phase.PostTransition
 import models.{Index, LocalReferenceNumber, Mode, Phase}
 import navigation.{AdditionalReferenceNavigatorProvider, UserAnswersNavigator}
 import pages.item.additionalReference.index.{
@@ -54,33 +53,31 @@ class AdditionalReferenceNumberController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(otherAdditionalReferenceNumbers: Seq[String], isDocumentInCL234: Option[Boolean], phase: Phase): Form[String] =
+  private def form(otherAdditionalReferenceNumbers: Seq[String], isDocumentInCL234: Boolean, phase: Phase): Form[String] =
     formProvider("item.additionalReference.index.additionalReferenceNumber", otherAdditionalReferenceNumbers, isDocumentInCL234, phase)
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, additionalReferenceIndex: Index): Action[AnyContent] = actions
     .requireData(lrn)
-    .andThen(getMandatoryPage(AdditionalReferencePage(itemIndex, additionalReferenceIndex))) {
+    .andThen(getMandatoryPage.getFirst(AdditionalReferencePage(itemIndex, additionalReferenceIndex)))
+    .andThen(getMandatoryPage.getSecond(AdditionalReferenceInCL234Page(itemIndex, additionalReferenceIndex))) {
       implicit request =>
-        val isDocumentTypeInCL234 = request.userAnswers.get(AdditionalReferenceInCL234Page(itemIndex, additionalReferenceIndex))
-
-        val viewModel = viewModelProvider.apply(request.userAnswers, itemIndex, additionalReferenceIndex, request.arg)
+        val viewModel = viewModelProvider.apply(request.userAnswers, itemIndex, additionalReferenceIndex, request.arg._1)
         val preparedForm = request.userAnswers.get(AdditionalReferenceNumberPage(itemIndex, additionalReferenceIndex)) match {
-          case None        => form(viewModel.otherAdditionalReferenceNumbers, isDocumentTypeInCL234, phaseConfig.phase)
-          case Some(value) => form(viewModel.otherAdditionalReferenceNumbers, isDocumentTypeInCL234, phaseConfig.phase).fill(value)
+          case None        => form(viewModel.otherAdditionalReferenceNumbers, request.arg._2, phaseConfig.phase)
+          case Some(value) => form(viewModel.otherAdditionalReferenceNumbers, request.arg._2, phaseConfig.phase).fill(value)
         }
         Ok(view(preparedForm, lrn, mode, itemIndex, additionalReferenceIndex, viewModel.isReferenceNumberRequired))
     }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, additionalReferenceIndex: Index): Action[AnyContent] = actions
     .requireData(lrn)
-    .andThen(getMandatoryPage(AdditionalReferencePage(itemIndex, additionalReferenceIndex)))
+    .andThen(getMandatoryPage.getFirst(AdditionalReferencePage(itemIndex, additionalReferenceIndex)))
+    .andThen(getMandatoryPage.getSecond(AdditionalReferenceInCL234Page(itemIndex, additionalReferenceIndex)))
     .async {
       implicit request =>
-        val viewModel = viewModelProvider.apply(request.userAnswers, itemIndex, additionalReferenceIndex, request.arg)
+        val viewModel = viewModelProvider.apply(request.userAnswers, itemIndex, additionalReferenceIndex, request.arg._1)
 
-        val isDocumentTypeInCL234 = request.userAnswers.get(AdditionalReferenceInCL234Page(itemIndex, additionalReferenceIndex))
-
-        form(viewModel.otherAdditionalReferenceNumbers, isDocumentTypeInCL234, phaseConfig.phase)
+        form(viewModel.otherAdditionalReferenceNumbers, request.arg._2, phaseConfig.phase)
           .bindFromRequest()
           .fold(
             formWithErrors =>

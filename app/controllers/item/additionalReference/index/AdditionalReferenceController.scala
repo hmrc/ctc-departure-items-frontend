@@ -59,7 +59,6 @@ class AdditionalReferenceController @Inject() (
               case None        => form
               case Some(value) => form.fill(value)
             }
-
             Ok(view(preparedForm, lrn, additionalReferences.values, mode, itemIndex, additionalReferenceIndex))
         }
     }

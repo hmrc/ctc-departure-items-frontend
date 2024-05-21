@@ -27,7 +27,12 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
-import pages.item.additionalReference.index.{AddAdditionalReferenceNumberYesNoPage, AdditionalReferenceNumberPage, AdditionalReferencePage}
+import pages.item.additionalReference.index.{
+  AddAdditionalReferenceNumberYesNoPage,
+  AdditionalReferenceInCL234Page,
+  AdditionalReferenceNumberPage,
+  AdditionalReferencePage
+}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -45,7 +50,7 @@ class AdditionalReferenceNumberControllerSpec extends SpecBase with AppWithDefau
   private lazy val formProvider = new AdditionalReferenceNumberFormProvider()
 
   private lazy val form =
-    formProvider("item.additionalReference.index.additionalReferenceNumber", viewModel.otherAdditionalReferenceNumbers, Some(false), Transition)
+    formProvider("item.additionalReference.index.additionalReferenceNumber", viewModel.otherAdditionalReferenceNumbers, isDocumentInCL234 = false, Transition)
   private val mode                                = NormalMode
   private lazy val additionalReferenceNumberRoute = routes.AdditionalReferenceNumberController.onPageLoad(lrn, mode, itemIndex, additionalReferenceIndex).url
 
@@ -59,7 +64,10 @@ class AdditionalReferenceNumberControllerSpec extends SpecBase with AppWithDefau
 
   private val additionalReference = arbitrary[AdditionalReference].sample.value
 
-  private val baseAnswers = emptyUserAnswers.setValue(AdditionalReferencePage(itemIndex, additionalReferenceIndex), additionalReference)
+  private val baseAnswers =
+    emptyUserAnswers
+      .setValue(AdditionalReferencePage(itemIndex, additionalReferenceIndex), additionalReference)
+      .setValue(AdditionalReferenceInCL234Page(itemIndex, additionalReferenceIndex), false)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
