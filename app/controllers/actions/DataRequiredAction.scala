@@ -17,7 +17,7 @@
 package controllers.actions
 
 import config.FrontendAppConfig
-import models.LocalReferenceNumber
+import models.{LocalReferenceNumber, SubmissionState}
 import models.requests.{DataRequest, OptionalDataRequest}
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
@@ -31,8 +31,8 @@ class DataRequiredAction(lrn: LocalReferenceNumber, config: FrontendAppConfig)(i
 
   override protected def refine[A](request: OptionalDataRequest[A]): Future[Either[Result, DataRequest[A]]] =
     request.userAnswers match {
-      case Some(data) =>
-        Future.successful(Right(DataRequest(request.request, request.eoriNumber, data)))
+      case Some(userAnswers) if userAnswers.status != SubmissionState.Submitted =>
+        Future.successful(Right(DataRequest(request.request, request.eoriNumber, userAnswers)))
       case _ =>
         Future.successful(Left(Redirect(config.sessionExpiredUrl(lrn))))
     }
