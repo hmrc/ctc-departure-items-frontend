@@ -69,7 +69,7 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
 
   "must render service name link in header" in {
     val link = getElementByClass(doc, "govuk-header__service-name")
-    assertElementContainsText(link, "Manage your transit movements")
+    assertElementContainsText(link, "Departure declarations - Manage your transit movements")
     assertElementContainsHref(link, "http://localhost:9485/manage-transit-movements/what-do-you-want-to-do")
   }
 
@@ -106,7 +106,7 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
     "must render title" in {
       val title      = doc.title()
       val messageKey = s"$prefix.title"
-      title mustBe s"${messages(messageKey, args: _*)} - Manage your transit movements - GOV.UK"
+      title mustBe s"${messages(messageKey, args: _*)} - Departure declarations - Manage your transit movements - GOV.UK"
       assert(messages.isDefinedAt(messageKey))
     }
 

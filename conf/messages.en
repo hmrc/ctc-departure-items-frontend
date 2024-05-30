@@ -9,7 +9,7 @@ site.continue = Continue
 site.saveAndContinue = Save and continue
 site.confirm = Confirm and continue
 site.send = Confirm and send
-site.service_name = Manage your transit movements
+site.service_name = Departure declarations - Manage your transit movements
 site.section = This section is
 
 site.email.link = If you have any questions or issues, email us at {0}
