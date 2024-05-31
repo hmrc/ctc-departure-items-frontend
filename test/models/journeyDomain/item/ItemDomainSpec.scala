@@ -206,6 +206,48 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
           }
         }
       }
+
+      "can not be read from user answers (Post-transition)" - {
+        "and consignment country of dispatch is defined" in {
+          forAll(arbitrary[String](arbitraryConsignmentDeclarationType)) {
+            declarationType =>
+              forAll(arbitrary[Country]) {
+                country =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(TransitOperationDeclarationTypePage, declarationType)
+                    .setValue(ConsignmentCountryOfDispatchPage, country)
+
+                  val expectedResult = None
+
+                  val result = ItemDomain.countryOfDispatchReader(itemIndex)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
+
+                  result.value.value mustBe expectedResult
+                  result.value.pages mustBe Nil
+              }
+          }
+        }
+
+        "and consignment country of dispatch is undefined" in {
+          forAll(arbitrary[String](arbitraryConsignmentDeclarationType)) {
+            declarationType =>
+              forAll(arbitrary[Country]) {
+                country =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(TransitOperationDeclarationTypePage, declarationType)
+                    .setValue(CountryOfDispatchPage(itemIndex), country)
+
+                  val expectedResult = Some(country)
+
+                  val result = ItemDomain.countryOfDispatchReader(itemIndex)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
+
+                  result.value.value mustBe expectedResult
+                  result.value.pages mustBe Seq(
+                    CountryOfDispatchPage(itemIndex)
+                  )
+              }
+          }
+        }
+      }
     }
 
     "countryOfDispatchReader" - {
