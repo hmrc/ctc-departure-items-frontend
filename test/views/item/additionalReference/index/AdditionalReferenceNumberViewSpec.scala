@@ -35,7 +35,7 @@ class AdditionalReferenceNumberViewSpec extends SpecBase with CharacterCountView
 
   private val formProvider = new AdditionalReferenceNumberFormProvider()(phaseConfig)
 
-  override def form: Form[String] = formProvider(prefix, viewModel.otherAdditionalReferenceNumbers)
+  override def form: Form[String] = formProvider(prefix, viewModel.otherAdditionalReferenceNumbers, isDocumentInCL234 = false, phaseConfig.phase)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
     injector

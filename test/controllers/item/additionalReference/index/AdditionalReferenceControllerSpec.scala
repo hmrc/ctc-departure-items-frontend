@@ -57,6 +57,7 @@ class AdditionalReferenceControllerSpec extends SpecBase with AppWithDefaultMock
     "must return OK and the correct view for a GET" in {
 
       when(mockAdditionalReferencesService.getAdditionalReferences()(any())).thenReturn(Future.successful(additionalReferenceList))
+      when(mockAdditionalReferencesService.isDocumentTypeExcise(any())(any())).thenReturn(Future.successful(false))
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, additionalReferenceRoute)
@@ -74,6 +75,7 @@ class AdditionalReferenceControllerSpec extends SpecBase with AppWithDefaultMock
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       when(mockAdditionalReferencesService.getAdditionalReferences()(any())).thenReturn(Future.successful(additionalReferenceList))
+      when(mockAdditionalReferencesService.isDocumentTypeExcise(any())(any())).thenReturn(Future.successful(false))
       val userAnswers = emptyUserAnswers.setValue(AdditionalReferencePage(itemIndex, additionalReferenceIndex), additionalReference1)
       setExistingUserAnswers(userAnswers)
 
@@ -111,6 +113,7 @@ class AdditionalReferenceControllerSpec extends SpecBase with AppWithDefaultMock
     "must return a Bad Request and errors when invalid data is submitted" in {
 
       when(mockAdditionalReferencesService.getAdditionalReferences()(any())).thenReturn(Future.successful(additionalReferenceList))
+      when(mockAdditionalReferencesService.isDocumentTypeExcise(any())(any())).thenReturn(Future.successful(false))
       setExistingUserAnswers(emptyUserAnswers)
 
       val request   = FakeRequest(POST, additionalReferenceRoute).withFormUrlEncodedBody(("value", "invalid value"))

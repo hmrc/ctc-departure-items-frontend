@@ -367,6 +367,7 @@ item.additionalReference.index.additionalReferenceNumber.error.required = Enter 
 item.additionalReference.index.additionalReferenceNumber.error.length = The additional reference number must be {0} characters or less
 item.additionalReference.index.additionalReferenceNumber.error.invalidCharacters = The additional reference number must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
 item.additionalReference.index.additionalReferenceNumber.error.unique = The additional reference number must be unique
+item.additionalReference.index.additionalReferenceNumber.error.cl234Constraint = The additional reference number must be 1 or more
 
 item.additionalReference.addAnotherAdditionalReference.singular.title = You have added 1 additional reference
 item.additionalReference.addAnotherAdditionalReference.singular.heading = You have added 1 additional reference
