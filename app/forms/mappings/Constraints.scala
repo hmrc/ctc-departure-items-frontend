@@ -16,6 +16,8 @@
 
 package forms.mappings
 
+import models.Phase
+import models.Phase.PostTransition
 import play.api.data.validation.{Constraint, Invalid, Valid}
 
 import java.time.LocalDate
@@ -105,5 +107,13 @@ trait Constraints {
         Valid
       case _ =>
         Invalid(errorKey)
+    }
+
+  protected def cl234Constraint(isDocumentInCL234: Boolean, phase: Phase, errorKey: String): Constraint[String] =
+    Constraint {
+      case "0" if isDocumentInCL234 && phase == PostTransition =>
+        Invalid(errorKey)
+      case _ =>
+        Valid
     }
 }

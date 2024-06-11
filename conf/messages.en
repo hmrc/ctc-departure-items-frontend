@@ -137,12 +137,13 @@ item.addCUSCodeYesNo.error.required = Select yes if you want to declare a Custom
 
 item.customsUnionAndStatisticsCode.title = What is the Customs Union and Statistics (CUS) code?
 item.customsUnionAndStatisticsCode.heading = What is the Customs Union and Statistics (CUS) code?
-item.customsUnionAndStatisticsCode.hint = This will be 9 characters long and include both letters and numbers.
+item.customsUnionAndStatisticsCode.hint = This will be 9 characters long and can include letters, numbers and a hyphen. For example, 1234567-1.
 item.customsUnionAndStatisticsCode.checkYourAnswersLabel = Customs Union and Statistics (CUS) code
 item.customsUnionAndStatisticsCode.change.hidden = Customs Union and Statistics (CUS) code for item {0}
 item.customsUnionAndStatisticsCode.error.required = Enter the Customs Union and Statistics (CUS) code
 item.customsUnionAndStatisticsCode.error.length = The Customs Union and Statistics (CUS) code must be 9 characters long
-item.customsUnionAndStatisticsCode.error.not.exists = Please enter a valid Customs Union and Statistics (CUS) code. This will be 9 characters long and include both letters and numbers.
+item.customsUnionAndStatisticsCode.error.characters = The Customs Union and Statistics (CUS) code must only include letters a to z, numbers 0 to 9 and a hyphen
+item.customsUnionAndStatisticsCode.error.not.exists = Enter a valid Customs Union and Statistics (CUS) code
 
 item.addCommodityCodeYesNo.title = Do you want to add a commodity code?
 item.addCommodityCodeYesNo.heading = Do you want to add a commodity code?
@@ -366,6 +367,7 @@ item.additionalReference.index.additionalReferenceNumber.error.required = Enter 
 item.additionalReference.index.additionalReferenceNumber.error.length = The additional reference number must be {0} characters or less
 item.additionalReference.index.additionalReferenceNumber.error.invalidCharacters = The additional reference number must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
 item.additionalReference.index.additionalReferenceNumber.error.unique = The additional reference number must be unique
+item.additionalReference.index.additionalReferenceNumber.error.cl234Constraint = The additional reference number must be 1 or more
 
 item.additionalReference.addAnotherAdditionalReference.singular.title = You have added 1 additional reference
 item.additionalReference.addAnotherAdditionalReference.singular.heading = You have added 1 additional reference

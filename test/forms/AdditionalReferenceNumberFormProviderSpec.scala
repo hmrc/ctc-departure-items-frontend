@@ -19,6 +19,7 @@ package forms
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.behaviours.StringFieldBehaviours
 import forms.item.additionalReference.AdditionalReferenceNumberFormProvider
+import models.Phase.{PostTransition, Transition}
 import models.domain.StringFieldRegex.stringFieldRegexComma
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.{Form, FormError}
@@ -31,6 +32,7 @@ class AdditionalReferenceNumberFormProviderSpec extends SpecBase with AppWithDef
   private val invalidKey  = s"$prefix.error.invalidCharacters"
   private val lengthKey   = s"$prefix.error.length"
   private val uniqueKey   = s"$prefix.error.unique"
+  private val cl234Key    = s"$prefix.error.cl234Constraint"
 
   private val values = listWithMaxLength[String]()(Arbitrary(nonEmptyString)).sample.value
 
@@ -79,16 +81,25 @@ class AdditionalReferenceNumberFormProviderSpec extends SpecBase with AppWithDef
     "during transition" - {
       val app = transitionApplicationBuilder().build()
       running(app) {
-        val form = app.injector.instanceOf[AdditionalReferenceNumberFormProvider].apply(prefix, values)
+        val form = app.injector.instanceOf[AdditionalReferenceNumberFormProvider].apply(prefix, values, isDocumentInCL234 = true, Transition)
         runTests(form, maxAdditionalReferenceNumTransitionLength)
       }
     }
 
     "post transition" - {
+
+      val fieldName = "value"
+
       val app = postTransitionApplicationBuilder().build()
       running(app) {
-        val form = app.injector.instanceOf[AdditionalReferenceNumberFormProvider].apply(prefix, values)
+        val form = app.injector.instanceOf[AdditionalReferenceNumberFormProvider].apply(prefix, values, isDocumentInCL234 = true, PostTransition)
         runTests(form, maxAdditionalReferenceNumPostTransitionLength)
+
+        behave like fieldWithInvalidInputCL234(
+          form,
+          fieldName,
+          error = FormError(fieldName, cl234Key)
+        )
       }
     }
   }

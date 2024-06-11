@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-package models.domain
+package models.reference
 
-import scala.util.matching.Regex
+import cats.Order
+import play.api.libs.json.{Json, OFormat}
 
-object StringFieldRegex {
+case class DocTypeExcise(activeFrom: String, code: String, state: String, description: String)
 
-  val stringFieldRegex: Regex            = "[\\sa-zA-Z0-9&'@/.\\-? ]*".r
-  val stringFieldRegexComma: Regex       = "[\\sa-zA-Z0-9&'@,/.\\-? ]*".r
-  val alphaNumericRegex: Regex           = "^[a-zA-Z0-9]*$".r
-  val alphaNumericWithHyphenRegex: Regex = "^[a-zA-Z0-9\\-]*$".r
-  val alphaNumericWithSpacesRegex: Regex = "^[a-zA-Z\\s0-9]*$".r
+object DocTypeExcise {
+  implicit val format: OFormat[DocTypeExcise] = Json.format[DocTypeExcise]
+
+  implicit val order: Order[DocTypeExcise] = (x: DocTypeExcise, y: DocTypeExcise) => {
+    (x, y).compareBy(_.code)
+  }
 }

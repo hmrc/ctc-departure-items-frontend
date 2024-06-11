@@ -45,3 +45,10 @@ case class AdditionalReferencePage(itemIndex: Index, additionalReferenceIndex: I
         super.cleanup(value, userAnswers)
     }
 }
+
+case class AdditionalReferenceInCL234Page(itemIndex: Index, additionalReferenceIndex: Index) extends QuestionPage[Boolean] {
+
+  override def path: JsPath = AdditionalReferencePage(itemIndex, additionalReferenceIndex).path \ toString
+
+  override def toString: String = "isInCL234"
+}

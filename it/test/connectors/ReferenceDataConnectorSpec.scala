@@ -273,6 +273,36 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       |}
       |""".stripMargin
 
+  private val documentTypeExciseJson: String =
+    """
+      |{
+      |  "_links": {
+      |    "self": {
+      |      "href": "/customs-reference-data/lists/DocumentTypeExcise"
+      |    }
+      |  },
+      |  "meta": {
+      |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+      |    "snapshotDate": "2023-01-01"
+      |  },
+      |  "id": "DocumentTypeExcise",
+      |  "data": [
+      |  {
+      |    "activeFrom": "2024-01-01",
+      |    "code": "C651",
+      |    "state": "valid",
+      |    "description": "AAD - Administrative Accompanying Document (EMCS)"
+      |  },
+      |  {
+      |    "activeFrom": "2024-01-01",
+      |    "code": "C658",
+      |    "state": "valid",
+      |    "description": "FAD - Fallback e-AD (EMCS)"
+      |  }
+      |]
+      |}
+      |""".stripMargin
+
   private val emptyResponseJson: String =
     """
       |{
@@ -295,6 +325,23 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         val expectedResult = CUSCode(cusCode)
 
         connector.getCUSCode(cusCode).futureValue mustEqual expectedResult
+      }
+    }
+
+    "getDocumentTypeExcise" - {
+      val code = "C651"
+      val url  = s"/$baseUrl/lists/DocumentTypeExcise?data.code=$code"
+
+      "must return DocumentTypeExcise when successful" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(documentTypeExciseJson))
+        )
+
+        val expectedResult =
+          DocTypeExcise(activeFrom = "2024-01-01", code = "C651", state = "valid", description = "AAD - Administrative Accompanying Document (EMCS)")
+
+        connector.getDocumentTypeExcise(code).futureValue mustEqual expectedResult
       }
     }
 
@@ -407,29 +454,29 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       }
     }
 
-    "getCountriesWithoutZip" - {
-      val url = s"/$baseUrl/lists/CountryWithoutZip"
+    "getCountriesWithoutZipCountry" - {
+      def url(countryId: String) = s"/$baseUrl/lists/CountryWithoutZip?data.code=$countryId"
 
       "must return Seq of Country when successful" in {
+        val countryId = "GB"
         server.stubFor(
-          get(urlEqualTo(url))
-            .willReturn(okJson(countriesResponseJson("CountryWithoutZip")))
+          get(urlEqualTo(url(countryId)))
+            .willReturn(okJson(countryResponseJson("CountryWithoutZip")))
         )
 
-        val expectedResult = NonEmptySet.of(
-          CountryCode("GB"),
-          CountryCode("AD")
-        )
+        val expectedResult = CountryCode(countryId)
 
-        connector.getCountriesWithoutZip().futureValue mustEqual expectedResult
+        connector.getCountriesWithoutZipCountry(countryId).futureValue mustEqual expectedResult
       }
 
       "must throw a NoReferenceDataFoundException for an empty response" in {
-        checkNoReferenceDataFoundResponse(url, connector.getCountriesWithoutZip())
+        val countryId = "FR"
+        checkNoReferenceDataFoundResponse(url(countryId), connector.getCountriesWithoutZipCountry(countryId))
       }
 
       "must return an exception when an error response is returned" in {
-        checkErrorResponse(url, connector.getCountriesWithoutZip())
+        val countryId = "FR"
+        checkErrorResponse(url(countryId), connector.getCountriesWithoutZipCountry(countryId))
       }
     }
 

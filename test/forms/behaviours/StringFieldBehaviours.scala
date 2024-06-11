@@ -70,6 +70,13 @@ trait StringFieldBehaviours extends FieldBehaviours {
       }
     }
 
+  def fieldWithInvalidInputCL234(form: Form[_], fieldName: String, error: FormError): Unit =
+    "must not bind strings with value '0' when in CL234" in {
+
+      val result: Field = form.bind(Map(fieldName -> "0")).apply(fieldName)
+      result.errors must contain(error)
+    }
+
   def fieldThatBindsUniqueData(form: Form[_], fieldName: String, values: Seq[String], uniqueError: FormError): Unit = {
 
     "bind unique data" in {
