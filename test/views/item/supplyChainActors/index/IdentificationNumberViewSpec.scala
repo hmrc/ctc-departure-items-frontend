@@ -46,7 +46,7 @@ class IdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithHeading(validAnswer)
 
-  behave like pageWithHint("This can be up to 17 characters long and include both letters and numbers. For example, GB123456789000.")
+  behave like pageWithHint("This will start with 2 letters, such as GB or XI, followed by up to 15 letters or numbers. For example, GB123456789000.")
 
   behave like pageWithInputText(Some(InputSize.Width20))
 
