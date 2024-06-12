@@ -22,7 +22,7 @@ import models.domain.StringFieldRegex._
 import org.scalacheck.Gen
 import play.api.data.{Field, FormError}
 
-class EoriNumberFormProviderSpec extends StringFieldBehaviours with FieldBehaviours {
+class EoriTinFormProviderSpec extends StringFieldBehaviours with FieldBehaviours {
 
   private val prefix = Gen.alphaNumStr.sample.value
 
@@ -30,7 +30,7 @@ class EoriNumberFormProviderSpec extends StringFieldBehaviours with FieldBehavio
   private val maxLengthKey         = s"$prefix.error.length"
   private val invalidCharactersKey = s"$prefix.error.invalidCharacters"
 
-  private val form = new EoriNumberFormProvider()(prefix)
+  private val form = new EoriTinFormProvider()(prefix)
 
   ".value" - {
 
