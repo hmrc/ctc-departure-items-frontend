@@ -16,18 +16,17 @@
 
 package views.item.additionalReference.index
 
-import base.SpecBase
 import forms.item.additionalReference.AdditionalReferenceNumberFormProvider
-import generators.Generators
 import models.NormalMode
+import org.scalacheck.{Arbitrary, Gen}
 import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewmodels.item.additionalReference.AdditionalReferenceNumberViewModel
-import views.behaviours.CharacterCountViewBehaviours
+import views.behaviours.InputTextViewBehaviours
 import views.html.item.additionalReference.index.AdditionalReferenceNumberView
 
-class AdditionalReferenceNumberViewSpec extends SpecBase with CharacterCountViewBehaviours with Generators {
+class AdditionalReferenceNumberViewSpec extends InputTextViewBehaviours[String] {
 
   override val prefix: String = "item.additionalReference.index.additionalReferenceNumber"
 
@@ -42,6 +41,8 @@ class AdditionalReferenceNumberViewSpec extends SpecBase with CharacterCountView
       .instanceOf[AdditionalReferenceNumberView]
       .apply(form, lrn, NormalMode, itemIndex, additionalReferenceIndex, viewModel.isReferenceNumberRequired)(fakeRequest, messages)
 
+  implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
+
   behave like pageWithTitle()
 
   behave like pageWithBackLink()
@@ -50,9 +51,7 @@ class AdditionalReferenceNumberViewSpec extends SpecBase with CharacterCountView
 
   behave like pageWithHeading()
 
-  behave like pageWithHint(s"You can enter up to ${phaseConfig.maxAdditionalReferenceNumLength} characters")
-
-  behave like pageWithCharacterCount(phaseConfig.maxAdditionalReferenceNumLength)
+  behave like pageWithHint(s"This can be up to ${phaseConfig.maxAdditionalReferenceNumLength} characters long.")
 
   behave like pageWithSubmitButton("Save and continue")
 
