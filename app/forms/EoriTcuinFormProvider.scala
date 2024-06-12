@@ -16,23 +16,26 @@
 
 package forms
 
-import forms.Constants.maxEoriNumberLength
+import forms.Constants.{maxEoriNumberLength, minEoriTcuinLength}
 import forms.mappings.Mappings
+import models.RichString
 import models.domain.StringFieldRegex._
 import play.api.data.Form
+import play.api.data.validation.Constraints.minLength
+
 import javax.inject.Inject
 
-class EoriTCUINNumberFormProvider @Inject() extends Mappings {
+class EoriTcuinFormProvider @Inject() extends Mappings {
 
   def apply(prefix: String): Form[String] =
     Form(
-      "value" -> eoriFormat(s"$prefix.error.required")
+      "value" -> adaptedText(s"$prefix.error.required")(_.removeSpaces().capitalise(2))
         .verifying(
           forms.StopOnFirstFail[String](
             regexp(alphaNumericRegex, s"$prefix.error.invalidCharacters"),
-            maxLength(maxEoriNumberLength, s"$prefix.error.maxLength")
-            // minLength(minLengthCarrierEori, s"$prefix.error.minLength"), // TODO: Add back minlength and regexp once CTCP-5502 is in play
-            // regexp(eoriTCUINRegex, s"$prefix.error.invalidFormat")
+            maxLength(maxEoriNumberLength, s"$prefix.error.maxLength"),
+            minLength(minEoriTcuinLength, s"$prefix.error.minLength"),
+            regexp(eoriTcuinRegex, s"$prefix.error.invalidFormat")
           )
         )
     )

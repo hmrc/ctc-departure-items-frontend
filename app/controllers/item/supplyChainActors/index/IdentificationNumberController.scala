@@ -19,7 +19,7 @@ package controllers.item.supplyChainActors.index
 import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.{EoriNumberFormProvider, EoriTCUINNumberFormProvider}
+import forms.EoriTcuinFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{SupplyChainActorNavigatorProvider, UserAnswersNavigator}
 import pages.item.supplyChainActors.index.{IdentificationNumberPage, SupplyChainActorTypePage}
@@ -36,7 +36,7 @@ class IdentificationNumberController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: SupplyChainActorNavigatorProvider,
-  formProvider: EoriTCUINNumberFormProvider,
+  formProvider: EoriTcuinFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   getMandatoryPage: SpecificDataRequiredActionProvider,
