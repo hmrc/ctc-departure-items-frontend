@@ -27,7 +27,8 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
-import pages.item.packages.index.PackageTypePage
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks.forAll
+import pages.item.packages.index.{NumberOfPackagesPage, PackageTypePage}
 import pages.sections.packages.PackageSection
 import play.api.data.Form
 import play.api.test.FakeRequest
@@ -38,33 +39,34 @@ import scala.concurrent.Future
 
 class RemovePackageControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar with Generators {
 
-  private val formProvider = new YesNoFormProvider()
+  private lazy val removePackageRoute = routes.RemovePackageController.onPageLoad(lrn, mode, itemIndex, packageIndex).url
+  private val formProvider            = new YesNoFormProvider()
+  private val mode                    = NormalMode
+  private val packageType             = arbitrary[PackageType].sample.value
 
   private def form(packageType: PackageType): Form[Boolean] =
     formProvider("item.packages.index.removePackage", packageType)
 
-  private val mode                    = NormalMode
-  private lazy val removePackageRoute = routes.RemovePackageController.onPageLoad(lrn, mode, itemIndex, packageIndex).url
-  private val packageType             = arbitrary[PackageType].sample.value
-
   "RemovePackage Controller" - {
 
     "must return OK and the correct view for a GET" in {
+      forAll(positiveInts) {
+        quantity =>
+          val userAnswers = emptyUserAnswers
+            .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+            .setValue(NumberOfPackagesPage(itemIndex, packageIndex), quantity)
+          setExistingUserAnswers(userAnswers)
 
-      val userAnswers = emptyUserAnswers
-        .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+          val request = FakeRequest(GET, removePackageRoute)
+          val result  = route(app, request).value
 
-      setExistingUserAnswers(userAnswers)
+          val view = injector.instanceOf[RemovePackageView]
 
-      val request = FakeRequest(GET, removePackageRoute)
-      val result  = route(app, request).value
+          status(result) mustEqual OK
 
-      val view = injector.instanceOf[RemovePackageView]
-
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(form(packageType), lrn, mode, itemIndex, packageIndex, packageType)(request, messages).toString
+          contentAsString(result) mustEqual
+            view(form(packageType), lrn, mode, itemIndex, packageIndex, packageType, Some(s"$quantity ${packageType.toString}"))(request, messages).toString
+      }
     }
 
     "when yes submitted" - {
@@ -123,22 +125,26 @@ class RemovePackageControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val userAnswers = emptyUserAnswers
-        .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+      forAll(positiveInts) {
+        quantity =>
+          val userAnswers = emptyUserAnswers
+            .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+            .setValue(NumberOfPackagesPage(itemIndex, packageIndex), quantity)
 
-      setExistingUserAnswers(userAnswers)
+          setExistingUserAnswers(userAnswers)
 
-      val request   = FakeRequest(POST, removePackageRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form(packageType).bind(Map("value" -> ""))
+          val request   = FakeRequest(POST, removePackageRoute).withFormUrlEncodedBody(("value", ""))
+          val boundForm = form(packageType).bind(Map("value" -> ""))
 
-      val result = route(app, request).value
+          val result = route(app, request).value
 
-      status(result) mustEqual BAD_REQUEST
+          status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[RemovePackageView]
+          val view = injector.instanceOf[RemovePackageView]
 
-      contentAsString(result) mustEqual
-        view(boundForm, lrn, mode, itemIndex, packageIndex, packageType)(request, messages).toString
+          contentAsString(result) mustEqual
+            view(boundForm, lrn, mode, itemIndex, packageIndex, packageType, Some(s"${quantity.toString} ${packageType.toString}"))(request, messages).toString
+      }
     }
 
     "must redirect for a GET" - {
