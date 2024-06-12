@@ -88,22 +88,6 @@ trait Formatters {
       def unbind(key: String, value: Boolean): Map[String, String] = Map(key -> value.toString)
     }
 
-  private[mappings] def eoriFormatter(errorKey: String): Formatter[String] = new Formatter[String] {
-
-    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] = {
-      val n = CountryCode.Constants.countryCodeLength
-      stringFormatter(errorKey)(_.removeSpaces())
-        .bind(key, data)
-        .flatMap {
-          eori =>
-            Right(eori.take(n).toUpperCase + eori.drop(n))
-        }
-    }
-
-    override def unbind(key: String, value: String): Map[String, String] =
-      Map(key -> value)
-  }
-
   private[mappings] def intFormatter(requiredKey: String, wholeNumberKey: String, nonNumericKey: String, args: Seq[String] = Seq.empty): Formatter[Int] =
     new Formatter[Int] {
 

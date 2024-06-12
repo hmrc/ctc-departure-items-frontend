@@ -23,10 +23,6 @@ case class CountryCode(code: String)
 
 object CountryCode {
 
-  object Constants {
-    val countryCodeLength = 2
-  }
-
   implicit val countryCodeWrites: Writes[CountryCode] = (countryCode: CountryCode) => JsString(countryCode.code)
 
   implicit val countryCodeReads: Reads[CountryCode] = {

@@ -78,65 +78,6 @@ class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mapp
     }
   }
 
-  "eori" - {
-
-    val testForm: Form[String] =
-      Form(
-        "value" -> eoriFormat()
-      )
-
-    "must bind a valid string" in {
-      val result = testForm.bind(Map("value" -> "GB12345678"))
-      result.get mustEqual "GB12345678"
-    }
-
-    "must bind a valid string with leading whitespace" in {
-      val result = testForm.bind(Map("value" -> " GB12345678"))
-      result.get mustEqual "GB12345678"
-    }
-
-    "must bind a valid string with trailing whitespace" in {
-      val result = testForm.bind(Map("value" -> "GB12345678 "))
-      result.get mustEqual "GB12345678"
-    }
-
-    "must bind a valid string with leading and trailing whitespace" in {
-      val result = testForm.bind(Map("value" -> " GB12345678 "))
-      result.get mustEqual "GB12345678"
-    }
-
-    "must not bind an empty string" in {
-      val result = testForm.bind(Map("value" -> ""))
-      result.errors must contain(FormError("value", "error.required"))
-    }
-
-    "must not bind a string of whitespace only" in {
-      val result = testForm.bind(Map("value" -> " \t"))
-      result.errors must contain(FormError("value", "error.required"))
-    }
-
-    "must not bind an empty map" in {
-      val result = testForm.bind(Map.empty[String, String])
-      result.errors must contain(FormError("value", "error.required"))
-    }
-
-    "must return a custom error message" in {
-      val form   = Form("value" -> text("custom.error"))
-      val result = form.bind(Map("value" -> ""))
-      result.errors must contain(FormError("value", "custom.error"))
-    }
-
-    "must unbind a valid value" in {
-      val result = testForm.fill("GB12345678")
-      result.apply("value").value.value mustEqual "GB12345678"
-    }
-
-    "must capitalise first two letters of value" in {
-      val result = testForm.bind(Map("value" -> "gb12345678"))
-      result.get mustEqual "GB12345678"
-    }
-  }
-
   "boolean" - {
 
     val testForm: Form[Boolean] =
