@@ -3,5 +3,4 @@ if (window.history && window.history.replaceState && typeof window.history.repla
   window.history.replaceState(null, null, window.location.href);
 }
 
-document.addEventListener('DOMContentLoaded', function(event) {
-});
+
