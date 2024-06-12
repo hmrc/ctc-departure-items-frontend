@@ -32,10 +32,10 @@
     govukInsetText : GovukInsetText
 )
 
-@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, packageIndex: Index, packageType: PackageType, insetText: Option[String])(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, packageIndex: Index, insetText: Option[String])(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("item.packages.index.removePackage.title", packageType),
+    title = messages("item.packages.index.removePackage.title"),
     showBackLink = true,
     lrn = lrn
 ) {

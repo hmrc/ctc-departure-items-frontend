@@ -55,7 +55,7 @@ class RemovePackageController @Inject() (
     .andThen(getMandatoryPage(PackageTypePage(itemIndex, packageIndex))) {
       implicit request =>
         Ok(
-          view(form(packageType), lrn, mode, itemIndex, packageIndex, packageType, insetText(request.userAnswers, itemIndex, packageIndex))
+          view(form(packageType), lrn, mode, itemIndex, packageIndex, insetText(request.userAnswers, itemIndex, packageIndex))
         )
     }
 
@@ -79,7 +79,7 @@ class RemovePackageController @Inject() (
           .fold(
             formWithErrors =>
               Future.successful(
-                BadRequest(view(formWithErrors, lrn, mode, itemIndex, packageIndex, packageType, insetText(request.userAnswers, itemIndex, packageIndex)))
+                BadRequest(view(formWithErrors, lrn, mode, itemIndex, packageIndex, insetText(request.userAnswers, itemIndex, packageIndex)))
               ),
             {
               case true =>
