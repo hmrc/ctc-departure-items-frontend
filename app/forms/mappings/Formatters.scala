@@ -16,7 +16,6 @@
 
 package forms.mappings
 
-import models.reference.CountryCode
 import models.{Enumerable, Radioable, RichString, Selectable, SelectableList}
 import play.api.data.FormError
 import play.api.data.format.Formatter
