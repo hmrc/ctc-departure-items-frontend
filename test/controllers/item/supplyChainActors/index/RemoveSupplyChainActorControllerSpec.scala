@@ -64,7 +64,7 @@ class RemoveSupplyChainActorControllerSpec extends SpecBase with AppWithDefaultM
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, mode, itemIndex, actorIndex, Some(s"${supplyChainActorTypes.head.toString} - $identificationNumber"))(request, messages).toString
+        view(form, lrn, mode, itemIndex, actorIndex, supplyChainActorTypes.head.toString)(request, messages).toString
     }
 
     "when yes submitted" - {
@@ -134,7 +134,7 @@ class RemoveSupplyChainActorControllerSpec extends SpecBase with AppWithDefaultM
       val view = injector.instanceOf[RemoveSupplyChainActorView]
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, mode, itemIndex, actorIndex, Some(s"${supplyChainActorTypes.head.toString} - $identificationNumber"))(request, messages).toString
+        view(boundForm, lrn, mode, itemIndex, actorIndex, supplyChainActorTypes.head.toString)(request, messages).toString
     }
   }
 
