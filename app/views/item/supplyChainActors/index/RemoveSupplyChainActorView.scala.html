@@ -18,16 +18,18 @@
 @import models.LocalReferenceNumber
 @import viewmodels.components.InputYesNoViewModel._
 @import views.html.components.{Button, ErrorSummary, InputYesNo}
+@import viewmodels.components.InputYesNoViewModel
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     inputYesNo: InputYesNo,
     errorSummary: ErrorSummary,
-    button: Button
+    button: Button,
+    govukInsetText : GovukInsetText
 )
 
-@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, actorIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, actorIndex: Index, insetText: Option[String])(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("item.supplyChainActors.index.removeSupplyChainActor.title"),
@@ -41,9 +43,10 @@
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = OrdinaryYesNo(
+            yesNoType = InputYesNoViewModel(
                 heading = messages("item.supplyChainActors.index.removeSupplyChainActor.heading"),
-                caption = Option(messages("item.supplyChainActor.caption", itemIndex.display))
+                caption = Option(messages("item.supplyChainActor.caption", itemIndex.display)),
+                additionalHtml = insetText.map(x => govukInsetText(InsetText(content = Text(x))))
             )
         )
 

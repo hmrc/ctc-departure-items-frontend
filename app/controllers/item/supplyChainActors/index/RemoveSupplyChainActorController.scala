@@ -21,7 +21,7 @@ import controllers.actions._
 import controllers.item.supplyChainActors.routes
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode, SupplyChainActor, UserAnswers}
 import pages.sections.supplyChainActors.SupplyChainActorSection
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -48,10 +48,13 @@ class RemoveSupplyChainActorController @Inject() (
   private def addAnother(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Call =
     routes.AddAnotherSupplyChainActorController.onPageLoad(lrn, mode, itemIndex)
 
+  private def insetText(userAnswers: UserAnswers, itemIndex: Index, actorIndex: Index): Option[String] =
+    SupplyChainActor(userAnswers, itemIndex, actorIndex).map(_.forRemoveDisplay)
+
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, actorIndex: Index): Action[AnyContent] = actions
     .requireIndex(lrn, SupplyChainActorSection(itemIndex, actorIndex), addAnother(lrn, mode, itemIndex)) {
       implicit request =>
-        Ok(view(form, lrn, mode, itemIndex, actorIndex))
+        Ok(view(form, lrn, mode, itemIndex, actorIndex, insetText(request.userAnswers, itemIndex, actorIndex)))
     }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, actorIndex: Index): Action[AnyContent] = actions
@@ -61,7 +64,8 @@ class RemoveSupplyChainActorController @Inject() (
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex, actorIndex))),
+            formWithErrors =>
+              Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex, actorIndex, insetText(request.userAnswers, itemIndex, actorIndex)))),
             {
               case true =>
                 SupplyChainActorSection(itemIndex, actorIndex)

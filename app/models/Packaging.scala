@@ -25,11 +25,6 @@ import play.api.libs.functional.syntax.toFunctionalBuilderOps
 case class Packaging(`type`: PackageType, quantity: Option[BigInt]) {
 
   def forRemoveDisplay: String = quantity match {
-    case Some(value) => s"$value ${`type`.toString}"
-    case None        => `type`.toString
-  }
-
-  def forAddAnotherDisplay: String = quantity match {
     case Some(value) => s"$value * ${`type`.toString}"
     case None        => `type`.toString
   }

@@ -65,7 +65,7 @@ class RemovePackageControllerSpec extends SpecBase with AppWithDefaultMockFixtur
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(form(packageType), lrn, mode, itemIndex, packageIndex, Some(s"$quantity ${packageType.toString}"))(request, messages).toString
+            view(form(packageType), lrn, mode, itemIndex, packageIndex, Some(s"$quantity * ${packageType.toString}"))(request, messages).toString
       }
     }
 
@@ -143,7 +143,7 @@ class RemovePackageControllerSpec extends SpecBase with AppWithDefaultMockFixtur
           val view = injector.instanceOf[RemovePackageView]
 
           contentAsString(result) mustEqual
-            view(boundForm, lrn, mode, itemIndex, packageIndex, Some(s"${quantity.toString} ${packageType.toString}"))(request, messages).toString
+            view(boundForm, lrn, mode, itemIndex, packageIndex, Some(s"${quantity.toString} * ${packageType.toString}"))(request, messages).toString
       }
     }
 
