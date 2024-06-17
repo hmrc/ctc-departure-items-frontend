@@ -44,8 +44,7 @@ class RemovePackageControllerSpec extends SpecBase with AppWithDefaultMockFixtur
   private val mode                    = NormalMode
   private val packageType             = arbitrary[PackageType].sample.value
 
-  private def form(packageType: PackageType): Form[Boolean] =
-    formProvider("item.packages.index.removePackage", packageType)
+  private def form: Form[Boolean] = formProvider("item.packages.index.removePackage")
 
   "RemovePackage Controller" - {
 
@@ -65,7 +64,7 @@ class RemovePackageControllerSpec extends SpecBase with AppWithDefaultMockFixtur
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(form(packageType), lrn, mode, itemIndex, packageIndex, Some(s"$quantity * ${packageType.toString}"))(request, messages).toString
+            view(form, lrn, mode, itemIndex, packageIndex, Some(s"$quantity * ${packageType.toString}"))(request, messages).toString
       }
     }
 
@@ -134,7 +133,7 @@ class RemovePackageControllerSpec extends SpecBase with AppWithDefaultMockFixtur
           setExistingUserAnswers(userAnswers)
 
           val request   = FakeRequest(POST, removePackageRoute).withFormUrlEncodedBody(("value", ""))
-          val boundForm = form(packageType).bind(Map("value" -> ""))
+          val boundForm = form.bind(Map("value" -> ""))
 
           val result = route(app, request).value
 
