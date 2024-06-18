@@ -17,7 +17,7 @@
 package controllers.item.consignee
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.EoriNumberFormProvider
+import forms.EoriTinFormProvider
 import models.NormalMode
 import navigation.ItemNavigatorProvider
 import org.mockito.ArgumentMatchers.any
@@ -33,7 +33,7 @@ import scala.concurrent.Future
 
 class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val formProvider                   = new EoriNumberFormProvider()
+  private val formProvider                   = new EoriTinFormProvider()
   private val form                           = formProvider("item.consignee.identificationNumber")
   private val mode                           = NormalMode
   private lazy val identificationNumberRoute = routes.IdentificationNumberController.onPageLoad(lrn, mode, itemIndex).url
