@@ -21,6 +21,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.{Index, LocalReferenceNumber}
+import pages.item.DescriptionPage
 import pages.sections.ItemSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -35,6 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class RemoveItemController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -43,25 +45,27 @@ class RemoveItemController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
+  def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] = actions
+    .requireIndex(lrn, ItemSection(itemIndex), addAnother(lrn))
+    .andThen(getMandatoryPage(DescriptionPage(itemIndex))) {
+      implicit request =>
+        Ok(view(form(itemIndex), lrn, itemIndex, request.arg))
+    }
+
   private def form(itemIndex: Index): Form[Boolean] = formProvider("item.removeItem", itemIndex.display)
 
   private def addAnother(lrn: LocalReferenceNumber): Call =
     controllers.routes.AddAnotherItemController.onPageLoad(lrn)
 
-  def onPageLoad(lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] = actions
-    .requireIndex(lrn, ItemSection(itemIndex), addAnother(lrn)) {
-      implicit request =>
-        Ok(view(form(itemIndex), lrn, itemIndex))
-    }
-
   def onSubmit(lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] = actions
     .requireIndex(lrn, ItemSection(itemIndex), addAnother(lrn))
+    .andThen(getMandatoryPage(DescriptionPage(itemIndex)))
     .async {
       implicit request =>
         form(itemIndex)
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, itemIndex))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, itemIndex, request.arg))),
             {
               case true =>
                 ItemSection(itemIndex)

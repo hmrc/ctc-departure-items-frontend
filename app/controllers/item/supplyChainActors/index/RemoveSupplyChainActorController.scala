@@ -22,6 +22,7 @@ import controllers.item.supplyChainActors.routes
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
+import pages.item.supplyChainActors.index.SupplyChainActorTypePage
 import pages.sections.supplyChainActors.SupplyChainActorSection
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -37,6 +38,7 @@ class RemoveSupplyChainActorController @Inject() (
   implicit val sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: YesNoFormProvider,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   val controllerComponents: MessagesControllerComponents,
   view: RemoveSupplyChainActorView
 )(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
@@ -49,19 +51,21 @@ class RemoveSupplyChainActorController @Inject() (
     routes.AddAnotherSupplyChainActorController.onPageLoad(lrn, mode, itemIndex)
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, actorIndex: Index): Action[AnyContent] = actions
-    .requireIndex(lrn, SupplyChainActorSection(itemIndex, actorIndex), addAnother(lrn, mode, itemIndex)) {
+    .requireIndex(lrn, SupplyChainActorSection(itemIndex, actorIndex), addAnother(lrn, mode, itemIndex))
+    .andThen(getMandatoryPage(SupplyChainActorTypePage(itemIndex, actorIndex))) {
       implicit request =>
-        Ok(view(form, lrn, mode, itemIndex, actorIndex))
+        Ok(view(form, lrn, mode, itemIndex, actorIndex, request.arg.toString))
     }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, actorIndex: Index): Action[AnyContent] = actions
     .requireIndex(lrn, SupplyChainActorSection(itemIndex, actorIndex), addAnother(lrn, mode, itemIndex))
+    .andThen(getMandatoryPage(SupplyChainActorTypePage(itemIndex, actorIndex)))
     .async {
       implicit request =>
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex, actorIndex))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex, actorIndex, request.arg.toString))),
             {
               case true =>
                 SupplyChainActorSection(itemIndex, actorIndex)
