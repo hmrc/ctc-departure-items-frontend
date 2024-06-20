@@ -21,9 +21,7 @@ import controllers.actions._
 import controllers.item.packages.routes
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
-import models.reference.PackageType
-import models.requests.SpecificDataRequestProvider1
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode, Packaging, UserAnswers}
 import pages.item.packages.index.PackageTypePage
 import pages.sections.packages.PackageSection
 import play.api.data.Form
@@ -48,31 +46,35 @@ class RemovePackageController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(packageType: PackageType): Form[Boolean] = formProvider("item.packages.index.removePackage", packageType)
-
-  private type Request = SpecificDataRequestProvider1[PackageType]#SpecificDataRequest[_]
-
-  private def packageType(implicit request: Request): PackageType = request.arg
-
-  private def addAnother(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Call =
-    routes.AddAnotherPackageController.onPageLoad(lrn, mode, itemIndex)
-
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, packageIndex: Index): Action[AnyContent] = actions
     .requireIndex(lrn, PackageSection(itemIndex, packageIndex), addAnother(lrn, mode, itemIndex))
     .andThen(getMandatoryPage(PackageTypePage(itemIndex, packageIndex))) {
       implicit request =>
-        Ok(view(form(packageType), lrn, mode, itemIndex, packageIndex, packageType))
+        Ok(
+          view(form, lrn, mode, itemIndex, packageIndex, insetText(request.userAnswers, itemIndex, packageIndex))
+        )
     }
+
+  private def form: Form[Boolean] = formProvider("item.packages.index.removePackage")
+
+  private def addAnother(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Call =
+    routes.AddAnotherPackageController.onPageLoad(lrn, mode, itemIndex)
+
+  private def insetText(userAnswers: UserAnswers, itemIndex: Index, packageIndex: Index): Option[String] =
+    Packaging(userAnswers, itemIndex, packageIndex).map(_.forRemoveDisplay)
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, packageIndex: Index): Action[AnyContent] = actions
     .requireIndex(lrn, PackageSection(itemIndex, packageIndex), addAnother(lrn, mode, itemIndex))
     .andThen(getMandatoryPage(PackageTypePage(itemIndex, packageIndex)))
     .async {
       implicit request =>
-        form(packageType)
+        form
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex, packageIndex, packageType))),
+            formWithErrors =>
+              Future.successful(
+                BadRequest(view(formWithErrors, lrn, mode, itemIndex, packageIndex, insetText(request.userAnswers, itemIndex, packageIndex)))
+              ),
             {
               case true =>
                 PackageSection(itemIndex, packageIndex)

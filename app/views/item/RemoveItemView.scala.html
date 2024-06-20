@@ -17,17 +17,18 @@
 @import controllers.item.routes
 @import models.LocalReferenceNumber
 @import viewmodels.components.InputYesNoViewModel._
-@import views.html.components.{Button, ErrorSummary, InputYesNo}
+@import views.html.components.{Button, ErrorSummary, InputYesNo, InsetText}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     inputYesNo: InputYesNo,
     errorSummary: ErrorSummary,
-    button: Button
+    button: Button,
+    insetText: InsetText
 )
 
-@(form: Form[Boolean], lrn: LocalReferenceNumber, itemIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], lrn: LocalReferenceNumber, itemIndex: Index, description: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("item.removeItem.title", itemIndex.display),
@@ -41,9 +42,10 @@
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = OrdinaryYesNo(
+            yesNoType = YesNoWithAdditionalHtml(
                 heading = messages("item.removeItem.heading", itemIndex.display),
-                caption = Some(messages("item.caption", itemIndex.display))
+                caption = Some(messages("item.caption", itemIndex.display)),
+                additionalHtml = insetText(description)
             )
         )
 

@@ -24,7 +24,7 @@ import play.api.data.Form
 
 import javax.inject.Inject
 
-class EoriNumberFormProvider @Inject() extends Mappings {
+class EoriTinFormProvider @Inject() extends Mappings {
 
   def apply(prefix: String): Form[String] =
     Form(

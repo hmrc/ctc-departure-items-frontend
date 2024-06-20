@@ -17,17 +17,18 @@
 @import controllers.item.supplyChainActors.index.routes
 @import models.LocalReferenceNumber
 @import viewmodels.components.InputYesNoViewModel._
-@import views.html.components.{Button, ErrorSummary, InputYesNo}
+@import views.html.components.{Button, ErrorSummary, InputYesNo, InsetText}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     inputYesNo: InputYesNo,
     errorSummary: ErrorSummary,
-    button: Button
+    button: Button,
+    insetText: InsetText
 )
 
-@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, actorIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, actorIndex: Index, supplyChainActorType: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("item.supplyChainActors.index.removeSupplyChainActor.title"),
@@ -41,9 +42,10 @@
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = OrdinaryYesNo(
+            yesNoType = YesNoWithAdditionalHtml(
                 heading = messages("item.supplyChainActors.index.removeSupplyChainActor.heading"),
-                caption = Option(messages("item.supplyChainActor.caption", itemIndex.display))
+                caption = Option(messages("item.supplyChainActor.caption", itemIndex.display)),
+                additionalHtml = insetText(supplyChainActorType)
             )
         )
 
