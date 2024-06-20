@@ -14,19 +14,13 @@
  * limitations under the License.
  */
 
-package queries
+package pages.sections.external
 
-import models.UserAnswers
-import pages.Page
+import models.Index
+import pages.sections.ReadOnlySection
+import play.api.libs.json.{JsObject, JsPath}
 
-import scala.util.{Success, Try}
+case class ConsignmentAdditionalInformationSection(index: Index) extends ReadOnlySection[JsObject] {
 
-trait Gettable[A] extends Page
-
-trait Settable[A] extends Page
-
-trait Removable[A] extends Page {
-
-  def cleanup(value: Option[A], userAnswers: UserAnswers): Try[UserAnswers] =
-    Success(userAnswers)
+  override def path: JsPath = ConsignmentAdditionalInformationListSection.path \ index.position
 }
