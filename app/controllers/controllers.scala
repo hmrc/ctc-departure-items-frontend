@@ -16,7 +16,7 @@
 
 import cats.data.ReaderT
 import config.{FrontendAppConfig, PhaseConfig}
-import models.TaskStatus.{Completed, InProgress}
+import models.TaskStatus._
 import models.UserAnswers
 import models.journeyDomain.OpsError.WriterError
 import models.journeyDomain.{ItemsDomain, UserAnswersReader}
@@ -64,8 +64,8 @@ package object controllers {
           UserAnswersWriter.updateTask(page) {
             section =>
               userAnswers.tasks.get(section) match {
-                case Some(Completed | InProgress) => UserAnswersWriter.updateTask(page, section, userAnswers)
-                case _                            => Right((page, userAnswers))
+                case Some(Completed | InProgress | Amended) => UserAnswersWriter.updateTask(page, section, userAnswers)
+                case _                                      => Right((page, userAnswers))
               }
           }
       }
