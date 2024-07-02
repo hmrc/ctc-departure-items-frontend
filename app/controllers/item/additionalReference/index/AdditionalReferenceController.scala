@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AdditionalReferenceController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigatorProvider: AdditionalReferenceNavigatorProvider,
   actions: Actions,
   formProvider: SelectableFormProvider,
@@ -74,15 +74,15 @@ class AdditionalReferenceController @Inject() (
               formWithErrors =>
                 Future.successful(BadRequest(view(formWithErrors, lrn, additionalReferences.values, mode, itemIndex, additionalReferenceIndex))),
               value => {
-                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex, additionalReferenceIndex)
+                val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex, additionalReferenceIndex)
                 for {
                   isInCL234 <- service.isDocumentTypeExcise(value.documentType)
                   result <- AdditionalReferencePage(itemIndex, additionalReferenceIndex)
                     .writeToUserAnswers(value)
                     .appendValue(AdditionalReferenceInCL234Page(itemIndex, additionalReferenceIndex), isInCL234)
                     .updateTask()
-                    .writeToSession()
-                    .navigate()
+                    .writeToSession(sessionRepository)
+                    .navigateWith(navigator)
                 } yield result
               }
             )

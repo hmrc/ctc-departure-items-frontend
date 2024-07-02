@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class DocumentController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigatorProvider: DocumentNavigatorProvider,
   actions: Actions,
   formProvider: DocumentFormProvider,
@@ -77,8 +77,8 @@ class DocumentController @Inject() (
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, documentList.values, mode, itemIndex, documentIndex))),
           value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex, documentIndex)
-            DocumentPage(itemIndex, documentIndex).writeToUserAnswers(value.uuid).updateTask().writeToSession().navigate()
+            val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex, documentIndex)
+            DocumentPage(itemIndex, documentIndex).writeToUserAnswers(value.uuid).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
           }
         )
 

@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class PackageTypeController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigatorProvider: PackageNavigatorProvider,
   actions: Actions,
   formProvider: SelectableFormProvider,
@@ -72,8 +72,8 @@ class PackageTypeController @Inject() (
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, packageTypeList.values, mode, itemIndex, packageIndex))),
               value => {
-                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex, packageIndex)
-                index.PackageTypePage(itemIndex, packageIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+                val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex, packageIndex)
+                index.PackageTypePage(itemIndex, packageIndex).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
               }
             )
       }

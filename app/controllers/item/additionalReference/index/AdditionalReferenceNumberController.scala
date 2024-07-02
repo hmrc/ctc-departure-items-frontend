@@ -41,7 +41,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AdditionalReferenceNumberController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigatorProvider: AdditionalReferenceNavigatorProvider,
   formProvider: AdditionalReferenceNumberFormProvider,
   actions: Actions,
@@ -83,13 +83,13 @@ class AdditionalReferenceNumberController @Inject() (
             formWithErrors =>
               Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex, additionalReferenceIndex, viewModel.isReferenceNumberRequired))),
             value => {
-              implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex, additionalReferenceIndex)
+              val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex, additionalReferenceIndex)
               AdditionalReferenceNumberPage(itemIndex, additionalReferenceIndex)
                 .writeToUserAnswers(value)
                 .appendValue(AddAdditionalReferenceNumberYesNoPage(itemIndex, additionalReferenceIndex), true)
                 .updateTask()
-                .writeToSession()
-                .navigate()
+                .writeToSession(sessionRepository)
+                .navigateWith(navigator)
             }
           )
     }

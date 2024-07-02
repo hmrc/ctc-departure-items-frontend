@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class RemoveAdditionalInformationController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   actions: Actions,
   getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: YesNoFormProvider,
@@ -74,7 +74,7 @@ class RemoveAdditionalInformationController @Inject() (
                   AdditionalInformationSection(itemIndex, additionalInformationIndex)
                     .removeFromUserAnswers()
                     .updateTask()
-                    .writeToSession()
+                    .writeToSession(sessionRepository)
                     .navigateTo(addAnother(lrn, mode, itemIndex))
                 case false =>
                   Future.successful(Redirect(addAnother(lrn, mode, itemIndex)))

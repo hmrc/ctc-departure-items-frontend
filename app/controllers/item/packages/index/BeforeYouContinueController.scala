@@ -33,7 +33,7 @@ import scala.concurrent.ExecutionContext
 
 class BeforeYouContinueController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigatorProvider: PackageNavigatorProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
@@ -49,11 +49,11 @@ class BeforeYouContinueController @Inject() (
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, packageIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex, packageIndex)
+      val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex, packageIndex)
       BeforeYouContinuePage(itemIndex, packageIndex)
         .writeToUserAnswers(true)
         .updateTask()
-        .writeToSession()
-        .navigate()
+        .writeToSession(sessionRepository)
+        .navigateWith(navigator)
   }
 }

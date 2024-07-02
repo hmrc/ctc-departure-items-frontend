@@ -37,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SupplyChainActorTypeController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigatorProvider: SupplyChainActorNavigatorProvider,
   actions: Actions,
   formProvider: EnumerableFormProvider,
@@ -73,8 +73,8 @@ class SupplyChainActorTypeController @Inject() (
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, supplyChainActorTypes, mode, itemIndex, actorIndex))),
               value => {
-                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex, actorIndex)
-                SupplyChainActorTypePage(itemIndex, actorIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+                val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex, actorIndex)
+                SupplyChainActorTypePage(itemIndex, actorIndex).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
               }
             )
       }
