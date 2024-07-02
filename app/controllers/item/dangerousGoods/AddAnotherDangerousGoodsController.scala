@@ -35,7 +35,7 @@ import javax.inject.Inject
 
 class AddAnotherDangerousGoodsController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigatorProvider: ItemNavigatorProvider,
   actions: Actions,
   formProvider: AddAnotherFormProvider,
