@@ -232,8 +232,7 @@ item.grossWeight.change.hidden = gross weight of item {0}
 item.grossWeight.error.required = Enter the item’s gross weight
 item.grossWeight.error.invalidCharacters = The gross weight must only include numbers 0 to 9 and a decimal point
 item.grossWeight.error.invalidFormat = The gross weight must only include {0} decimal places or less
-item.grossWeight.error.invalidValue.Transition = The gross weight must be 23 characters or less. This can include whole numbers up to 16 digits, a decimal point and up to 6 decimal places
-item.grossWeight.error.invalidValue.PostTransition = The gross weight must be 15 characters or less. This can include whole numbers up to 11 digits, a decimal point and up to 3 decimal places
+item.grossWeight.error.invalidValue = The gross weight must be {2} characters or less. This can include whole numbers up to {1} digits, a decimal point and up to {0} decimal places
 
 item.addSupplementaryUnitsYesNo.title = Do you want to add supplementary units?
 item.addSupplementaryUnitsYesNo.heading = Do you want to add supplementary units?

@@ -226,4 +226,11 @@ package object models {
   implicit def successfulReads[T](value: T): Reads[T] = Reads {
     _ => JsSuccess(value)
   }
+
+  implicit class RichBigDecimal(value: BigDecimal) {
+
+    def isMoreThan(that: BigDecimal): Boolean = value.compareTo(that) > 0
+    def isEqualTo(that: BigDecimal): Boolean  = value.compareTo(that) == 0
+    def isLessThan(that: BigDecimal): Boolean = value.compareTo(that) < 0
+  }
 }

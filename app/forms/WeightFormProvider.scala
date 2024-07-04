@@ -18,12 +18,13 @@ package forms
 
 import config.PhaseConfig
 import forms.mappings.Mappings
+import models.RichBigDecimal
 import play.api.data.Form
 import play.api.data.validation.Constraint
 
 import javax.inject.Inject
 
-sealed abstract class NetWeightFormProvider(implicit phaseConfig: PhaseConfig) extends Mappings {
+sealed abstract class WeightFormProvider(implicit phaseConfig: PhaseConfig) extends Mappings {
 
   def maxValueConstraint(prefix: String, grossWeight: BigDecimal): Option[Constraint[BigDecimal]]
 
@@ -44,14 +45,14 @@ sealed abstract class NetWeightFormProvider(implicit phaseConfig: PhaseConfig) e
   }
 }
 
-class TransitionNetWeightFormProvider @Inject() (implicit phaseConfig: PhaseConfig) extends NetWeightFormProvider {
+class TransitionWeightFormProvider @Inject() (implicit phaseConfig: PhaseConfig) extends WeightFormProvider {
 
   override def maxValueConstraint(prefix: String, grossWeight: BigDecimal): Option[Constraint[BigDecimal]] =
     None
 }
 
-class PostTransitionNetWeightFormProvider @Inject() (implicit phaseConfig: PhaseConfig) extends NetWeightFormProvider {
+class PostTransitionWeightFormProvider @Inject() (implicit phaseConfig: PhaseConfig) extends WeightFormProvider {
 
   override def maxValueConstraint(prefix: String, grossWeight: BigDecimal): Option[Constraint[BigDecimal]] =
-    Some(maximumValue(grossWeight, s"$prefix.error.maximum"))
+    Option.when(grossWeight.isMoreThan(0))(maximumValue(grossWeight, s"$prefix.error.maximum"))
 }

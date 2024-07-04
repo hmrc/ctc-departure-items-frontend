@@ -17,7 +17,7 @@
 package views.item
 
 import base.AppWithDefaultMockFixtures
-import forms.NetWeightFormProvider
+import forms.WeightFormProvider
 import models.NormalMode
 import org.scalacheck.Arbitrary
 import play.api.Application
@@ -30,8 +30,10 @@ import views.html.item.NetWeightView
 
 class NetWeightViewSpec extends InputTextViewBehaviours[BigDecimal] with AppWithDefaultMockFixtures {
 
+  override val inputSuffix: Option[String] = Some("kg")
+
   private def formProvider(app: Application): Form[BigDecimal] =
-    app.injector.instanceOf[NetWeightFormProvider].apply(prefix, isZeroAllowed = false, grossWeight)
+    app.injector.instanceOf[WeightFormProvider].apply(prefix, isZeroAllowed = false, grossWeight)
 
   override def form: Form[BigDecimal] = formProvider(app)
 
