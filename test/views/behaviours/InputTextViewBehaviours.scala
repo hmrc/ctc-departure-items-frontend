@@ -27,6 +27,7 @@ trait InputTextViewBehaviours[T] extends QuestionViewBehaviours[T] with Generato
   private lazy val validValue: T = arbitrary[T].sample.value
 
   val inputPrefix: Option[String] = None
+  val inputSuffix: Option[String] = None
 
   // scalastyle:off method.length
   def pageWithInputText(inputFieldClassSize: Option[InputSize] = None): Unit =
@@ -52,6 +53,13 @@ trait InputTextViewBehaviours[T] extends QuestionViewBehaviours[T] with Generato
           value =>
             "must have the correct prefix" in {
               getElementByClass(doc, "govuk-input__prefix").text() mustBe value
+            }
+        }
+
+        inputSuffix.foreach {
+          value =>
+            "must have the correct suffix" in {
+              getElementByClass(doc, "govuk-input__suffix").text() mustBe value
             }
         }
 

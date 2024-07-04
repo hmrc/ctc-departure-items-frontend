@@ -117,6 +117,22 @@ class UpdateTaskControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
         verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
         userAnswersCaptor.getValue.tasks.get(task).value mustBe TaskStatus.InProgress
       }
+
+      "when task status is Amended" in {
+        val userAnswers = emptyUserAnswers.copy(tasks = Map(task -> TaskStatus.Amended))
+        setExistingUserAnswers(userAnswers)
+
+        val request = FakeRequest(GET, updateTaskRoute)
+        val result  = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual continueUrl.unsafeValue
+
+        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
+        userAnswersCaptor.getValue.tasks.get(task).value mustBe TaskStatus.InProgress
+      }
     }
   }
 }

@@ -16,11 +16,11 @@
 
 import cats.data.ReaderT
 import config.{FrontendAppConfig, PhaseConfig}
-import models.TaskStatus.{Completed, InProgress}
-import models.{LocalReferenceNumber, UserAnswers}
+import models.TaskStatus._
 import models.journeyDomain.OpsError.WriterError
 import models.journeyDomain.{ItemsDomain, UserAnswersReader}
 import models.requests.MandatoryDataRequest
+import models.{LocalReferenceNumber, UserAnswers}
 import navigation.UserAnswersNavigator
 import pages.QuestionPage
 import play.api.libs.json.Format
@@ -64,8 +64,8 @@ package object controllers {
           UserAnswersWriter.updateTask(page) {
             section =>
               userAnswers.tasks.get(section) match {
-                case Some(Completed | InProgress) => UserAnswersWriter.updateTask(page, section, userAnswers)
-                case _                            => Right((page, userAnswers))
+                case Some(Completed | InProgress | Amended) => UserAnswersWriter.updateTask(page, section, userAnswers)
+                case _                                      => Right((page, userAnswers))
               }
           }
       }
