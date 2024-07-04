@@ -38,7 +38,9 @@ class NetWeightFormProviderSpec extends BigDecimalFieldBehaviours with SpecBase 
 
   ".value" - {
 
-    def runTests(form: Form[BigDecimal], decimalPlaceCount: Int, characterCount: Int, phaseConfig: PhaseConfig): Unit = {
+    def runTests(form: Form[BigDecimal], decimalPlaceCount: Int, characterCount: Int, totalCount: Int, phaseConfig: PhaseConfig): Unit = {
+
+      val args = Seq(decimalPlaceCount, characterCount, totalCount)
 
       behave like fieldThatBindsValidData(
         form,
@@ -49,10 +51,9 @@ class NetWeightFormProviderSpec extends BigDecimalFieldBehaviours with SpecBase 
       behave like bigDecimalField(
         form,
         fieldName,
-        invalidCharactersError = FormError(fieldName, s"$prefix.error.invalidCharacters", Seq(decimalPlaceCount.toString, characterCount.toString)),
-        invalidFormatError = FormError(fieldName, s"$prefix.error.invalidFormat", Seq(decimalPlaceCount.toString, characterCount.toString)),
-        invalidValueError = FormError(fieldName, s"$prefix.error.invalidValue.${phaseConfig.phase}", Seq(decimalPlaceCount.toString, characterCount.toString)),
-        Seq(decimalPlaceCount.toString, characterCount.toString)
+        invalidCharactersError = FormError(fieldName, s"$prefix.error.invalidCharacters", args),
+        invalidFormatError = FormError(fieldName, s"$prefix.error.invalidFormat", args),
+        invalidValueError = FormError(fieldName, s"$prefix.error.invalidValue", args)
       )(phaseConfig)
 
       behave like mandatoryField(
@@ -69,11 +70,12 @@ class NetWeightFormProviderSpec extends BigDecimalFieldBehaviours with SpecBase 
 
       val decimalPlaces: Int  = 3
       val characterCount: Int = 11
+      val totalCount: Int     = 15
 
       running(app) {
-        val form = app.injector.instanceOf[NetWeightFormProvider].apply(prefix, grossWeight)
+        val form = app.injector.instanceOf[NetWeightFormProvider].apply(prefix, isZeroAllowed = true, grossWeight)
 
-        runTests(form, decimalPlaces, characterCount, mockPhaseConfig)
+        runTests(form, decimalPlaces, characterCount, totalCount, mockPhaseConfig)
 
         "must bind a value greater than the gross weight" in {
           val value  = grossWeight + 1
@@ -102,11 +104,12 @@ class NetWeightFormProviderSpec extends BigDecimalFieldBehaviours with SpecBase 
 
       val decimalPlaces: Int  = 6
       val characterCount: Int = 16
+      val totalCount: Int     = 23
 
       running(app) {
-        val form = app.injector.instanceOf[NetWeightFormProvider].apply(prefix, grossWeight)
+        val form = app.injector.instanceOf[NetWeightFormProvider].apply(prefix, isZeroAllowed = true, grossWeight)
 
-        runTests(form, decimalPlaces, characterCount, mockPhaseConfig)
+        runTests(form, decimalPlaces, characterCount, totalCount, mockPhaseConfig)
 
         "must not bind a value greater than the gross weight" in {
           val value  = grossWeight + 1
@@ -123,6 +126,14 @@ class NetWeightFormProviderSpec extends BigDecimalFieldBehaviours with SpecBase 
         "must bind a value less than the gross weight" in {
           val value  = grossWeight - 1
           val result = form.bind(Map(fieldName -> value.toString)).apply(fieldName)
+          result.value.value mustBe value.toString
+        }
+
+        "must bind value greater than 0 when gross weight is 0" in {
+          val grossWeight = 0
+          val value       = grossWeight + 1
+          val form        = app.injector.instanceOf[NetWeightFormProvider].apply(prefix, isZeroAllowed = true, grossWeight)
+          val result      = form.bind(Map(fieldName -> value.toString)).apply(fieldName)
           result.value.value mustBe value.toString
         }
       }
