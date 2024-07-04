@@ -25,7 +25,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
 import pages.external.ConsignmentAdditionalInformationTypePage
-import pages.item.CountryOfDestinationPage
+import pages.item.{CountryOfDestinationInCL009Page, CountryOfDestinationPage}
 import pages.sections.external.{ConsignmentAdditionalInformationListSection, ConsignmentAdditionalInformationSection}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -122,6 +122,7 @@ class CountryOfDestinationControllerSpec extends SpecBase with AppWithDefaultMoc
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
         userAnswersCaptor.getValue.get(ConsignmentAdditionalInformationSection(Index(0))) must not be defined
+        userAnswersCaptor.getValue.get(CountryOfDestinationInCL009Page(Index(0))).value mustBe true
       }
 
       "and value is not in CL009" in {
@@ -150,6 +151,7 @@ class CountryOfDestinationControllerSpec extends SpecBase with AppWithDefaultMoc
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
         userAnswersCaptor.getValue.get(ConsignmentAdditionalInformationSection(Index(0))) must be(defined)
+        userAnswersCaptor.getValue.get(CountryOfDestinationInCL009Page(Index(0))).value mustBe false
       }
     }
 

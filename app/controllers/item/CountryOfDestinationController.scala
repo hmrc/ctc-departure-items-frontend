@@ -22,7 +22,7 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner, UpdateOps}
 import forms.SelectableFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
-import pages.item.CountryOfDestinationPage
+import pages.item.{CountryOfDestinationInCL009Page, CountryOfDestinationPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -77,6 +77,7 @@ class CountryOfDestinationController @Inject() (
                   isCountryInCL009 =>
                     CountryOfDestinationPage(itemIndex)
                       .writeToUserAnswers(value)
+                      .appendValue(CountryOfDestinationInCL009Page(itemIndex), isCountryInCL009)
                       .amendUserAnswers(_.removeConsignmentAdditionalInformation(isCountryInCL009))
                       .updateTask()
                       .writeToSession()
