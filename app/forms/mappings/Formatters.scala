@@ -16,7 +16,7 @@
 
 package forms.mappings
 
-import models.{Enumerable, Radioable, RichString, Selectable, SelectableList}
+import models.{Enumerable, Radioable, RichBigDecimal, RichString, Selectable, SelectableList}
 import play.api.data.FormError
 import play.api.data.format.Formatter
 
@@ -63,7 +63,7 @@ trait Formatters {
             case s if !s.matches(invalidValueRegex)      => Left(Seq(FormError(key, s"$prefix.invalidValue", args)))
             case s =>
               val value = BigDecimal(s)
-              if (!isZeroAllowed && value.compareTo(BigDecimal(0)) == 0) {
+              if (!isZeroAllowed && value.isEqualTo(0)) {
                 Left(Seq(FormError(key, s"$prefix.zero")))
               } else {
                 Right(value)

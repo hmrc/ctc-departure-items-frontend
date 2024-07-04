@@ -231,6 +231,5 @@ package object models {
 
     def isMoreThan(that: BigDecimal): Boolean = value.compareTo(that) > 0
     def isEqualTo(that: BigDecimal): Boolean  = value.compareTo(that) == 0
-    def isLessThan(that: BigDecimal): Boolean = value.compareTo(that) < 0
   }
 }
