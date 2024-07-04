@@ -52,7 +52,7 @@ class NetWeightController @Inject() (
   private def grossWeight(implicit request: Request): BigDecimal = request.arg
 
   private def form(grossWeight: BigDecimal): Form[BigDecimal] =
-    formProvider("item.netWeight", grossWeight)
+    formProvider("item.netWeight", isZeroAllowed = false, grossWeight)
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions
     .requireData(lrn)

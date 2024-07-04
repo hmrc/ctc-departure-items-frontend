@@ -42,28 +42,32 @@ trait Formatters {
   private[mappings] def bigDecimalFormatter(
     decimalPlaces: Int,
     characterCount: Int,
-    requiredKey: String = "error.required",
-    invalidCharactersKey: String = "error.invalidCharacters",
-    invalidFormatKey: String = "error.invalidFormat",
-    invalidValueKey: String = "error.invalidValue",
-    args: Seq[String] = Seq.empty
+    isZeroAllowed: Boolean,
+    prefix: String = "error",
+    args: Seq[Any] = Seq.empty
   ): Formatter[BigDecimal] =
     new Formatter[BigDecimal] {
 
       private val invalidCharactersRegex = """^[0-9.]*$"""
       private val invalidFormatRegex     = s"""^[0-9]*(\\.[0-9]{1,$decimalPlaces})?$$"""
-      private val invalidValueRegex      = s"""^[0-9.]{1,$characterCount}$$"""
+      private val invalidValueRegex      = s"""^([0-9]{1,$characterCount})(\\.[0-9]*)?$$"""
 
-      private val baseFormatter = stringFormatter(requiredKey)(_.replace(",", "").removeSpaces())
+      private val baseFormatter = stringFormatter(s"$prefix.required")(_.replace(",", "").removeSpaces())
 
       override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], BigDecimal] =
         baseFormatter
           .bind(key, data)
           .flatMap {
-            case s if !s.matches(invalidCharactersRegex) => Left(Seq(FormError(key, invalidCharactersKey, args)))
-            case s if !s.matches(invalidFormatRegex)     => Left(Seq(FormError(key, invalidFormatKey, args)))
-            case s if !s.matches(invalidValueRegex)      => Left(Seq(FormError(key, invalidValueKey, args)))
-            case s                                       => Right(BigDecimal(s))
+            case s if !s.matches(invalidCharactersRegex) => Left(Seq(FormError(key, s"$prefix.invalidCharacters", args)))
+            case s if !s.matches(invalidFormatRegex)     => Left(Seq(FormError(key, s"$prefix.invalidFormat", args)))
+            case s if !s.matches(invalidValueRegex)      => Left(Seq(FormError(key, s"$prefix.invalidValue", args)))
+            case s =>
+              val value = BigDecimal(s)
+              if (!isZeroAllowed && value.compareTo(BigDecimal(0)) == 0) {
+                Left(Seq(FormError(key, s"$prefix.zero")))
+              } else {
+                Right(value)
+              }
           }
 
       override def unbind(key: String, value: BigDecimal): Map[String, String] =

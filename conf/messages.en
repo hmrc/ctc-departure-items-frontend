@@ -219,9 +219,9 @@ item.netWeight.change.hidden = net weight of item {0}
 item.netWeight.error.invalidCharacters = The net weight must only include numbers 0 to 9 and a decimal point
 item.netWeight.error.required = Enter the item’s net weight
 item.netWeight.error.invalidFormat = The net weight must only include {0} decimal places or less
-item.netWeight.error.invalidValue.Transition = The net weight must be 15 characters or less. This can include whole numbers up to 11 digits, a decimal point and up to 3 decimal places
-item.netWeight.error.invalidValue.PostTransition = The net weight must be 23 characters or less. This can include whole numbers up to 16 digits, a decimal point and up to 6 decimal places
+item.netWeight.error.invalidValue = The net weight must be {2} characters or less. This can include whole numbers up to {1} digits, a decimal point and up to {0} decimal places
 item.netWeight.error.maximum = The net weight must be less than or equal to the gross weight
+item.netWeight.error.zero = The net weight must be more than 0
 
 item.grossWeight.title = What is the item’s gross weight?
 item.grossWeight.heading = What is the item’s gross weight?
