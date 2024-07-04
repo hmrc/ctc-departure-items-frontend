@@ -19,7 +19,7 @@ package controllers.item
 import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.WeightFormProvider
+import forms.NetWeightFormProvider
 import models.requests.SpecificDataRequestProvider1
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
@@ -39,7 +39,7 @@ class NetWeightController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: ItemNavigatorProvider,
   getMandatoryPage: SpecificDataRequiredActionProvider,
-  formProvider: WeightFormProvider,
+  formProvider: NetWeightFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: NetWeightView

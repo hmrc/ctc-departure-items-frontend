@@ -24,7 +24,7 @@ import play.api.data.validation.Constraint
 
 import javax.inject.Inject
 
-sealed abstract class WeightFormProvider(implicit phaseConfig: PhaseConfig) extends Mappings {
+sealed abstract class NetWeightFormProvider(implicit phaseConfig: PhaseConfig) extends Mappings {
 
   def maxValueConstraint(prefix: String, grossWeight: BigDecimal): Option[Constraint[BigDecimal]]
 
@@ -45,13 +45,13 @@ sealed abstract class WeightFormProvider(implicit phaseConfig: PhaseConfig) exte
   }
 }
 
-class TransitionWeightFormProvider @Inject() (implicit phaseConfig: PhaseConfig) extends WeightFormProvider {
+class TransitionNetWeightFormProvider @Inject() (implicit phaseConfig: PhaseConfig) extends NetWeightFormProvider {
 
   override def maxValueConstraint(prefix: String, grossWeight: BigDecimal): Option[Constraint[BigDecimal]] =
     None
 }
 
-class PostTransitionWeightFormProvider @Inject() (implicit phaseConfig: PhaseConfig) extends WeightFormProvider {
+class PostTransitionNetWeightFormProvider @Inject() (implicit phaseConfig: PhaseConfig) extends NetWeightFormProvider {
 
   override def maxValueConstraint(prefix: String, grossWeight: BigDecimal): Option[Constraint[BigDecimal]] =
     Option.when(grossWeight.isMoreThan(0))(maximumValue(grossWeight, s"$prefix.error.maximum"))

@@ -16,7 +16,7 @@
 
 package config
 
-import forms.{PostTransitionWeightFormProvider, WeightFormProvider}
+import forms.{NetWeightFormProvider, PostTransitionNetWeightFormProvider}
 import services.{AdditionalInformationService, PostTransitionAdditionalInformationService}
 
 class PostTransitionModule extends Module {
@@ -26,6 +26,6 @@ class PostTransitionModule extends Module {
 
     bind(classOf[PhaseConfig]).to(classOf[PostTransitionConfig])
     bind(classOf[AdditionalInformationService]).to(classOf[PostTransitionAdditionalInformationService])
-    bind(classOf[WeightFormProvider]).to(classOf[PostTransitionWeightFormProvider])
+    bind(classOf[NetWeightFormProvider]).to(classOf[PostTransitionNetWeightFormProvider])
   }
 }

@@ -25,7 +25,7 @@ import org.scalacheck.Gen
 import play.api.data.{Form, FormError}
 import play.api.test.Helpers.running
 
-class WeightFormProviderSpec extends BigDecimalFieldBehaviours with SpecBase with AppWithDefaultMockFixtures {
+class NetWeightFormProviderSpec extends BigDecimalFieldBehaviours with SpecBase with AppWithDefaultMockFixtures {
 
   private val prefix      = Gen.alphaNumStr.sample.value
   private val grossWeight = BigDecimal("5000")
@@ -73,7 +73,7 @@ class WeightFormProviderSpec extends BigDecimalFieldBehaviours with SpecBase wit
       val totalCount: Int     = 15
 
       running(app) {
-        val form = app.injector.instanceOf[WeightFormProvider].apply(prefix, isZeroAllowed = true, grossWeight)
+        val form = app.injector.instanceOf[NetWeightFormProvider].apply(prefix, isZeroAllowed = true, grossWeight)
 
         runTests(form, decimalPlaces, characterCount, totalCount, mockPhaseConfig)
 
@@ -107,7 +107,7 @@ class WeightFormProviderSpec extends BigDecimalFieldBehaviours with SpecBase wit
       val totalCount: Int     = 23
 
       running(app) {
-        val form = app.injector.instanceOf[WeightFormProvider].apply(prefix, isZeroAllowed = true, grossWeight)
+        val form = app.injector.instanceOf[NetWeightFormProvider].apply(prefix, isZeroAllowed = true, grossWeight)
 
         runTests(form, decimalPlaces, characterCount, totalCount, mockPhaseConfig)
 
@@ -132,7 +132,7 @@ class WeightFormProviderSpec extends BigDecimalFieldBehaviours with SpecBase wit
         "must bind value greater than 0 when gross weight is 0" in {
           val grossWeight = 0
           val value       = grossWeight + 1
-          val form        = app.injector.instanceOf[WeightFormProvider].apply(prefix, isZeroAllowed = true, grossWeight)
+          val form        = app.injector.instanceOf[NetWeightFormProvider].apply(prefix, isZeroAllowed = true, grossWeight)
           val result      = form.bind(Map(fieldName -> value.toString)).apply(fieldName)
           result.value.value mustBe value.toString
         }
