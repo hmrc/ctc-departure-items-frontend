@@ -39,7 +39,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class TransportEquipmentController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigatorProvider: ItemNavigatorProvider,
   actions: Actions,
   formProvider: SelectableFormProvider,
@@ -89,11 +89,11 @@ class TransportEquipmentController @Inject() (
     page: Index => QuestionPage[UUID],
     uuid: UUID
   )(implicit request: DataRequest[_]): Future[Result] = {
-    implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
+    val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
     page(index)
       .writeToUserAnswers(uuid)
       .updateTask()
-      .writeToSession()
-      .navigate()
+      .writeToSession(sessionRepository)
+      .navigateWith(navigator)
   }
 }
