@@ -16,13 +16,13 @@
 
 package controllers.item
 
-import config.PhaseConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import controllers.actions._
-import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
+import controllers.{NavigatorOps, SettableOps, SettableOpsRunner, UpdateOps}
 import forms.SelectableFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
-import pages.item.CountryOfDestinationPage
+import pages.item.{CountryOfDestinationInCL009Page, CountryOfDestinationPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -42,7 +42,7 @@ class CountryOfDestinationController @Inject() (
   service: CountriesService,
   val controllerComponents: MessagesControllerComponents,
   view: CountryOfDestinationView
-)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig, appConfig: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -73,7 +73,18 @@ class CountryOfDestinationController @Inject() (
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, countryList.values, mode, itemIndex))),
               value => {
                 val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
-                CountryOfDestinationPage(itemIndex).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
+                service.isCountryInCL009(value).flatMap {
+                  isCountryInCL009 =>
+                    CountryOfDestinationPage(itemIndex)
+                      .writeToUserAnswers(value)
+                      .appendValue(CountryOfDestinationInCL009Page(itemIndex), isCountryInCL009)
+                      .amendUserAnswers(_.removeConsignmentAdditionalInformation(isCountryInCL009))
+                      .updateTask()
+                      .writeToSession(sessionRepository)
+                      .getNextPage(navigator)
+                      .updateTransportDetails(lrn)
+                      .navigate()
+                }
               }
             )
       }

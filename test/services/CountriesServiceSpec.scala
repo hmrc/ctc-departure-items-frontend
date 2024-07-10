@@ -104,5 +104,40 @@ class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach with Generat
         }
       }
     }
+
+    "isCountryInCL009" - {
+      "must return true" - {
+        "when connector call returns the country" in {
+          when(mockRefDataConnector.getCountryCodeCommonTransit(any())(any(), any()))
+            .thenReturn(Future.successful(country1))
+
+          val result = service.isCountryInCL009(country1).futureValue
+
+          result mustBe true
+        }
+      }
+
+      "must return false" - {
+        "when connector call returns NoReferenceDataFoundException" in {
+          when(mockRefDataConnector.getCountryCodeCommonTransit(any())(any(), any()))
+            .thenReturn(Future.failed(new NoReferenceDataFoundException("")))
+
+          val result = service.isCountryInCL009(country1).futureValue
+
+          result mustBe false
+        }
+      }
+
+      "must fail" - {
+        "when connector call otherwise fails" in {
+          when(mockRefDataConnector.getCountryCodeCommonTransit(any())(any(), any()))
+            .thenReturn(Future.failed(new Throwable("")))
+
+          val result = service.isCountryInCL009(country1)
+
+          result.failed.futureValue mustBe a[Throwable]
+        }
+      }
+    }
   }
 }

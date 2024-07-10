@@ -46,4 +46,14 @@ class CountriesService @Inject() (referenceDataConnector: ReferenceDataConnector
       .recover {
         case _: NoReferenceDataFoundException => false
       }
+
+  def isCountryInCL009(country: Country)(implicit hc: HeaderCarrier): Future[Boolean] =
+    referenceDataConnector
+      .getCountryCodeCommonTransit(country)
+      .map {
+        _ => true
+      }
+      .recover {
+        case _: NoReferenceDataFoundException => false
+      }
 }
