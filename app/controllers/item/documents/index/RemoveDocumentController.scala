@@ -37,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class RemoveDocumentController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -78,7 +78,7 @@ class RemoveDocumentController @Inject() (
                     DocumentSection(itemIndex, documentIndex)
                       .removeFromUserAnswers()
                       .updateTask()
-                      .writeToSession()
+                      .writeToSession(sessionRepository)
                       .navigateTo(addAnother(lrn, mode, itemIndex))
                   case false =>
                     Future.successful(Redirect(addAnother(lrn, mode, itemIndex)))

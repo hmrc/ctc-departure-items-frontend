@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class RemoveSupplyChainActorController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: YesNoFormProvider,
   getMandatoryPage: SpecificDataRequiredActionProvider,
@@ -71,7 +71,7 @@ class RemoveSupplyChainActorController @Inject() (
                 SupplyChainActorSection(itemIndex, actorIndex)
                   .removeFromUserAnswers()
                   .updateTask()
-                  .writeToSession()
+                  .writeToSession(sessionRepository)
                   .navigateTo(addAnother(lrn, mode, itemIndex))
               case false =>
                 Future.successful(Redirect(addAnother(lrn, mode, itemIndex)))

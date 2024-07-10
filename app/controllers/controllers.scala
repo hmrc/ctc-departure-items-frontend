@@ -124,8 +124,9 @@ package object controllers {
       }
 
     def writeToSession(
-      userAnswers: UserAnswers
-    )(implicit sessionRepository: SessionRepository, executionContext: ExecutionContext, hc: HeaderCarrier): Future[Write[A]] =
+      userAnswers: UserAnswers,
+      sessionRepository: SessionRepository
+    )(implicit executionContext: ExecutionContext, hc: HeaderCarrier): Future[Write[A]] =
       userAnswersWriter.run(userAnswers) match {
         case Left(opsError) => Future.failed(new Exception(s"${opsError.toString}"))
         case Right(value) =>
@@ -136,17 +137,16 @@ package object controllers {
             )
       }
 
-    def writeToSession()(implicit
+    def writeToSession(sessionRepository: SessionRepository)(implicit
       dataRequest: MandatoryDataRequest[_],
-      sessionRepository: SessionRepository,
       ex: ExecutionContext,
       hc: HeaderCarrier
-    ): Future[Write[A]] = writeToSession(dataRequest.userAnswers)
+    ): Future[Write[A]] = writeToSession(dataRequest.userAnswers, sessionRepository)
   }
 
   implicit class NavigatorOps[A](write: Future[Write[A]]) {
 
-    def navigate()(implicit navigator: UserAnswersNavigator, executionContext: ExecutionContext): Future[Result] =
+    def navigateWith(navigator: UserAnswersNavigator)(implicit executionContext: ExecutionContext): Future[Result] =
       navigate {
         case (page, userAnswers) => navigator.nextPage(userAnswers, Some(page))
       }
@@ -170,7 +170,7 @@ package object controllers {
       }
     }
 
-    def getNextPage()(implicit navigator: UserAnswersNavigator, executionContext: ExecutionContext, frontendAppConfig: FrontendAppConfig): Future[Call] =
+    def getNextPage(navigator: UserAnswersNavigator)(implicit executionContext: ExecutionContext, frontendAppConfig: FrontendAppConfig): Future[Call] =
       write.map {
         case (page, userAnswers) =>
           val call = navigator.nextPage(userAnswers, Some(page))
