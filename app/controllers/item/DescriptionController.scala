@@ -63,7 +63,7 @@ class DescriptionController @Inject() (
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex))),
           value => {
-            implicit lazy val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
+            val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
             DescriptionPage(itemIndex).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
           }
         )
