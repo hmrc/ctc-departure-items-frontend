@@ -58,6 +58,16 @@ trait StringFieldBehaviours extends FieldBehaviours {
       }
     }
 
+  def fieldWithMinLength(form: Form[_], fieldName: String, minLength: Int, lengthError: FormError): Unit =
+    s"must not bind strings shorter than $minLength characters" in {
+
+      forAll(stringsWithLength(minLength - 1) -> "shortString") {
+        string =>
+          val result = form.bind(Map(fieldName -> string)).apply(fieldName)
+          result.errors mustEqual Seq(lengthError)
+      }
+    }
+
   def fieldWithInvalidCharacters(form: Form[_], fieldName: String, error: FormError, length: Int = 100): Unit =
     "must not bind strings with invalid characters" in {
 
@@ -68,6 +78,13 @@ trait StringFieldBehaviours extends FieldBehaviours {
           val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
           result.errors must contain(error)
       }
+    }
+
+  def fieldWithInvalidInputCL234(form: Form[_], fieldName: String, error: FormError): Unit =
+    "must not bind strings with value '0' when in CL234" in {
+
+      val result: Field = form.bind(Map(fieldName -> "0")).apply(fieldName)
+      result.errors must contain(error)
     }
 
   def fieldThatBindsUniqueData(form: Form[_], fieldName: String, values: Seq[String], uniqueError: FormError): Unit = {

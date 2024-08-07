@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CustomsUnionAndStatisticsCodeController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigatorProvider: ItemNavigatorProvider,
   formProvider: CUSCodeFormProvider,
   service: CUSCodeService,
@@ -67,8 +67,8 @@ class CustomsUnionAndStatisticsCodeController @Inject() (
           value =>
             service.doesCUSCodeExist(value).flatMap {
               case true =>
-                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
-                CustomsUnionAndStatisticsCodePage(itemIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+                val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
+                CustomsUnionAndStatisticsCodePage(itemIndex).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
               case false =>
                 val formWithErrors = form.withError(FormError("value", "item.customsUnionAndStatisticsCode.error.not.exists"))
                 Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex)))

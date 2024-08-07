@@ -33,3 +33,10 @@ case class CountryOfDestinationPage(itemIndex: Index) extends QuestionPage[Count
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.CountryOfDestinationController.onPageLoad(userAnswers.lrn, mode, itemIndex))
 }
+
+case class CountryOfDestinationInCL009Page(itemIndex: Index) extends QuestionPage[Boolean] {
+
+  override def path: JsPath = CountryOfDestinationPage(itemIndex).path \ toString
+
+  override def toString: String = "isInCL009"
+}

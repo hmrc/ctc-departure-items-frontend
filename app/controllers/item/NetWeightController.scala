@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class NetWeightController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigatorProvider: ItemNavigatorProvider,
   getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: NetWeightFormProvider,
@@ -52,7 +52,7 @@ class NetWeightController @Inject() (
   private def grossWeight(implicit request: Request): BigDecimal = request.arg
 
   private def form(grossWeight: BigDecimal): Form[BigDecimal] =
-    formProvider("item.netWeight", grossWeight)
+    formProvider("item.netWeight", isZeroAllowed = false, grossWeight)
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions
     .requireData(lrn)
@@ -75,8 +75,8 @@ class NetWeightController @Inject() (
           .fold(
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex))),
             value => {
-              implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
-              NetWeightPage(itemIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+              val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
+              NetWeightPage(itemIndex).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
             }
           )
     }

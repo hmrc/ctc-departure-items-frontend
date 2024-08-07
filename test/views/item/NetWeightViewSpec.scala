@@ -30,8 +30,10 @@ import views.html.item.NetWeightView
 
 class NetWeightViewSpec extends InputTextViewBehaviours[BigDecimal] with AppWithDefaultMockFixtures {
 
+  override val inputSuffix: Option[String] = Some("kg")
+
   private def formProvider(app: Application): Form[BigDecimal] =
-    app.injector.instanceOf[NetWeightFormProvider].apply(prefix, grossWeight)
+    app.injector.instanceOf[NetWeightFormProvider].apply(prefix, isZeroAllowed = false, grossWeight)
 
   override def form: Form[BigDecimal] = formProvider(app)
 

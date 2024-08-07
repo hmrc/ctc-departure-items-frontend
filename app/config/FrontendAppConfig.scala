@@ -77,9 +77,13 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   val dependentTasks: Seq[String] = configuration.get[Seq[String]]("dependent-tasks")
 
   def documentsFrontendUrl(lrn: LocalReferenceNumber): String = {
-    val url: String = configuration.get[String]("urls.documentsFrontend")
+    val url: String = configuration.get[String]("urls.manageTransitMovementsDepartureDocumentsFrontend")
     url.replace(":lrn", lrn.toString)
   }
 
+  val transportDetailsUrl: String = configuration.get[String]("urls.manageTransitMovementsDepartureTransportDetailsFrontend")
+
   val allowedRedirectUrls: Seq[String] = configuration.get[Seq[String]]("urls.allowedRedirects")
+
+  def absoluteURL(url: String): String = configuration.get[String]("host") + url
 }

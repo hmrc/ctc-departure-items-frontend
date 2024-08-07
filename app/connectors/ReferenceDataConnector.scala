@@ -51,12 +51,24 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
       .execute[NonEmptySet[Country]]
   }
 
-  def getCountriesWithoutZip()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[CountryCode]] = {
+  def getCountryCodeCommonTransit(country: Country)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Country] = {
+    val url = url"${config.referenceDataUrl}/lists/CountryCodesCommonTransit"
+    http
+      .get(url)
+      .transform(_.withQueryStringParameters("data.code" -> country.code.code))
+      .setHeader(version2Header: _*)
+      .execute[NonEmptySet[Country]]
+      .map(_.head)
+  }
+
+  def getCountriesWithoutZipCountry(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[CountryCode] = {
     val url = url"${config.referenceDataUrl}/lists/CountryWithoutZip"
     http
       .get(url)
+      .transform(_.withQueryStringParameters("data.code" -> code))
       .setHeader(version2Header: _*)
       .execute[NonEmptySet[CountryCode]]
+      .map(_.head)
   }
 
   def getPackageTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[PackageType]] = {
@@ -92,6 +104,16 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
       .get(url)
       .setHeader(version2Header: _*)
       .execute[NonEmptySet[AdditionalReference]]
+  }
+
+  def getDocumentTypeExcise(docType: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[DocTypeExcise] = {
+    val url = url"${config.referenceDataUrl}/lists/DocumentTypeExcise"
+    http
+      .get(url)
+      .transform(_.withQueryStringParameters("data.code" -> docType))
+      .setHeader(version2Header: _*)
+      .execute[NonEmptySet[DocTypeExcise]]
+      .map(_.head)
   }
 
   def getCUSCode(cusCode: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[CUSCode] = {

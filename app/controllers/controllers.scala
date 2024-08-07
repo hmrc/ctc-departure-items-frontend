@@ -16,11 +16,11 @@
 
 import cats.data.ReaderT
 import config.{FrontendAppConfig, PhaseConfig}
-import models.TaskStatus.{Completed, InProgress}
-import models.UserAnswers
+import models.TaskStatus._
 import models.journeyDomain.OpsError.WriterError
 import models.journeyDomain.{ItemsDomain, UserAnswersReader}
 import models.requests.MandatoryDataRequest
+import models.{LocalReferenceNumber, UserAnswers}
 import navigation.UserAnswersNavigator
 import pages.QuestionPage
 import play.api.libs.json.Format
@@ -64,8 +64,8 @@ package object controllers {
           UserAnswersWriter.updateTask(page) {
             section =>
               userAnswers.tasks.get(section) match {
-                case Some(Completed | InProgress) => UserAnswersWriter.updateTask(page, section, userAnswers)
-                case _                            => Right((page, userAnswers))
+                case Some(Completed | InProgress | Amended) => UserAnswersWriter.updateTask(page, section, userAnswers)
+                case _                                      => Right((page, userAnswers))
               }
           }
       }
@@ -100,6 +100,12 @@ package object controllers {
           }
       }
 
+    def amendUserAnswers(f: UserAnswers => UserAnswers): UserAnswersWriter[Write[A]] =
+      userAnswersWriter.flatMapF {
+        case (page, userAnswers) =>
+          Right((page, f(userAnswers)))
+      }
+
     def removeValue(subPage: QuestionPage[_]): UserAnswersWriter[Write[A]] =
       userAnswersWriter.flatMapF {
         case (page, userAnswers) =>
@@ -118,8 +124,9 @@ package object controllers {
       }
 
     def writeToSession(
-      userAnswers: UserAnswers
-    )(implicit sessionRepository: SessionRepository, executionContext: ExecutionContext, hc: HeaderCarrier): Future[Write[A]] =
+      userAnswers: UserAnswers,
+      sessionRepository: SessionRepository
+    )(implicit executionContext: ExecutionContext, hc: HeaderCarrier): Future[Write[A]] =
       userAnswersWriter.run(userAnswers) match {
         case Left(opsError) => Future.failed(new Exception(s"${opsError.toString}"))
         case Right(value) =>
@@ -130,17 +137,16 @@ package object controllers {
             )
       }
 
-    def writeToSession()(implicit
+    def writeToSession(sessionRepository: SessionRepository)(implicit
       dataRequest: MandatoryDataRequest[_],
-      sessionRepository: SessionRepository,
       ex: ExecutionContext,
       hc: HeaderCarrier
-    ): Future[Write[A]] = writeToSession(dataRequest.userAnswers)
+    ): Future[Write[A]] = writeToSession(dataRequest.userAnswers, sessionRepository)
   }
 
   implicit class NavigatorOps[A](write: Future[Write[A]]) {
 
-    def navigate()(implicit navigator: UserAnswersNavigator, executionContext: ExecutionContext): Future[Result] =
+    def navigateWith(navigator: UserAnswersNavigator)(implicit executionContext: ExecutionContext): Future[Result] =
       navigate {
         case (page, userAnswers) => navigator.nextPage(userAnswers, Some(page))
       }
@@ -164,9 +170,31 @@ package object controllers {
       }
     }
 
+    def getNextPage(navigator: UserAnswersNavigator)(implicit executionContext: ExecutionContext, frontendAppConfig: FrontendAppConfig): Future[Call] =
+      write.map {
+        case (page, userAnswers) =>
+          val call = navigator.nextPage(userAnswers, Some(page))
+          val url  = frontendAppConfig.absoluteURL(call.url)
+          call.copy(url = url)
+      }
+
     private def navigate(result: Write[A] => Call)(implicit executionContext: ExecutionContext): Future[Result] =
       write.map {
         w => Redirect(result(w))
       }
+  }
+
+  implicit class UpdateOps(call: Future[Call]) {
+
+    private def updateTask(frontendUrl: String, lrn: LocalReferenceNumber)(implicit ex: ExecutionContext): Future[Call] =
+      call.map {
+        x => x.copy(url = s"$frontendUrl/$lrn/update-task?continue=${x.url}")
+      }
+
+    def updateTransportDetails(lrn: LocalReferenceNumber)(implicit ex: ExecutionContext, config: FrontendAppConfig): Future[Call] =
+      updateTask(config.transportDetailsUrl, lrn)
+
+    def navigate()(implicit executionContext: ExecutionContext): Future[Result] =
+      call.map(Redirect)
   }
 }

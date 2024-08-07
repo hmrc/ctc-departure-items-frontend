@@ -40,7 +40,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class RemoveAdditionalReferenceController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   actions: Actions,
   getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: YesNoFormProvider,
@@ -90,7 +90,7 @@ class RemoveAdditionalReferenceController @Inject() (
                   AdditionalReferenceSection(itemIndex, additionalReferenceIndex)
                     .removeFromUserAnswers()
                     .updateTask()
-                    .writeToSession()
+                    .writeToSession(sessionRepository)
                     .navigateTo(addAnother(lrn, mode, itemIndex))
                 case false =>
                   Future.successful(Redirect(addAnother(lrn, mode, itemIndex)))

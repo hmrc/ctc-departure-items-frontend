@@ -30,6 +30,8 @@ import views.html.item.GrossWeightView
 
 class GrossWeightViewSpec extends SpecBase with InputTextViewBehaviours[BigDecimal] with AppWithDefaultMockFixtures {
 
+  override val inputSuffix: Option[String] = Some("kg")
+
   override val prefix: String = "item.grossWeight"
 
   private def formProvider(app: Application): Form[BigDecimal] =

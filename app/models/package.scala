@@ -218,9 +218,18 @@ package object models {
         (acc, c) =>
           acc + c.toString.trim
       }
+
+    def capitalise(n: Int): String = string.take(n).toUpperCase + string.drop(n)
+
   }
 
   implicit def successfulReads[T](value: T): Reads[T] = Reads {
     _ => JsSuccess(value)
+  }
+
+  implicit class RichBigDecimal(value: BigDecimal) {
+
+    def isMoreThan(that: BigDecimal): Boolean = value.compareTo(that) > 0
+    def isEqualTo(that: BigDecimal): Boolean  = value.compareTo(that) == 0
   }
 }

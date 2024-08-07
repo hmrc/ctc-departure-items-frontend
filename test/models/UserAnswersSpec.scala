@@ -19,6 +19,7 @@ package models
 import base.SpecBase
 import generators.Generators
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.external.ConsignmentAdditionalInformationTypePage
 import play.api.libs.json.{JsValue, Json}
 
 class UserAnswersSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -67,5 +68,106 @@ class UserAnswersSpec extends SpecBase with ScalaCheckPropertyChecks with Genera
 
     }
 
+    "removeConsignmentAdditionalInformation" - {
+      "when country of destination is in CL009" - {
+        val isCountryOfDestinationInCL009 = true
+
+        "and there is consignment additional information" - {
+          "and none have type 30600" - {
+            "must do nothing" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(ConsignmentAdditionalInformationTypePage(Index(0)), "20100")
+                .setValue(ConsignmentAdditionalInformationTypePage(Index(1)), "20200")
+                .setValue(ConsignmentAdditionalInformationTypePage(Index(2)), "20300")
+
+              val result = userAnswers.removeConsignmentAdditionalInformation(isCountryOfDestinationInCL009)
+
+              val expectedResult = userAnswers
+
+              result mustBe expectedResult
+            }
+          }
+
+          "and some have type 30600" - {
+            "must remove them" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(ConsignmentAdditionalInformationTypePage(Index(0)), "30600")
+                .setValue(ConsignmentAdditionalInformationTypePage(Index(1)), "30600")
+                .setValue(ConsignmentAdditionalInformationTypePage(Index(2)), "20100")
+                .setValue(ConsignmentAdditionalInformationTypePage(Index(3)), "30600")
+                .setValue(ConsignmentAdditionalInformationTypePage(Index(4)), "30600")
+                .setValue(ConsignmentAdditionalInformationTypePage(Index(5)), "20200")
+                .setValue(ConsignmentAdditionalInformationTypePage(Index(6)), "30600")
+                .setValue(ConsignmentAdditionalInformationTypePage(Index(7)), "30600")
+                .setValue(ConsignmentAdditionalInformationTypePage(Index(8)), "20300")
+                .setValue(ConsignmentAdditionalInformationTypePage(Index(9)), "30600")
+                .setValue(ConsignmentAdditionalInformationTypePage(Index(10)), "30600")
+
+              val result = userAnswers.removeConsignmentAdditionalInformation(isCountryOfDestinationInCL009)
+
+              val expectedData = Json.parse("""
+                  |{
+                  |  "transportDetails" : {
+                  |    "additionalInformation" : [
+                  |      {
+                  |        "type" : {
+                  |          "code" : "20100"
+                  |        }
+                  |      },
+                  |      {
+                  |        "type" : {
+                  |          "code" : "20200"
+                  |        }
+                  |      },
+                  |      {
+                  |        "type" : {
+                  |          "code" : "20300"
+                  |        }
+                  |      }
+                  |    ]
+                  |  }
+                  |}
+                  |""".stripMargin)
+
+              result.data mustBe expectedData
+            }
+          }
+        }
+
+        "and there is no consignment additional information" - {
+          "must do nothing" in {
+            val userAnswers = emptyUserAnswers
+
+            val result = userAnswers.removeConsignmentAdditionalInformation(isCountryOfDestinationInCL009)
+
+            val expectedResult = userAnswers
+
+            result mustBe expectedResult
+          }
+        }
+      }
+
+      "when country of destination is not in CL009" - {
+        val isCountryOfDestinationInCL009 = false
+
+        "must do nothing" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(ConsignmentAdditionalInformationTypePage(Index(0)), "20100")
+            .setValue(ConsignmentAdditionalInformationTypePage(Index(1)), "20200")
+            .setValue(ConsignmentAdditionalInformationTypePage(Index(2)), "20300")
+            .setValue(ConsignmentAdditionalInformationTypePage(Index(3)), "30600")
+            .setValue(ConsignmentAdditionalInformationTypePage(Index(4)), "20100")
+            .setValue(ConsignmentAdditionalInformationTypePage(Index(5)), "20200")
+            .setValue(ConsignmentAdditionalInformationTypePage(Index(6)), "20300")
+            .setValue(ConsignmentAdditionalInformationTypePage(Index(7)), "30600")
+
+          val result = userAnswers.removeConsignmentAdditionalInformation(isCountryOfDestinationInCL009)
+
+          val expectedResult = userAnswers
+
+          result mustBe expectedResult
+        }
+      }
+    }
   }
 }

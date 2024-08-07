@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SupplementaryUnitsController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigatorProvider: ItemNavigatorProvider,
   formProvider: BigDecimalFormProvider,
   actions: Actions,
@@ -63,8 +63,8 @@ class SupplementaryUnitsController @Inject() (
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex))),
           value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
-            SupplementaryUnitsPage(itemIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+            val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
+            SupplementaryUnitsPage(itemIndex).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
           }
         )
   }
