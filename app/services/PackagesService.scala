@@ -26,11 +26,12 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class PackagesService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
 
+  // The order here is important to allow duplicates to be correctly identified as Bulk or Unpacked instead of Other
   def getPackageTypes()(implicit hc: HeaderCarrier): Future[SelectableList[PackageType]] =
     for {
-      other    <- referenceDataConnector.getPackageTypes()
       bulk     <- referenceDataConnector.getPackageTypesBulk()
       unpacked <- referenceDataConnector.getPackageTypesUnpacked()
-      packages = other ++ bulk ++ unpacked
+      other    <- referenceDataConnector.getPackageTypes()
+      packages = bulk ++ unpacked ++ other
     } yield SelectableList(packages)
 }
