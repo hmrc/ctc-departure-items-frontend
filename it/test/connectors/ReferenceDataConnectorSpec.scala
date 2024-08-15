@@ -339,7 +339,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         )
 
         val expectedResult =
-          DocTypeExcise(activeFrom = "2024-01-01", code = "C651", state = "valid", description = "AAD - Administrative Accompanying Document (EMCS)")
+          DocTypeExcise(code = "C651", state = "valid", description = "AAD - Administrative Accompanying Document (EMCS)")
 
         connector.getDocumentTypeExcise(code).futureValue mustEqual expectedResult
       }
