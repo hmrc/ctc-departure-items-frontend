@@ -25,7 +25,6 @@ import pages.sections.dangerousGoods.DangerousGoodsListSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.item.dangerousGoods.AddAnotherDangerousGoodsViewModel
 import viewmodels.item.dangerousGoods.AddAnotherDangerousGoodsViewModel.AddAnotherDangerousGoodsViewModelProvider
@@ -35,7 +34,6 @@ import javax.inject.Inject
 
 class AddAnotherDangerousGoodsController @Inject() (
   override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
   navigatorProvider: ItemNavigatorProvider,
   actions: Actions,
   formProvider: AddAnotherFormProvider,

@@ -18,7 +18,7 @@ package viewmodels.components
 
 import base.SpecBase
 import generators.Generators
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import org.scalatest.matchers.should.Matchers._
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.twirl.api.Html
 import viewmodels.components.InputYesNoViewModel.{OrdinaryYesNo, YesNoWithAdditionalHtml}

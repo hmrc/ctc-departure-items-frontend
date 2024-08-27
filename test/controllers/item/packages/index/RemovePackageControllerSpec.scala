@@ -72,7 +72,7 @@ class RemovePackageControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       "must redirect to add another package and remove package at specified index" in {
 
         reset(mockSessionRepository)
-        when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
         val userAnswers = emptyUserAnswers
           .setValue(PackageTypePage(itemIndex, packageIndex), packageType)
@@ -99,7 +99,7 @@ class RemovePackageControllerSpec extends SpecBase with AppWithDefaultMockFixtur
     "when no submitted" - {
       "must redirect to add another package and not remove package at specified index" in {
         reset(mockSessionRepository)
-        when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
         val userAnswers = emptyUserAnswers
           .setValue(PackageTypePage(itemIndex, packageIndex), packageType)

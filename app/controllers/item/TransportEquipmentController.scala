@@ -56,7 +56,7 @@ class TransportEquipmentController @Inject() (
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
       service.getTransportEquipments(request.userAnswers) match {
-        case SelectableList(head :: Nil) => redirect(mode, itemIndex, InferredTransportEquipmentPage, head.uuid)
+        case SelectableList(head :: Nil) => redirect(mode, itemIndex, InferredTransportEquipmentPage.apply, head.uuid)
         case transportEquipmentList =>
           val form = formProvider(prefix, transportEquipmentList)
           val preparedForm = request.userAnswers.get(TransportEquipmentPage(itemIndex)) match {
@@ -79,7 +79,7 @@ class TransportEquipmentController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, transportEquipmentList.values, mode, itemIndex))),
-          value => redirect(mode, itemIndex, TransportEquipmentPage, value.uuid)
+          value => redirect(mode, itemIndex, TransportEquipmentPage.apply, value.uuid)
         )
   }
 
@@ -88,7 +88,7 @@ class TransportEquipmentController @Inject() (
     index: Index,
     page: Index => QuestionPage[UUID],
     uuid: UUID
-  )(implicit request: DataRequest[_]): Future[Result] = {
+  )(implicit request: DataRequest[?]): Future[Result] = {
     val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
     page(index)
       .writeToUserAnswers(uuid)

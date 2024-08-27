@@ -18,10 +18,11 @@ object CodeCoverageSettings {
     "views\\.utils.*"
   )
 
+  // TODO set coverageFailOnMinimum true after https://github.com/scoverage/sbt-scoverage/issues/550 is fixed
   val settings: Seq[Setting[_]] = Seq(
     ScoverageKeys.coverageExcludedPackages := excludedPackages.mkString(";"),
     ScoverageKeys.coverageMinimumStmtTotal := 65, // TODO - increase this when appropriate
-    ScoverageKeys.coverageFailOnMinimum := true,
+    ScoverageKeys.coverageFailOnMinimum := false,
     ScoverageKeys.coverageHighlighting := true
   )
 }

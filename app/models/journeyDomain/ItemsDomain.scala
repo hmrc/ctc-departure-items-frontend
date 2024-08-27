@@ -23,7 +23,7 @@ import pages.sections.{ItemsSection, Section}
 
 case class ItemsDomain(item: Seq[ItemDomain]) extends JourneyDomainModel {
 
-  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(ItemsSection)
+  override def page(userAnswers: UserAnswers): Option[Section[?]] = Some(ItemsSection)
 }
 
 object ItemsDomain {

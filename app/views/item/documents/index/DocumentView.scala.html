@@ -34,7 +34,7 @@
     config: FrontendAppConfig
 )
 
-@(form: Form[Document], lrn: LocalReferenceNumber, documentList: Seq[Document], mode: Mode, itemIndex: Index, documentIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[Document], lrn: LocalReferenceNumber, documentList: Seq[Document], mode: Mode, itemIndex: Index, documentIndex: Index)(implicit request: Request[?], messages: Messages)
 
 @html = {
     <p class="govuk-body">@messages("item.documents.index.document.paragraph")</p>

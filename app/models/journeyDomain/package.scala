@@ -47,7 +47,7 @@ package object journeyDomain {
 
     def emptyList[A]: Read[Seq[A]] = pages => success[Seq[A]](Seq.empty[A]).apply(pages)
 
-    def error[A](page: Gettable[_], message: Option[String] = None): Read[A] = pages => {
+    def error[A](page: Gettable[?], message: Option[String] = None): Read[A] = pages => {
       val fn: UserAnswers => EitherType[ReaderSuccess[A]] = _ => Left(ReaderError(page, pages.append(page), message))
       apply(fn)
     }
@@ -179,7 +179,7 @@ package object journeyDomain {
         case _                         => pages :+ page
       }
 
-    def append(page: Option[Section[_]]): Pages =
+    def append(page: Option[Section[?]]): Pages =
       page.fold(pages) {
         case x if pages.contains(x) => pages
         case x                      => pages :+ x

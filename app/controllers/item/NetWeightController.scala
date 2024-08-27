@@ -47,7 +47,7 @@ class NetWeightController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private type Request = SpecificDataRequestProvider1[BigDecimal]#SpecificDataRequest[_]
+  private type Request = SpecificDataRequestProvider1[BigDecimal]#SpecificDataRequest[?]
 
   private def grossWeight(implicit request: Request): BigDecimal = request.arg
 

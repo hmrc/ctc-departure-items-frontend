@@ -74,7 +74,7 @@ class RemoveSupplyChainActorControllerSpec extends SpecBase with AppWithDefaultM
           .setValue(IdentificationNumberPage(itemIndex, actorIndex), identificationNumber)
 
         reset(mockSessionRepository)
-        when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
         setExistingUserAnswers(userAnswers)
 

@@ -18,7 +18,7 @@ package models.journeyDomain.item.additionalReferences
 
 import config.Constants.AdditionalReference._
 import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
-import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, Read, Stage, UserAnswersReader}
+import models.journeyDomain._
 import models.reference.AdditionalReference
 import models.{Index, Mode, Phase, UserAnswers}
 import pages.item.additionalReference.index._

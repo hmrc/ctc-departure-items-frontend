@@ -50,7 +50,7 @@ class AddressController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private type Request = SpecificDataRequestProvider2[String, Country]#SpecificDataRequest[_]
+  private type Request = SpecificDataRequestProvider2[String, Country]#SpecificDataRequest[?]
 
   private def name(implicit request: Request): String = request.arg._1
 

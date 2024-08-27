@@ -29,7 +29,7 @@
     phaseConfig: PhaseConfig
 )
 
-@(form: Form[String], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[String], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("item.description.title", itemIndex.display),

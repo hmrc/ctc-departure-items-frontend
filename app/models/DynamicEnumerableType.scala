@@ -20,8 +20,9 @@ trait DynamicEnumerableType[T <: Radioable[T]] extends Enumerable.Implicits {
 
   implicit def enumerable(values: Seq[T]): Enumerable[T] =
     Enumerable(
-      values.map(
-        v => v.code -> v
-      ): _*
+      values
+        .map(
+          v => v.code -> v
+        ) *
     )
 }

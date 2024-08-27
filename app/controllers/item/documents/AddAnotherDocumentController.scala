@@ -55,7 +55,7 @@ class AddAnotherDocumentController @Inject() (
   private def form(viewModel: AddAnotherDocumentViewModel): Form[Boolean] =
     formProvider(viewModel.prefix, viewModel.allowMoreDocuments && viewModel.canAttachMoreDocumentsToItem)
 
-  private def documents(itemIndex: Index)(implicit request: DataRequest[_]): Seq[Document] =
+  private def documents(itemIndex: Index)(implicit request: DataRequest[?]): Seq[Document] =
     service.getDocuments(request.userAnswers, itemIndex, None).values
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {

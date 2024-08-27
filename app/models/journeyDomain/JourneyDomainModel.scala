@@ -21,7 +21,7 @@ import pages.sections.Section
 import play.api.mvc.Call
 
 trait JourneyDomainModel {
-  def page(userAnswers: UserAnswers): Option[Section[_]] = None
+  def page(userAnswers: UserAnswers): Option[Section[?]] = None
 
   def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] =
     page(userAnswers).flatMap(_.route(userAnswers, mode))

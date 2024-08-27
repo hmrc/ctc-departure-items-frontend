@@ -17,7 +17,7 @@
 package models.journeyDomain.item.packages
 
 import config.PhaseConfig
-import models.journeyDomain.{JourneyDomainModel, JsArrayGettableAsReaderOps, Read}
+import models.journeyDomain._
 import models.{Index, RichJsArray, UserAnswers}
 import pages.sections.Section
 import pages.sections.packages.PackagesSection
@@ -27,7 +27,7 @@ case class PackagesDomain(
 )(itemIndex: Index)
     extends JourneyDomainModel {
 
-  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(PackagesSection(itemIndex))
+  override def page(userAnswers: UserAnswers): Option[Section[?]] = Some(PackagesSection(itemIndex))
 }
 
 object PackagesDomain {

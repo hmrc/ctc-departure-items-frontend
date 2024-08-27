@@ -66,11 +66,11 @@ private[utils] class SummaryListRowHelper(implicit messages: Messages) {
   ): SummaryListRow =
     buildSimpleRow(
       prefix = prefix,
-      label = messages(s"$prefix.checkYourAnswersLabel", args: _*),
+      label = messages(s"$prefix.checkYourAnswersLabel", args *),
       answer = answer,
       id = id,
       call = Some(call),
-      args = args: _*
+      args = args *
     )
 
   protected def buildRowWithNoChangeLink(
@@ -80,7 +80,7 @@ private[utils] class SummaryListRowHelper(implicit messages: Messages) {
   ): SummaryListRow =
     buildSimpleRow(
       prefix = prefix,
-      label = messages(s"$prefix.checkYourAnswersLabel", args: _*),
+      label = messages(s"$prefix.checkYourAnswersLabel", args *),
       answer = answer,
       id = None,
       call = None
@@ -104,7 +104,7 @@ private[utils] class SummaryListRowHelper(implicit messages: Messages) {
               ActionItem(
                 content = messages("site.edit").toText,
                 href = route.url,
-                visuallyHiddenText = Some(messages(s"$prefix.change.hidden", args: _*)),
+                visuallyHiddenText = Some(messages(s"$prefix.change.hidden", args *)),
                 attributes = id.fold[Map[String, String]](Map.empty)(
                   id => Map("id" -> id)
                 )

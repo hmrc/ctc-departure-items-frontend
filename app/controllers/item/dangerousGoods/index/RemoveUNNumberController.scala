@@ -47,7 +47,7 @@ class RemoveUNNumberController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private type Request = SpecificDataRequestProvider1[String]#SpecificDataRequest[_]
+  private type Request = SpecificDataRequestProvider1[String]#SpecificDataRequest[?]
 
   private def form(implicit request: Request): Form[Boolean] =
     formProvider("item.dangerousGoods.index.removeUNNumber", request.arg)
