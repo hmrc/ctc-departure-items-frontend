@@ -28,7 +28,7 @@
     govukInsetText : GovukInsetText
 )
 
-@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, additionalReferenceIndex: Index, additionalReference: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, additionalReferenceIndex: Index, additionalReference: String)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("item.additionalReference.index.removeAdditionalReference.title"),

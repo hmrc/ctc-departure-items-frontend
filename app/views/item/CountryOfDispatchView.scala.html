@@ -31,7 +31,7 @@
     button: Button
 )
 
-@(form: Form[Country], lrn: LocalReferenceNumber, countryList: Seq[Country], mode: Mode, itemIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[Country], lrn: LocalReferenceNumber, countryList: Seq[Country], mode: Mode, itemIndex: Index)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("item.countryOfDispatch.title"),

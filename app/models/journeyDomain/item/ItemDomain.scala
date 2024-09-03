@@ -30,15 +30,7 @@ import models.journeyDomain.item.dangerousGoods.DangerousGoodsListDomain
 import models.journeyDomain.item.documents.DocumentsDomain
 import models.journeyDomain.item.packages.PackagesDomain
 import models.journeyDomain.item.supplyChainActors.SupplyChainActorsDomain
-import models.journeyDomain.{
-  GettableAsFilterForNextReaderOps,
-  GettableAsReaderOps,
-  JourneyDomainModel,
-  JsArrayGettableAsReaderOps,
-  Pages,
-  Read,
-  UserAnswersReader
-}
+import models.journeyDomain._
 import models.reference.{Country, TransportChargesMethodOfPayment}
 import pages.external._
 import pages.item._
@@ -74,33 +66,34 @@ case class ItemDomain(
 
   def label(implicit messages: Messages): String = messages("item.label", index.display, itemDescription)
 
-  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(ItemSection(index))
+  override def page(userAnswers: UserAnswers): Option[Section[?]] = Some(ItemSection(index))
 }
 
 object ItemDomain {
 
   implicit def userAnswersReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): Read[ItemDomain] =
-    (
-      DescriptionPage(itemIndex).reader,
-      transportEquipmentReader(itemIndex),
-      declarationTypeReader(itemIndex),
-      countryOfDispatchReader(itemIndex),
-      countryOfDestinationReader(itemIndex),
-      ucrReader(itemIndex),
-      cusCodeReader(itemIndex),
-      commodityCodeReader(itemIndex),
-      combinedNomenclatureCodeReader(itemIndex),
-      dangerousGoodsReader(itemIndex),
-      GrossWeightPage(itemIndex).reader,
-      netWeightReader(itemIndex),
-      supplementaryUnitsReader(itemIndex),
-      packagesReader(itemIndex),
-      consigneeReader(itemIndex),
-      supplyChainActorsReader(itemIndex),
-      documentsReader(itemIndex),
-      additionalReferencesReader(itemIndex),
-      additionalInformationListReader(itemIndex),
-      transportChargesReader(itemIndex)
+    RichTuple20(
+      (DescriptionPage(itemIndex).reader,
+       transportEquipmentReader(itemIndex),
+       declarationTypeReader(itemIndex),
+       countryOfDispatchReader(itemIndex),
+       countryOfDestinationReader(itemIndex),
+       ucrReader(itemIndex),
+       cusCodeReader(itemIndex),
+       commodityCodeReader(itemIndex),
+       combinedNomenclatureCodeReader(itemIndex),
+       dangerousGoodsReader(itemIndex),
+       GrossWeightPage(itemIndex).reader,
+       netWeightReader(itemIndex),
+       supplementaryUnitsReader(itemIndex),
+       packagesReader(itemIndex),
+       consigneeReader(itemIndex),
+       supplyChainActorsReader(itemIndex),
+       documentsReader(itemIndex),
+       additionalReferencesReader(itemIndex),
+       additionalInformationListReader(itemIndex),
+       transportChargesReader(itemIndex)
+      )
     ).mapAs(ItemDomain.apply(_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _)(itemIndex))
 
   def transportEquipmentReader(itemIndex: Index): Read[Option[UUID]] =

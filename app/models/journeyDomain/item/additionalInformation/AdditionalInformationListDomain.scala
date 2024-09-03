@@ -16,7 +16,7 @@
 
 package models.journeyDomain.item.additionalInformation
 
-import models.journeyDomain.{JourneyDomainModel, JsArrayGettableAsReaderOps, Read}
+import models.journeyDomain._
 import models.{Index, RichJsArray, UserAnswers}
 import pages.sections.Section
 import pages.sections.additionalInformation.AdditionalInformationListSection
@@ -26,7 +26,7 @@ case class AdditionalInformationListDomain(
 )(itemIndex: Index)
     extends JourneyDomainModel {
 
-  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(AdditionalInformationListSection(itemIndex))
+  override def page(userAnswers: UserAnswers): Option[Section[?]] = Some(AdditionalInformationListSection(itemIndex))
 }
 
 object AdditionalInformationListDomain {

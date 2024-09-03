@@ -29,7 +29,7 @@
     govukInsetText : GovukInsetText
 )
 
-@(form: Form[Int], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, packageIndex: Index, packageType: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[Int], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, packageIndex: Index, packageType: String)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("item.packages.index.numberOfPackages.title", packageType),

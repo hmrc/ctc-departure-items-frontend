@@ -31,7 +31,7 @@
     button: Button
 )
 
-@(form: Form[PackageType], lrn: LocalReferenceNumber, packageTypes: Seq[PackageType], mode: Mode, itemIndex: Index, packageIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[PackageType], lrn: LocalReferenceNumber, packageTypes: Seq[PackageType], mode: Mode, itemIndex: Index, packageIndex: Index)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("item.packages.index.packageType.title"),

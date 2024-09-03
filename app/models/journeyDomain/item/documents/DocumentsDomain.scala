@@ -27,7 +27,7 @@ case class DocumentsDomain(
 )(itemIndex: Index)
     extends JourneyDomainModel {
 
-  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(DocumentsSection(itemIndex))
+  override def page(userAnswers: UserAnswers): Option[Section[?]] = Some(DocumentsSection(itemIndex))
 }
 
 object DocumentsDomain {

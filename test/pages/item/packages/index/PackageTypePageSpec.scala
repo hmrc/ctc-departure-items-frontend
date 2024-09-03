@@ -20,7 +20,6 @@ import models.reference.PackageType
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen
 import pages.behaviours.PageBehaviours
-import pages.item.packages.index.PackageTypePage
 
 class PackageTypePageSpec extends PageBehaviours {
 

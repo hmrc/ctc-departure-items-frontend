@@ -33,7 +33,7 @@
     name: String,
     isPostalCodeRequired: Boolean,
     itemIndex: Index
-)(implicit request: Request[_], messages: Messages)
+)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("item.consignee.address.title"),

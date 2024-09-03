@@ -51,7 +51,7 @@ class RemoveAdditionalReferenceController @Inject() (
     with I18nSupport
     with Logging {
 
-  private type Request = SpecificDataRequestProvider1[AdditionalReference]#SpecificDataRequest[_]
+  private type Request = SpecificDataRequestProvider1[AdditionalReference]#SpecificDataRequest[?]
 
   private def additionalReference(itemIndex: Index, additionalReferenceIndex: Index)(implicit request: Request): String =
     AdditionalReferenceDomain.asString(

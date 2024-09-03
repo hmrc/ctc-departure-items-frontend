@@ -35,12 +35,12 @@ import services.LockService
 import scala.concurrent.Future
 
 trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerSuite with GuiceFakeApplicationFactory with MockitoSugar {
-  self: TestSuite with SpecBase =>
+  self: TestSuite & SpecBase =>
 
   override def beforeEach(): Unit = {
     reset(mockSessionRepository); reset(mockDataRetrievalActionProvider); reset(mockLockService)
 
-    when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+    when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
     when(mockLockService.checkLock(any())(any())).thenReturn(Future.successful(LockCheck.Unlocked))
   }
 
@@ -58,8 +58,8 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   protected def setNoExistingUserAnswers(): Unit = setUserAnswers(None)
 
   private def setUserAnswers(userAnswers: Option[UserAnswers]): Unit = {
-    when(mockLockActionProvider.apply()) thenReturn new FakeLockAction(mockLockService)
-    when(mockDataRetrievalActionProvider.apply(any())) thenReturn new FakeDataRetrievalAction(userAnswers)
+    when(mockLockActionProvider.apply()).thenReturn(new FakeLockAction(mockLockService))
+    when(mockDataRetrievalActionProvider.apply(any())).thenReturn(new FakeDataRetrievalAction(userAnswers))
   }
 
   protected val onwardRoute: Call = Call("GET", "/foo")

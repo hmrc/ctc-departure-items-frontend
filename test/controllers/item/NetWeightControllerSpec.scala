@@ -93,7 +93,7 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures w
 
       setExistingUserAnswers(userAnswers)
 
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
       val request = FakeRequest(POST, netWeightRoute)
         .withFormUrlEncodedBody(("value", validAnswer.toString))

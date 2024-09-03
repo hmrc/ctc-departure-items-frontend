@@ -40,10 +40,7 @@ class IndexRequiredActionSpec extends SpecBase with AppWithDefaultMockFixtures {
     actionProvider(FooSection, addAnotherPage)
       .invokeBlock(
         dataRequest,
-        {
-          _: DataRequest[AnyContent] =>
-            Future.successful(Results.Ok)
-        }
+        (_: DataRequest[AnyContent]) => Future.successful(Results.Ok)
       )
       .futureValue
   }

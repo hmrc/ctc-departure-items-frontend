@@ -84,7 +84,7 @@ class CommodityCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
       val request = FakeRequest(POST, commodityCodeRoute)
         .withFormUrlEncodedBody(("value", "string"))

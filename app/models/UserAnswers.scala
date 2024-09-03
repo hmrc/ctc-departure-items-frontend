@@ -96,7 +96,7 @@ object UserAnswers {
         (__ \ "isSubmitted").read[SubmissionState] and
         (__ \ "data").read[JsObject] and
         (__ \ "tasks").read[Map[String, TaskStatus]]
-    )(UserAnswers.apply _)
+    )(UserAnswers.apply)
 
   implicit lazy val writes: Writes[UserAnswers] =
     (
@@ -105,5 +105,7 @@ object UserAnswers {
         (__ \ "isSubmitted").write[SubmissionState] and
         (__ \ "data").write[JsObject] and
         (__ \ "tasks").write[Map[String, TaskStatus]]
-    )(unlift(UserAnswers.unapply))
+    )(
+      ua => Tuple.fromProductTyped(ua)
+    )
 }

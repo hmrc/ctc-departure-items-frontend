@@ -16,7 +16,7 @@
 
 package models.journeyDomain.item.additionalReferences
 
-import models.journeyDomain.{JourneyDomainModel, JsArrayGettableAsReaderOps, Read}
+import models.journeyDomain._
 import models.{Index, RichJsArray, UserAnswers}
 import pages.sections.Section
 import pages.sections.additionalReference.AdditionalReferencesSection
@@ -26,7 +26,7 @@ case class AdditionalReferencesDomain(
 )(itemIndex: Index)
     extends JourneyDomainModel {
 
-  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(AdditionalReferencesSection(itemIndex))
+  override def page(userAnswers: UserAnswers): Option[Section[?]] = Some(AdditionalReferencesSection(itemIndex))
 }
 
 object AdditionalReferencesDomain {

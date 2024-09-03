@@ -49,7 +49,7 @@ object Document {
         (__ \ key \ "description").readNullable[String] and
         (__ \ "details" \ "documentReferenceNumber").read[String] and
         (__ \ "details" \ "uuid").read[UUID]
-    )(Document.apply _)
+    )(Document.apply)
 
     readsForKey("type") orElse readsForKey("previousDocumentType")
   }

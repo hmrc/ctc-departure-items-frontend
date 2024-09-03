@@ -22,6 +22,7 @@ import play.api.i18n.Messages
 import services.{DocumentsService, TransportEquipmentService}
 import utils.cyaHelpers.item.ItemAnswersHelper
 import viewmodels.sections.Section
+import viewmodels._
 
 import javax.inject.Inject
 

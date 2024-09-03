@@ -49,7 +49,7 @@ class NumberOfPackagesController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private type Request = SpecificDataRequestProvider1[PackageType]#SpecificDataRequest[_]
+  private type Request = SpecificDataRequestProvider1[PackageType]#SpecificDataRequest[?]
 
   private def minNumberOfPackages(implicit request: Request): Int = if (request.arg.`type` == Unpacked && phaseConfig.phase == PostTransition) 1 else 0
 

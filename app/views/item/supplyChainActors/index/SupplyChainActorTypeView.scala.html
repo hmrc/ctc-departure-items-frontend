@@ -29,7 +29,7 @@
     button: Button
 )
 
-@(form: Form[SupplyChainActorType], lrn: LocalReferenceNumber, values: Seq[SupplyChainActorType], mode: Mode, itemIndex: Index, actorIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[SupplyChainActorType], lrn: LocalReferenceNumber, values: Seq[SupplyChainActorType], mode: Mode, itemIndex: Index, actorIndex: Index)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("item.supplyChainActors.index.supplyChainActorType.title"),
