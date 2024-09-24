@@ -36,7 +36,7 @@ object DateTime {
 
   implicit val writes: Writes[DateTime] = (x: DateTime) => Json.toJson(x.toLocalDateTime.toIE015Format)
 
-  implicit val reads: Reads[DateTime] = (json: JsValue) => {
+  implicit val reads: Reads[DateTime] = (json: JsValue) =>
     json.validate[String].flatMap {
       x =>
         try JsSuccess(x.parseWithIE015Format.toDateTime)
@@ -45,5 +45,4 @@ object DateTime {
             JsError(s"Failed to parse $json to LocalDateTime with the following exception: $exception")
         }
     }
-  }
 }

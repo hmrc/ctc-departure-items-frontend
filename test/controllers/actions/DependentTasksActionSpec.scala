@@ -46,7 +46,7 @@ class DependentTasksActionSpec extends SpecBase with ScalaCheckPropertyChecks wi
   "DependentTasksAction" - {
 
     "return None if dependent sections are completed" in {
-      val tasks       = Map(dependentTasks.map(_ -> TaskStatus.Completed) *)
+      val tasks       = Map(dependentTasks.map(_ -> TaskStatus.Completed)*)
       val userAnswers = emptyUserAnswers.copy(tasks = tasks)
       val result      = harness(userAnswers)
       status(result) mustBe OK
@@ -54,7 +54,7 @@ class DependentTasksActionSpec extends SpecBase with ScalaCheckPropertyChecks wi
     }
 
     "return None if dependent sections are in error state" in {
-      val tasks       = Map(dependentTasks.map(_ -> TaskStatus.Error) *)
+      val tasks       = Map(dependentTasks.map(_ -> TaskStatus.Error)*)
       val userAnswers = emptyUserAnswers.copy(tasks = tasks)
       val result      = harness(userAnswers)
       status(result) mustBe OK
@@ -62,7 +62,7 @@ class DependentTasksActionSpec extends SpecBase with ScalaCheckPropertyChecks wi
     }
 
     "return None if dependent sections are in unavailable state" in {
-      val tasks       = Map(dependentTasks.map(_ -> TaskStatus.Unavailable) *)
+      val tasks       = Map(dependentTasks.map(_ -> TaskStatus.Unavailable)*)
       val userAnswers = emptyUserAnswers.copy(tasks = tasks)
       val result      = harness(userAnswers)
       status(result) mustBe OK
@@ -70,7 +70,7 @@ class DependentTasksActionSpec extends SpecBase with ScalaCheckPropertyChecks wi
     }
 
     "return None if dependent sections are in amend state" in {
-      val tasks       = Map(dependentTasks.map(_ -> TaskStatus.Amended) *)
+      val tasks       = Map(dependentTasks.map(_ -> TaskStatus.Amended)*)
       val userAnswers = emptyUserAnswers.copy(tasks = tasks)
       val result      = harness(userAnswers)
       status(result) mustBe OK
@@ -81,7 +81,7 @@ class DependentTasksActionSpec extends SpecBase with ScalaCheckPropertyChecks wi
       "when all dependent sections are incomplete" in {
         forAll(arbitrary[TaskStatus](arbitraryIncompleteTaskStatus)) {
           taskStatus =>
-            val tasks       = Map(dependentTasks.map(_ -> taskStatus) *)
+            val tasks       = Map(dependentTasks.map(_ -> taskStatus)*)
             val userAnswers = emptyUserAnswers.copy(tasks = tasks)
             val result      = harness(userAnswers)
             status(result) mustBe SEE_OTHER
@@ -92,7 +92,7 @@ class DependentTasksActionSpec extends SpecBase with ScalaCheckPropertyChecks wi
       "when one dependent section is incomplete" in {
         forAll(Gen.oneOf(dependentTasks), arbitrary[TaskStatus](arbitraryIncompleteTaskStatus)) {
           (dependentTask, taskStatus) =>
-            val tasks = Map(dependentTasks.map(_ -> TaskStatus.Completed) *)
+            val tasks = Map(dependentTasks.map(_ -> TaskStatus.Completed)*)
               .updated(dependentTask, taskStatus)
             val userAnswers = emptyUserAnswers.copy(tasks = tasks)
             val result      = harness(userAnswers)

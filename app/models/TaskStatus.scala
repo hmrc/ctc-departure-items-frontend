@@ -57,7 +57,7 @@ object TaskStatus {
     override val jsonString: String = "amended"
   }
 
-  implicit val reads: Reads[TaskStatus] = (json: JsValue) => {
+  implicit val reads: Reads[TaskStatus] = (json: JsValue) =>
     json.validate[String].flatMap {
       case Completed.jsonString      => JsSuccess(Completed)
       case Amended.jsonString        => JsSuccess(Amended)
@@ -68,7 +68,6 @@ object TaskStatus {
       case Unavailable.jsonString    => JsSuccess(Unavailable)
       case x                         => JsError(s"$x is not a valid task status")
     }
-  }
 
   implicit val writes: Writes[TaskStatus] = Writes {
     x => JsString(x.jsonString)

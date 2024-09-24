@@ -31,7 +31,5 @@ object DeclarationTypeItemLevel extends DynamicEnumerableType[DeclarationTypeIte
 
   implicit val format: Format[DeclarationTypeItemLevel] = Json.format[DeclarationTypeItemLevel]
 
-  implicit val order: Order[DeclarationTypeItemLevel] = (x: DeclarationTypeItemLevel, y: DeclarationTypeItemLevel) => {
-    x.toString.compareToIgnoreCase(y.toString)
-  }
+  implicit val order: Order[DeclarationTypeItemLevel] = (x: DeclarationTypeItemLevel, y: DeclarationTypeItemLevel) => x.toString.compareToIgnoreCase(y.toString)
 }
