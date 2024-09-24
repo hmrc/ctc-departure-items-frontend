@@ -39,7 +39,7 @@ sealed abstract class NetWeightFormProvider(implicit phaseConfig: PhaseConfig) e
         s"$prefix.error",
         Seq(decimalPlaces, characterCount, characterCount + decimalPlaces + 1)
       ).verifying(
-        maxValueConstraint(prefix, grossWeight).toSeq *
+        maxValueConstraint(prefix, grossWeight).toSeq*
       )
     )
   }

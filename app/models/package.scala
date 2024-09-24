@@ -48,7 +48,7 @@ package object models {
 
     def traverse[T](implicit userAnswersReader: (Index, Pages) => UserAnswersReader[T]): Read[Seq[T]] = pages =>
       arr.zipWithIndex
-        .foldLeft[UserAnswersReader[Seq[T]]](UserAnswersReader.success[Seq[T]](Nil).apply(pages))({
+        .foldLeft[UserAnswersReader[Seq[T]]](UserAnswersReader.success[Seq[T]](Nil).apply(pages)) {
           case (acc, (_, index)) =>
             acc.flatMap {
               case ReaderSuccess(ts, pages) =>
@@ -57,7 +57,7 @@ package object models {
                     ReaderSuccess(ts :+ t, pages)
                 }
             }
-        })
+        }
 
     def validateAsListOf[T](implicit reads: Reads[T]): Seq[T] =
       arr.value.flatMap(_.validate[T].asOpt).toSeq

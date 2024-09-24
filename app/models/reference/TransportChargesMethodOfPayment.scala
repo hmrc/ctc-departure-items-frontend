@@ -32,7 +32,6 @@ case class TransportChargesMethodOfPayment(method: String, description: String) 
 object TransportChargesMethodOfPayment extends DynamicEnumerableType[TransportChargesMethodOfPayment] {
   implicit val format: Format[TransportChargesMethodOfPayment] = Json.format[TransportChargesMethodOfPayment]
 
-  implicit val order: Order[TransportChargesMethodOfPayment] = (x: TransportChargesMethodOfPayment, y: TransportChargesMethodOfPayment) => {
+  implicit val order: Order[TransportChargesMethodOfPayment] = (x: TransportChargesMethodOfPayment, y: TransportChargesMethodOfPayment) =>
     (x, y).compareBy(_.method)
-  }
 }

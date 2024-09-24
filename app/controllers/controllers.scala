@@ -165,7 +165,7 @@ package object controllers {
       import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl.idFunctor
       write.map {
         _ =>
-          val redirectUrlPolicy = AbsoluteWithHostnameFromAllowlist(appConfig.allowedRedirectUrls *) | OnlyRelative
+          val redirectUrlPolicy = AbsoluteWithHostnameFromAllowlist(appConfig.allowedRedirectUrls*) | OnlyRelative
           Redirect(url.get(redirectUrlPolicy).url)
       }
     }

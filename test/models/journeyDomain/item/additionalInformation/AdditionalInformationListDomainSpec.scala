@@ -30,10 +30,10 @@ class AdditionalInformationListDomainSpec extends SpecBase with Generators {
 
       val numberOfAdditionalInformation = Gen.choose(1, frontendAppConfig.maxAdditionalInformation).sample.value
 
-      val userAnswers = (0 until numberOfAdditionalInformation).foldLeft(emptyUserAnswers)({
+      val userAnswers = (0 until numberOfAdditionalInformation).foldLeft(emptyUserAnswers) {
         case (updatedUserAnswers, index) =>
           arbitraryAdditionalInformationAnswers(updatedUserAnswers, itemIndex, Index(index)).sample.value
-      })
+      }
 
       val result = AdditionalInformationListDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
 

@@ -23,6 +23,6 @@ trait DynamicEnumerableType[T <: Radioable[T]] extends Enumerable.Implicits {
       values
         .map(
           v => v.code -> v
-        ) *
+        )*
     )
 }

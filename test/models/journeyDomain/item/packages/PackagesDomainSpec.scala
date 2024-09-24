@@ -30,10 +30,10 @@ class PackagesDomainSpec extends SpecBase with Generators {
 
       val numberOfPackages = Gen.choose(1, frontendAppConfig.maxPackages).sample.value
 
-      val userAnswers = (0 until numberOfPackages).foldLeft(emptyUserAnswers)({
+      val userAnswers = (0 until numberOfPackages).foldLeft(emptyUserAnswers) {
         case (updatedUserAnswers, index) =>
           arbitraryPackageAnswers(updatedUserAnswers, itemIndex, Index(index)).sample.value
-      })
+      }
 
       val result = PackagesDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
 
