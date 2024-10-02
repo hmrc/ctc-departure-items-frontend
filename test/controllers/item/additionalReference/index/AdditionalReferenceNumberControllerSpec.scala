@@ -19,6 +19,7 @@ package controllers.item.additionalReference.index
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.item.additionalReference.AdditionalReferenceNumberFormProvider
 import generators.Generators
+import models.Phase.Transition
 import models.reference.AdditionalReference
 import models.{NormalMode, UserAnswers}
 import navigation.AdditionalReferenceNavigatorProvider
@@ -26,7 +27,12 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
-import pages.item.additionalReference.index.{AddAdditionalReferenceNumberYesNoPage, AdditionalReferenceNumberPage, AdditionalReferencePage}
+import pages.item.additionalReference.index.{
+  AddAdditionalReferenceNumberYesNoPage,
+  AdditionalReferenceInCL234Page,
+  AdditionalReferenceNumberPage,
+  AdditionalReferencePage
+}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -41,8 +47,10 @@ class AdditionalReferenceNumberControllerSpec extends SpecBase with AppWithDefau
 
   private val viewModel = arbitrary[AdditionalReferenceNumberViewModel].sample.value
 
-  private lazy val formProvider                   = new AdditionalReferenceNumberFormProvider()
-  private lazy val form                           = formProvider("item.additionalReference.index.additionalReferenceNumber", viewModel.otherAdditionalReferenceNumbers)
+  private lazy val formProvider = new AdditionalReferenceNumberFormProvider()
+
+  private lazy val form =
+    formProvider("item.additionalReference.index.additionalReferenceNumber", viewModel.otherAdditionalReferenceNumbers, isDocumentInCL234 = false, Transition)
   private val mode                                = NormalMode
   private lazy val additionalReferenceNumberRoute = routes.AdditionalReferenceNumberController.onPageLoad(lrn, mode, itemIndex, additionalReferenceIndex).url
 
@@ -56,7 +64,10 @@ class AdditionalReferenceNumberControllerSpec extends SpecBase with AppWithDefau
 
   private val additionalReference = arbitrary[AdditionalReference].sample.value
 
-  private val baseAnswers = emptyUserAnswers.setValue(AdditionalReferencePage(itemIndex, additionalReferenceIndex), additionalReference)
+  private val baseAnswers =
+    emptyUserAnswers
+      .setValue(AdditionalReferencePage(itemIndex, additionalReferenceIndex), additionalReference)
+      .setValue(AdditionalReferenceInCL234Page(itemIndex, additionalReferenceIndex), false)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -105,7 +116,7 @@ class AdditionalReferenceNumberControllerSpec extends SpecBase with AppWithDefau
 
       setExistingUserAnswers(baseAnswers)
 
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
       val request = FakeRequest(POST, additionalReferenceNumberRoute)
         .withFormUrlEncodedBody(("value", "test string"))
@@ -151,7 +162,7 @@ class AdditionalReferenceNumberControllerSpec extends SpecBase with AppWithDefau
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
@@ -165,7 +176,7 @@ class AdditionalReferenceNumberControllerSpec extends SpecBase with AppWithDefau
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
     }
   }
 }

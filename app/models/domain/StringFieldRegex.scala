@@ -23,5 +23,7 @@ object StringFieldRegex {
   val stringFieldRegex: Regex            = "[\\sa-zA-Z0-9&'@/.\\-? ]*".r
   val stringFieldRegexComma: Regex       = "[\\sa-zA-Z0-9&'@,/.\\-? ]*".r
   val alphaNumericRegex: Regex           = "^[a-zA-Z0-9]*$".r
+  val alphaNumericWithHyphenRegex: Regex = "^[a-zA-Z0-9\\-]*$".r
   val alphaNumericWithSpacesRegex: Regex = "^[a-zA-Z\\s0-9]*$".r
+  val eoriTcuinRegex: Regex              = "^([A-Z]{2}[a-zA-Z|\\d]{1,15})$".r
 }

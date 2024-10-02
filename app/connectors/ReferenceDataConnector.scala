@@ -39,7 +39,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.referenceDataUrl}/lists/CountryCodesFullList"
     http
       .get(url)
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header*)
       .execute[NonEmptySet[Country]]
   }
 
@@ -47,16 +47,28 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.referenceDataUrl}/lists/CountryCodesForAddress"
     http
       .get(url)
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header*)
       .execute[NonEmptySet[Country]]
   }
 
-  def getCountriesWithoutZip()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[CountryCode]] = {
+  def getCountryCodeCommonTransit(country: Country)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Country] = {
+    val url = url"${config.referenceDataUrl}/lists/CountryCodesCommonTransit"
+    http
+      .get(url)
+      .transform(_.withQueryStringParameters("data.code" -> country.code.code))
+      .setHeader(version2Header*)
+      .execute[NonEmptySet[Country]]
+      .map(_.head)
+  }
+
+  def getCountriesWithoutZipCountry(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[CountryCode] = {
     val url = url"${config.referenceDataUrl}/lists/CountryWithoutZip"
     http
       .get(url)
-      .setHeader(version2Header: _*)
+      .transform(_.withQueryStringParameters("data.code" -> code))
+      .setHeader(version2Header*)
       .execute[NonEmptySet[CountryCode]]
+      .map(_.head)
   }
 
   def getPackageTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[PackageType]] = {
@@ -64,7 +76,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     implicit val reads: Reads[PackageType] = PackageType.reads(Other)
     http
       .get(url)
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header*)
       .execute[NonEmptySet[PackageType]]
   }
 
@@ -73,7 +85,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     implicit val reads: Reads[PackageType] = PackageType.reads(Bulk)
     http
       .get(url)
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header*)
       .execute[NonEmptySet[PackageType]]
   }
 
@@ -82,7 +94,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     implicit val reads: Reads[PackageType] = PackageType.reads(Unpacked)
     http
       .get(url)
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header*)
       .execute[NonEmptySet[PackageType]]
   }
 
@@ -90,8 +102,18 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.referenceDataUrl}/lists/AdditionalReference"
     http
       .get(url)
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header*)
       .execute[NonEmptySet[AdditionalReference]]
+  }
+
+  def getDocumentTypeExcise(docType: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[DocTypeExcise] = {
+    val url = url"${config.referenceDataUrl}/lists/DocumentTypeExcise"
+    http
+      .get(url)
+      .transform(_.withQueryStringParameters("data.code" -> docType))
+      .setHeader(version2Header*)
+      .execute[NonEmptySet[DocTypeExcise]]
+      .map(_.head)
   }
 
   def getCUSCode(cusCode: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[CUSCode] = {
@@ -99,7 +121,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http
       .get(url)
       .transform(_.withQueryStringParameters("data.code" -> cusCode))
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header*)
       .execute[NonEmptySet[CUSCode]]
       .map(_.head)
   }
@@ -108,7 +130,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.referenceDataUrl}/lists/AdditionalInformation"
     http
       .get(url)
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header*)
       .execute[NonEmptySet[AdditionalInformation]]
   }
 
@@ -116,7 +138,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.referenceDataUrl}/lists/TransportChargesMethodOfPayment"
     http
       .get(url)
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header*)
       .execute[NonEmptySet[TransportChargesMethodOfPayment]]
   }
 
@@ -124,7 +146,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.referenceDataUrl}/lists/DeclarationTypeItemLevel"
     http
       .get(url)
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header*)
       .execute[NonEmptySet[DeclarationTypeItemLevel]]
   }
 
@@ -132,7 +154,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.referenceDataUrl}/lists/AdditionalSupplyChainActorRoleCode"
     http
       .get(url)
-      .setHeader(version2Header: _*)
+      .setHeader(version2Header*)
       .execute[NonEmptySet[SupplyChainActorType]]
   }
 
@@ -141,14 +163,14 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   )
 
   implicit def responseHandlerGeneric[A](implicit reads: Reads[A], order: Order[A]): HttpReads[NonEmptySet[A]] =
-    (_: String, url: String, response: HttpResponse) => {
+    (_: String, url: String, response: HttpResponse) =>
       response.status match {
         case OK =>
           (response.json \ "data").validate[List[A]] match {
             case JsSuccess(Nil, _) =>
               throw new NoReferenceDataFoundException(url)
             case JsSuccess(head :: tail, _) =>
-              NonEmptySet.of(head, tail: _*)
+              NonEmptySet.of(head, tail*)
             case JsError(errors) =>
               throw JsResultException(errors)
           }
@@ -156,7 +178,6 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
           logger.warn(s"[ReferenceDataConnector][responseHandlerGeneric] Reference data call returned $e")
           throw new Exception(s"[ReferenceDataConnector][responseHandlerGeneric] $e - ${response.body}")
       }
-    }
 }
 
 object ReferenceDataConnector {

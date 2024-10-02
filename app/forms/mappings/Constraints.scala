@@ -16,6 +16,8 @@
 
 package forms.mappings
 
+import models.Phase
+import models.Phase.PostTransition
 import play.api.data.validation.{Constraint, Invalid, Valid}
 
 import java.time.LocalDate
@@ -63,7 +65,7 @@ trait Constraints {
       case str if str.matches(regex.pattern.pattern()) =>
         Valid
       case _ =>
-        Invalid(errorKey, args: _*)
+        Invalid(errorKey, args*)
     }
 
   protected def exactLength(exact: Int, errorKey: String): Constraint[String] =
@@ -78,7 +80,7 @@ trait Constraints {
   protected def maxDate(maximum: LocalDate, errorKey: String, args: Any*): Constraint[LocalDate] =
     Constraint {
       case date if date.isAfter(maximum) =>
-        Invalid(errorKey, args: _*)
+        Invalid(errorKey, args*)
       case _ =>
         Valid
     }
@@ -86,7 +88,7 @@ trait Constraints {
   protected def minDate(minimum: LocalDate, errorKey: String, args: Any*): Constraint[LocalDate] =
     Constraint {
       case date if date.isBefore(minimum) =>
-        Invalid(errorKey, args: _*)
+        Invalid(errorKey, args*)
       case _ =>
         Valid
     }
@@ -96,7 +98,7 @@ trait Constraints {
       case str if predicate(str) =>
         Valid
       case _ =>
-        Invalid(errorKey, args: _*)
+        Invalid(errorKey, args*)
     }
 
   protected def notInList[A](list: Seq[A], errorKey: String): Constraint[A] =
@@ -105,5 +107,13 @@ trait Constraints {
         Valid
       case _ =>
         Invalid(errorKey)
+    }
+
+  protected def cl234Constraint(isDocumentInCL234: Boolean, phase: Phase, errorKey: String): Constraint[String] =
+    Constraint {
+      case "0" if isDocumentInCL234 && phase == PostTransition =>
+        Invalid(errorKey)
+      case _ =>
+        Valid
     }
 }

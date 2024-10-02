@@ -102,7 +102,7 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
     "must redirect to the next page when valid data is submitted" in {
 
       when(mockDocumentsService.getDocuments(any(), any(), any())).thenReturn(documentList)
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
       setExistingUserAnswers(emptyUserAnswers)
 
@@ -143,7 +143,7 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
@@ -157,13 +157,13 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
     }
 
     "when user redirects to documents section" - {
       "must set DocumentsInProgressPage to true and redirect" in {
         when(mockDocumentsService.getDocuments(any(), any(), any())).thenReturn(documentList)
-        when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
         setExistingUserAnswers(emptyUserAnswers)
 

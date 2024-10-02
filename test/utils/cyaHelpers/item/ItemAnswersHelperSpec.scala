@@ -622,7 +622,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               val result = helper.grossWeight.get
 
               result.key.value mustBe "Gross weight"
-              result.value.value mustBe grossWeight.toString()
+              result.value.value mustBe s"${grossWeight}kg"
 
               val actions = result.actions.get.items
               actions.size mustBe 1
@@ -685,7 +685,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               val result = helper.netWeight.get
 
               result.key.value mustBe "Net weight"
-              result.value.value mustBe netWeight.toString()
+              result.value.value mustBe s"${netWeight}kg"
 
               val actions = result.actions.get.items
               actions.size mustBe 1

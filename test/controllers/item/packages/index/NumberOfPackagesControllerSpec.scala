@@ -39,7 +39,7 @@ import scala.concurrent.Future
 class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val packingType = Gen.oneOf(PackingType.values).retryUntil(_ != Unpacked).sample.value
-  private val packageType = PackageType("code", Some("description"), packingType)
+  private val packageType = PackageType("code", "description", packingType)
 
   private def formProvider(minimum: Int) =
     new IntFormProvider().apply("item.packages.index.numberOfPackages", phaseConfig.maxNumberOfPackages, minimum, Seq(packageType.toString))
@@ -100,7 +100,7 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       setExistingUserAnswers(userAnswers)
 
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
       val request = FakeRequest(POST, numberOfPackagesRoute)
         .withFormUrlEncodedBody(("value", validAnswer.toString))
@@ -121,7 +121,7 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
 
             setExistingUserAnswers(userAnswers)
 
-            when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+            when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
             val request = FakeRequest(POST, numberOfPackagesRoute)
               .withFormUrlEncodedBody(("value", "0"))
@@ -139,7 +139,7 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
         "and package type is unpacked" - {
           "must return Bad Request" in {
             running(app) {
-              val packageType = PackageType("Unpacked", Some("Unpacked"), Unpacked)
+              val packageType = PackageType("Unpacked", "Unpacked", Unpacked)
               val userAnswers = emptyUserAnswers.setValue(PackageTypePage(itemIndex, packageIndex), packageType)
 
               setExistingUserAnswers(userAnswers)
@@ -166,7 +166,7 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
 
               setExistingUserAnswers(userAnswers)
 
-              when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+              when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
               val request = FakeRequest(POST, numberOfPackagesRoute)
                 .withFormUrlEncodedBody(("value", "0"))
@@ -212,7 +212,7 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
@@ -226,7 +226,7 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
     }
   }
 }

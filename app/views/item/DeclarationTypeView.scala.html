@@ -28,7 +28,7 @@
     button: Button
 )
 
-@(form: Form[DeclarationTypeItemLevel], lrn: LocalReferenceNumber, itemValues: Seq[DeclarationTypeItemLevel], mode: Mode, itemIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[DeclarationTypeItemLevel], lrn: LocalReferenceNumber, itemValues: Seq[DeclarationTypeItemLevel], mode: Mode, itemIndex: Index)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("item.declarationType.title"),

@@ -30,18 +30,15 @@ class BigDecimalFormProviderSpec extends SpecBase with BigDecimalFieldBehaviours
   private val prefix = Gen.alphaNumStr.sample.value
   val requiredKey    = s"$prefix.error.required"
 
-  val generatedBigDecimal: Gen[BigDecimal]  = Gen.choose(BigDecimal(1), maxValue)
-  private val decimalPlaceTransition: Int   = 3
-  private val characterCountTransition: Int = 11
-
-  private val decimalPlacePostTransition: Int   = 6
-  private val characterCountPostTransition: Int = 16
+  val generatedBigDecimal: Gen[BigDecimal] = Gen.choose(BigDecimal(1), maxValue)
 
   ".value" - {
 
-    def runTests(form: Form[BigDecimal], decimalPlaceCount: Int, characterCount: Int, phaseConfig: PhaseConfig): Unit = {
+    def runTests(form: Form[BigDecimal], decimalPlaceCount: Int, characterCount: Int, totalCount: Int, phaseConfig: PhaseConfig): Unit = {
 
       val fieldName = "value"
+
+      val args = Seq(decimalPlaceCount, characterCount, totalCount)
 
       behave like fieldThatBindsValidData(
         form,
@@ -52,10 +49,9 @@ class BigDecimalFormProviderSpec extends SpecBase with BigDecimalFieldBehaviours
       behave like bigDecimalField(
         form,
         fieldName,
-        invalidCharactersError = FormError(fieldName, s"$prefix.error.invalidCharacters", Seq(decimalPlaceCount.toString, characterCount.toString)),
-        invalidFormatError = FormError(fieldName, s"$prefix.error.invalidFormat", Seq(decimalPlaceCount.toString, characterCount.toString)),
-        invalidValueError = FormError(fieldName, s"$prefix.error.invalidValue", Seq(decimalPlaceCount.toString, characterCount.toString)),
-        Seq(decimalPlaceCount.toString, characterCount.toString)
+        invalidCharactersError = FormError(fieldName, s"$prefix.error.invalidCharacters", args),
+        invalidFormatError = FormError(fieldName, s"$prefix.error.invalidFormat", args),
+        invalidValueError = FormError(fieldName, s"$prefix.error.invalidValue", args)
       )(phaseConfig)
 
       behave like mandatoryField(
@@ -70,9 +66,13 @@ class BigDecimalFormProviderSpec extends SpecBase with BigDecimalFieldBehaviours
       val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
       when(mockPhaseConfig.phase).thenReturn(Phase.Transition)
 
+      val decimalPlaceTransition: Int   = 3
+      val characterCountTransition: Int = 11
+      val totalCount: Int               = 15
+
       running(app) {
         val form = app.injector.instanceOf[BigDecimalFormProvider].apply(prefix, decimalPlaceTransition, characterCountTransition)
-        runTests(form, decimalPlaceTransition, characterCountTransition, mockPhaseConfig)
+        runTests(form, decimalPlaceTransition, characterCountTransition, totalCount, mockPhaseConfig)
       }
     }
 
@@ -81,9 +81,13 @@ class BigDecimalFormProviderSpec extends SpecBase with BigDecimalFieldBehaviours
       val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
       when(mockPhaseConfig.phase).thenReturn(Phase.PostTransition)
 
+      val decimalPlacePostTransition: Int   = 6
+      val characterCountPostTransition: Int = 16
+      val totalCount: Int                   = 23
+
       running(app) {
         val form = app.injector.instanceOf[BigDecimalFormProvider].apply(prefix, decimalPlacePostTransition, characterCountPostTransition)
-        runTests(form, decimalPlacePostTransition, characterCountPostTransition, mockPhaseConfig)
+        runTests(form, decimalPlacePostTransition, characterCountPostTransition, totalCount, mockPhaseConfig)
       }
     }
   }

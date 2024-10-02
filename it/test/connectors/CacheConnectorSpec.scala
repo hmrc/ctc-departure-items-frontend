@@ -116,7 +116,7 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler {
       val url = s"/manage-transit-movements-departure-cache/user-answers/${userAnswers.lrn.toString}/lock"
 
       "must return Unlocked when status is Ok (200)" in {
-        server.stubFor(get(urlEqualTo(url)) willReturn aResponse().withStatus(OK))
+        server.stubFor(get(urlEqualTo(url)).willReturn(aResponse().withStatus(OK)))
 
         val result: LockCheck = await(connector.checkLock(userAnswers))
 
@@ -124,7 +124,7 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler {
       }
 
       "must return Locked when status is Locked (423)" in {
-        server.stubFor(get(urlEqualTo(url)) willReturn aResponse().withStatus(LOCKED))
+        server.stubFor(get(urlEqualTo(url)).willReturn(aResponse().withStatus(LOCKED)))
 
         val result: LockCheck = await(connector.checkLock(userAnswers))
 
@@ -135,7 +135,7 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler {
 
         forAll(Gen.choose(400: Int, 599: Int).retryUntil(_ != LOCKED)) {
           errorStatus =>
-            server.stubFor(get(urlEqualTo(url)) willReturn aResponse().withStatus(errorStatus))
+            server.stubFor(get(urlEqualTo(url)).willReturn(aResponse().withStatus(errorStatus)))
 
             val result: LockCheck = await(connector.checkLock(userAnswers))
 

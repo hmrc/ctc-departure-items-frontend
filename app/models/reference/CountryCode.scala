@@ -31,7 +31,5 @@ object CountryCode {
     case x                 => JsError(s"Expected a string, got a ${x.getClass}")
   }
 
-  implicit val order: Order[CountryCode] = (x: CountryCode, y: CountryCode) => {
-    x.code.compareToIgnoreCase(y.code)
-  }
+  implicit val order: Order[CountryCode] = (x: CountryCode, y: CountryCode) => (x, y).compareBy(_.code)
 }

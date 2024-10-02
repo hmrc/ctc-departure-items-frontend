@@ -89,7 +89,7 @@ class CustomsUnionAndStatisticsCodeControllerSpec extends SpecBase with AppWithD
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
       val request = FakeRequest(POST, customsUnionAndStatisticsCodeRoute)
         .withFormUrlEncodedBody(("value", "validCode"))
@@ -130,7 +130,7 @@ class CustomsUnionAndStatisticsCodeControllerSpec extends SpecBase with AppWithD
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
@@ -144,7 +144,7 @@ class CustomsUnionAndStatisticsCodeControllerSpec extends SpecBase with AppWithD
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
     }
   }
 }

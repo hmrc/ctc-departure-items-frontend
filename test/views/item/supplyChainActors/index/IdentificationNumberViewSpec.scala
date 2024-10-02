@@ -16,7 +16,7 @@
 
 package views.item.supplyChainActors.index
 
-import forms.EoriNumberFormProvider
+import forms.EoriTinFormProvider
 import models.NormalMode
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
@@ -31,7 +31,7 @@ class IdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
 
   private val validAnswer = "testString"
 
-  override def form: Form[String] = new EoriNumberFormProvider()(prefix)
+  override def form: Form[String] = new EoriTinFormProvider()(prefix)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
     injector.instanceOf[IdentificationNumberView].apply(form, lrn, NormalMode, itemIndex, actorIndex, validAnswer)(fakeRequest, messages)
@@ -46,7 +46,7 @@ class IdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
 
   behave like pageWithHeading(validAnswer)
 
-  behave like pageWithHint("This can be up to 17 characters long and include both letters and numbers. For example, GB123456789000.")
+  behave like pageWithHint("This will start with 2 letters, such as GB or XI, followed by up to 15 letters or numbers. For example, GB123456789000.")
 
   behave like pageWithInputText(Some(InputSize.Width20))
 

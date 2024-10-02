@@ -22,7 +22,7 @@ import wolfendale.scalacheck.regexp.RegexpGen
 
 trait StringFieldBehaviours extends FieldBehaviours {
 
-  def fieldWithExactLength(form: Form[_], fieldName: String, exactLength: Int, lengthError: FormError): Unit =
+  def fieldWithExactLength(form: Form[?], fieldName: String, exactLength: Int, lengthError: FormError): Unit =
     s"must not bind strings where the length is not equal to $exactLength" in {
 
       forAll(stringsWithLengthNotEqual(exactLength, Gen.numChar) -> "incorrectLength") {
@@ -32,7 +32,7 @@ trait StringFieldBehaviours extends FieldBehaviours {
       }
     }
 
-  def fieldWithMaxLength(form: Form[_], fieldName: String, maxLength: Int, lengthError: FormError): Unit =
+  def fieldWithMaxLength(form: Form[?], fieldName: String, maxLength: Int, lengthError: FormError): Unit =
     s"not bind strings longer than $maxLength characters" in {
 
       forAll(stringsLongerThan(maxLength) -> "longString") {
@@ -43,7 +43,7 @@ trait StringFieldBehaviours extends FieldBehaviours {
     }
 
   def fieldWithMaxLength(
-    form: Form[_],
+    form: Form[?],
     fieldName: String,
     maxLength: Int,
     lengthError: FormError,
@@ -58,7 +58,17 @@ trait StringFieldBehaviours extends FieldBehaviours {
       }
     }
 
-  def fieldWithInvalidCharacters(form: Form[_], fieldName: String, error: FormError, length: Int = 100): Unit =
+  def fieldWithMinLength(form: Form[?], fieldName: String, minLength: Int, lengthError: FormError): Unit =
+    s"must not bind strings shorter than $minLength characters" in {
+
+      forAll(stringsWithLength(minLength - 1) -> "shortString") {
+        string =>
+          val result = form.bind(Map(fieldName -> string)).apply(fieldName)
+          result.errors mustEqual Seq(lengthError)
+      }
+    }
+
+  def fieldWithInvalidCharacters(form: Form[?], fieldName: String, error: FormError, length: Int = 100): Unit =
     "must not bind strings with invalid characters" in {
 
       val generator: Gen[String] = RegexpGen.from(s"[!£^*(){}_+=:;|`~<>,±üçñèé]{$length}")
@@ -70,7 +80,14 @@ trait StringFieldBehaviours extends FieldBehaviours {
       }
     }
 
-  def fieldThatBindsUniqueData(form: Form[_], fieldName: String, values: Seq[String], uniqueError: FormError): Unit = {
+  def fieldWithInvalidInputCL234(form: Form[?], fieldName: String, error: FormError): Unit =
+    "must not bind strings with value '0' when in CL234" in {
+
+      val result: Field = form.bind(Map(fieldName -> "0")).apply(fieldName)
+      result.errors must contain(error)
+    }
+
+  def fieldThatBindsUniqueData(form: Form[?], fieldName: String, values: Seq[String], uniqueError: FormError): Unit = {
 
     "bind unique data" in {
 

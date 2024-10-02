@@ -95,7 +95,7 @@ class AdditionalInformationTypeControllerSpec extends SpecBase with AppWithDefau
     "must redirect to the next page when valid data is submitted" in {
 
       when(mockAdditionalInformationService.getAdditionalInformationTypes()(any())).thenReturn(Future.successful(additionalInformationList))
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
       setExistingUserAnswers(emptyUserAnswers)
 
@@ -136,7 +136,7 @@ class AdditionalInformationTypeControllerSpec extends SpecBase with AppWithDefau
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
@@ -150,7 +150,7 @@ class AdditionalInformationTypeControllerSpec extends SpecBase with AppWithDefau
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
     }
   }
 }

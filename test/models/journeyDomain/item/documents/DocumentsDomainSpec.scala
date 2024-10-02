@@ -33,10 +33,10 @@ class DocumentsDomainSpec extends SpecBase with Generators {
         val numberOfDocuments = Gen.choose(1, frontendAppConfig.maxTransportDocuments).sample.value
 
         val userAnswers = (0 until numberOfDocuments)
-          .foldLeft(emptyUserAnswers)({
+          .foldLeft(emptyUserAnswers) {
             case (updatedUserAnswers, index) =>
               arbitraryDocumentAnswers(updatedUserAnswers, itemIndex, Index(index)).sample.value
-          })
+          }
           .setValue(DocumentsInProgressPage(itemIndex), false)
 
         val result = DocumentsDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
@@ -48,10 +48,10 @@ class DocumentsDomainSpec extends SpecBase with Generators {
       "when no value set for DocumentsInProgressPage" in {
         val numberOfDocuments = Gen.choose(1, frontendAppConfig.maxTransportDocuments).sample.value
 
-        val userAnswers = (0 until numberOfDocuments).foldLeft(emptyUserAnswers)({
+        val userAnswers = (0 until numberOfDocuments).foldLeft(emptyUserAnswers) {
           case (updatedUserAnswers, index) =>
             arbitraryDocumentAnswers(updatedUserAnswers, itemIndex, Index(index)).sample.value
-        })
+        }
 
         val result = DocumentsDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
 
@@ -65,10 +65,10 @@ class DocumentsDomainSpec extends SpecBase with Generators {
         val numberOfDocuments = Gen.choose(1, frontendAppConfig.maxTransportDocuments).sample.value
 
         val userAnswers = (0 until numberOfDocuments)
-          .foldLeft(emptyUserAnswers)({
+          .foldLeft(emptyUserAnswers) {
             case (updatedUserAnswers, index) =>
               arbitraryDocumentAnswers(updatedUserAnswers, itemIndex, Index(index)).sample.value
-          })
+          }
           .setValue(DocumentsInProgressPage(itemIndex), true)
 
         val result = DocumentsDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)

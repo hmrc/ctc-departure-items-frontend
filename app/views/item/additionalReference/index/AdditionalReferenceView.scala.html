@@ -31,7 +31,7 @@
     button: Button
 )
 
-@(form: Form[AdditionalReference], lrn: LocalReferenceNumber, additionalReferences: Seq[AdditionalReference], mode: Mode, itemIndex: Index, additionalReferenceIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[AdditionalReference], lrn: LocalReferenceNumber, additionalReferences: Seq[AdditionalReference], mode: Mode, itemIndex: Index, additionalReferenceIndex: Index)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("item.additionalReference.index.additionalReference.title"),

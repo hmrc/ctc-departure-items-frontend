@@ -34,7 +34,5 @@ case class SupplyChainActorType(role: String, description: String) extends Radio
 object SupplyChainActorType extends DynamicEnumerableType[SupplyChainActorType] {
   implicit val format: Format[SupplyChainActorType] = Json.format[SupplyChainActorType]
 
-  implicit val order: Order[SupplyChainActorType] = (x: SupplyChainActorType, y: SupplyChainActorType) => {
-    x.code.compareToIgnoreCase(y.code)
-  }
+  implicit val order: Order[SupplyChainActorType] = (x: SupplyChainActorType, y: SupplyChainActorType) => (x, y).compareBy(_.role)
 }

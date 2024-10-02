@@ -185,7 +185,7 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
     "must redirect to the next page when valid data is submitted" in {
 
       when(mockCountriesService.doesCountryRequireZip(any())(any())).thenReturn(Future.successful(false))
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
       val userAnswers = emptyUserAnswers
         .setValue(NamePage(itemIndex), addressHolderName)
@@ -267,7 +267,7 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
@@ -285,7 +285,7 @@ class AddressControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
     }
   }
 }

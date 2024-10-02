@@ -39,7 +39,7 @@
     canSignOut: Boolean = true,
     showBackLink: Boolean = false,
     lrn: LocalReferenceNumber
-)(mainContent: Html)(implicit request: Request[_], messages: Messages)
+)(mainContent: Html)(implicit request: Request[?], messages: Messages)
 
 @headScripts = {
     @if(canSignOut) {
@@ -47,7 +47,7 @@
             timeout = Some(renderConfig.timeoutSeconds),
             countdown = Some(renderConfig.countdownSeconds),
             keepAliveUrl = Some(appConfig.keepAliveUrl(lrn)),
-            signOutUrl = Some(appConfig.signOutUrl(lrn))
+            signOutUrl = Some(appConfig.sessionExpiredUrl(lrn))
         ))
     }
 
@@ -83,6 +83,6 @@
         ),
         pageTitle = Some(breadCrumbTitle(title, mainContent)),
         serviceName = Some(messages("site.service_name")),
-        backLink = if (showBackLink) Some(BackLink.withDefaultText(href = "#")) else None, // This is overridden in ctc.js
+        backLink = if (showBackLink) Some(BackLink.mimicsBrowserBackButtonViaJavaScript) else None,
     )
 )(mainContentWithGetHelp)

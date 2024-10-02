@@ -25,7 +25,6 @@ import pages.sections.additionalReference.AdditionalReferencesSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.item.additionalReference.AddAnotherAdditionalReferenceViewModel
 import viewmodels.item.additionalReference.AddAnotherAdditionalReferenceViewModel.AddAnotherAdditionalReferenceViewModelProvider
@@ -35,7 +34,6 @@ import javax.inject.Inject
 
 class AddAnotherAdditionalReferenceController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
   navigatorProvider: ItemNavigatorProvider,
   actions: Actions,
   formProvider: AddAnotherFormProvider,

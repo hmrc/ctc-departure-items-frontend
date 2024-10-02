@@ -23,11 +23,12 @@ import views.behaviours.YesNoViewBehaviours
 import views.html.item.RemoveItemView
 
 class RemoveItemViewSpec extends YesNoViewBehaviours with Generators {
+  private val itemDescription = nonEmptyString.sample.value
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
       .instanceOf[RemoveItemView]
-      .apply(form, lrn, itemIndex)(fakeRequest, messages)
+      .apply(form, lrn, itemIndex, itemDescription)(fakeRequest, messages)
 
   override val prefix: String = "item.removeItem"
 
@@ -38,6 +39,8 @@ class RemoveItemViewSpec extends YesNoViewBehaviours with Generators {
   behave like pageWithSectionCaption(s"Item ${itemIndex.display}")
 
   behave like pageWithHeading(itemIndex.display)
+
+  behave like pageWithInsetText(itemDescription)
 
   behave like pageWithRadioItems(args = Seq(itemIndex.display))
 

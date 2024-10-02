@@ -36,7 +36,7 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures w
 
   private val formProvider        = app.injector.instanceOf[NetWeightFormProvider]
   private val grossWeight         = BigDecimal(2)
-  private val form                = formProvider("item.netWeight", grossWeight)
+  private val form                = formProvider("item.netWeight", isZeroAllowed = false, grossWeight)
   private val mode                = NormalMode
   private val validAnswer         = BigDecimal(1)
   private lazy val netWeightRoute = routes.NetWeightController.onPageLoad(lrn, mode, itemIndex).url
@@ -93,7 +93,7 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures w
 
       setExistingUserAnswers(userAnswers)
 
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
       val request = FakeRequest(POST, netWeightRoute)
         .withFormUrlEncodedBody(("value", validAnswer.toString))
@@ -126,6 +126,25 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures w
         view(filledForm, lrn, mode, itemIndex)(request, messages).toString
     }
 
+    "must return a Bad Request and errors when 0 is submitted" in {
+
+      val userAnswers = emptyUserAnswers.setValue(GrossWeightPage(itemIndex), grossWeight)
+
+      setExistingUserAnswers(userAnswers)
+
+      val request    = FakeRequest(POST, netWeightRoute).withFormUrlEncodedBody(("value", "0"))
+      val filledForm = form.bind(Map("value" -> "0"))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual BAD_REQUEST
+
+      val view = injector.instanceOf[NetWeightView]
+
+      contentAsString(result) mustEqual
+        view(filledForm, lrn, mode, itemIndex)(request, messages).toString
+    }
+
     "must redirect to Session Expired for a GET if no existing data is found" in {
 
       setNoExistingUserAnswers()
@@ -136,7 +155,7 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures w
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
@@ -150,7 +169,7 @@ class NetWeightControllerSpec extends SpecBase with AppWithDefaultMockFixtures w
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
     }
   }
 }

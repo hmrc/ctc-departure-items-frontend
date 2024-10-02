@@ -18,7 +18,7 @@ package models.journeyDomain.item.additionalInformation
 
 import controllers.item.additionalInformation.index.routes._
 import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
-import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Read, Stage}
+import models.journeyDomain._
 import models.reference.AdditionalInformation
 import models.{Index, Mode, Phase, UserAnswers}
 import pages.item.additionalInformation.index._
@@ -44,8 +44,7 @@ case class AdditionalInformationDomain(
 
 object AdditionalInformationDomain {
 
-  def userAnswersReader(itemIndex: Index, additionalInformationIndex: Index): Read[AdditionalInformationDomain] = (
-    AdditionalInformationTypePage(itemIndex, additionalInformationIndex).reader,
-    AdditionalInformationPage(itemIndex, additionalInformationIndex).reader
+  def userAnswersReader(itemIndex: Index, additionalInformationIndex: Index): Read[AdditionalInformationDomain] = RichTuple2(
+    (AdditionalInformationTypePage(itemIndex, additionalInformationIndex).reader, AdditionalInformationPage(itemIndex, additionalInformationIndex).reader)
   ).map(AdditionalInformationDomain.apply(_, _)(itemIndex, additionalInformationIndex))
 }

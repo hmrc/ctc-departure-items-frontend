@@ -17,7 +17,7 @@
 package controllers.item.supplyChainActors.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.EoriNumberFormProvider
+import forms.EoriTcuinFormProvider
 import generators.Generators
 import models.NormalMode
 import models.reference.SupplyChainActorType
@@ -36,7 +36,7 @@ import scala.concurrent.Future
 
 class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val formProvider                   = new EoriNumberFormProvider()
+  private val formProvider                   = new EoriTcuinFormProvider()
   private val validAnswer                    = "testString"
   private val form                           = formProvider("item.supplyChainActors.index.identificationNumber")
   private val mode                           = NormalMode
@@ -103,7 +103,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
 
       setExistingUserAnswers(updatedUserAnswers)
 
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
       val request = FakeRequest(POST, identificationNumberRoute)
         .withFormUrlEncodedBody(("value", validAnswer))
@@ -149,7 +149,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
@@ -163,7 +163,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
     }
   }
 }

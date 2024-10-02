@@ -19,18 +19,20 @@ package services
 import base.SpecBase
 import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
+import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import generators.Generators
 import models.SelectableList
 import models.reference.{Country, CountryCode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
-import org.scalacheck.Arbitrary
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach with Generators {
+class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach with Generators with ScalaCheckPropertyChecks {
 
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
   private val service                                      = new CountriesService(mockRefDataConnector)
@@ -73,45 +75,67 @@ class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach with Generat
       }
     }
 
-    "getCountriesWithoutZip" - {
-      "must return a list of countries without ZIP codes" in {
-
-        when(mockRefDataConnector.getCountriesWithoutZip()(any(), any()))
-          .thenReturn(Future.successful(countries.map(_.code)))
-
-        service.getCountriesWithoutZip().futureValue mustBe
-          Seq(country3.code, country2.code, country1.code)
-
-        verify(mockRefDataConnector).getCountriesWithoutZip()(any(), any())
-      }
-    }
-
     "doesCountryRequireZip" - {
       "must return true" - {
         "when countries without zip doesn't contain this country" in {
-          when(mockRefDataConnector.getCountriesWithoutZip()(any(), any()))
-            .thenReturn(Future.successful(countries.map(_.code)))
+          forAll(arbitrary[Country]) {
+            country =>
+              when(mockRefDataConnector.getCountriesWithoutZipCountry(any())(any(), any()))
+                .thenReturn(Future.successful(country.code))
 
-          val country = Arbitrary.arbitrary[Country].retryUntil(!countries.contains(_)).sample.value
+              val result = service.doesCountryRequireZip(country).futureValue
 
-          val result = service.doesCountryRequireZip(country).futureValue
-
-          result mustBe true
-
+              result mustBe true
+          }
         }
       }
 
       "must return false" - {
         "when countries without zip does contain this country" in {
-          when(mockRefDataConnector.getCountriesWithoutZip()(any(), any()))
-            .thenReturn(Future.successful(countries.map(_.code)))
+          forAll(arbitrary[Country]) {
+            country =>
+              when(mockRefDataConnector.getCountriesWithoutZipCountry(any())(any(), any()))
+                .thenReturn(Future.failed(new NoReferenceDataFoundException("")))
 
-          val country = countries.head
+              val result = service.doesCountryRequireZip(country).futureValue
 
-          val result = service.doesCountryRequireZip(country).futureValue
+              result mustBe false
+          }
+        }
+      }
+    }
+
+    "isCountryInCL009" - {
+      "must return true" - {
+        "when connector call returns the country" in {
+          when(mockRefDataConnector.getCountryCodeCommonTransit(any())(any(), any()))
+            .thenReturn(Future.successful(country1))
+
+          val result = service.isCountryInCL009(country1).futureValue
+
+          result mustBe true
+        }
+      }
+
+      "must return false" - {
+        "when connector call returns NoReferenceDataFoundException" in {
+          when(mockRefDataConnector.getCountryCodeCommonTransit(any())(any(), any()))
+            .thenReturn(Future.failed(new NoReferenceDataFoundException("")))
+
+          val result = service.isCountryInCL009(country1).futureValue
 
           result mustBe false
+        }
+      }
 
+      "must fail" - {
+        "when connector call otherwise fails" in {
+          when(mockRefDataConnector.getCountryCodeCommonTransit(any())(any(), any()))
+            .thenReturn(Future.failed(new Throwable("")))
+
+          val result = service.isCountryInCL009(country1)
+
+          result.failed.futureValue mustBe a[Throwable]
         }
       }
     }

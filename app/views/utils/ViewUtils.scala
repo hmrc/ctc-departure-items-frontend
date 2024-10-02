@@ -28,7 +28,7 @@ object ViewUtils {
 
   def breadCrumbTitle(title: String, mainContent: Html)(implicit messages: Messages): String =
     (if (mainContent.body.contains("govuk-error-summary")) s"${messages("error.title.prefix")} " else "") +
-      s"$title - ${messages("site.service_name")} - GOV.UK"
+      s"$title - ${messages("site.title.prefix")} - ${messages("site.service_name")} - GOV.UK"
 
   def errorClass(error: Option[FormError], dateArg: String): String =
     error.fold("") {
@@ -89,7 +89,7 @@ object ViewUtils {
     override def withFormFieldWithErrorAsHtml(field: Field): Fieldset = fieldset
 
     def withHeadingAndCaption(heading: String, caption: Option[String]): Fieldset =
-      withHeadingLegend(fieldset, Text(heading), caption.map(Text))(
+      withHeadingLegend(fieldset, Text(heading), caption.map(Text.apply))(
         (fs, l) => fs.copy(legend = Some(l))
       )
   }

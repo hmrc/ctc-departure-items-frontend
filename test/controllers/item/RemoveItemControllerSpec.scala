@@ -25,6 +25,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, verify}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.item.DescriptionPage
 import pages.sections.ItemSection
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -33,6 +34,7 @@ import views.html.item.RemoveItemView
 class RemoveItemControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   private val formProvider           = new YesNoFormProvider()
+  private val itemDescription        = nonEmptyString.sample.value
   private def form(itemIndex: Index) = formProvider("item.removeItem", itemIndex.display)
 
   private lazy val removeItemRoute = routes.RemoveItemController.onPageLoad(lrn, itemIndex).url
@@ -42,7 +44,7 @@ class RemoveItemControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
     "must return OK and the correct view for a GET" in {
       forAll(arbitraryItemAnswers(emptyUserAnswers, itemIndex)) {
         userAnswers =>
-          setExistingUserAnswers(userAnswers)
+          setExistingUserAnswers(userAnswers.setValue(DescriptionPage(itemIndex), itemDescription))
 
           val request = FakeRequest(GET, removeItemRoute)
           val result  = route(app, request).value
@@ -52,7 +54,7 @@ class RemoveItemControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(form(itemIndex), lrn, itemIndex)(request, messages).toString
+            view(form(itemIndex), lrn, itemIndex, itemDescription)(request, messages).toString
       }
     }
 
@@ -106,7 +108,7 @@ class RemoveItemControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
     "must return a Bad Request and errors when invalid data is submitted" in {
       forAll(arbitraryItemAnswers(emptyUserAnswers, itemIndex)) {
         userAnswers =>
-          setExistingUserAnswers(userAnswers)
+          setExistingUserAnswers(userAnswers.setValue(DescriptionPage(itemIndex), itemDescription))
 
           val request   = FakeRequest(POST, removeItemRoute).withFormUrlEncodedBody(("value", ""))
           val boundForm = form(itemIndex).bind(Map("value" -> ""))
@@ -118,7 +120,7 @@ class RemoveItemControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
           val view = injector.instanceOf[RemoveItemView]
 
           contentAsString(result) mustEqual
-            view(boundForm, lrn, itemIndex)(request, messages).toString
+            view(boundForm, lrn, itemIndex, itemDescription)(request, messages).toString
       }
     }
 
@@ -132,7 +134,7 @@ class RemoveItemControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
       }
 
       "when no item is found" in {
@@ -160,7 +162,7 @@ class RemoveItemControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
       }
 
       "when no item is found" in {

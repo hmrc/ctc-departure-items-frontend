@@ -25,12 +25,11 @@ trait BigDecimalFieldBehaviours extends FieldBehaviours {
   val maxValue: BigDecimal = BigDecimal("10000000000000000")
 
   def bigDecimalField(
-    form: Form[_],
+    form: Form[?],
     fieldName: String,
     invalidCharactersError: FormError,
     invalidFormatError: FormError,
-    invalidValueError: FormError,
-    args: Seq[String]
+    invalidValueError: FormError
   )(implicit phaseConfig: PhaseConfig): Unit = {
 
     "must not bind non-numeric numbers" in {
@@ -71,8 +70,13 @@ trait BigDecimalFieldBehaviours extends FieldBehaviours {
           result.errors mustEqual Seq(invalidFormatError)
         }
 
-        "must not bind values with more than 11 characters" in {
-          val result = form.bind(Map(fieldName -> BigDecimal(12345678.456).toString)).apply(fieldName)
+        "must not bind values with more than 11 integers" in {
+          val result = form.bind(Map(fieldName -> BigDecimal(123456789012L).toString)).apply(fieldName)
+          result.errors mustEqual Seq(invalidValueError)
+        }
+
+        "must not bind values with more than 15 characters" in {
+          val result = form.bind(Map(fieldName -> BigDecimal(123456789012.123).toString)).apply(fieldName)
           result.errors mustEqual Seq(invalidValueError)
         }
       case Phase.PostTransition =>
@@ -81,8 +85,13 @@ trait BigDecimalFieldBehaviours extends FieldBehaviours {
           result.errors mustEqual Seq(invalidFormatError)
         }
 
-        "must not bind values with more than 16 characters" in {
-          val result = form.bind(Map(fieldName -> BigDecimal(1234567890123.456).toString)).apply(fieldName)
+        "must not bind values with more than 16 integers" in {
+          val result = form.bind(Map(fieldName -> BigDecimal(12345678901234567L).toString)).apply(fieldName)
+          result.errors mustEqual Seq(invalidValueError)
+        }
+
+        "must not bind values with more than 23 characters" in {
+          val result = form.bind(Map(fieldName -> BigDecimal(12345678901234567.123456).toString)).apply(fieldName)
           result.errors mustEqual Seq(invalidValueError)
         }
     }

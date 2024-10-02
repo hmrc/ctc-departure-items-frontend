@@ -22,13 +22,10 @@ import org.apache.commons.text.StringEscapeUtils
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
-case class PackageType(code: String, description: Option[String], `type`: PackingType) extends Selectable {
+case class PackageType(code: String, description: String, `type`: PackingType) extends Selectable {
 
   override def toString: String = {
-    val str = description match {
-      case Some(value) if value.trim.nonEmpty => s"($code) $value"
-      case _                                  => code
-    }
+    val str = s"($code) $description"
     StringEscapeUtils.unescapeXml(str)
   }
 
@@ -39,7 +36,7 @@ object PackageType {
 
   def reads(`type`: PackingType): Reads[PackageType] = (
     (__ \ "code").read[String] and
-      (__ \ "description").readNullable[String]
+      (__ \ "description").read[String]
   ).apply {
     (code, description) =>
       PackageType(code, description, `type`)
@@ -47,7 +44,5 @@ object PackageType {
 
   implicit val format: OFormat[PackageType] = Json.format[PackageType]
 
-  implicit val order: Order[PackageType] = (x: PackageType, y: PackageType) => {
-    x.toString.compareToIgnoreCase(y.toString)
-  }
+  implicit val order: Order[PackageType] = (x: PackageType, y: PackageType) => (x, y).compareBy(_.toString)
 }

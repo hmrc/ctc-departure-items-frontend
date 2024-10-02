@@ -72,6 +72,30 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
        |}
        |""".stripMargin
 
+  private def countryResponseJson(listName: String): String =
+    s"""
+       |{
+       |  "_links": {
+       |    "self": {
+       |      "href": "/customs-reference-data/lists/$listName"
+       |    }
+       |  },
+       |  "meta": {
+       |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+       |    "snapshotDate": "2023-01-01"
+       |  },
+       |  "id": "$listName",
+       |  "data": [
+       |    {
+       |      "activeFrom": "2023-01-23",
+       |      "code": "GB",
+       |      "state": "valid",
+       |      "description": "United Kingdom"
+       |    }
+       |  ]
+       |}
+       |""".stripMargin
+
   private def packageTypeJson(listName: String): String =
     s"""
       |{
@@ -249,6 +273,36 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       |}
       |""".stripMargin
 
+  private val documentTypeExciseJson: String =
+    """
+      |{
+      |  "_links": {
+      |    "self": {
+      |      "href": "/customs-reference-data/lists/DocumentTypeExcise"
+      |    }
+      |  },
+      |  "meta": {
+      |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+      |    "snapshotDate": "2023-01-01"
+      |  },
+      |  "id": "DocumentTypeExcise",
+      |  "data": [
+      |  {
+      |    "activeFrom": "2024-01-01",
+      |    "code": "C651",
+      |    "state": "valid",
+      |    "description": "AAD - Administrative Accompanying Document (EMCS)"
+      |  },
+      |  {
+      |    "activeFrom": "2024-01-01",
+      |    "code": "C658",
+      |    "state": "valid",
+      |    "description": "FAD - Fallback e-AD (EMCS)"
+      |  }
+      |]
+      |}
+      |""".stripMargin
+
   private val emptyResponseJson: String =
     """
       |{
@@ -271,6 +325,23 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         val expectedResult = CUSCode(cusCode)
 
         connector.getCUSCode(cusCode).futureValue mustEqual expectedResult
+      }
+    }
+
+    "getDocumentTypeExcise" - {
+      val code = "C651"
+      val url  = s"/$baseUrl/lists/DocumentTypeExcise?data.code=$code"
+
+      "must return DocumentTypeExcise when successful" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(documentTypeExciseJson))
+        )
+
+        val expectedResult =
+          DocTypeExcise(code = "C651", description = "AAD - Administrative Accompanying Document (EMCS)")
+
+        connector.getDocumentTypeExcise(code).futureValue mustEqual expectedResult
       }
     }
 
@@ -354,29 +425,58 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       }
     }
 
-    "getCountriesWithoutZip" - {
-      val url = s"/$baseUrl/lists/CountryWithoutZip"
+    "getCountryCodeCommonTransit" - {
+      def url(code: String) = s"/$baseUrl/lists/CountryCodesCommonTransit?data.code=$code"
 
-      "must return Seq of Country when successful" in {
+      "must return Country when successful" in {
+        val code = "GB"
+
         server.stubFor(
-          get(urlEqualTo(url))
-            .willReturn(okJson(countriesResponseJson("CountryWithoutZip")))
+          get(urlEqualTo(url(code)))
+            .willReturn(okJson(countryResponseJson("CountryCodesCommonTransit")))
         )
 
-        val expectedResult = NonEmptySet.of(
-          CountryCode("GB"),
-          CountryCode("AD")
-        )
+        val country = Country(CountryCode(code), "United Kingdom")
 
-        connector.getCountriesWithoutZip().futureValue mustEqual expectedResult
+        connector.getCountryCodeCommonTransit(country).futureValue mustEqual country
       }
 
       "must throw a NoReferenceDataFoundException for an empty response" in {
-        checkNoReferenceDataFoundResponse(url, connector.getCountriesWithoutZip())
+        val code    = "FR"
+        val country = Country(CountryCode(code), "France")
+        checkNoReferenceDataFoundResponse(url(code), connector.getCountryCodeCommonTransit(country))
       }
 
       "must return an exception when an error response is returned" in {
-        checkErrorResponse(url, connector.getCountriesWithoutZip())
+        val code    = "GB"
+        val country = Country(CountryCode(code), "United Kingdom")
+        checkErrorResponse(url(code), connector.getCountryCodeCommonTransit(country))
+      }
+    }
+
+    "getCountriesWithoutZipCountry" - {
+      def url(countryId: String) = s"/$baseUrl/lists/CountryWithoutZip?data.code=$countryId"
+
+      "must return Seq of Country when successful" in {
+        val countryId = "GB"
+        server.stubFor(
+          get(urlEqualTo(url(countryId)))
+            .willReturn(okJson(countryResponseJson("CountryWithoutZip")))
+        )
+
+        val expectedResult = CountryCode(countryId)
+
+        connector.getCountriesWithoutZipCountry(countryId).futureValue mustEqual expectedResult
+      }
+
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        val countryId = "FR"
+        checkNoReferenceDataFoundResponse(url(countryId), connector.getCountriesWithoutZipCountry(countryId))
+      }
+
+      "must return an exception when an error response is returned" in {
+        val countryId = "FR"
+        checkErrorResponse(url(countryId), connector.getCountriesWithoutZipCountry(countryId))
       }
     }
 
@@ -390,8 +490,8 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         )
 
         val expectResult = NonEmptySet.of(
-          PackageType("VA", Some("Vat"), PackingType.Other),
-          PackageType("UC", Some("Uncaged"), PackingType.Other)
+          PackageType("VA", "Vat", PackingType.Other),
+          PackageType("UC", "Uncaged", PackingType.Other)
         )
 
         connector.getPackageTypes().futureValue mustEqual expectResult
@@ -416,8 +516,8 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         )
 
         val expectResult = NonEmptySet.of(
-          PackageType("VA", Some("Vat"), PackingType.Bulk),
-          PackageType("UC", Some("Uncaged"), PackingType.Bulk)
+          PackageType("VA", "Vat", PackingType.Bulk),
+          PackageType("UC", "Uncaged", PackingType.Bulk)
         )
 
         connector.getPackageTypesBulk().futureValue mustEqual expectResult
@@ -442,8 +542,8 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         )
 
         val expectResult = NonEmptySet.of(
-          PackageType("VA", Some("Vat"), PackingType.Unpacked),
-          PackageType("UC", Some("Uncaged"), PackingType.Unpacked)
+          PackageType("VA", "Vat", PackingType.Unpacked),
+          PackageType("UC", "Uncaged", PackingType.Unpacked)
         )
 
         connector.getPackageTypesUnpacked().futureValue mustEqual expectResult
@@ -563,7 +663,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
     }
   }
 
-  private def checkNoReferenceDataFoundResponse(url: String, result: => Future[_]): Assertion = {
+  private def checkNoReferenceDataFoundResponse(url: String, result: => Future[?]): Assertion = {
     server.stubFor(
       get(urlEqualTo(url))
         .willReturn(okJson(emptyResponseJson))
@@ -574,7 +674,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
     }
   }
 
-  private def checkErrorResponse(url: String, result: => Future[_]): Assertion = {
+  private def checkErrorResponse(url: String, result: => Future[?]): Assertion = {
     val errorResponses: Gen[Int] = Gen.chooseNum(400: Int, 599: Int)
 
     forAll(errorResponses) {

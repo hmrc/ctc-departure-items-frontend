@@ -17,7 +17,7 @@
 package models.journeyDomain.item.supplyChainActors
 
 import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
-import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Read, Stage}
+import models.journeyDomain._
 import models.reference.SupplyChainActorType
 import models.{Index, Mode, Phase, UserAnswers}
 import pages.item.supplyChainActors.index.{IdentificationNumberPage, SupplyChainActorTypePage}
@@ -40,9 +40,8 @@ case class SupplyChainActorDomain(role: SupplyChainActorType, identification: St
 object SupplyChainActorDomain {
 
   def userAnswersReader(itemIndex: Index, actorIndex: Index): Read[SupplyChainActorDomain] =
-    (
-      SupplyChainActorTypePage(itemIndex, actorIndex).reader,
-      IdentificationNumberPage(itemIndex, actorIndex).reader
+    RichTuple2(
+      (SupplyChainActorTypePage(itemIndex, actorIndex).reader, IdentificationNumberPage(itemIndex, actorIndex).reader)
     ).map(SupplyChainActorDomain.apply(_, _)(itemIndex, actorIndex))
 
 }

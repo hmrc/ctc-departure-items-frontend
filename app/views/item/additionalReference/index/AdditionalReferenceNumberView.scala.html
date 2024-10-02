@@ -17,19 +17,19 @@
 @import controllers.item.additionalReference.index.routes
 @import config.PhaseConfig
 @import models.LocalReferenceNumber
-@import viewmodels.components.InputCharacterCountViewModel
-@import views.html.components.{Button, ErrorSummary, InputCharacterCount}
+@import viewmodels.components.InputTextViewModel
+@import views.html.components.{Button, ErrorSummary, InputText}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
-    inputCharacterCount: InputCharacterCount,
+    inputText: InputText,
     errorSummary: ErrorSummary,
     button: Button,
     phaseConfig: PhaseConfig
 )
 
-@(form: Form[String], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, additionalReferenceIndex: Index, isRequired: Boolean)(implicit request: Request[_], messages: Messages)
+@(form: Form[String], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, additionalReferenceIndex: Index, isRequired: Boolean)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("item.additionalReference.index.additionalReferenceNumber.title"),
@@ -41,16 +41,14 @@
 
         @errorSummary(form.errors)
 
-        @inputCharacterCount(
+        @inputText(
             field = form("value"),
-            inputCharacterCountType = InputCharacterCountViewModel(
+            inputTextType = InputTextViewModel(
                 heading = messages("item.additionalReference.index.additionalReferenceNumber.heading"),
                 caption = Some(messages("item.additionalReference.caption", itemIndex.display)),
                 additionalHtml = if (isRequired) Some(messages("item.additionalReference.index.additionalReferenceNumber.paragraph").toParagraph) else None
             ),
-            label = messages("item.additionalReference.index.additionalReferenceNumber.heading", itemIndex.display),
-            maxLength = phaseConfig.maxAdditionalReferenceNumLength,
-            rows = 2
+            hint = Some(messages("item.additionalReference.index.additionalReferenceNumber.hint", phaseConfig.maxAdditionalReferenceNumLength))
         )
 
         @button(attributes = Map("id" -> "submit"))

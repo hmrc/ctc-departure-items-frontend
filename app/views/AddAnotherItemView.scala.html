@@ -30,7 +30,7 @@
     button: Button
 )
 
-@(form: Form[Boolean], lrn: LocalReferenceNumber, viewModel: AddAnotherItemViewModel)(implicit request: Request[_], messages: Messages, config: FrontendAppConfig)
+@(form: Form[Boolean], lrn: LocalReferenceNumber, viewModel: AddAnotherItemViewModel)(implicit request: Request[?], messages: Messages, config: FrontendAppConfig)
 
 @mainTemplate(
     title = messages(viewModel.title),

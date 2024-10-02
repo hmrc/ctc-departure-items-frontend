@@ -32,11 +32,9 @@ class BigDecimalFormProvider @Inject() (implicit phaseConfig: PhaseConfig) exten
       "value" -> bigDecimal(
         decimalPlaceCount,
         characterCount,
-        s"$prefix.error.required",
-        s"$prefix.error.invalidCharacters",
-        s"$prefix.error.invalidFormat",
-        s"$prefix.error.invalidValue",
-        Seq(decimalPlaceCount.toString, characterCount.toString)
+        isZeroAllowed = true,
+        s"$prefix.error",
+        Seq(decimalPlaceCount, characterCount, characterCount + decimalPlaceCount + 1)
       )
     )
 }

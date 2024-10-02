@@ -94,7 +94,7 @@ class TransportChargesMethodOfPaymentControllerSpec extends SpecBase with AppWit
     "must redirect to the next page when valid data is submitted" in {
       when(mockMethodOfPaymentService.getTransportChargesMethodOfPaymentTypes()(any())).thenReturn(Future.successful(mops))
 
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
       setExistingUserAnswers(emptyUserAnswers)
 
@@ -135,7 +135,7 @@ class TransportChargesMethodOfPaymentControllerSpec extends SpecBase with AppWit
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
@@ -149,7 +149,7 @@ class TransportChargesMethodOfPaymentControllerSpec extends SpecBase with AppWit
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
     }
   }
 }

@@ -24,8 +24,10 @@ import views.html.item.supplyChainActors.index.RemoveSupplyChainActorView
 
 class RemoveSupplyChainActorViewSpec extends YesNoViewBehaviours {
 
+  private val insetText = "test"
+
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[RemoveSupplyChainActorView].apply(form, lrn, NormalMode, itemIndex, actorIndex)(fakeRequest, messages)
+    injector.instanceOf[RemoveSupplyChainActorView].apply(form, lrn, NormalMode, itemIndex, actorIndex, insetText)(fakeRequest, messages)
 
   override val prefix: String = "item.supplyChainActors.index.removeSupplyChainActor"
 
@@ -38,6 +40,8 @@ class RemoveSupplyChainActorViewSpec extends YesNoViewBehaviours {
   behave like pageWithHeading()
 
   behave like pageWithRadioItems()
+
+  behave like pageWithInsetText(insetText)
 
   behave like pageWithSubmitButton("Save and continue")
 }
