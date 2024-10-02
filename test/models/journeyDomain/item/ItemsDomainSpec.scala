@@ -31,10 +31,10 @@ class ItemsDomainSpec extends SpecBase with Generators {
 
       val numberOfItems = Gen.choose(1, frontendAppConfig.maxItems).sample.value
 
-      val userAnswers = (0 until numberOfItems).foldLeft(emptyUserAnswers)({
+      val userAnswers = (0 until numberOfItems).foldLeft(emptyUserAnswers) {
         case (updatedUserAnswers, index) =>
           arbitraryItemAnswers(updatedUserAnswers, Index(index)).sample.value
-      })
+      }
 
       val result = ItemsDomain.userAnswersReader.run(userAnswers)
 

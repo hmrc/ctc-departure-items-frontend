@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class DescriptionController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   actions: Actions,
   navigatorProvider: ItemNavigatorProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -63,8 +63,8 @@ class DescriptionController @Inject() (
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex))),
           value => {
-            implicit lazy val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
-            DescriptionPage(itemIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+            val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
+            DescriptionPage(itemIndex).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
           }
         )
   }

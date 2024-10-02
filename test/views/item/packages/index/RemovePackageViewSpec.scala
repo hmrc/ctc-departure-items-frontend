@@ -28,11 +28,12 @@ import views.html.item.packages.index.RemovePackageView
 class RemovePackageViewSpec extends YesNoViewBehaviours with Generators {
 
   private val packageType = arbitrary[PackageType].sample.value
+  private val insetText   = "test"
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
       .instanceOf[RemovePackageView]
-      .apply(form, lrn, NormalMode, itemIndex, packageIndex, packageType)(fakeRequest, messages)
+      .apply(form, lrn, NormalMode, itemIndex, packageIndex, Some(insetText))(fakeRequest, messages)
 
   override val prefix: String = "item.packages.index.removePackage"
 
@@ -47,4 +48,6 @@ class RemovePackageViewSpec extends YesNoViewBehaviours with Generators {
   behave like pageWithRadioItems(args = Seq(packageType))
 
   behave like pageWithSubmitButton("Save and continue")
+
+  behave like pageWithInsetText(insetText)
 }

@@ -16,7 +16,7 @@
 
 package models.journeyDomain.item.supplyChainActors
 
-import models.journeyDomain.{JourneyDomainModel, JsArrayGettableAsReaderOps, Read}
+import models.journeyDomain._
 import models.{Index, RichJsArray, UserAnswers}
 import pages.sections.Section
 import pages.sections.supplyChainActors.SupplyChainActorsSection
@@ -26,7 +26,7 @@ case class SupplyChainActorsDomain(
 )(itemIndex: Index)
     extends JourneyDomainModel {
 
-  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(SupplyChainActorsSection(itemIndex))
+  override def page(userAnswers: UserAnswers): Option[Section[?]] = Some(SupplyChainActorsSection(itemIndex))
 }
 
 object SupplyChainActorsDomain {

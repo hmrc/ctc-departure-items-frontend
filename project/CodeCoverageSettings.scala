@@ -18,7 +18,7 @@ object CodeCoverageSettings {
     "views\\.utils.*"
   )
 
-  val settings: Seq[Setting[_]] = Seq(
+  val settings: Seq[Setting[?]] = Seq(
     ScoverageKeys.coverageExcludedPackages := excludedPackages.mkString(";"),
     ScoverageKeys.coverageMinimumStmtTotal := 65, // TODO - increase this when appropriate
     ScoverageKeys.coverageFailOnMinimum := true,

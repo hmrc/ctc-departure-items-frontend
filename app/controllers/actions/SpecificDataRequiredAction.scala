@@ -24,7 +24,6 @@ import play.api.libs.json.Reads
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
 import queries.Gettable
-import shapeless.syntax.std.tuple.productTupleOps
 
 import javax.inject.Inject
 import scala.annotation.tailrec
@@ -38,7 +37,7 @@ class SpecificDataRequiredActionImpl @Inject() (implicit val ec: ExecutionContex
   )(implicit rds: Reads[T1]): ActionRefiner[
     DataRequest,
     SpecificDataRequestProvider1[T1]#SpecificDataRequest
-  ] = new SpecificDataRequiredAction1(pages: _*)
+  ] = new SpecificDataRequiredAction1(pages*)
 
   override def getSecond[T1, T2](
     page: Gettable[T2]
@@ -59,7 +58,7 @@ trait SpecificDataRequiredActionProvider {
 
   def apply[T1](
     pages: Gettable[T1]*
-  )(implicit rds: Reads[T1]): ActionRefiner[DataRequest, SpecificDataRequestProvider1[T1]#SpecificDataRequest] = getFirst(pages: _*)
+  )(implicit rds: Reads[T1]): ActionRefiner[DataRequest, SpecificDataRequestProvider1[T1]#SpecificDataRequest] = getFirst(pages*)
 
   def getFirst[T1](
     pages: Gettable[T1]*
@@ -116,7 +115,7 @@ class SpecificDataRequiredAction1[T1](
   override protected def refine[A](
     request: DataRequest[A]
   ): Future[Either[Result, SpecificDataRequestProvider1[T1]#SpecificDataRequest[A]]] =
-    getPage(request.userAnswers, pages: _*) {
+    getPage(request.userAnswers, pages*) {
       value =>
         new SpecificDataRequestProvider1[T1].SpecificDataRequest(
           request = request,
@@ -168,7 +167,7 @@ class SpecificDataRequiredAction3[T1, T2, T3](
           request = request,
           eoriNumber = request.eoriNumber,
           userAnswers = request.userAnswers,
-          arg = request.arg :+ value
+          arg = (request.arg._1, request.arg._2, value)
         )
     }
 

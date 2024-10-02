@@ -100,7 +100,7 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       setExistingUserAnswers(userAnswers)
 
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
       val request = FakeRequest(POST, numberOfPackagesRoute)
         .withFormUrlEncodedBody(("value", validAnswer.toString))
@@ -121,7 +121,7 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
 
             setExistingUserAnswers(userAnswers)
 
-            when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+            when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
             val request = FakeRequest(POST, numberOfPackagesRoute)
               .withFormUrlEncodedBody(("value", "0"))
@@ -166,7 +166,7 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
 
               setExistingUserAnswers(userAnswers)
 
-              when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+              when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
               val request = FakeRequest(POST, numberOfPackagesRoute)
                 .withFormUrlEncodedBody(("value", "0"))

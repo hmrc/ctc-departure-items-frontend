@@ -34,7 +34,7 @@ class RenderConfig @Inject() (configuration: Configuration) {
   val feedbackEmail: String = configuration.get[String]("trader-test.feedback.email")
   val feedbackForm: String  = configuration.get[String]("trader-test.feedback.link")
 
-  def mailto(implicit request: Request[_], messages: Messages): String = {
+  def mailto(implicit request: Request[?], messages: Messages): String = {
     val subject = messages("site.email.subject")
     val body = {
       val newLine      = "%0D%0A"

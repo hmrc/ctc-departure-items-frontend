@@ -64,7 +64,7 @@ class RemoveSupplyChainActorControllerSpec extends SpecBase with AppWithDefaultM
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, mode, itemIndex, actorIndex)(request, messages).toString
+        view(form, lrn, mode, itemIndex, actorIndex, supplyChainActorTypes.head.toString)(request, messages).toString
     }
 
     "when yes submitted" - {
@@ -74,7 +74,7 @@ class RemoveSupplyChainActorControllerSpec extends SpecBase with AppWithDefaultM
           .setValue(IdentificationNumberPage(itemIndex, actorIndex), identificationNumber)
 
         reset(mockSessionRepository)
-        when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
         setExistingUserAnswers(userAnswers)
 
@@ -134,7 +134,7 @@ class RemoveSupplyChainActorControllerSpec extends SpecBase with AppWithDefaultM
       val view = injector.instanceOf[RemoveSupplyChainActorView]
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, mode, itemIndex, actorIndex)(request, messages).toString
+        view(boundForm, lrn, mode, itemIndex, actorIndex, supplyChainActorTypes.head.toString)(request, messages).toString
     }
   }
 

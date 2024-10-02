@@ -30,10 +30,10 @@ class AdditionalReferencesDomainSpec extends SpecBase with Generators {
 
       val numberOfAdditionalReferences = Gen.choose(1, frontendAppConfig.maxAdditionalReferences).sample.value
 
-      val userAnswers = (0 until numberOfAdditionalReferences).foldLeft(emptyUserAnswers)({
+      val userAnswers = (0 until numberOfAdditionalReferences).foldLeft(emptyUserAnswers) {
         case (updatedUserAnswers, index) =>
           arbitraryAdditionalReferenceAnswers(updatedUserAnswers, itemIndex, Index(index)).sample.value
-      })
+      }
 
       val result = AdditionalReferencesDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
 

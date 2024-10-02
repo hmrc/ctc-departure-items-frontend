@@ -54,7 +54,7 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
     "must render timeout dialog" in {
       val metas = getElementsByTag(doc, "meta")
       assertElementExists(metas, _.attr("name") == "hmrc-timeout-dialog")
-      assertElementExists(metas, _.attr("data-keep-alive-url") endsWith s"/manage-transit-movements/departures/$lrn/keep-alive")
+      assertElementExists(metas, _.attr("data-keep-alive-url").endsWith(s"/manage-transit-movements/departures/$lrn/keep-alive"))
     }
   } else {
     "must not render sign out link in header" in {
@@ -85,7 +85,7 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
       .find(_.text() == "Accessibility statement")
       .get
 
-    getElementHref(link) mustBe s"http://localhost:12346/accessibility-statement/manage-transit-movements-p5?referrerUrl=$path"
+    getElementHref(link) mustBe s"http://localhost:12346/accessibility-statement/manage-transit-movements?referrerUrl=$path"
   }
 
   "must not render language toggle" in {
@@ -96,28 +96,28 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
     val link = getElementByClass(doc, "hmrc-report-technical-issue")
 
     assertElementContainsText(link, "Is this page not working properly? (opens in new tab)")
-    getElementHref(link) mustBe s"http://localhost:9250/contact/report-technical-problem?newTab=true&service=CTCTraders&referrerUrl=$path"
+    getElementHref(link) mustBe s"http://localhost:9250/contact/report-technical-problem?service=CTCTraders&referrerUrl=$path"
   }
 
   def pageWithTitle(args: Any*): Unit =
-    pageWithTitle(doc, prefix, args: _*)
+    pageWithTitle(doc, prefix, args*)
 
   def pageWithTitle(doc: Document, prefix: String, args: Any*): Unit =
     "must render title" in {
       val title      = doc.title()
       val messageKey = s"$prefix.title"
-      title mustBe s"${messages(messageKey, args: _*)} - Manage your transit movements - GOV.UK"
+      title mustBe s"${messages(messageKey, args*)} - Departure declarations - Manage your transit movements - GOV.UK"
       assert(messages.isDefinedAt(messageKey))
     }
 
   def pageWithHeading(args: Any*): Unit =
-    pageWithHeading(doc, prefix, args: _*)
+    pageWithHeading(doc, prefix, args*)
 
   def pageWithHeading(doc: Document, prefix: String, args: Any*): Unit =
     "must render heading" in {
       val heading    = getElementByTag(doc, "h1")
       val messageKey = s"$prefix.heading"
-      assertElementIncludesText(heading, messages(messageKey, args: _*))
+      assertElementIncludesText(heading, messages(messageKey, args*))
       assert(messages.isDefinedAt(messageKey))
     }
 
@@ -188,10 +188,10 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
     pageWithContent(doc, tag, expectedText)
 
   def pageWithContent(doc: Document, tag: String, expectedText: String): Unit =
-    pageWithContent(doc, tag, expectedText, _ equals _)
+    pageWithContent(doc, tag, expectedText, _ `equals` _)
 
   def pageWithPartialContent(tag: String, expectedText: String): Unit =
-    pageWithContent(doc, tag, expectedText, _ contains _)
+    pageWithContent(doc, tag, expectedText, _ `contains` _)
 
   private def pageWithContent(doc: Document, tag: String, expectedText: String, condition: (String, String) => Boolean): Unit =
     s"must render $tag with text $expectedText" in {

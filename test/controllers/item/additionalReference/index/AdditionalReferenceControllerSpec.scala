@@ -44,7 +44,7 @@ class AdditionalReferenceControllerSpec extends SpecBase with AppWithDefaultMock
   private val mode         = NormalMode
 
   private val mockAdditionalReferencesService: AdditionalReferencesService = mock[AdditionalReferencesService]
-  private lazy val additionalReferenceRoute                                = routes.AdditionalReferenceController.onPageLoad(lrn, mode, itemIndex, additionalReferenceIndex).url
+  private lazy val additionalReferenceRoute = routes.AdditionalReferenceController.onPageLoad(lrn, mode, itemIndex, additionalReferenceIndex).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -57,6 +57,7 @@ class AdditionalReferenceControllerSpec extends SpecBase with AppWithDefaultMock
     "must return OK and the correct view for a GET" in {
 
       when(mockAdditionalReferencesService.getAdditionalReferences()(any())).thenReturn(Future.successful(additionalReferenceList))
+      when(mockAdditionalReferencesService.isDocumentTypeExcise(any())(any())).thenReturn(Future.successful(false))
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, additionalReferenceRoute)
@@ -74,6 +75,7 @@ class AdditionalReferenceControllerSpec extends SpecBase with AppWithDefaultMock
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       when(mockAdditionalReferencesService.getAdditionalReferences()(any())).thenReturn(Future.successful(additionalReferenceList))
+      when(mockAdditionalReferencesService.isDocumentTypeExcise(any())(any())).thenReturn(Future.successful(false))
       val userAnswers = emptyUserAnswers.setValue(AdditionalReferencePage(itemIndex, additionalReferenceIndex), additionalReference1)
       setExistingUserAnswers(userAnswers)
 
@@ -94,7 +96,7 @@ class AdditionalReferenceControllerSpec extends SpecBase with AppWithDefaultMock
     "must redirect to the next page when valid data is submitted" in {
 
       when(mockAdditionalReferencesService.getAdditionalReferences()(any())).thenReturn(Future.successful(additionalReferenceList))
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
       setExistingUserAnswers(emptyUserAnswers)
 
@@ -111,6 +113,7 @@ class AdditionalReferenceControllerSpec extends SpecBase with AppWithDefaultMock
     "must return a Bad Request and errors when invalid data is submitted" in {
 
       when(mockAdditionalReferencesService.getAdditionalReferences()(any())).thenReturn(Future.successful(additionalReferenceList))
+      when(mockAdditionalReferencesService.isDocumentTypeExcise(any())(any())).thenReturn(Future.successful(false))
       setExistingUserAnswers(emptyUserAnswers)
 
       val request   = FakeRequest(POST, additionalReferenceRoute).withFormUrlEncodedBody(("value", "invalid value"))

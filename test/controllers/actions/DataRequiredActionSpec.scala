@@ -75,7 +75,7 @@ class DataRequiredActionSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
               val result = harness.callRefine(OptionalDataRequest(fakeRequest, eoriNumber, Some(userAnswers)))
 
-              whenReady[Either[Result, DataRequest[_]], Assertion](result) {
+              whenReady[Either[Result, DataRequest[?]], Assertion](result) {
                 result =>
                   result.value.userAnswers mustBe userAnswers
                   result.value.eoriNumber mustBe eoriNumber

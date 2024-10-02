@@ -31,7 +31,7 @@ import scala.concurrent.ExecutionContext
 
 class UpdateTaskController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents
 )(implicit ec: ExecutionContext, appConfig: FrontendAppConfig, phaseConfig: PhaseConfig)
@@ -40,7 +40,7 @@ class UpdateTaskController @Inject() (
 
   def updateTask(lrn: LocalReferenceNumber, continue: RedirectUrl): Action[AnyContent] = actions.requireDataWithNoDependencies(lrn).async {
     implicit request =>
-      ItemsSection.updateTask().writeToSession().navigateTo(continue)
+      ItemsSection.updateTask().writeToSession(sessionRepository).navigateTo(continue)
   }
 
 }

@@ -28,7 +28,7 @@
     govukInsetText : GovukInsetText
 )
 
-@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, documentIndex: Index, document: Document)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, documentIndex: Index, document: Document)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("item.documents.index.removeDocument.title"),

@@ -23,7 +23,9 @@ import scala.util.{Success, Try}
 
 trait Gettable[A] extends Page
 
-trait Settable[A] extends Page {
+trait Settable[A] extends Page
+
+trait Removable[A] extends Page {
 
   def cleanup(value: Option[A], userAnswers: UserAnswers): Try[UserAnswers] =
     Success(userAnswers)

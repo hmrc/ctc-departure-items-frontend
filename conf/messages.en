@@ -9,7 +9,8 @@ site.continue = Continue
 site.saveAndContinue = Save and continue
 site.confirm = Confirm and continue
 site.send = Confirm and send
-site.service_name = Manage your transit movements
+site.service_name =  Manage your transit movements
+site.title.prefix = Departure declarations
 site.section = This section is
 
 site.email.link = If you have any questions or issues, email us at {0}
@@ -200,9 +201,9 @@ item.dangerousGoods.addAnotherDangerousGoods.error.required = Select yes if you 
 item.dangerousGoods.addAnotherDangerousGoods.label = Do you want to add another UN number?
 item.dangerousGoods.addAnotherDangerousGoods.maxLimit.label = You cannot add any more UN numbers for dangerous goods. To add another, you need to remove one first.
 
-item.dangerousGoods.index.removeUNNumber.title = Are you sure you want to remove UN number {0}?
-item.dangerousGoods.index.removeUNNumber.heading = Are you sure you want to remove UN number {0}?
-item.dangerousGoods.index.removeUNNumber.error.required = Select yes if you want to remove UN number {0}
+item.dangerousGoods.index.removeUNNumber.title = Are you sure you want to remove this UN number?
+item.dangerousGoods.index.removeUNNumber.heading = Are you sure you want to remove this UN number?
+item.dangerousGoods.index.removeUNNumber.error.required = Select yes if you want to remove this UN number
 
 item.addItemNetWeightYesNo.title = Do you want to add the item’s net weight?
 item.addItemNetWeightYesNo.heading = Do you want to add the item’s net weight?
@@ -219,9 +220,9 @@ item.netWeight.change.hidden = net weight of item {0}
 item.netWeight.error.invalidCharacters = The net weight must only include numbers 0 to 9 and a decimal point
 item.netWeight.error.required = Enter the item’s net weight
 item.netWeight.error.invalidFormat = The net weight must only include {0} decimal places or less
-item.netWeight.error.invalidValue.Transition = The net weight must be 15 characters or less. This can include whole numbers up to 11 digits, a decimal point and up to 3 decimal places
-item.netWeight.error.invalidValue.PostTransition = The net weight must be 23 characters or less. This can include whole numbers up to 16 digits, a decimal point and up to 6 decimal places
+item.netWeight.error.invalidValue = The net weight must be {2} characters or less. This can include whole numbers up to {1} digits, a decimal point and up to {0} decimal places
 item.netWeight.error.maximum = The net weight must be less than or equal to the gross weight
+item.netWeight.error.zero = The net weight must be more than 0
 
 item.grossWeight.title = What is the item’s gross weight?
 item.grossWeight.heading = What is the item’s gross weight?
@@ -232,8 +233,7 @@ item.grossWeight.change.hidden = gross weight of item {0}
 item.grossWeight.error.required = Enter the item’s gross weight
 item.grossWeight.error.invalidCharacters = The gross weight must only include numbers 0 to 9 and a decimal point
 item.grossWeight.error.invalidFormat = The gross weight must only include {0} decimal places or less
-item.grossWeight.error.invalidValue.Transition = The gross weight must be 23 characters or less. This can include whole numbers up to 16 digits, a decimal point and up to 6 decimal places
-item.grossWeight.error.invalidValue.PostTransition = The gross weight must be 15 characters or less. This can include whole numbers up to 11 digits, a decimal point and up to 3 decimal places
+item.grossWeight.error.invalidValue = The gross weight must be {2} characters or less. This can include whole numbers up to {1} digits, a decimal point and up to {0} decimal places
 
 item.addSupplementaryUnitsYesNo.title = Do you want to add supplementary units?
 item.addSupplementaryUnitsYesNo.heading = Do you want to add supplementary units?
@@ -297,9 +297,9 @@ item.packages.index.shippingMark.error.required = Enter the shipping mark
 item.packages.index.shippingMark.error.length = The shipping mark must be {0} characters or less
 item.packages.index.shippingMark.error.invalidCharacters = The shipping mark must only include letters a to z and numbers 0 to 9
 
-item.packages.index.removePackage.title = Are you sure you want to remove {0} from this item?
-item.packages.index.removePackage.heading = Are you sure you want to remove {0} from this item?
-item.packages.index.removePackage.error.required = Select yes if you want to remove {0} from this item
+item.packages.index.removePackage.title = Are you sure you want to remove this package from the item?
+item.packages.index.removePackage.heading = Are you sure you want to remove this package from the item?
+item.packages.index.removePackage.error.required = Select yes if you want to remove this package from the item
 
 item.packages.addAnotherPackage.singular.title = You have added 1 type of package
 item.packages.addAnotherPackage.singular.heading = You have added 1 type of package
@@ -360,6 +360,7 @@ item.additionalReference.index.addAdditionalReferenceNumberYesNo.error.required 
 
 item.additionalReference.index.additionalReferenceNumber.title = Enter the additional reference number
 item.additionalReference.index.additionalReferenceNumber.heading = Enter the additional reference number
+item.additionalReference.index.additionalReferenceNumber.hint = This can be up to {0} characters long.
 item.additionalReference.index.additionalReferenceNumber.paragraph = You need to enter a reference number as you have already added this type of additional reference.
 item.additionalReference.index.additionalReferenceNumber.checkYourAnswersLabel = Additional reference {0}
 item.additionalReference.index.additionalReferenceNumber.change.hidden = additional reference {0} - {1}
@@ -367,6 +368,7 @@ item.additionalReference.index.additionalReferenceNumber.error.required = Enter 
 item.additionalReference.index.additionalReferenceNumber.error.length = The additional reference number must be {0} characters or less
 item.additionalReference.index.additionalReferenceNumber.error.invalidCharacters = The additional reference number must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
 item.additionalReference.index.additionalReferenceNumber.error.unique = The additional reference number must be unique
+item.additionalReference.index.additionalReferenceNumber.error.cl234Constraint = The additional reference number must be 1 or more
 
 item.additionalReference.addAnotherAdditionalReference.singular.title = You have added 1 additional reference
 item.additionalReference.addAnotherAdditionalReference.singular.heading = You have added 1 additional reference
@@ -449,13 +451,15 @@ item.supplyChainActors.index.supplyChainActorType.warehouseKeeper = Warehouse ke
 item.supplyChainActors.index.supplyChainActorType.checkYourAnswersLabel = Which type of supply chain actor do you want to add?
 item.supplyChainActors.index.supplyChainActorType.error.required = Select which type of supply chain actor you want to add
 
-item.supplyChainActors.index.identificationNumber.title = What is the EORI number or Trader Identification Number (TIN) for the {0}?
-item.supplyChainActors.index.identificationNumber.heading = What is the EORI number or Trader Identification Number (TIN) for the {0}?
-item.supplyChainActors.index.identificationNumber.hint = This can be up to 17 characters long and include both letters and numbers. For example, GB123456789000.
-item.supplyChainActors.index.identificationNumber.checkYourAnswersLabel = What is the EORI number or Trader Identification Number (TIN) for the {0}?
-item.supplyChainActors.index.identificationNumber.error.required = Enter the EORI number or Trader Identification Number (TIN) for the supply chain actor
-item.supplyChainActors.index.identificationNumber.error.invalidCharacters = The EORI number or Trader Identification Number (TIN) must only include letters a to z and numbers 0 to 9
-item.supplyChainActors.index.identificationNumber.error.length = The EORI number or Trader Identification Number (TIN) must be 17 characters or less
+item.supplyChainActors.index.identificationNumber.title = What is the EORI number or Third Country Unique Identification Number (TCUIN) for the {0}?
+item.supplyChainActors.index.identificationNumber.heading = What is the EORI number or Third Country Unique Identification Number (TCUIN) for the {0}?
+item.supplyChainActors.index.identificationNumber.hint = This will start with 2 letters, such as GB or XI, followed by up to 15 letters or numbers. For example, GB123456789000.
+item.supplyChainActors.index.identificationNumber.checkYourAnswersLabel = What is the EORI number or Third Country Unique Identification Number (TCUIN) for the {0}?
+item.supplyChainActors.index.identificationNumber.error.required = Enter the EORI number or Third Country Unique Identification Number (TCUIN) for the supply chain actor
+item.supplyChainActors.index.identificationNumber.error.invalidCharacters = The EORI number or Third Country Unique Identification Number (TCUIN) must only include letters a to z and numbers 0 to 9
+item.supplyChainActors.index.identificationNumber.error.maxLength = The EORI number or Third Country Unique Identification Number (TCUIN) must be 17 characters or less
+item.supplyChainActors.index.identificationNumber.error.minLength = The EORI number or Third Country Unique Identification Number must be 3 characters or more
+item.supplyChainActors.index.identificationNumber.error.invalidFormat = The EORI number or Third Country Unique Identification Number must start with 2 letters, such as GB or XI, followed by up to 15 letters or numbers
 
 item.supplyChainActors.addAnotherSupplyChainActor.singular.title = You have added 1 supply chain actor for this item
 item.supplyChainActors.addAnotherSupplyChainActor.plural.title = You have added {0} supply chain actors for this item

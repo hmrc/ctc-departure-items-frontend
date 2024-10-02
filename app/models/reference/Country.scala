@@ -29,7 +29,5 @@ case class Country(code: CountryCode, description: String) extends Selectable {
 object Country {
   implicit val format: OFormat[Country] = Json.format[Country]
 
-  implicit val order: Order[Country] = (x: Country, y: Country) => {
-    (x, y).compareBy(_.description, _.code.code)
-  }
+  implicit val order: Order[Country] = (x: Country, y: Country) => (x, y).compareBy(_.description, _.code.code)
 }

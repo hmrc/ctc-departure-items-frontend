@@ -40,7 +40,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AddAnotherDocumentController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   actions: Actions,
   navigatorProvider: ItemNavigatorProvider,
   formProvider: AddAnotherFormProvider,
@@ -55,7 +55,7 @@ class AddAnotherDocumentController @Inject() (
   private def form(viewModel: AddAnotherDocumentViewModel): Form[Boolean] =
     formProvider(viewModel.prefix, viewModel.allowMoreDocuments && viewModel.canAttachMoreDocumentsToItem)
 
-  private def documents(itemIndex: Index)(implicit request: DataRequest[_]): Seq[Document] =
+  private def documents(itemIndex: Index)(implicit request: DataRequest[?]): Seq[Document] =
     service.getDocuments(request.userAnswers, itemIndex, None).values
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
@@ -63,13 +63,13 @@ class AddAnotherDocumentController @Inject() (
       val viewModel = viewModelProvider(request.userAnswers, mode, itemIndex, documents(itemIndex))
       viewModel.count match {
         case 0 =>
-          implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
+          val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
           AddDocumentsYesNoPage(itemIndex)
             .removeFromUserAnswers()
             .removeValue(DocumentsInProgressPage(itemIndex))
             .updateTask()
-            .writeToSession()
-            .navigate()
+            .writeToSession(sessionRepository)
+            .navigateWith(navigator)
         case _ =>
           Future.successful(Ok(view(form(viewModel), lrn, viewModel, itemIndex)))
       }
@@ -86,14 +86,14 @@ class AddAnotherDocumentController @Inject() (
             case true =>
               Future.successful(Redirect(controllers.item.documents.index.routes.DocumentController.onPageLoad(lrn, mode, itemIndex, viewModel.nextIndex)))
             case false =>
-              implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
-              DocumentsInProgressPage(itemIndex).writeToUserAnswers(false).updateTask().writeToSession().navigate()
+              val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
+              DocumentsInProgressPage(itemIndex).writeToUserAnswers(false).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
           }
         )
   }
 
   def redirectToDocuments(lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      DocumentsInProgressPage(itemIndex).writeToUserAnswers(true).updateTask().writeToSession().navigateTo(config.documentsFrontendUrl(lrn))
+      DocumentsInProgressPage(itemIndex).writeToUserAnswers(true).updateTask().writeToSession(sessionRepository).navigateTo(config.documentsFrontendUrl(lrn))
   }
 }

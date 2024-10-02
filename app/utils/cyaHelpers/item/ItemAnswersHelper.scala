@@ -193,7 +193,7 @@ class ItemAnswersHelper(
 
   def grossWeight: Option[SummaryListRow] = getAnswerAndBuildRow[BigDecimal](
     page = GrossWeightPage(itemIndex),
-    formatAnswer = formatAsText,
+    formatAnswer = formatAsWeight,
     prefix = "item.grossWeight",
     id = Some("change-gross-weight"),
     args = itemIndex.display
@@ -209,7 +209,7 @@ class ItemAnswersHelper(
 
   def netWeight: Option[SummaryListRow] = getAnswerAndBuildRow[BigDecimal](
     page = NetWeightPage(itemIndex),
-    formatAnswer = formatAsText,
+    formatAnswer = formatAsWeight,
     prefix = "item.netWeight",
     id = Some("change-net-weight"),
     args = itemIndex.display

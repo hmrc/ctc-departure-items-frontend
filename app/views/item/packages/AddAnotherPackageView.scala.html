@@ -31,7 +31,7 @@
 )
 
 
-@(form: Form[Boolean], lrn: LocalReferenceNumber, viewModel: AddAnotherPackageViewModel, itemIndex: Index)(implicit request: Request[_], messages: Messages, config: FrontendAppConfig)
+@(form: Form[Boolean], lrn: LocalReferenceNumber, viewModel: AddAnotherPackageViewModel, itemIndex: Index)(implicit request: Request[?], messages: Messages, config: FrontendAppConfig)
 
 @mainTemplate(
     title = viewModel.title,

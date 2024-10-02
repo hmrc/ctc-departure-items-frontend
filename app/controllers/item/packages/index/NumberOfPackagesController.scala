@@ -38,7 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class NumberOfPackagesController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigatorProvider: PackageNavigatorProvider,
   getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: IntFormProvider,
@@ -49,7 +49,7 @@ class NumberOfPackagesController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private type Request = SpecificDataRequestProvider1[PackageType]#SpecificDataRequest[_]
+  private type Request = SpecificDataRequestProvider1[PackageType]#SpecificDataRequest[?]
 
   private def minNumberOfPackages(implicit request: Request): Int = if (request.arg.`type` == Unpacked && phaseConfig.phase == PostTransition) 1 else 0
 
@@ -78,8 +78,8 @@ class NumberOfPackagesController @Inject() (
           .fold(
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex, packageIndex, packageType))),
             value => {
-              implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex, packageIndex)
-              NumberOfPackagesPage(itemIndex, packageIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+              val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex, packageIndex)
+              NumberOfPackagesPage(itemIndex, packageIndex).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
             }
           )
     }

@@ -28,7 +28,7 @@
     button: Button,
 )
 
-@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, additionalInformationIndex: Index, additionalInformationType: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, additionalInformationIndex: Index, additionalInformationType: String)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("item.additionalInformation.index.removeAdditionalInformation.title"),

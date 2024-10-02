@@ -17,6 +17,7 @@
 package forms.mappings
 
 import models.{Enumerable, Radioable}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -168,9 +169,10 @@ class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mapp
 
     implicit val fooEnumerable: Enumerable[Foo] =
       Enumerable(
-        Seq(Bar, Baz).map(
-          v => v.toString -> v
-        ): _*
+        Seq(Bar, Baz)
+          .map(
+            v => v.toString -> v
+          )*
       )
 
     val testForm = Form(
@@ -190,6 +192,112 @@ class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mapp
     "must not bind an empty map" in {
       val result = testForm.bind(Map.empty[String, String])
       result.errors must contain(FormError("value", "error.required"))
+    }
+  }
+
+  "bigDecimal" - {
+
+    val decimalPlaces          = 6
+    val length                 = 16
+    val isZeroAllowed: Boolean = arbitrary[Boolean].sample.value
+
+    val testForm: Form[BigDecimal] =
+      Form(
+        "value" -> bigDecimal(decimalPlaces, length, isZeroAllowed)
+      )
+
+    "must bind a valid BigDecimal" in {
+      val result = testForm.bind(Map("value" -> "1"))
+      result.get mustEqual 1
+    }
+
+    "must bind a valid BigDecimal with comma separators" in {
+      val result = testForm.bind(Map("value" -> "1,000"))
+      result.get mustEqual 1000
+    }
+
+    "must bind a valid BigDecimal with spaces" in {
+      val result = testForm.bind(Map("value" -> "1 000 000"))
+      result.get mustEqual 1000000
+    }
+
+    "must bind a valid BigDecimal with fraction" in {
+      val result = testForm.bind(Map("value" -> "1.2"))
+      result.get mustEqual BigDecimal("1.2")
+    }
+
+    "must bind a valid BigDecimal with max integer length" in {
+      val result = testForm.bind(Map("value" -> "1234567890123456"))
+      result.get mustEqual BigDecimal("1234567890123456")
+    }
+
+    "must bind a valid BigDecimal with max fraction length" in {
+      val result = testForm.bind(Map("value" -> "1.123456"))
+      result.get mustEqual BigDecimal("1.123456")
+    }
+
+    "must bind a valid BigDecimal with max integer and fraction length" in {
+      val result = testForm.bind(Map("value" -> "1234567890123456.123456"))
+      result.get mustEqual BigDecimal("1234567890123456.123456")
+    }
+
+    "must not bind a valid BigDecimal with max integer and more than max decimals" in {
+      val result = testForm.bind(Map("value" -> "1234567890123456.1234567"))
+      result.errors must contain(FormError("value", "error.invalidFormat"))
+    }
+
+    "must not bind a valid BigDecimal with more than max integer and max decimals" in {
+      val result = testForm.bind(Map("value" -> "12345678901234567.123456"))
+      result.errors must contain(FormError("value", "error.invalidValue"))
+    }
+
+    "must not bind BigDecimal with more than max integer length" in {
+      val result = testForm.bind(Map("value" -> "12345678901234567"))
+      result.errors must contain(FormError("value", "error.invalidValue"))
+    }
+
+    "must not bind BigDecimal with more than max fraction length" in {
+      val result = testForm.bind(Map("value" -> "0.1234567"))
+      result.errors must contain(FormError("value", "error.invalidFormat"))
+    }
+
+    "must not bind an empty value" in {
+      val result = testForm.bind(Map("value" -> ""))
+      result.errors must contain(FormError("value", "error.required"))
+    }
+
+    "must not bind an empty map" in {
+      val result = testForm.bind(Map.empty[String, String])
+      result.errors must contain(FormError("value", "error.required"))
+    }
+
+    "must unbind a valid value" in {
+      val result = testForm.fill(123)
+      result.apply("value").value.value mustEqual "123"
+    }
+
+    "when zero is allowed" - {
+      "must bind 0" in {
+        val testForm: Form[BigDecimal] =
+          Form(
+            "value" -> bigDecimal(decimalPlaces, length, isZeroAllowed = true)
+          )
+
+        val result = testForm.bind(Map("value" -> "0"))
+        result.get mustEqual 0
+      }
+    }
+
+    "when zero is not allowed" - {
+      "must not bind 0" in {
+        val testForm: Form[BigDecimal] =
+          Form(
+            "value" -> bigDecimal(decimalPlaces, length, isZeroAllowed = false)
+          )
+
+        val result = testForm.bind(Map("value" -> "0"))
+        result.errors must contain(FormError("value", "error.zero"))
+      }
     }
   }
 }

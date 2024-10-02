@@ -43,4 +43,6 @@ class RemoveUNNumberViewSpec extends YesNoViewBehaviours with Generators {
   behave like pageWithRadioItems(args = Seq(UNNumber))
 
   behave like pageWithSubmitButton("Save and continue")
+
+  behave like pageWithInsetText(UNNumber)
 }

@@ -48,7 +48,7 @@ package object models {
 
     def traverse[T](implicit userAnswersReader: (Index, Pages) => UserAnswersReader[T]): Read[Seq[T]] = pages =>
       arr.zipWithIndex
-        .foldLeft[UserAnswersReader[Seq[T]]](UserAnswersReader.success[Seq[T]](Nil).apply(pages))({
+        .foldLeft[UserAnswersReader[Seq[T]]](UserAnswersReader.success[Seq[T]](Nil).apply(pages)) {
           case (acc, (_, index)) =>
             acc.flatMap {
               case ReaderSuccess(ts, pages) =>
@@ -57,7 +57,7 @@ package object models {
                     ReaderSuccess(ts :+ t, pages)
                 }
             }
-        })
+        }
 
     def validateAsListOf[T](implicit reads: Reads[T]): Seq[T] =
       arr.value.flatMap(_.validate[T].asOpt).toSeq
@@ -156,7 +156,6 @@ package object models {
           val updatedJsArray = valueToRemoveFrom.value.slice(0, index) ++ valueToRemoveFrom.value.slice(index + 1, valueToRemoveFrom.value.size)
           JsSuccess(JsArray(updatedJsArray))
         case valueToRemoveFrom: JsArray => JsError(s"array index out of bounds: $index, $valueToRemoveFrom")
-        case _                          => JsError(s"cannot set an index on $valueToRemoveFrom")
       }
     }
 
@@ -172,7 +171,6 @@ package object models {
       }
     }
 
-    @nowarn("msg=Exhaustivity analysis reached max recursion depth, not all missing cases are reported.")
     @nowarn("msg=match may not be exhaustive")
     // scalastyle:off cyclomatic.complexity
     def remove(path: JsPath): JsResult[JsValue] =
@@ -187,7 +185,7 @@ package object models {
             .optionNoError(Reads.at[JsValue](JsPath(first :: Nil)))
             .reads(oldValue)
             .flatMap {
-              opt: Option[JsValue] =>
+              (opt: Option[JsValue]) =>
                 opt
                   .map(JsSuccess(_))
                   .getOrElse {
@@ -218,9 +216,18 @@ package object models {
         (acc, c) =>
           acc + c.toString.trim
       }
+
+    def capitalise(n: Int): String = string.take(n).toUpperCase + string.drop(n)
+
   }
 
   implicit def successfulReads[T](value: T): Reads[T] = Reads {
     _ => JsSuccess(value)
+  }
+
+  implicit class RichBigDecimal(value: BigDecimal) {
+
+    def isMoreThan(that: BigDecimal): Boolean = value.compareTo(that) > 0
+    def isEqualTo(that: BigDecimal): Boolean  = value.compareTo(that) == 0
   }
 }

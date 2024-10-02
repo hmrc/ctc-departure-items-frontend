@@ -16,7 +16,7 @@
 
 package controllers.item.documents.index
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.PhaseConfig
 import controllers.actions._
 import controllers.item.documents.routes
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
@@ -37,13 +37,12 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class RemoveDocumentController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: RemoveDocumentView,
-  service: DocumentsService,
-  config: FrontendAppConfig
+  service: DocumentsService
 )(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport
@@ -78,7 +77,7 @@ class RemoveDocumentController @Inject() (
                     DocumentSection(itemIndex, documentIndex)
                       .removeFromUserAnswers()
                       .updateTask()
-                      .writeToSession()
+                      .writeToSession(sessionRepository)
                       .navigateTo(addAnother(lrn, mode, itemIndex))
                   case false =>
                     Future.successful(Redirect(addAnother(lrn, mode, itemIndex)))

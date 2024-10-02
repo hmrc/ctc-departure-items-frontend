@@ -37,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class RemoveUNNumberController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   actions: Actions,
   getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: YesNoFormProvider,
@@ -47,7 +47,7 @@ class RemoveUNNumberController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private type Request = SpecificDataRequestProvider1[String]#SpecificDataRequest[_]
+  private type Request = SpecificDataRequestProvider1[String]#SpecificDataRequest[?]
 
   private def form(implicit request: Request): Form[Boolean] =
     formProvider("item.dangerousGoods.index.removeUNNumber", request.arg)
@@ -76,7 +76,7 @@ class RemoveUNNumberController @Inject() (
                 DangerousGoodsSection(itemIndex, dangerousGoodsIndex)
                   .removeFromUserAnswers()
                   .updateTask()
-                  .writeToSession()
+                  .writeToSession(sessionRepository)
                   .navigateTo(addAnother(lrn, mode, itemIndex))
               case false =>
                 Future.successful(Redirect(addAnother(lrn, mode, itemIndex)))

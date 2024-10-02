@@ -17,7 +17,7 @@
 package models.journeyDomain.item.dangerousGoods
 
 import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
-import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Read, Stage}
+import models.journeyDomain._
 import models.{Index, Mode, Phase, UserAnswers}
 import pages.item.dangerousGoods.index.UNNumberPage
 import play.api.mvc.Call
