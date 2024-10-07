@@ -24,7 +24,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
   private val addressHolderName = Gen.alphaNumStr.sample.value
 
-  private val testAddress = arbitrary[Address].sample.value
+  private val testAddress = arbitrary[DynamicAddress].sample.value
   private val country     = arbitrary[Country].sample.value
 
   private val formProvider                        = new $formProvider$()
@@ -169,7 +169,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
     "must redirect to the next page when valid data is submitted" in {
 
       when(mockCountriesService.doesCountryRequireZip(any())(any())).thenReturn(Future.successful(false))
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
       val userAnswers = emptyUserAnswers
         .setValue(NamePage, addressHolderName)
@@ -251,7 +251,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
@@ -269,7 +269,7 @@ class $className$ControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
     }
   }
 }
