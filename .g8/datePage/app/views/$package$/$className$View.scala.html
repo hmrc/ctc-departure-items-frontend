@@ -1,6 +1,7 @@
 @import controllers.$package$.routes
 @import java.time.LocalDate
 @import models.LocalReferenceNumber
+@import viewModels.components.InputDateViewModel._
 @import views.html.components.{Button, DateErrorSummary, InputDate}
 
 @this(
@@ -25,9 +26,10 @@
 
         @inputDate(
             field = form("value"),
-            legend = messages("$package$.$className;format="decap"$.heading"),
-            hint = Some(messages("$package$.$className;format="decap"$.hint")),
-            legendAsHeading = true
+            dateType = OrdinaryDateInput(
+                heading = messages("$package$.$className;format="decap"$.heading")
+            ),
+            hint = Some(messages("$package$.$className;format="decap"$.hint"))
         )
 
         @button(attributes = Map("id" -> "submit"))

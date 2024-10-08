@@ -49,4 +49,32 @@ echo "$package$.$className;format="decap"$.error.required.two = The date for $ti
 echo "$package$.$className;format="decap"$.error.required = The date for $title$ must include {0}" >> ../conf/messages.en
 echo "$package$.$className;format="decap"$.error.invalid = Enter a real date for $title$" >> ../conf/messages.en
 
+if grep -q "implicit class ErrorSummaryImplicits" ../app/views/utils/ViewUtils.scala; then
+  echo "Implicit class 'ErrorSummaryImplicits' already exists in ViewUtils. No changes made."
+else
+  awk '/object ViewUtils \{/{
+      print;
+      print "";
+      print "    import uk.gov.hmrc.hmrcfrontend.views.implicits.RichErrorSummarySupport";
+      print "    import play.api.data.Form";
+      print "    import java.time.LocalDate";
+      print "";
+      print "  implicit class ErrorSummaryImplicits(errorSummary: ErrorSummary)(implicit messages: Messages) extends RichErrorSummarySupport {";
+      print "";
+      print "    private def withErrorMapping[T](form: Form[T], fieldName: String, args: Seq[String]): ErrorSummary = {";
+      print "      val arg = form.errors.flatMap(_.args).find(args.contains).getOrElse(args.head).toString";
+      print "      errorSummary.withFormErrorsAsText(form, mapping = Map(fieldName -> s\"\${fieldName}_\$arg\"))";
+      print "    }";
+      print "";
+      print "    def withDateErrorMapping(form: Form[LocalDate], fieldName: String): ErrorSummary = {";
+      print "      val args = Seq(\"day\", \"month\", \"year\")";
+      print "      withErrorMapping(form, fieldName, args)";
+      print "    }";
+      print "  }";
+      next;
+  }
+  { print }' ../app/views/utils/ViewUtils.scala > tmp && mv tmp ../app/views/utils/ViewUtils.scala
+  echo "Implicit class 'ErrorSummaryImplicits' has been added to ViewUtils."
+fi
+
 echo "Migration $className;format="snake"$ completed"
