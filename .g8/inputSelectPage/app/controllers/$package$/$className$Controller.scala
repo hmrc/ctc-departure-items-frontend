@@ -1,5 +1,6 @@
 package controllers.$package$
 
+import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.SelectableFormProvider
@@ -25,7 +26,7 @@ class $className$Controller @Inject()(
   service: $serviceName$,
   val controllerComponents: MessagesControllerComponents,
   view: $className$View
-)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig) extends FrontendBaseController with I18nSupport {
 
   private val prefix: String = "$package$.$className;format="decap"$"
 
