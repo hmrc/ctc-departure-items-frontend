@@ -32,7 +32,7 @@ if [ ! -f ../conf/app.$package$.routes ]; then
 fi
 
 echo "" >> ../conf/app.$package$.routes
-echo "GET        /:lrn/$package;format="packaged"$/$title;format="normalize"$                        controllers.$package$.$className$Controller.onPageLoad(lrn: LocalReferenceNumber)" >> ../conf/app.$package$.routes
+echo "GET        /$package;format="packaged"$/$title;format="normalize"$/:lrn                        controllers.$package$.$className$Controller.onPageLoad(lrn: LocalReferenceNumber)" >> ../conf/app.$package$.routes
 
 echo "Adding messages to conf.messages"
 echo "" >> ../conf/messages.en
