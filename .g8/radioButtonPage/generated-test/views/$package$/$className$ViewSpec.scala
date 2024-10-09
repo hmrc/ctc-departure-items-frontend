@@ -11,6 +11,8 @@ import views.html.$package$.$className$View
 
 class $className$ViewSpec extends RadioViewBehaviours[$className$] {
 
+  override val getValue: $className$ => String = _.code
+
   override def form: Form[$className$] = new EnumerableFormProvider()(prefix)
 
   override def applyView(form: Form[$className$]): HtmlFormat.Appendable =

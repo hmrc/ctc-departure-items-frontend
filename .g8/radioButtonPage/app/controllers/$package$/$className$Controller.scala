@@ -1,5 +1,6 @@
 package controllers.$package$
 
+import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
@@ -24,7 +25,7 @@ class $className$Controller @Inject()(
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: $className$View
-)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider[$className$]("$package$.$className;format="decap"$")
 
