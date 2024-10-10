@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,15 +30,8 @@ object ViewUtils {
     (if (mainContent.body.contains("govuk-error-summary")) s"${messages("error.title.prefix")} " else "") +
       s"$title - ${messages("site.title.prefix")} - ${messages("site.service_name")} - GOV.UK"
 
-  def errorClass(error: Option[FormError], dateArg: String): String =
-    error.fold("") {
-      e =>
-        if (e.args.contains(dateArg) || e.args.isEmpty) {
-          "govuk-input--error"
-        } else {
-          ""
-        }
-    }
+  def errorClass(errors: Seq[FormError], dateArg: String): String =
+    if (errors.flatMap(_.args).contains(dateArg)) "govuk-input--error" else ""
 
   implicit class InputImplicits(input: Input)(implicit messages: Messages) extends RichInputSupport {
 

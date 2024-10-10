@@ -1,0 +1,57 @@
+@import viewModels.components.InputDateViewModel
+@import viewModels.components.InputDateViewModel._
+@import views.html.components.Heading
+
+@this(
+    govukDateInput: GovukDateInput,
+    hmrcHeading: Heading
+)
+
+@(
+    field: Field,
+    dateType: InputDateViewModel,
+    hint: Option[String] = None
+)(implicit messages: Messages)
+
+@dateInput = @{
+    DateInput(
+        fieldset = None,
+        id = field.id,
+        items = Seq(
+            InputItem(
+                classes = s"govuk-input--width-2 \${errorClass(field.errors, "day")}",
+                name = s"\${field.id}.day",
+                label = Some(messages("date.day.capitalized")),
+                value = field("day").value,
+                id = s"\${field.id}_day"
+            ),
+            InputItem(
+                classes = s"govuk-input--width-2 \${errorClass(field.errors, "month")}",
+                name = s"\${field.id}.month",
+                label = Some(messages("date.month.capitalized")),
+                value = field("month").value,
+                id = s"\${field.id}_month"
+            ),
+            InputItem(
+                classes = s"govuk-input--width-4 \${errorClass(field.errors, "year")}",
+                name = s"\${field.id}.year",
+                label = Some(messages("date.year.capitalized")),
+                value = field("year").value,
+                id = s"\${field.id}_year"
+            )
+        ),
+        hint = hint.map(hint => Hint(content = Text(messages(hint)))),
+        errorMessage = field.error.map(err => ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(err.message, err.args: _*))))
+    )
+}
+
+@dateType match {
+    case OrdinaryDateInput(heading, caption) => {
+        @govukDateInput(dateInput.copy(fieldset = Some(Fieldset().withHeadingAndCaption(messages(heading), caption))))
+    }
+    case x @ DateInputWithAdditionalHtml(heading, caption, additionalHtml) => {
+        @hmrcHeading(heading, caption, Some(x.headingClasses))
+        @additionalHtml
+        @govukDateInput(dateInput.copy(fieldset = Some(Fieldset(legend = Some(Legend(content = Text(heading), isPageHeading = false, classes = "govuk-visually-hidden"))))))
+    }
+}

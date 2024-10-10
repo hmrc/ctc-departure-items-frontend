@@ -34,10 +34,10 @@ class $formProvider$Spec extends StringFieldBehaviours with SpecBase {
         form = form,
         fieldName = fieldName,
         maxLength = NumberAndStreet.length,
-        lengthError = FormError(fieldName, lengthKey, Seq(NumberAndStreet.arg, arg1, arg2, NumberAndStreet.length))
+        lengthError = FormError(fieldName, lengthKey, Seq(NumberAndStreet.arg, NumberAndStreet.length))
       )
 
-      behave like mandatoryTrimmedField(
+      behave like mandatoryField(
         form = form,
         fieldName = fieldName,
         requiredError = FormError(fieldName, requiredKey, Seq(NumberAndStreet.arg, arg1, arg2))
@@ -46,7 +46,7 @@ class $formProvider$Spec extends StringFieldBehaviours with SpecBase {
       behave like fieldWithInvalidCharacters(
         form = form,
         fieldName = fieldName,
-        error = FormError(fieldName, invalidKey, Seq(NumberAndStreet.arg, arg1, arg2)),
+        error = FormError(fieldName, invalidKey, Seq(NumberAndStreet.arg)),
         length = NumberAndStreet.length
       )
     }
@@ -65,10 +65,10 @@ class $formProvider$Spec extends StringFieldBehaviours with SpecBase {
         form = form,
         fieldName = fieldName,
         maxLength = City.length,
-        lengthError = FormError(fieldName, lengthKey, Seq(City.arg, arg1, arg2, City.length))
+        lengthError = FormError(fieldName, lengthKey, Seq(City.arg, City.length))
       )
 
-      behave like mandatoryTrimmedField(
+      behave like mandatoryField(
         form = form,
         fieldName = fieldName,
         requiredError = FormError(fieldName, requiredKey, Seq(City.arg, arg1, arg2))
@@ -77,7 +77,7 @@ class $formProvider$Spec extends StringFieldBehaviours with SpecBase {
       behave like fieldWithInvalidCharacters(
         form = form,
         fieldName = fieldName,
-        error = FormError(fieldName, invalidKey, Seq(City.arg, arg1, arg2)),
+        error = FormError(fieldName, invalidKey, Seq(City.arg)),
         length = City.length
       )
     }
@@ -100,11 +100,11 @@ class $formProvider$Spec extends StringFieldBehaviours with SpecBase {
         form = form,
         fieldName = fieldName,
         maxLength = PostalCode.length,
-        lengthError = FormError(fieldName, lengthKey, Seq(PostalCode.arg, arg1, arg2, PostalCode.length)),
+        lengthError = FormError(fieldName, lengthKey, Seq(PostalCode.arg, PostalCode.length)),
         gen = invalidPostalOverLength
       )
 
-      behave like mandatoryTrimmedField(
+      behave like mandatoryField(
         form = form,
         fieldName = fieldName,
         requiredError = FormError(fieldName, requiredKey, Seq(PostalCode.arg, arg1, arg2))
@@ -113,7 +113,7 @@ class $formProvider$Spec extends StringFieldBehaviours with SpecBase {
       behave like fieldWithInvalidCharacters(
         form = form,
         fieldName = fieldName,
-        error = FormError(fieldName, invalidKey, Seq(arg1, arg2)),
+        error = FormError(fieldName, invalidKey, Seq.empty),
         length = PostalCode.length
       )
     }
@@ -137,10 +137,10 @@ class $formProvider$Spec extends StringFieldBehaviours with SpecBase {
         form = form,
         fieldName = fieldName,
         maxLength = NumberAndStreet.length,
-        lengthError = FormError(fieldName, lengthKey, Seq(NumberAndStreet.arg, arg1, arg2, NumberAndStreet.length))
+        lengthError = FormError(fieldName, lengthKey, Seq(NumberAndStreet.arg, NumberAndStreet.length))
       )
 
-      behave like mandatoryTrimmedField(
+      behave like mandatoryField(
         form = form,
         fieldName = fieldName,
         requiredError = FormError(fieldName, requiredKey, Seq(NumberAndStreet.arg, arg1, arg2))
@@ -149,7 +149,7 @@ class $formProvider$Spec extends StringFieldBehaviours with SpecBase {
       behave like fieldWithInvalidCharacters(
         form = form,
         fieldName = fieldName,
-        error = FormError(fieldName, invalidKey, Seq(NumberAndStreet.arg, arg1, arg2)),
+        error = FormError(fieldName, invalidKey, Seq(NumberAndStreet.arg)),
         length = NumberAndStreet.length
       )
     }
@@ -168,10 +168,10 @@ class $formProvider$Spec extends StringFieldBehaviours with SpecBase {
         form = form,
         fieldName = fieldName,
         maxLength = City.length,
-        lengthError = FormError(fieldName, lengthKey, Seq(City.arg, arg1, arg2, City.length))
+        lengthError = FormError(fieldName, lengthKey, Seq(City.arg, City.length))
       )
 
-      behave like mandatoryTrimmedField(
+      behave like mandatoryField(
         form = form,
         fieldName = fieldName,
         requiredError = FormError(fieldName, requiredKey, Seq(City.arg, arg1, arg2))
@@ -180,7 +180,7 @@ class $formProvider$Spec extends StringFieldBehaviours with SpecBase {
       behave like fieldWithInvalidCharacters(
         form = form,
         fieldName = fieldName,
-        error = FormError(fieldName, invalidKey, Seq(City.arg, arg1, arg2)),
+        error = FormError(fieldName, invalidKey, Seq(City.arg)),
         length = City.length
       )
     }
@@ -203,7 +203,7 @@ class $formProvider$Spec extends StringFieldBehaviours with SpecBase {
         form = form,
         fieldName = fieldName,
         maxLength = PostalCode.length,
-        lengthError = FormError(fieldName, lengthKey, Seq(PostalCode.arg, arg1, arg2, PostalCode.length)),
+        lengthError = FormError(fieldName, lengthKey, Seq(PostalCode.arg, PostalCode.length)),
         gen = invalidPostalOverLength
       )
 
@@ -215,7 +215,7 @@ class $formProvider$Spec extends StringFieldBehaviours with SpecBase {
       behave like fieldWithInvalidCharacters(
         form = form,
         fieldName = fieldName,
-        error = FormError(fieldName, invalidKey, Seq(arg1, arg2)),
+        error = FormError(fieldName, invalidKey, Seq.empty),
         length = PostalCode.length
       )
     }

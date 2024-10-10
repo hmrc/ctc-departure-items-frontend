@@ -4,6 +4,7 @@ import models.{EnumerableType, Radioable, WithName}
 
 sealed trait $className$ extends Radioable[$className$] {
   override val messageKeyPrefix: String = $className$.messageKeyPrefix
+  override val code: String             = this.toString
 }
 
 object $className$ extends EnumerableType[$className$] {

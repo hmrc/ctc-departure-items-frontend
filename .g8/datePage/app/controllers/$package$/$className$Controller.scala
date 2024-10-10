@@ -1,11 +1,13 @@
 package controllers.$package$
 
+import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.DateFormProvider
 import models.{Mode, LocalReferenceNumber}
 import navigation.{$navRoute$NavigatorProvider, UserAnswersNavigator}
 import pages.$package$.$className$Page
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -13,6 +15,7 @@ import services.DateTimeService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.$package$.$className$View
 
+import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -25,7 +28,7 @@ class $className;format="cap"$Controller @Inject()(
   val controllerComponents: MessagesControllerComponents,
   view: $className$View,
   dateTimeService: DateTimeService
-)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig) extends FrontendBaseController with I18nSupport {
 
   private def form: Form[LocalDate] = {
     val minDate: LocalDate = dateTimeService.plusMinusDays(-1)

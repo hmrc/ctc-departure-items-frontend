@@ -1,5 +1,6 @@
 package controllers.$package$
 
+import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.$formProvider$
@@ -29,13 +30,13 @@ class $className;format="cap"$Controller @Inject()(
   countriesService: CountriesService,
   val controllerComponents: MessagesControllerComponents,
   view: $className$View
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
-  private type Request = SpecificDataRequestProvider2[String, Country]#SpecificDataRequest[_]
+  private type Request = SpecificDataRequestProvider2[String, Country]#SpecificDataRequest[?]
 
-  private def name(implicit request: Request): String = request.arg
+  private def name(implicit request: Request): String = request.arg._1
 
   private def country(implicit request: Request): Country = request.arg._2
 

@@ -3,7 +3,6 @@ package views.$package$
 import forms.$formProvider$
 import generators.Generators
 import models.{DynamicAddress, NormalMode}
-import org.scalacheck.Gen
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.DynamicAddressViewBehaviours
