@@ -55,9 +55,9 @@ else
   awk '/object ViewUtils \{/{
       print;
       print "";
-      print "    import uk.gov.hmrc.hmrcfrontend.views.implicits.RichErrorSummarySupport";
-      print "    import play.api.data.Form";
-      print "    import java.time.LocalDate";
+      print "  import uk.gov.hmrc.hmrcfrontend.views.implicits.RichErrorSummarySupport";
+      print "  import play.api.data.Form";
+      print "  import java.time.LocalDate";
       print "";
       print "  implicit class ErrorSummaryImplicits(errorSummary: ErrorSummary)(implicit messages: Messages) extends RichErrorSummarySupport {";
       print "";
