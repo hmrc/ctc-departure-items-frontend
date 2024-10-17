@@ -1,4 +1,3 @@
-import com.typesafe.sbt.uglify.Import
 import play.sbt.routes.RoutesKeys
 import uk.gov.hmrc.DefaultBuildSettings
 import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
@@ -44,14 +43,8 @@ lazy val microservice = Project(appName, file("."))
       "-Wconf:src=routes/.*:s",
       "-Wconf:src=html/.*:s",
     ),
-    Concat.groups := Seq(
-      "javascripts/application.js" -> group(Seq("javascripts/app.js"))
-    ),
-    uglifyCompressOptions := Seq("unused=false", "dead_code=false", "warnings=false"),
-    Assets / pipelineStages := Seq(digest, concat, uglify),
+    Assets / pipelineStages := Seq(digest),
     ThisBuild / useSuperShell := false,
-    uglify / includeFilter := GlobFilter("application.js"),
-    uglifyOps := UglifyOps.singleFile //no source map
   )
   .settings(resolvers += Resolver.jcenterRepo)
   .settings(CodeCoverageSettings.settings *)
