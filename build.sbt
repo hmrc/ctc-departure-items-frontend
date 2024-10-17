@@ -44,7 +44,7 @@ lazy val microservice = Project(appName, file("."))
       "-Wconf:src=html/.*:s",
     ),
     Assets / pipelineStages := Seq(digest),
-    ThisBuild / useSuperShell := false,
+    ThisBuild / useSuperShell := false
   )
   .settings(resolvers += Resolver.jcenterRepo)
   .settings(CodeCoverageSettings.settings *)
