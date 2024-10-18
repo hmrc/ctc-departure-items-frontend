@@ -116,6 +116,7 @@ item.countryOfDestination.error.required = Enter the item’s country of destina
 item.addUCRYesNo.title = Do you want to add a Unique Consignment Reference (UCR)?
 item.addUCRYesNo.heading = Do you want to add a Unique Consignment Reference (UCR)?
 item.addUCRYesNo.paragraph = This is a unique reference number you create that Customs use to identify the consignment.
+item.addUCRYesNo.hint = Adding a Unique Consignment Reference (UCR) is optional.
 item.addUCRYesNo.checkYourAnswersLabel = Do you want to add a Unique Consignment Reference (UCR)?
 item.addUCRYesNo.change.hidden = if you want to add a Unique Consignment Reference (UCR) for item {0}
 item.addUCRYesNo.error.required = Select yes if you want to add a Unique Consignment Reference (UCR)
