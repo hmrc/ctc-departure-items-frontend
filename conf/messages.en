@@ -289,6 +289,7 @@ item.packages.index.beforeYouContinue.p2 = If not, the office of departure will 
 item.packages.index.addShippingMarkYesNo.title = Do you want to add a shipping mark?
 item.packages.index.addShippingMarkYesNo.heading = Do you want to add a shipping mark?
 item.packages.index.addShippingMarkYesNo.paragraph = This tells carriers what type of product is inside the package and helps consignees identify the order once it’s been delivered.
+item.packages.index.addShippingMarkYesNo.hint = Adding a shipping mark is optional.
 item.packages.index.addShippingMarkYesNo.checkYourAnswersLabel = Do you want to add a shipping mark?
 item.packages.index.addShippingMarkYesNo.change.hidden = if you want to add a shipping mark for package {0}
 item.packages.index.addShippingMarkYesNo.error.required = Select yes if you want to add a shipping mark

@@ -42,6 +42,8 @@ class AddShippingMarkYesNoViewSpec extends YesNoViewBehaviours {
     "This tells carriers what type of product is inside the package and helps consignees identify the order once it’s been delivered."
   )
 
+  behave like pageWithHint("Adding a shipping mark is optional.")
+
   behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Save and continue")
