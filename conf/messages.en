@@ -338,6 +338,7 @@ item.documents.index.removeDocument.error.required = Select yes if you want to r
 item.addAdditionalReferenceYesNo.title = Do you want to add an additional reference for this item?
 item.addAdditionalReferenceYesNo.heading = Do you want to add an additional reference for this item?
 item.addAdditionalReferenceYesNo.paragraph = This can be any other reference you want to declare, such as a certificate number, import licence or accompanying document.
+item.addAdditionalReferenceYesNo.hint = Adding an additional reference is optional.
 item.addAdditionalReferenceYesNo.change.hidden = if you want to add an additional reference for item {0}
 item.addAdditionalReferenceYesNo.checkYourAnswersLabel = Do you want to add an additional reference for this item?
 item.addAdditionalReferenceYesNo.error.required = Select yes if you want to add an additional reference for this item
