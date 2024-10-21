@@ -45,7 +45,8 @@
                 heading = messages("item.addCUSCodeYesNo.heading"),
                 caption = Some(messages("item.caption", itemIndex.display)),
                 additionalHtml = messages("item.addCUSCodeYesNo.paragraph").toParagraph
-            )
+            ),
+            hint = Some(HtmlContent(messages("item.addCUSCodeYesNo.hint")))
         )
 
         @button(attributes = Map("id" -> "submit"))
