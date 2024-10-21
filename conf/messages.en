@@ -212,6 +212,7 @@ item.dangerousGoods.index.removeUNNumber.error.required = Select yes if you want
 item.addItemNetWeightYesNo.title = Do you want to add the item’s net weight?
 item.addItemNetWeightYesNo.heading = Do you want to add the item’s net weight?
 item.addItemNetWeightYesNo.paragraph = This is the weight of the item’s goods, excluding all packaging.
+item.addItemNetWeightYesNo.hint = Adding the net weight is optional.
 item.addItemNetWeightYesNo.checkYourAnswersLabel = Do you want to add the item’s net weight?
 item.addItemNetWeightYesNo.change.hidden = if you want to add the net weight of item {0}
 item.addItemNetWeightYesNo.error.required = Select yes if you want to add the net weight of item {0}
