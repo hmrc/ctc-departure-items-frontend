@@ -426,6 +426,7 @@ item.additionalInformation.addAnotherAdditionalInformation.maxLimit.label = You 
 item.addSupplyChainActorYesNo.title = Do you want to add a supply chain actor for this item?
 item.addSupplyChainActorYesNo.heading = Do you want to add a supply chain actor for this item?
 item.addSupplyChainActorYesNo.paragraph = This is someone who helps move the goods to their destination. They can be a consolidator, freight forwarder, manufacturer or warehouse keeper.
+item.addSupplyChainActorYesNo.hint = Adding a supply chain actor is optional.
 item.addSupplyChainActorYesNo.change.hidden = if you want to add a supply chain actor for item {0}
 item.addSupplyChainActorYesNo.checkYourAnswersLabel = Do you want to add a supply chain actor for this item?
 item.addSupplyChainActorYesNo.error.required = Select yes if you want to add a supply chain actor for this item
