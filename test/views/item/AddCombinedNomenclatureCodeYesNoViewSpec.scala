@@ -35,12 +35,14 @@ class AddCombinedNomenclatureCodeYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithSectionCaption(s"Item ${itemIndex.display}")
 
+  behave like pageWithHeading()
+
   behave like pageWithContent(
     "p",
     "This is used to classify goods when they’re declared to Customs in the EU."
   )
 
-  behave like pageWithHeading()
+  behave like pageWithHint("Adding a combined nomenclature code is optional.")
 
   behave like pageWithRadioItems()
 

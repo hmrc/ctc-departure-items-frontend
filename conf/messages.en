@@ -168,6 +168,7 @@ item.commodityCode.error.invalidCharacters = The commodity code must only includ
 item.addCombinedNomenclatureCodeYesNo.title = Do you want to add a combined nomenclature code?
 item.addCombinedNomenclatureCodeYesNo.heading = Do you want to add a combined nomenclature code?
 item.addCombinedNomenclatureCodeYesNo.paragraph = This is used to classify goods when they’re declared to Customs in the EU.
+item.addCombinedNomenclatureCodeYesNo.hint = Adding a combined nomenclature code is optional.
 item.addCombinedNomenclatureCodeYesNo.checkYourAnswersLabel = Do you want to add a combined nomenclature code?
 item.addCombinedNomenclatureCodeYesNo.change.hidden = if you want to add a combined nomenclature code for item {0}
 item.addCombinedNomenclatureCodeYesNo.error.required = Select yes if you want to add a combined nomenclature code
