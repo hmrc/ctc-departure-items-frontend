@@ -46,7 +46,7 @@
                 caption = Some(messages("item.measurement.caption", itemIndex.display)),
                 additionalHtml = messages("item.addItemNetWeightYesNo.paragraph").toParagraph
             ),
-            hint = Some(HtmlContent(messages("item.addItemNetWeightYesNo.hint")))
+            hint = Some(Text(messages("item.addItemNetWeightYesNo.hint")))
         )
 
         @button(attributes = Map("id" -> "submit"))
