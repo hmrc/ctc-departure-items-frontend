@@ -39,6 +39,8 @@ class AddTransportChargesYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithContent("p", "These include charges for hauliers and carriers.")
 
+  behave like pageWithHint("Adding a method of payment is optional.")
+
   behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Save and continue")

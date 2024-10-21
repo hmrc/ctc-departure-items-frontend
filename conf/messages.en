@@ -542,6 +542,7 @@ item.consignee.address.error.length = The {0} must be {1} characters or less
 item.addTransportChargesYesNo.title = Do you want to add a method of payment for this item’s transport charges?
 item.addTransportChargesYesNo.heading = Do you want to add a method of payment for this item’s transport charges?
 item.addTransportChargesYesNo.paragraph = These include charges for hauliers and carriers.
+item.addTransportChargesYesNo.hint = Adding a method of payment is optional.
 item.addTransportChargesYesNo.checkYourAnswersLabel = Do you want to add a method of payment for this item’s transport charges?
 item.addTransportChargesYesNo.change.hidden = if you want to add a method of payment for this item’s transport charges
 item.addTransportChargesYesNo.error.required = Select yes if you want to add a method of payment for this item’s transport charges

@@ -45,7 +45,8 @@
                 heading = messages("item.addTransportChargesYesNo.heading"),
                 caption = Some(messages("item.caption", itemIndex.display)),
                 additionalHtml = messages("item.addTransportChargesYesNo.paragraph").toParagraph
-            )
+            ),
+            hint = Some(HtmlContent(messages("item.addTransportChargesYesNo.hint")))
         )
 
         @button(attributes = Map("id" -> "submit"))
