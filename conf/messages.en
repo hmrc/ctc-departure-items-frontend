@@ -363,6 +363,7 @@ item.documents.addAnotherDocument.consignment.paragraph = You attached the docum
 
 item.additionalReference.index.addAdditionalReferenceNumberYesNo.title = Do you want to add an additional reference number?
 item.additionalReference.index.addAdditionalReferenceNumberYesNo.heading = Do you want to add an additional reference number?
+item.additionalReference.index.addAdditionalReferenceNumberYesNo.hint = Adding an additional reference number is optional.
 item.additionalReference.index.addAdditionalReferenceNumberYesNo.checkYourAnswersLabel = Do you want to add an additional reference number?
 item.additionalReference.index.addAdditionalReferenceNumberYesNo.error.required = Select yes if you want to add an additional reference number
 
