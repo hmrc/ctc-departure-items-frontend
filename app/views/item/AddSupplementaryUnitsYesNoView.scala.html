@@ -45,7 +45,8 @@
                 heading = messages("item.addSupplementaryUnitsYesNo.heading"),
                 caption = Some(messages("item.measurement.caption", itemIndex.display)),
                 additionalHtml = messages("item.addSupplementaryUnitsYesNo.paragraph").toParagraph
-            )
+            ),
+            hint = Some(HtmlContent(messages("item.addSupplementaryUnitsYesNo.hint")))
         )
 
         @button(attributes = Map("id" -> "submit"))

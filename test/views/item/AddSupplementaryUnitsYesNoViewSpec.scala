@@ -39,6 +39,8 @@ class AddSupplementaryUnitsYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithContent("p", "This can be any unit of measurement, such as litres, square metres or number of parts.")
 
+  behave like pageWithHint("Adding supplementary units is optional.")
+
   behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Save and continue")
