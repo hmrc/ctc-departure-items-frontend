@@ -39,6 +39,8 @@ class AddAdditionalInformationYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithContent("p", "This can be any other information you want to declare, such as a contact, any safety risks or further descriptions.")
 
+  behave like pageWithHint("Adding additional information is optional.")
+
   behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Save and continue")

@@ -394,6 +394,7 @@ item.additionalReference.index.removeAdditionalReference.error.required = Select
 item.addAdditionalInformationYesNo.title = Do you want to add any additional information for this item?
 item.addAdditionalInformationYesNo.heading = Do you want to add any additional information for this item?
 item.addAdditionalInformationYesNo.paragraph = This can be any other information you want to declare, such as a contact, any safety risks or further descriptions.
+item.addAdditionalInformationYesNo.hint = Adding additional information is optional.
 item.addAdditionalInformationYesNo.change.hidden =  if you want to add any additional information for item {0}
 item.addAdditionalInformationYesNo.checkYourAnswersLabel = Do you want to add any additional information for this item?
 item.addAdditionalInformationYesNo.error.required = Select yes if you want to add any additional information for this item
