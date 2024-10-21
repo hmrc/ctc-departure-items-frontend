@@ -151,6 +151,7 @@ item.customsUnionAndStatisticsCode.error.not.exists = Enter a valid Customs Unio
 item.addCommodityCodeYesNo.title = Do you want to add a commodity code?
 item.addCommodityCodeYesNo.heading = Do you want to add a commodity code?
 item.addCommodityCodeYesNo.paragraph = This is an internationally recognised reference number used to identify the specific product in transit.
+item.addCommodityCodeYesNo.hint = Adding a commodity code is optional.
 item.addCommodityCodeYesNo.checkYourAnswersLabel = Do you want to add a commodity code?
 item.addCommodityCodeYesNo.change.hidden =  if you want to add a commodity code for item {0}
 item.addCommodityCodeYesNo.error.required = Select yes if you want to add a commodity code
