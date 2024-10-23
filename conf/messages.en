@@ -25,12 +25,6 @@ address.numberAndStreet = number and street name
 address.city = town or city
 address.streetNumber = street number
 
-date.day.capitalized = Day
-date.month.capitalized = Month
-date.year.capitalized = Year
-date.hour.capitalized = Hour
-date.minute.capitalized = Minute
-
 items.caption = Items
 
 item.label = Item {0} - {1}
