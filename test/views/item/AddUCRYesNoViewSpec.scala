@@ -37,9 +37,12 @@ class AddUCRYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithHeading()
 
+  behave like pageWithContent("p", "This is a unique reference number you create that Customs use to identify the consignment.")
+
+  behave like pageWithHint("Adding a Unique Consignment Reference (UCR) is optional.")
+
   behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Save and continue")
 
-  behave like pageWithContent("p", "This is a unique reference number you create that Customs use to identify the consignment.")
 }

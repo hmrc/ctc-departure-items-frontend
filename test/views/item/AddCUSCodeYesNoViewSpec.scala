@@ -35,12 +35,14 @@ class AddCUSCodeYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithSectionCaption(s"Item ${itemIndex.display}")
 
+  behave like pageWithHeading()
+
   behave like pageWithContent(
     "p",
     "This is a reference number to identify any chemicals in your transit, such as haemoglobin or insulin."
   )
 
-  behave like pageWithHeading()
+  behave like pageWithHint("Adding a Customs Union and Statistics (CUS) code is optional.")
 
   behave like pageWithRadioItems()
 
