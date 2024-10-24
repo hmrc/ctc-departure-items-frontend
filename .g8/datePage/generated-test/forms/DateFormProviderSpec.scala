@@ -25,7 +25,7 @@ class DateFormProviderSpec extends DateBehaviours {
 
     behave like dateField(form, "value", validData)
 
-    behave like mandatoryDateField(form, fieldName, s"\$prefix.error.required.all")
+    behave like mandatoryDateField(form, fieldName, s"\$prefix.error.required.all", Seq("day", "month", "year"))
 
     behave like dateFieldWithMin(form, fieldName, min = minDate, FormError("value", s"\$prefix.error.min.date", Seq(mustBeAfter)))
 

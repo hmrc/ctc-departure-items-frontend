@@ -13,8 +13,6 @@ class DateFormProvider @Inject() extends Mappings {
     Form(
       "value" -> localDate(
         invalidKey = s"\$prefix.error.invalid",
-        allRequiredKey = s"\$prefix.error.required.all",
-        twoRequiredKey = s"\$prefix.error.required.two",
         requiredKey = s"\$prefix.error.required"
       ).verifying(
         minDate(minimumDate, s"\$prefix.error.min.date", minimumDate.minusDays(1).formatAsString),
