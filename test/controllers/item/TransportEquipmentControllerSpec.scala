@@ -19,17 +19,16 @@ package controllers.item
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.SelectableFormProvider
 import generators.Generators
-import models.{NormalMode, SelectableList, TransportEquipment, UserAnswers}
+import models.{NormalMode, SelectableList, TransportEquipment}
 import navigation.ItemNavigatorProvider
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{verify, when}
+import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import pages.item.{InferredTransportEquipmentPage, TransportEquipmentPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.TransportEquipmentService
 import views.html.item.TransportEquipmentView
 
@@ -56,11 +55,13 @@ class TransportEquipmentControllerSpec extends SpecBase with AppWithDefaultMockF
 
   "TransportEquipment Controller" - {
 
-    "must set inferred answer and redirect to next page" - {
+    "must return OK and the correct view for a GET" - {
       "when only one country to choose from" in {
 
+        val transportEquipments = Seq(transportEquipment1)
+
         when(mockTransportEquipmentService.getTransportEquipments(any()))
-          .thenReturn(SelectableList(Seq(transportEquipment1)))
+          .thenReturn(SelectableList(transportEquipments))
 
         setExistingUserAnswers(emptyUserAnswers)
 
@@ -68,52 +69,71 @@ class TransportEquipmentControllerSpec extends SpecBase with AppWithDefaultMockF
 
         val result = route(app, request).value
 
-        status(result) mustEqual SEE_OTHER
+        val view = injector.instanceOf[TransportEquipmentView]
 
-        redirectLocation(result).value mustEqual onwardRoute.url
+        status(result) mustEqual OK
 
-        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-        verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-        userAnswersCaptor.getValue.get(TransportEquipmentPage(index)) must not be defined
-        userAnswersCaptor.getValue.getValue(InferredTransportEquipmentPage(index)) mustBe transportEquipment1.uuid
+        contentAsString(result) mustEqual
+          view(form, lrn, transportEquipments, mode, itemIndex)(request, messages).toString
+      }
+
+      "when multiple countries to choose from" in {
+
+        when(mockTransportEquipmentService.getTransportEquipments(any())).thenReturn(transportEquipmentList)
+
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(GET, transportEquipmentRoute)
+
+        val result = route(app, request).value
+
+        val view = injector.instanceOf[TransportEquipmentView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(form, lrn, transportEquipmentList.values, mode, itemIndex)(request, messages).toString
       }
     }
 
-    "must return OK and the correct view for a GET" in {
+    "must populate the view correctly on a GET when the question has previously been answered" - {
+      "in TransportEquipmentPage" in {
+        when(mockTransportEquipmentService.getTransportEquipments(any())).thenReturn(transportEquipmentList)
+        val userAnswers = emptyUserAnswers.setValue(TransportEquipmentPage(itemIndex), transportEquipment1.uuid)
+        setExistingUserAnswers(userAnswers)
 
-      when(mockTransportEquipmentService.getTransportEquipments(any())).thenReturn(transportEquipmentList)
-      setExistingUserAnswers(emptyUserAnswers)
+        val request = FakeRequest(GET, transportEquipmentRoute)
 
-      val request = FakeRequest(GET, transportEquipmentRoute)
+        val result = route(app, request).value
 
-      val result = route(app, request).value
+        val filledForm = form.bind(Map("value" -> transportEquipment1.value))
 
-      val view = injector.instanceOf[TransportEquipmentView]
+        val view = injector.instanceOf[TransportEquipmentView]
 
-      status(result) mustEqual OK
+        status(result) mustEqual OK
 
-      contentAsString(result) mustEqual
-        view(form, lrn, transportEquipmentList.values, mode, itemIndex)(request, messages).toString
-    }
+        contentAsString(result) mustEqual
+          view(filledForm, lrn, transportEquipmentList.values, mode, itemIndex)(request, messages).toString
+      }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
+      "in InferredTransportEquipmentPage" in {
+        when(mockTransportEquipmentService.getTransportEquipments(any())).thenReturn(transportEquipmentList)
+        val userAnswers = emptyUserAnswers.setValue(InferredTransportEquipmentPage(itemIndex), transportEquipment1.uuid)
+        setExistingUserAnswers(userAnswers)
 
-      when(mockTransportEquipmentService.getTransportEquipments(any())).thenReturn(transportEquipmentList)
-      val userAnswers = emptyUserAnswers.setValue(TransportEquipmentPage(itemIndex), transportEquipment1.uuid)
-      setExistingUserAnswers(userAnswers)
+        val request = FakeRequest(GET, transportEquipmentRoute)
 
-      val request = FakeRequest(GET, transportEquipmentRoute)
+        val result = route(app, request).value
 
-      val result = route(app, request).value
+        val filledForm = form.bind(Map("value" -> transportEquipment1.value))
 
-      val filledForm = form.bind(Map("value" -> transportEquipment1.value))
+        val view = injector.instanceOf[TransportEquipmentView]
 
-      val view = injector.instanceOf[TransportEquipmentView]
+        status(result) mustEqual OK
 
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(filledForm, lrn, transportEquipmentList.values, mode, itemIndex)(request, messages).toString
+        contentAsString(result) mustEqual
+          view(filledForm, lrn, transportEquipmentList.values, mode, itemIndex)(request, messages).toString
+      }
     }
 
     "must redirect to the next page when valid data is submitted" in {
