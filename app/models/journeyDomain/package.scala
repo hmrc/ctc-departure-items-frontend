@@ -43,6 +43,8 @@ package object journeyDomain {
       apply(fn)
     }
 
+    def pure[A](f: UserAnswers => A): Read[A] = success[A](f)
+
     def none[A]: Read[Option[A]] = pages => success[Option[A]](None).apply(pages)
 
     def emptyList[A]: Read[Seq[A]] = pages => success[Seq[A]](Seq.empty[A]).apply(pages)
