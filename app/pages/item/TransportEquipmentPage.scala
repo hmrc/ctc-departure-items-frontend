@@ -48,6 +48,7 @@ case class TransportEquipmentPage(itemIndex: Index) extends BaseTransportEquipme
     userAnswers.remove(InferredTransportEquipmentPage(itemIndex))
 }
 
+// TODO - remove InferredTransportEquipmentPage and update submission logic 30 days after CTCP-5979 goes live
 case class InferredTransportEquipmentPage(itemIndex: Index) extends BaseTransportEquipmentPage(itemIndex) with InferredPage[UUID] {
   override def toString: String = "inferredTransportEquipment"
 

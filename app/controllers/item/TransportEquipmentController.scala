@@ -17,17 +17,15 @@
 package controllers.item
 
 import config.PhaseConfig
-import controllers.actions._
+import controllers.actions.*
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.SelectableFormProvider
-import models.requests.DataRequest
-import models.{Index, LocalReferenceNumber, Mode, SelectableList}
+import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
-import pages.QuestionPage
 import pages.item.{InferredTransportEquipmentPage, TransportEquipmentPage}
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.TransportEquipmentService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -53,22 +51,20 @@ class TransportEquipmentController @Inject() (
 
   private val prefix: String = "item.transportEquipment"
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      service.getTransportEquipments(request.userAnswers) match {
-        case SelectableList(head :: Nil) => redirect(mode, itemIndex, InferredTransportEquipmentPage.apply, head.uuid)
-        case transportEquipmentList =>
-          val form = formProvider(prefix, transportEquipmentList)
-          val preparedForm = request.userAnswers.get(TransportEquipmentPage(itemIndex)) match {
-            case None => form
-            case Some(uuid) =>
-              transportEquipmentList.values.find(_.uuid == uuid) match {
-                case None        => form
-                case Some(value) => form.fill(value)
-              }
+      val transportEquipmentList = service.getTransportEquipments(request.userAnswers)
+      val form                   = formProvider(prefix, transportEquipmentList)
+      val preparedForm = request.userAnswers.get(TransportEquipmentPage(itemIndex)) orElse
+        request.userAnswers.get(InferredTransportEquipmentPage(itemIndex)) match {
+        case None => form
+        case Some(uuid) =>
+          transportEquipmentList.values.find(_.uuid == uuid) match {
+            case None        => form
+            case Some(value) => form.fill(value)
           }
-          Future.successful(Ok(view(preparedForm, lrn, transportEquipmentList.values, mode, itemIndex)))
       }
+      Ok(view(preparedForm, lrn, transportEquipmentList.values, mode, itemIndex))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
@@ -79,21 +75,9 @@ class TransportEquipmentController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, transportEquipmentList.values, mode, itemIndex))),
-          value => redirect(mode, itemIndex, TransportEquipmentPage.apply, value.uuid)
+          value =>
+            val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
+            TransportEquipmentPage(itemIndex).writeToUserAnswers(value.uuid).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
         )
-  }
-
-  private def redirect(
-    mode: Mode,
-    index: Index,
-    page: Index => QuestionPage[UUID],
-    uuid: UUID
-  )(implicit request: DataRequest[?]): Future[Result] = {
-    val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
-    page(index)
-      .writeToUserAnswers(uuid)
-      .updateTask()
-      .writeToSession(sessionRepository)
-      .navigateWith(navigator)
   }
 }
