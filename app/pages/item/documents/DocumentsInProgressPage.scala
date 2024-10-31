@@ -36,6 +36,6 @@ case class DocumentsInProgressPage(itemIndex: Index) extends QuestionPage[Boolea
   def reader: Read[Boolean] =
     DocumentsInProgressPage(itemIndex).optionalReader.to {
       case Some(true) => UserAnswersReader.error(this)
-      case _          => UserAnswersReader.success(false)
+      case _          => UserAnswersReader.pure(false)
     }
 }

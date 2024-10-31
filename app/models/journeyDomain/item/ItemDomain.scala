@@ -163,7 +163,7 @@ object ItemDomain {
     }
 
   def commodityCodeReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): Read[Option[String]] =
-    UserAnswersReader.pure(_.status).to {
+    UserAnswersReader.success(_.status).to {
       case models.SubmissionState.Amendment =>
         UserAnswersReader.none
       case _ =>
