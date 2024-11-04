@@ -22,7 +22,7 @@ import config.Constants.SecurityType.NoSecurityDetails
 import config.PhaseConfig
 import models.DeclarationTypeItemLevel._
 import models.DocumentType.{Previous, Transport}
-import models.Phase.PostTransition
+import models.Phase._
 import models._
 import models.journeyDomain.item.additionalInformation.AdditionalInformationListDomain
 import models.journeyDomain.item.additionalReferences.AdditionalReferencesDomain
@@ -130,24 +130,32 @@ object ItemDomain {
       CountryOfDestinationPage(itemIndex).reader
     }
 
-  def ucrReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): Read[Option[String]] =
-    (
-      ConsignmentUCRPage.optionalReader,
-      DocumentsSection.arrayReader.apply(_: Pages).map(_.to(_.validateAsListOf[Document]))
-    ).to {
-      case (consignmentUcr, documents) =>
-        val isConsignmentTransportDocDefined = documents.exists(
-          x => x.attachToAllItems && x.`type` == Transport
-        )
-        (consignmentUcr.isDefined, isConsignmentTransportDocDefined, phaseConfig.phase) match {
-          case (true, _, _) =>
-            UserAnswersReader.none
-          case (false, false, PostTransition) =>
-            UniqueConsignmentReferencePage(itemIndex).reader.toOption
-          case _ =>
-            AddUCRYesNoPage(itemIndex).filterOptionalDependent(identity)(UniqueConsignmentReferencePage(itemIndex).reader)
-        }
+  def ucrReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): Read[Option[String]] = {
+    lazy val optionalUcrReader: Read[Option[String]] =
+      AddUCRYesNoPage(itemIndex).filterOptionalDependent(identity)(UniqueConsignmentReferencePage(itemIndex).reader)
+
+    ConsignmentUCRPage.optionalReader.to {
+      case Some(consignmentUcr) =>
+        UserAnswersReader.none
+      case None =>
+        phaseConfig.phase match
+          case PostTransition =>
+            DocumentsSection.arrayReader.to {
+              array =>
+                val documents = array.validateAsListOf[Document]
+                val isConsignmentTransportDocumentDefined = documents.exists(
+                  x => x.attachToAllItems && x.`type` == Transport
+                )
+                if (isConsignmentTransportDocumentDefined) {
+                  optionalUcrReader
+                } else {
+                  UniqueConsignmentReferencePage(itemIndex).reader.toOption
+                }
+            }
+          case Transition =>
+            optionalUcrReader
     }
+  }
 
   def cusCodeReader(itemIndex: Index): Read[Option[String]] =
     AddCUSCodeYesNoPage(itemIndex).filterOptionalDependent(identity) {
@@ -155,21 +163,17 @@ object ItemDomain {
     }
 
   def commodityCodeReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): Read[Option[String]] =
-    UserAnswersReader
-      .success(
-        (userAnswers: UserAnswers) => userAnswers.status
-      )
-      .to {
-        case models.SubmissionState.Amendment =>
-          UserAnswersReader.none
-        case _ =>
-          TransitOperationTIRCarnetNumberPage.optionalReader.to {
-            case None if phaseConfig.phase == PostTransition =>
-              CommodityCodePage(itemIndex).reader.toOption
-            case _ =>
-              AddCommodityCodeYesNoPage(itemIndex).filterOptionalDependent(identity)(CommodityCodePage(itemIndex).reader)
-          }
-      }
+    UserAnswersReader.success(_.status).to {
+      case models.SubmissionState.Amendment =>
+        UserAnswersReader.none
+      case _ =>
+        TransitOperationTIRCarnetNumberPage.optionalReader.to {
+          case None if phaseConfig.phase == PostTransition =>
+            CommodityCodePage(itemIndex).reader.toOption
+          case _ =>
+            AddCommodityCodeYesNoPage(itemIndex).filterOptionalDependent(identity)(CommodityCodePage(itemIndex).reader)
+        }
+    }
 
   def combinedNomenclatureCodeReader(itemIndex: Index): Read[Option[String]] =
     CommodityCodePage(itemIndex).optionalReader.to {

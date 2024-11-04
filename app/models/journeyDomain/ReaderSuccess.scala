@@ -28,5 +28,5 @@ case class ReaderSuccess[A](value: A, pages: Pages) {
     to(Option(_))
 
   def toUserAnswersReader: UserAnswersReader[A] =
-    UserAnswersReader.success(value).apply(pages)
+    UserAnswersReader.pure(value).apply(pages)
 }

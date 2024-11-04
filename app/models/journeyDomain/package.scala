@@ -34,7 +34,7 @@ package object journeyDomain {
     def apply[A](fn: UserAnswers => EitherType[ReaderSuccess[A]]): UserAnswersReader[A] =
       ReaderT[EitherType, UserAnswers, ReaderSuccess[A]](fn)
 
-    def success[A](a: A): Read[A] = success {
+    def pure[A](a: A): Read[A] = success {
       (_: UserAnswers) => a
     }
 
@@ -43,9 +43,9 @@ package object journeyDomain {
       apply(fn)
     }
 
-    def none[A]: Read[Option[A]] = pages => success[Option[A]](None).apply(pages)
+    def none[A]: Read[Option[A]] = pure[Option[A]](None)
 
-    def emptyList[A]: Read[Seq[A]] = pages => success[Seq[A]](Seq.empty[A]).apply(pages)
+    def emptyList[A]: Read[Seq[A]] = pure[Seq[A]](Seq.empty[A])
 
     def error[A](page: Gettable[?], message: Option[String] = None): Read[A] = pages => {
       val fn: UserAnswers => EitherType[ReaderSuccess[A]] = _ => Left(ReaderError(page, pages.append(page), message))
@@ -54,7 +54,7 @@ package object journeyDomain {
 
     def readInferred[A](page: QuestionPage[A], inferredPage: InferredPage[A])(implicit reads: Reads[A]): Read[A] =
       inferredPage.optionalReader.apply(_).flatMap {
-        case ReaderSuccess(Some(value), pages) => UserAnswersReader.success(value).apply(pages)
+        case ReaderSuccess(Some(value), pages) => pure(value).apply(pages)
         case ReaderSuccess(None, pages)        => page.reader.apply(pages)
       }
   }
@@ -158,7 +158,8 @@ package object journeyDomain {
   type Read[T] = Pages => UserAnswersReader[T]
 
   object Read {
-    def apply[T](value: T): Read[T] = UserAnswersReader.success(value).apply(_)
+
+    def apply[T](value: T): Read[T] = UserAnswersReader.pure(value).apply(_)
   }
 
   implicit class RichPages(pages: Pages) {
