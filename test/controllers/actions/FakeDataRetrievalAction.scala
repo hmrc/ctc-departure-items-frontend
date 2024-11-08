@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package controllers.actions
 
+import models.UserAnswersResponse.{Answers, NoAnswers}
 import models.requests.{IdentifierRequest, OptionalDataRequest}
 import models.{LocalReferenceNumber, UserAnswers}
 import play.api.mvc.ActionTransformer
@@ -31,7 +32,7 @@ class FakeDataRetrievalActionProvider(dataToReturn: Option[UserAnswers]) extends
 class FakeDataRetrievalAction(dataToReturn: Option[UserAnswers]) extends ActionTransformer[IdentifierRequest, OptionalDataRequest] {
 
   override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] =
-    Future(OptionalDataRequest(request.request, request.eoriNumber, dataToReturn))
+    Future(OptionalDataRequest(request.request, request.eoriNumber, dataToReturn.map(Answers(_)).getOrElse(NoAnswers)))
 
   implicit override protected val executionContext: ExecutionContext =
     scala.concurrent.ExecutionContext.Implicits.global

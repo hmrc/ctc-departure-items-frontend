@@ -16,11 +16,17 @@
 
 package config
 
+import com.typesafe.config.Config
+import config.PhaseConfig.Values
 import models.Phase
 import models.Phase.{PostTransition, Transition}
+import play.api.{ConfigLoader, Configuration}
+
+import javax.inject.Inject
 
 trait PhaseConfig {
   val phase: Phase
+  val values: Values
   val maxItemDescriptionLength: Int
   val maxShippingMarkLength: Int
   val maxAdditionalReferenceNumLength: Int
@@ -29,8 +35,24 @@ trait PhaseConfig {
   val characterCount: Int
 }
 
-class TransitionConfig() extends PhaseConfig {
+object PhaseConfig {
+
+  case class Values(apiVersion: Double)
+
+  object Values {
+
+    implicit val configLoader: ConfigLoader[Values] = (config: Config, path: String) =>
+      config.getConfig(path) match {
+        case phase =>
+          val apiVersion = phase.getDouble("apiVersion")
+          Values(apiVersion)
+      }
+  }
+}
+
+class TransitionConfig @Inject() (configuration: Configuration) extends PhaseConfig {
   override val phase: Phase                         = Transition
+  override val values: Values                       = configuration.get[Values]("phase.transitional")
   override val maxItemDescriptionLength: Int        = 280
   override val maxShippingMarkLength: Int           = 42
   override val maxAdditionalReferenceNumLength: Int = 35
@@ -39,8 +61,9 @@ class TransitionConfig() extends PhaseConfig {
   override val characterCount: Int                  = 11
 }
 
-class PostTransitionConfig() extends PhaseConfig {
+class PostTransitionConfig @Inject() (configuration: Configuration) extends PhaseConfig {
   override val phase: Phase                         = PostTransition
+  override val values: Values                       = configuration.get[Values]("phase.final")
   override val maxItemDescriptionLength: Int        = 512
   override val maxShippingMarkLength: Int           = 512
   override val maxAdditionalReferenceNumLength: Int = 70

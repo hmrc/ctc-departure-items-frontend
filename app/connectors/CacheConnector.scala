@@ -16,37 +16,38 @@
 
 package connectors
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import models.LockCheck.{LockCheckFailure, Locked, Unlocked}
-import models.{LocalReferenceNumber, LockCheck, UserAnswers}
+import models.{LocalReferenceNumber, LockCheck, UserAnswers, UserAnswersResponse}
 import play.api.Logging
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.libs.json.Json
-import uk.gov.hmrc.http.HttpReads.Implicits._
+import play.api.libs.ws.JsonBodyWritables.*
+import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps, UpstreamErrorResponse}
-import play.api.libs.ws.JsonBodyWritables._
-
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CacheConnector @Inject() (
   config: FrontendAppConfig,
-  http: HttpClientV2
+  http: HttpClientV2,
+  phaseConfig: PhaseConfig
 )(implicit ec: ExecutionContext)
     extends Logging {
 
   private val baseUrl = s"${config.cacheUrl}"
 
-  def get(lrn: LocalReferenceNumber)(implicit hc: HeaderCarrier): Future[Option[UserAnswers]] = {
+  private val headers = Seq(
+    "APIVersion" -> phaseConfig.values.apiVersion.toString
+  )
+
+  def get(lrn: LocalReferenceNumber)(implicit hc: HeaderCarrier): Future[UserAnswersResponse] = {
     val url = url"$baseUrl/user-answers/$lrn"
     http
       .get(url)
-      .execute[UserAnswers]
-      .map(Some(_))
-      .recover {
-        case e: UpstreamErrorResponse if e.statusCode == NOT_FOUND => None
-      }
+      .setHeader(headers*)
+      .execute[UserAnswersResponse]
   }
 
   def post(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Boolean] = {

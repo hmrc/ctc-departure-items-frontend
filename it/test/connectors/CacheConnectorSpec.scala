@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import itbase.{ItSpecBase, WireMockServerHandler}
-import models.{LockCheck, UserAnswers}
+import models.{LockCheck, UserAnswers, UserAnswersResponse}
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks.forAll
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -61,23 +61,49 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler {
       "must return user answers when status is Ok" in {
         server.stubFor(
           get(urlEqualTo(url))
+            .withHeader("APIVersion", equalTo("2.0"))
             .willReturn(okJson(json))
         )
 
-        val result: Option[UserAnswers] = await(connector.get(lrn))
+        val result: UserAnswersResponse = await(connector.get(lrn))
 
-        result mustBe Some(userAnswers)
+        result mustBe UserAnswersResponse.Answers(userAnswers)
       }
 
-      "return None when no cached data found for provided LRN" in {
+      "return NoAnswers when no cached data found for provided LRN" in {
         server.stubFor(
           get(urlEqualTo(url))
+            .withHeader("APIVersion", equalTo("2.0"))
             .willReturn(notFound())
         )
 
-        val result: Option[UserAnswers] = await(connector.get(lrn))
+        val result: UserAnswersResponse = await(connector.get(lrn))
 
-        result mustBe None
+        result mustBe UserAnswersResponse.NoAnswers
+      }
+
+      "return NotAcceptable when http status indicates" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .withHeader("APIVersion", equalTo("2.0"))
+            .willReturn(aResponse.withStatus(NOT_ACCEPTABLE))
+        )
+
+        val result: UserAnswersResponse = await(connector.get(lrn))
+
+        result mustBe UserAnswersResponse.NotAcceptable
+      }
+
+      "return failed future when response have an unexpected status" in {
+        server.stubFor(
+          get(urlEqualTo(url))
+            .withHeader("APIVersion", equalTo("2.0"))
+            .willReturn(aResponse.withStatus(505).withBody("body"))
+        )
+
+        val result = connector.get(lrn)
+
+        result.failed.futureValue mustBe a[Throwable]
       }
     }
 

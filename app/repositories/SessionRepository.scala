@@ -17,7 +17,7 @@
 package repositories
 
 import connectors.CacheConnector
-import models.{LocalReferenceNumber, UserAnswers}
+import models.{LocalReferenceNumber, UserAnswers, UserAnswersResponse}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
@@ -28,7 +28,7 @@ class SessionRepository @Inject() (
   cacheConnector: CacheConnector
 ) {
 
-  def get(lrn: LocalReferenceNumber)(implicit hc: HeaderCarrier): Future[Option[UserAnswers]] =
+  def get(lrn: LocalReferenceNumber)(implicit hc: HeaderCarrier): Future[UserAnswersResponse] =
     cacheConnector.get(lrn)
 
   def set(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Boolean] =

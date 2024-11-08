@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package controllers.actions
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import models.UserAnswersResponse.{Answers, NoAnswers}
 import models.requests.{IdentifierRequest, OptionalDataRequest}
 import models.{LocalReferenceNumber, SubmissionState, UserAnswers}
 import org.mockito.ArgumentMatchers.any
@@ -49,10 +50,10 @@ class DataRetrievalActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
       "where there are no existing answers for this LRN" in {
 
-        when(mockSessionRepository.get(any())(any())).thenReturn(Future.successful(None))
+        when(mockSessionRepository.get(any())(any())).thenReturn(Future.successful(NoAnswers))
 
         harness(lrn) {
-          _.userAnswers must not be defined
+          _.userAnswers mustBe NoAnswers
         }
       }
     }
@@ -60,11 +61,11 @@ class DataRetrievalActionSpec extends SpecBase with AppWithDefaultMockFixtures {
     "must return an OptionalDataRequest with some defined UserAnswers" - {
 
       "when there are existing answers for this LRN" in {
-
-        when(mockSessionRepository.get(any())(any())).thenReturn(Future.successful(Some(UserAnswers(lrn, eoriNumber, SubmissionState.NotSubmitted))))
+        val expectedAnswer = Answers(UserAnswers(lrn, eoriNumber, SubmissionState.NotSubmitted))
+        when(mockSessionRepository.get(any())(any())).thenReturn(Future.successful(expectedAnswer))
 
         harness(lrn) {
-          _.userAnswers mustBe defined
+          _.userAnswers mustBe expectedAnswer
         }
       }
     }
