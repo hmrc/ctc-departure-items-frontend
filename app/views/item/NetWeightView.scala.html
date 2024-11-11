@@ -48,7 +48,7 @@
                 heading = messages("item.netWeight.heading"),
                 caption = Some(messages("item.measurement.caption", itemIndex.display))
             ),
-            hint = Some(messages("item.netWeight.hint", phaseConfig.decimalPlaces)),
+            hint = Some(messages("item.netWeight.hint", phaseConfig.values.decimalPlaces)),
             inputClass = InputSize.Width20,
             suffix = Some("kg")
         )

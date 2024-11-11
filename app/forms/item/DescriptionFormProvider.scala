@@ -31,7 +31,7 @@ class DescriptionFormProvider @Inject() (implicit phaseConfig: PhaseConfig) exte
         .verifying(
           forms.StopOnFirstFail[String](
             regexp(stringFieldRegexComma, s"$prefix.error.invalidCharacters"),
-            maxLength(phaseConfig.maxItemDescriptionLength, s"$prefix.error.length")
+            maxLength(phaseConfig.values.maxItemDescriptionLength, s"$prefix.error.length")
           )
         )
     )

@@ -25,7 +25,7 @@ import javax.inject.Inject
 class BigDecimalFormProvider @Inject() (implicit phaseConfig: PhaseConfig) extends Mappings {
 
   def apply(prefix: String): Form[BigDecimal] =
-    apply(prefix, phaseConfig.decimalPlaces, phaseConfig.characterCount)
+    apply(prefix, phaseConfig.values.decimalPlaces, phaseConfig.values.characterCount)
 
   def apply(prefix: String, decimalPlaceCount: Int, characterCount: Int): Form[BigDecimal] =
     Form(

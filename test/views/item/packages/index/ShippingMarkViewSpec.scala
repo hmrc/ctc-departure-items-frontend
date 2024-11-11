@@ -43,7 +43,7 @@ class ShippingMarkViewSpec extends SpecBase with CharacterCountViewBehaviours {
 
   behave like pageWithHeading()
 
-  behave like pageWithCharacterCount(phaseConfig.maxShippingMarkLength)
+  behave like pageWithCharacterCount(phaseConfig.values.maxShippingMarkLength)
 
   behave like pageWithSubmitButton("Save and continue")
 }

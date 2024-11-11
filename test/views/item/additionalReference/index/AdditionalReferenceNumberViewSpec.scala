@@ -51,7 +51,7 @@ class AdditionalReferenceNumberViewSpec extends InputTextViewBehaviours[String] 
 
   behave like pageWithHeading()
 
-  behave like pageWithHint(s"This can be up to ${phaseConfig.maxAdditionalReferenceNumLength} characters long.")
+  behave like pageWithHint(s"This can be up to ${phaseConfig.values.maxAdditionalReferenceNumLength} characters long.")
 
   behave like pageWithSubmitButton("Save and continue")
 

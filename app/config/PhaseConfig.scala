@@ -27,47 +27,43 @@ import javax.inject.Inject
 trait PhaseConfig {
   val phase: Phase
   val values: Values
-  val maxItemDescriptionLength: Int
-  val maxShippingMarkLength: Int
-  val maxAdditionalReferenceNumLength: Int
-  val maxNumberOfPackages: Int
-  val decimalPlaces: Int
-  val characterCount: Int
 }
 
 object PhaseConfig {
 
-  case class Values(apiVersion: Double)
+  case class Values(apiVersion: Double,
+                    maxItemDescriptionLength: Int,
+                    maxShippingMarkLength: Int,
+                    maxAdditionalReferenceNumLength: Int,
+                    maxNumberOfPackages: Int,
+                    decimalPlaces: Int,
+                    characterCount: Int
+  )
 
   object Values {
 
     implicit val configLoader: ConfigLoader[Values] = (config: Config, path: String) =>
       config.getConfig(path) match {
         case phase =>
-          val apiVersion = phase.getDouble("apiVersion")
-          Values(apiVersion)
+          Values(
+            phase.getDouble("apiVersion"),
+            phase.getInt("maxItemDescriptionLength"),
+            phase.getInt("maxShippingMarkLength"),
+            phase.getInt("maxAdditionalReferenceNumLength"),
+            phase.getInt("maxNumberOfPackages"),
+            phase.getInt("decimalPlaces"),
+            phase.getInt("characterCount")
+          )
       }
   }
 }
 
 class TransitionConfig @Inject() (configuration: Configuration) extends PhaseConfig {
-  override val phase: Phase                         = Transition
-  override val values: Values                       = configuration.get[Values]("phase.transitional")
-  override val maxItemDescriptionLength: Int        = 280
-  override val maxShippingMarkLength: Int           = 42
-  override val maxAdditionalReferenceNumLength: Int = 35
-  override val maxNumberOfPackages: Int             = 99999
-  override val decimalPlaces: Int                   = 3
-  override val characterCount: Int                  = 11
+  override val phase: Phase   = Transition
+  override val values: Values = configuration.get[Values]("phase.transitional")
 }
 
 class PostTransitionConfig @Inject() (configuration: Configuration) extends PhaseConfig {
-  override val phase: Phase                         = PostTransition
-  override val values: Values                       = configuration.get[Values]("phase.final")
-  override val maxItemDescriptionLength: Int        = 512
-  override val maxShippingMarkLength: Int           = 512
-  override val maxAdditionalReferenceNumLength: Int = 70
-  override val maxNumberOfPackages: Int             = 99999999
-  override val decimalPlaces: Int                   = 6
-  override val characterCount: Int                  = 16
+  override val phase: Phase   = PostTransition
+  override val values: Values = configuration.get[Values]("phase.final")
 }

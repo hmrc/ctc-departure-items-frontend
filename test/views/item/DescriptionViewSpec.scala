@@ -45,7 +45,7 @@ class DescriptionViewSpec extends SpecBase with CharacterCountViewBehaviours {
 
   behave like pageWithContent("p", "This should be clear and detailed enough for anyone involved in the transit movement to understand its contents.")
 
-  behave like pageWithCharacterCount(phaseConfig.maxItemDescriptionLength)
+  behave like pageWithCharacterCount(phaseConfig.values.maxItemDescriptionLength)
 
   behave like pageWithSubmitButton("Save and continue")
 }

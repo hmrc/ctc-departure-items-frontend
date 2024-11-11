@@ -48,7 +48,7 @@
                 caption = Some(messages("item.additionalReference.caption", itemIndex.display)),
                 additionalHtml = if (isRequired) Some(messages("item.additionalReference.index.additionalReferenceNumber.paragraph").toParagraph) else None
             ),
-            hint = Some(messages("item.additionalReference.index.additionalReferenceNumber.hint", phaseConfig.maxAdditionalReferenceNumLength))
+            hint = Some(messages("item.additionalReference.index.additionalReferenceNumber.hint", phaseConfig.values.maxAdditionalReferenceNumLength))
         )
 
         @button(attributes = Map("id" -> "submit"))
