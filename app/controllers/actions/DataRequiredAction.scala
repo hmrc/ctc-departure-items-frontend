@@ -24,7 +24,7 @@ import play.api.mvc.{ActionRefiner, Result}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-import models.UserAnswersResponse.{Answers, NotAcceptable}
+import models.UserAnswersResponse.{Answers, BadRequest}
 
 @Singleton
 class DataRequiredAction(lrn: LocalReferenceNumber, config: FrontendAppConfig)(implicit val executionContext: ExecutionContext)
@@ -34,7 +34,7 @@ class DataRequiredAction(lrn: LocalReferenceNumber, config: FrontendAppConfig)(i
     request.userAnswers match {
       case Answers(userAnswers) if userAnswers.status != SubmissionState.Submitted =>
         Future.successful(Right(DataRequest(request.request, request.eoriNumber, userAnswers)))
-      case NotAcceptable => Future.successful(Left(Redirect(config.draftNotAvailableUrl)))
+      case BadRequest => Future.successful(Left(Redirect(config.draftNotAvailableUrl)))
       case _ =>
         Future.successful(Left(Redirect(config.sessionExpiredUrl(lrn))))
     }

@@ -82,16 +82,16 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler {
         result mustBe UserAnswersResponse.NoAnswers
       }
 
-      "return NotAcceptable when http status indicates" in {
+      "return BadRequest when http status indicates" in {
         server.stubFor(
           get(urlEqualTo(url))
             .withHeader("APIVersion", equalTo("2.0"))
-            .willReturn(aResponse.withStatus(NOT_ACCEPTABLE))
+            .willReturn(aResponse.withStatus(BAD_REQUEST))
         )
 
         val result: UserAnswersResponse = await(connector.get(lrn))
 
-        result mustBe UserAnswersResponse.NotAcceptable
+        result mustBe UserAnswersResponse.BadRequest
       }
 
       "return failed future when response have an unexpected status" in {

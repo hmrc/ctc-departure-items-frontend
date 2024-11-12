@@ -27,7 +27,7 @@ object UserAnswersResponse {
 
   case object NoAnswers extends UserAnswersResponse
 
-  case object NotAcceptable extends UserAnswersResponse
+  case object BadRequest extends UserAnswersResponse
 
   implicit val httpReads: HttpReads[UserAnswersResponse] =
     (_: String, _: String, response: HttpResponse) =>
@@ -40,8 +40,8 @@ object UserAnswersResponse {
               errors => throw new RuntimeException(s"Failed to validate json: $errors"),
               identity
             )
-        case NOT_FOUND      => NoAnswers
-        case NOT_ACCEPTABLE => NotAcceptable
-        case status         => throw new RuntimeException(s"Unexpected http status: $status")
+        case NOT_FOUND   => NoAnswers
+        case BAD_REQUEST => BadRequest
+        case status      => throw new RuntimeException(s"Unexpected http status: $status")
       }
 }
