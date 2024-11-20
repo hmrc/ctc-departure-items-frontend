@@ -42,7 +42,7 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
   private val packageType = PackageType("code", "description", packingType)
 
   private def formProvider(minimum: Int) =
-    new IntFormProvider().apply("item.packages.index.numberOfPackages", phaseConfig.maxNumberOfPackages, minimum, Seq(packageType.toString))
+    new IntFormProvider().apply("item.packages.index.numberOfPackages", phaseConfig.values.maxNumberOfPackages, minimum, Seq(packageType.toString))
   private val form                       = formProvider(0)
   private val unpackedForm               = formProvider(1)
   private val mode                       = NormalMode

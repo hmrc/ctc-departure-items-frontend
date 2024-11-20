@@ -36,7 +36,7 @@ class NumberOfPackagesViewSpec extends SpecBase with InputTextViewBehaviours[Int
   override def applyView(form: Form[Int]): HtmlFormat.Appendable =
     injector.instanceOf[NumberOfPackagesView].apply(form, lrn, NormalMode, itemIndex, packageIndex, packageType.toString)(fakeRequest, messages)
 
-  private val maxInt = phaseConfig.maxNumberOfPackages
+  private val maxInt = phaseConfig.values.maxNumberOfPackages
 
   implicit override val arbitraryT: Arbitrary[Int] = Arbitrary(maxInt)
 

@@ -38,7 +38,8 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   val hubUrl: String     = configuration.get[String]("urls.manageTransitMovementsFrontend")
   val serviceUrl: String = s"$hubUrl/what-do-you-want-to-do"
 
-  val departureHubUrl: String = configuration.get[String]("urls.manageTransitMovementsDepartureFrontend")
+  val departureHubUrl: String      = configuration.get[String]("urls.manageTransitMovementsDepartureFrontend")
+  val draftNotAvailableUrl: String = s"$departureHubUrl/draft-declarations/not-available"
 
   val notFoundUrl: String              = s"$departureHubUrl/not-found"
   val technicalDifficultiesUrl: String = s"$departureHubUrl/technical-difficulties"

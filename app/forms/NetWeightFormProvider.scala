@@ -29,8 +29,8 @@ sealed abstract class NetWeightFormProvider(implicit phaseConfig: PhaseConfig) e
   def maxValueConstraint(prefix: String, grossWeight: BigDecimal): Option[Constraint[BigDecimal]]
 
   def apply(prefix: String, isZeroAllowed: Boolean, grossWeight: BigDecimal): Form[BigDecimal] = {
-    val decimalPlaces  = phaseConfig.decimalPlaces
-    val characterCount = phaseConfig.characterCount
+    val decimalPlaces  = phaseConfig.values.decimalPlaces
+    val characterCount = phaseConfig.values.characterCount
     Form(
       "value" -> bigDecimal(
         decimalPlaces,

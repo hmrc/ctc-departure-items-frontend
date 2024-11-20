@@ -49,7 +49,7 @@
                 additionalHtml = messages("item.description.paragraph").toParagraph
             ),
             label = messages("item.description.heading", itemIndex.display),
-            maxLength = phaseConfig.maxItemDescriptionLength
+            maxLength = phaseConfig.values.maxItemDescriptionLength
         )
 
         @button(attributes = Map("id" -> "submit"))

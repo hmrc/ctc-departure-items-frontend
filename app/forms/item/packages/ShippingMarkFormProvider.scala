@@ -31,7 +31,7 @@ class ShippingMarkFormProvider @Inject() (implicit phaseConfig: PhaseConfig) ext
         .verifying(
           forms.StopOnFirstFail[String](
             regexp(stringFieldRegex, s"$prefix.error.invalidCharacters"),
-            maxLength(phaseConfig.maxShippingMarkLength, s"$prefix.error.length")
+            maxLength(phaseConfig.values.maxShippingMarkLength, s"$prefix.error.length")
           )
         )
     )

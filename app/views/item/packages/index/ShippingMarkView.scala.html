@@ -49,7 +49,7 @@
                 caption = Some(messages("item.packages.caption", itemIndex.display)),
             ),
             label = messages("item.packages.index.shippingMark.heading"),
-            maxLength = phaseConfig.maxShippingMarkLength
+            maxLength = phaseConfig.values.maxShippingMarkLength
         )
 
         @button(attributes = Map("id" -> "submit"))

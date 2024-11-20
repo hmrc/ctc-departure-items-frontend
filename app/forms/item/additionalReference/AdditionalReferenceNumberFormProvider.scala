@@ -32,7 +32,7 @@ class AdditionalReferenceNumberFormProvider @Inject() (implicit phaseConfig: Pha
         .verifying(
           forms.StopOnFirstFail[String](
             regexp(stringFieldRegexComma, s"$prefix.error.invalidCharacters"),
-            maxLength(phaseConfig.maxAdditionalReferenceNumLength, s"$prefix.error.length"),
+            maxLength(phaseConfig.values.maxAdditionalReferenceNumLength, s"$prefix.error.length"),
             notInList(otherAdditionalReferenceNumbers, s"$prefix.error.unique"),
             cl234Constraint(isDocumentInCL234, phase, s"$prefix.error.cl234Constraint")
           )

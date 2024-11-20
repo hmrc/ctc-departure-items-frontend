@@ -49,7 +49,7 @@
                 caption = Some(messages("item.measurement.caption", itemIndex.display)),
                 additionalHtml = messages("item.grossWeight.paragraph").toParagraph
             ),
-            hint = Some(messages("item.grossWeight.hint", phaseConfig.decimalPlaces)),
+            hint = Some(messages("item.grossWeight.hint", phaseConfig.values.decimalPlaces)),
             inputClass = InputSize.Width20,
             suffix = Some("kg")
         )

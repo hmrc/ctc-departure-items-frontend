@@ -18,6 +18,7 @@ package controllers.actions
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
+import models.UserAnswersResponse.{Answers, NoAnswers}
 import models.requests.{DataRequest, OptionalDataRequest}
 import models.{LocalReferenceNumber, SubmissionState, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
@@ -43,7 +44,7 @@ class DataRequiredActionSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
         val harness = new Harness(lrn)
 
-        val result = harness.callRefine(OptionalDataRequest(fakeRequest, eoriNumber, None)).map(_.left.value)
+        val result = harness.callRefine(OptionalDataRequest(fakeRequest, eoriNumber, NoAnswers)).map(_.left.value)
 
         status(result) mustBe 303
         redirectLocation(result).value mustBe frontendAppConfig.sessionExpiredUrl(lrn)
@@ -58,7 +59,7 @@ class DataRequiredActionSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
           val harness = new Harness(lrn)
 
-          val result = harness.callRefine(OptionalDataRequest(fakeRequest, eoriNumber, Some(userAnswers))).map(_.left.value)
+          val result = harness.callRefine(OptionalDataRequest(fakeRequest, eoriNumber, Answers(userAnswers))).map(_.left.value)
 
           status(result) mustBe 303
           redirectLocation(result).value mustBe frontendAppConfig.sessionExpiredUrl(lrn)
@@ -73,7 +74,7 @@ class DataRequiredActionSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
               val harness = new Harness(lrn)
 
-              val result = harness.callRefine(OptionalDataRequest(fakeRequest, eoriNumber, Some(userAnswers)))
+              val result = harness.callRefine(OptionalDataRequest(fakeRequest, eoriNumber, Answers(userAnswers)))
 
               whenReady[Either[Result, DataRequest[?]], Assertion](result) {
                 result =>

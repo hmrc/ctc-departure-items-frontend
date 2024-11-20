@@ -58,7 +58,7 @@ class NumberOfPackagesController @Inject() (
     .andThen(getMandatoryPage(PackageTypePage(itemIndex, packageIndex))) {
       implicit request =>
         val packageType = request.arg.toString
-        val form        = formProvider("item.packages.index.numberOfPackages", phaseConfig.maxNumberOfPackages, minNumberOfPackages, Seq(packageType))
+        val form        = formProvider("item.packages.index.numberOfPackages", phaseConfig.values.maxNumberOfPackages, minNumberOfPackages, Seq(packageType))
         val preparedForm = request.userAnswers.get(NumberOfPackagesPage(itemIndex, packageIndex)) match {
           case None        => form
           case Some(value) => form.fill(value)
@@ -72,7 +72,7 @@ class NumberOfPackagesController @Inject() (
     .async {
       implicit request =>
         val packageType = request.arg.toString
-        val form        = formProvider("item.packages.index.numberOfPackages", phaseConfig.maxNumberOfPackages, minNumberOfPackages, Seq(packageType))
+        val form        = formProvider("item.packages.index.numberOfPackages", phaseConfig.values.maxNumberOfPackages, minNumberOfPackages, Seq(packageType))
         form
           .bindFromRequest()
           .fold(
