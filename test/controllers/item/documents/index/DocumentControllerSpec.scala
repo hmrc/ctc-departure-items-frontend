@@ -17,7 +17,7 @@
 package controllers.item.documents.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.item.documents.{routes => documentRoutes}
+import controllers.item.documents.routes as documentRoutes
 import forms.DocumentFormProvider
 import generators.Generators
 import models.{Document, ItemLevelDocuments, NormalMode, SelectableList, UserAnswers}
@@ -31,9 +31,9 @@ import pages.item.documents.index.DocumentPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.DocumentsService
-import views.html.item.documents.index.DocumentView
+import views.html.item.documents.index.{DocumentView, NoDocumentsToAttachView}
 
 import scala.concurrent.Future
 
@@ -60,22 +60,43 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
   "Document Controller" - {
 
-    "must return OK and the correct view for a GET" in {
+    "must return OK and the correct view for a GET" - {
 
-      when(mockDocumentsService.getDocuments(any(), any(), any())).thenReturn(documentList)
+      "when documents is non-empty" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+        when(mockDocumentsService.getDocuments(any(), any(), any())).thenReturn(SelectableList(Nil))
 
-      val request = FakeRequest(GET, documentRoute)
+        setExistingUserAnswers(emptyUserAnswers)
 
-      val result = route(app, request).value
+        val request = FakeRequest(GET, documentRoute)
 
-      val view = injector.instanceOf[DocumentView]
+        val result = route(app, request).value
 
-      status(result) mustEqual OK
+        val view = injector.instanceOf[NoDocumentsToAttachView]
 
-      contentAsString(result) mustEqual
-        view(form, lrn, documentList.values, mode, itemIndex, documentIndex)(request, messages).toString
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(lrn, itemIndex)(request, messages).toString
+      }
+
+      "when documents is empty" in {
+
+        when(mockDocumentsService.getDocuments(any(), any(), any())).thenReturn(documentList)
+
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(GET, documentRoute)
+
+        val result = route(app, request).value
+
+        val view = injector.instanceOf[DocumentView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(form, lrn, documentList.values, mode, itemIndex, documentIndex)(request, messages).toString
+      }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
