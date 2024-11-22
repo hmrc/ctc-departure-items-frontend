@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.item.documents.routes
+@import controllers.item.documents.index.routes
 @import models.LocalReferenceNumber
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import views.html.components.Heading
@@ -24,7 +24,7 @@
     heading: Heading
 )
 
-@(lrn: LocalReferenceNumber, itemIndex: Index)(implicit request: Request[?], messages: Messages)
+@(lrn: LocalReferenceNumber, itemIndex: Index, documentIndex: Index)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("item.documents.index.document.noneToAttach.title"),
@@ -40,6 +40,6 @@
     <p class="govuk-body">@messages("item.documents.index.document.noneToAttach.paragraph")</p>
 
     <p class="govuk-body">
-        <a class="govuk-link" id="documents" href="@routes.AddAnotherDocumentController.redirectToDocuments(lrn, itemIndex)">@messages("item.documents.index.document.noneToAttach.link")</a>
+        <a class="govuk-link" id="documents" href="@routes.DocumentController.redirectToDocuments(lrn, itemIndex, documentIndex)">@messages("item.documents.index.document.noneToAttach.link")</a>
     </p>
 }

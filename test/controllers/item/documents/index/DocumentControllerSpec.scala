@@ -27,7 +27,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.item.documents.DocumentsInProgressPage
-import pages.item.documents.index.DocumentPage
+import pages.item.documents.index.{DocumentInProgressPage, DocumentPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -77,7 +77,7 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(lrn, itemIndex)(request, messages).toString
+          view(lrn, itemIndex, documentIndex)(request, messages).toString
       }
 
       "when documents is empty" in {
@@ -181,14 +181,15 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
       redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
     }
 
-    "when user redirects to documents section" - {
-      "must set DocumentsInProgressPage to true and redirect" in {
-        when(mockDocumentsService.getDocuments(any(), any(), any())).thenReturn(documentList)
-        when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
+    "redirectToDocuments" - {
+      "must update user answers and redirect" in {
+        lazy val redirectToDocuments = routes.DocumentController.redirectToDocuments(lrn, itemIndex, documentIndex).url
 
-        setExistingUserAnswers(emptyUserAnswers)
+        val userAnswers = emptyUserAnswers.setValue(DocumentsInProgressPage(itemIndex), true)
 
-        val request = FakeRequest(GET, documentRoutes.AddAnotherDocumentController.redirectToDocuments(lrn, itemIndex).url)
+        setExistingUserAnswers(userAnswers)
+
+        val request = FakeRequest(GET, redirectToDocuments)
 
         val result = route(app, request).value
 
@@ -198,7 +199,8 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-        userAnswersCaptor.getValue.get(DocumentsInProgressPage(itemIndex)).value mustBe true
+        userAnswersCaptor.getValue.get(DocumentInProgressPage(itemIndex, documentIndex)).value mustBe true
+        userAnswersCaptor.getValue.get(DocumentsInProgressPage(itemIndex)) must not be defined
       }
     }
   }

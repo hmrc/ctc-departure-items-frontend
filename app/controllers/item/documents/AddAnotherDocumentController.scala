@@ -94,6 +94,10 @@ class AddAnotherDocumentController @Inject() (
 
   def redirectToDocuments(lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      DocumentsInProgressPage(itemIndex).writeToUserAnswers(true).updateTask().writeToSession(sessionRepository).navigateTo(config.documentsFrontendUrl(lrn))
+      DocumentsInProgressPage(itemIndex)
+        .writeToUserAnswers(true)
+        .updateTask()
+        .writeToSession(sessionRepository)
+        .navigateTo(config.documentsFrontendUrl(lrn))
   }
 }

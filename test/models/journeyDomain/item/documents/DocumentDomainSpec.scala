@@ -20,7 +20,7 @@ import base.SpecBase
 import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.item.documents.index.DocumentPage
+import pages.item.documents.index.{DocumentInProgressPage, DocumentPage}
 
 import java.util.UUID
 
@@ -50,6 +50,18 @@ class DocumentDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
     }
 
     "cannot be read from user answers" - {
+      "when document is in progress (i.e. user redirected back to documents section)" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(DocumentInProgressPage(itemIndex, documentIndex), true)
+
+        val result = DocumentDomain.userAnswersReader(itemIndex, packageIndex).apply(Nil).run(userAnswers)
+
+        result.left.value.page mustBe DocumentInProgressPage(itemIndex, documentIndex)
+        result.left.value.pages mustBe Seq(
+          DocumentInProgressPage(itemIndex, documentIndex)
+        )
+      }
+
       "when document is not answered" in {
         val result = DocumentDomain.userAnswersReader(itemIndex, packageIndex).apply(Nil).run(emptyUserAnswers)
 

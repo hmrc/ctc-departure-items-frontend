@@ -256,5 +256,26 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
       redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
     }
 
+    "redirectToDocuments" - {
+      "must update user answers and redirect" in {
+        lazy val redirectToDocuments = routes.AddAnotherDocumentController.redirectToDocuments(lrn, itemIndex).url
+
+        val userAnswers = emptyUserAnswers
+
+        setExistingUserAnswers(userAnswers)
+
+        val request = FakeRequest(GET, redirectToDocuments)
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual frontendAppConfig.documentsFrontendUrl(lrn)
+
+        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
+        userAnswersCaptor.getValue.get(DocumentsInProgressPage(itemIndex)).value mustBe true
+      }
+    }
   }
 }

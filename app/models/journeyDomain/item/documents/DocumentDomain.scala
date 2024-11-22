@@ -16,10 +16,10 @@
 
 package models.journeyDomain.item.documents
 
-import models.journeyDomain.Stage._
-import models.journeyDomain._
+import models.journeyDomain.Stage.*
+import models.journeyDomain.*
 import models.{Index, Mode, Phase, UserAnswers}
-import pages.item.documents.index.DocumentPage
+import pages.item.documents.index.{DocumentInProgressPage, DocumentPage}
 import play.api.mvc.Call
 
 import java.util.UUID
@@ -44,5 +44,8 @@ case class DocumentDomain(
 object DocumentDomain {
 
   implicit def userAnswersReader(itemIndex: Index, documentIndex: Index): Read[DocumentDomain] =
-    DocumentPage(itemIndex, documentIndex).reader.map(DocumentDomain(_)(itemIndex, documentIndex))
+    DocumentInProgressPage(itemIndex, documentIndex).reader.to {
+      _ =>
+        DocumentPage(itemIndex, documentIndex).reader.map(DocumentDomain(_)(itemIndex, documentIndex))
+    }
 }

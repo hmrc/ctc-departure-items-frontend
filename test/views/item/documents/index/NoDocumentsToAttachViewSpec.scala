@@ -16,7 +16,7 @@
 
 package views.item.documents.index
 
-import controllers.item.documents.routes
+import controllers.item.documents.index.routes
 import play.twirl.api.HtmlFormat
 import views.behaviours.ViewBehaviours
 import views.html.item.documents.index.NoDocumentsToAttachView
@@ -24,7 +24,7 @@ import views.html.item.documents.index.NoDocumentsToAttachView
 class NoDocumentsToAttachViewSpec extends ViewBehaviours {
 
   override def view: HtmlFormat.Appendable =
-    injector.instanceOf[NoDocumentsToAttachView].apply(lrn, itemIndex)(fakeRequest, messages)
+    injector.instanceOf[NoDocumentsToAttachView].apply(lrn, itemIndex, documentIndex)(fakeRequest, messages)
 
   override val prefix: String = "item.documents.index.document.noneToAttach"
 
@@ -41,6 +41,6 @@ class NoDocumentsToAttachViewSpec extends ViewBehaviours {
   behave like pageWithLink(
     id = "documents",
     expectedText = "Go to your Documents section to add another document",
-    expectedHref = routes.AddAnotherDocumentController.redirectToDocuments(lrn, itemIndex).url
+    expectedHref = routes.DocumentController.redirectToDocuments(lrn, itemIndex, documentIndex).url
   )
 }
