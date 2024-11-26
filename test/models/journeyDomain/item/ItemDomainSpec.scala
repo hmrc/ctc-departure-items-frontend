@@ -1571,7 +1571,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           "and Consignment level previous document is defined for all items" - {
 
-            "and AddDocumentsYesNoPage is true" in {
+            "and InferredAddDocumentsYesNoPage is true" in {
 
               forAll(gbCustomsOfficeGen, genForT2OrT2FConsignmentLevel, arbitrary[UUID]) {
                 (customsOfficeId, declarationType, documentUUID) =>
@@ -1597,7 +1597,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                   val userAnswers = emptyUserAnswers
                     .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
                     .setValue(TransitOperationDeclarationTypePage, declarationType)
-                    .setValue(AddDocumentsYesNoPage(itemIndex), true)
+                    .setValue(InferredAddDocumentsYesNoPage(itemIndex), true)
                     .setValue(external.DocumentsSection, documents)
                     .setValue(DocumentPage(itemIndex, Index(0)), documentUUID)
 
@@ -1613,47 +1613,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                   result.value.value mustBe expectedResult
                   result.value.pages mustBe Seq(
-                    AddDocumentsYesNoPage(itemIndex),
                     DocumentPage(itemIndex, Index(0)),
                     DocumentsSection(itemIndex)
-                  )
-              }
-            }
-
-            "and AddDocumentsYesNoPage is false" in {
-
-              forAll(gbCustomsOfficeGen, genForT2OrT2FConsignmentLevel, arbitrary[UUID]) {
-                (customsOfficeId, declarationType, documentUUID) =>
-                  val documents = Json
-                    .parse(s"""
-                              |[
-                              |    {
-                              |      "attachToAllItems" : true,
-                              |      "type" : {
-                              |        "type" : "Previous",
-                              |        "code" : "Code 1",
-                              |        "description" : "Description 1"
-                              |      },
-                              |      "details" : {
-                              |        "documentReferenceNumber" : "Ref no. 1",
-                              |        "uuid" : "$documentUUID"
-                              |      }
-                              |    }
-                              |]
-                              |""".stripMargin)
-                    .as[JsArray]
-
-                  val userAnswers = emptyUserAnswers
-                    .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
-                    .setValue(TransitOperationDeclarationTypePage, declarationType)
-                    .setValue(AddDocumentsYesNoPage(itemIndex), false)
-                    .setValue(external.DocumentsSection, documents)
-
-                  val result = ItemDomain.documentsReader(itemIndex).apply(Nil).run(userAnswers)
-
-                  result.value.value must not be defined
-                  result.value.pages mustBe Seq(
-                    AddDocumentsYesNoPage(itemIndex)
                   )
               }
             }
@@ -1740,7 +1701,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
             "and Consignment level previous document is defined for all items" - {
 
-              "and AddDocumentsYesNoPage is true" in {
+              "and InferredAddDocumentsYesNoPage is true" in {
 
                 forAll(gbCustomsOfficeGen, genForT2OrT2FItemLevel, arbitrary[UUID]) {
                   (customsOfficeId, declarationType, documentUUID) =>
@@ -1767,7 +1728,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                       .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
                       .setValue(TransitOperationDeclarationTypePage, T)
                       .setValue(DeclarationTypePage(index), declarationType)
-                      .setValue(AddDocumentsYesNoPage(itemIndex), true)
+                      .setValue(InferredAddDocumentsYesNoPage(itemIndex), true)
                       .setValue(external.DocumentsSection, documents)
                       .setValue(DocumentPage(itemIndex, Index(0)), documentUUID)
 
@@ -1783,48 +1744,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                     result.value.value mustBe expectedResult
                     result.value.pages mustBe Seq(
-                      AddDocumentsYesNoPage(itemIndex),
                       DocumentPage(itemIndex, Index(0)),
                       DocumentsSection(itemIndex)
-                    )
-                }
-              }
-
-              "and AddDocumentsYesNoPage is false" in {
-
-                forAll(gbCustomsOfficeGen, genForT2OrT2FItemLevel, arbitrary[UUID]) {
-                  (customsOfficeId, declarationType, documentUUID) =>
-                    val documents = Json
-                      .parse(s"""
-                                |[
-                                |    {
-                                |      "attachToAllItems" : true,
-                                |      "type" : {
-                                |        "type" : "Previous",
-                                |        "code" : "Code 1",
-                                |        "description" : "Description 1"
-                                |      },
-                                |      "details" : {
-                                |        "documentReferenceNumber" : "Ref no. 1",
-                                |        "uuid" : "$documentUUID"
-                                |      }
-                                |    }
-                                |]
-                                |""".stripMargin)
-                      .as[JsArray]
-
-                    val userAnswers = emptyUserAnswers
-                      .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
-                      .setValue(TransitOperationDeclarationTypePage, T)
-                      .setValue(DeclarationTypePage(index), declarationType)
-                      .setValue(AddDocumentsYesNoPage(itemIndex), false)
-                      .setValue(external.DocumentsSection, documents)
-
-                    val result = ItemDomain.documentsReader(itemIndex).apply(Nil).run(userAnswers)
-
-                    result.value.value must not be defined
-                    result.value.pages mustBe Seq(
-                      AddDocumentsYesNoPage(itemIndex)
                     )
                 }
               }
@@ -1911,7 +1832,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
             "and ConsignmentAddDocumentsPage is true" - {
 
-              "and AddDocumentsYesNoPage is true" in {
+              "and InferredAddDocumentsYesNoPage is true" in {
 
                 forAll(gbCustomsOfficeGen, genForNonT2OrT2F, arbitrary[UUID]) {
                   (customsOfficeId, declarationType, documentUUID) =>
@@ -1939,7 +1860,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                       .setValue(TransitOperationDeclarationTypePage, T)
                       .setValue(DeclarationTypePage(index), declarationType)
                       .setValue(ConsignmentAddDocumentsPage, true)
-                      .setValue(AddDocumentsYesNoPage(itemIndex), true)
+                      .setValue(InferredAddDocumentsYesNoPage(itemIndex), true)
                       .setValue(external.DocumentsSection, documents)
                       .setValue(DocumentPage(itemIndex, Index(0)), documentUUID)
 
@@ -1955,29 +1876,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                     result.value.value mustBe expectedResult
                     result.value.pages mustBe Seq(
-                      AddDocumentsYesNoPage(itemIndex),
                       DocumentPage(itemIndex, Index(0)),
                       DocumentsSection(itemIndex)
-                    )
-                }
-              }
-
-              "and AddDocumentsYesNoPage is false" in {
-
-                forAll(gbCustomsOfficeGen, genForNonT2OrT2F) {
-                  (customsOfficeId, declarationType) =>
-                    val userAnswers = emptyUserAnswers
-                      .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
-                      .setValue(TransitOperationDeclarationTypePage, T)
-                      .setValue(DeclarationTypePage(index), declarationType)
-                      .setValue(ConsignmentAddDocumentsPage, true)
-                      .setValue(AddDocumentsYesNoPage(itemIndex), false)
-
-                    val result = ItemDomain.documentsReader(itemIndex).apply(Nil).run(userAnswers)
-
-                    result.value.value must not be defined
-                    result.value.pages mustBe Seq(
-                      AddDocumentsYesNoPage(itemIndex)
                     )
                 }
               }

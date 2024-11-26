@@ -22,8 +22,7 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.DocumentFormProvider
 import models.{Index, ItemLevelDocuments, LocalReferenceNumber, Mode}
 import navigation.{DocumentNavigatorProvider, UserAnswersNavigator}
-import pages.item.documents.DocumentsInProgressPage
-import pages.item.documents.index.{DocumentInProgressPage, DocumentPage}
+import pages.item.documents.index.DocumentPage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -87,7 +86,6 @@ class DocumentController @Inject() (
             val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex, documentIndex)
             DocumentPage(itemIndex, documentIndex)
               .writeToUserAnswers(value.uuid)
-              .appendValue(DocumentInProgressPage(itemIndex, documentIndex), false)
               .updateTask()
               .writeToSession(sessionRepository)
               .navigateWith(navigator)
@@ -95,13 +93,8 @@ class DocumentController @Inject() (
         )
   }
 
-  def redirectToDocuments(lrn: LocalReferenceNumber, itemIndex: Index, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
+  def redirectToDocuments(lrn: LocalReferenceNumber, itemIndex: Index, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      DocumentInProgressPage(itemIndex, documentIndex)
-        .writeToUserAnswers(true)
-        .removeValue(DocumentsInProgressPage(itemIndex))
-        .updateTask()
-        .writeToSession(sessionRepository)
-        .navigateTo(config.documentsFrontendUrl(lrn))
+      Redirect(config.documentsFrontendUrl(lrn))
   }
 }

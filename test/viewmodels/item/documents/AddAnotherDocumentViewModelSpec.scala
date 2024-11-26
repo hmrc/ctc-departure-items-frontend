@@ -101,24 +101,6 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with BeforeAndAfterEach w
       }
     }
 
-    "when no documents available to attach to item" - {
-      "flag must be false" in {
-        forAll(arbitrary[AddAnotherDocumentViewModel].map(_.copy(documents = Nil))) {
-          viewModel =>
-            viewModel.canAttachMoreDocumentsToItem mustBe false
-        }
-      }
-    }
-
-    "when there are documents available to attach to item" - {
-      "flag must be true" in {
-        forAll(arbitrary[AddAnotherDocumentViewModel]) {
-          viewModel =>
-            viewModel.canAttachMoreDocumentsToItem mustBe true
-        }
-      }
-    }
-
     "when consignment level document present and new documents to attach have been added" - {
       "nextIndex value must be read from item level documents" in {
         forAll(arbitrary[Mode], arbitrary[Document], arbitrary[Document], arbitrary[Document]) {

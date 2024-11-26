@@ -16,11 +16,11 @@
 
 package models.journeyDomain.item.documents
 
-import models.journeyDomain._
-import models.{Index, RichJsArray, UserAnswers}
+import models.journeyDomain.*
+import models.{Document, Index, RichJsArray, UserAnswers}
 import pages.item.documents.DocumentsInProgressPage
-import pages.sections.Section
 import pages.sections.documents.DocumentsSection
+import pages.sections.{external, Section}
 
 case class DocumentsDomain(
   value: Seq[DocumentDomain]
@@ -33,13 +33,22 @@ case class DocumentsDomain(
 object DocumentsDomain {
 
   def userAnswersReader(itemIndex: Index): Read[DocumentsDomain] = {
-    lazy val documentsReader: Read[Seq[DocumentDomain]] =
-      DocumentsSection(itemIndex).arrayReader.to {
-        case x if x.isEmpty =>
-          DocumentDomain.userAnswersReader(itemIndex, Index(0)).toSeq
-        case x =>
-          x.traverse[DocumentDomain](DocumentDomain.userAnswersReader(itemIndex, _).apply(_))
+    lazy val anyConsignmentLevelDocumentsReader: Read[Boolean] =
+      external.DocumentsSection.arrayReader.to {
+        documents => Read.apply(documents.validateAsListOf[Document].exists(_.attachToAllItems))
       }
+
+    lazy val documentsReader: Read[Seq[DocumentDomain]] = (
+      DocumentsSection(itemIndex).arrayReader,
+      anyConsignmentLevelDocumentsReader
+    ).to {
+      case (x, true) if x.isEmpty =>
+        Read.apply(Nil)
+      case (x, false) if x.isEmpty =>
+        DocumentDomain.userAnswersReader(itemIndex, Index(0)).toSeq
+      case (x, _) =>
+        x.traverse[DocumentDomain](DocumentDomain.userAnswersReader(itemIndex, _).apply(_))
+    }
 
     DocumentsInProgressPage(itemIndex).reader.to {
       _ =>

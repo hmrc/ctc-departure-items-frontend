@@ -17,17 +17,14 @@
 package controllers.item.documents.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.item.documents.routes as documentRoutes
 import forms.DocumentFormProvider
 import generators.Generators
-import models.{Document, ItemLevelDocuments, NormalMode, SelectableList, UserAnswers}
+import models.{Document, ItemLevelDocuments, NormalMode, SelectableList}
 import navigation.DocumentNavigatorProvider
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{verify, when}
+import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
-import pages.item.documents.DocumentsInProgressPage
-import pages.item.documents.index.{DocumentInProgressPage, DocumentPage}
+import pages.item.documents.index.DocumentPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -185,9 +182,7 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
       "must update user answers and redirect" in {
         lazy val redirectToDocuments = routes.DocumentController.redirectToDocuments(lrn, itemIndex, documentIndex).url
 
-        val userAnswers = emptyUserAnswers.setValue(DocumentsInProgressPage(itemIndex), true)
-
-        setExistingUserAnswers(userAnswers)
+        setExistingUserAnswers(emptyUserAnswers)
 
         val request = FakeRequest(GET, redirectToDocuments)
 
@@ -196,11 +191,6 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual frontendAppConfig.documentsFrontendUrl(lrn)
-
-        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-        verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-        userAnswersCaptor.getValue.get(DocumentInProgressPage(itemIndex, documentIndex)).value mustBe true
-        userAnswersCaptor.getValue.get(DocumentsInProgressPage(itemIndex)) must not be defined
       }
     }
   }

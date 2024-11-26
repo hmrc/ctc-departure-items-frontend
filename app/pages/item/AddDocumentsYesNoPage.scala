@@ -18,26 +18,43 @@ package pages.item
 
 import controllers.item.routes
 import models.{Index, Mode, UserAnswers}
-import pages.QuestionPage
 import pages.sections.ItemSection
 import pages.sections.documents.DocumentsSection
+import pages.{InferredPage, QuestionPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 import scala.util.Try
 
-case class AddDocumentsYesNoPage(itemIndex: Index) extends QuestionPage[Boolean] {
+sealed abstract class BaseAddDocumentsYesNoPage(itemIndex: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = ItemSection(itemIndex).path \ toString
-
-  override def toString: String = "addDocumentsYesNo"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.AddDocumentsYesNoController.onPageLoad(userAnswers.lrn, mode, itemIndex))
 
+  def cleanup(userAnswers: UserAnswers): Try[UserAnswers]
+
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(false) => userAnswers.remove(DocumentsSection(itemIndex))
+      case Some(false) => userAnswers.remove(DocumentsSection(itemIndex)).flatMap(cleanup)
+      case Some(true)  => cleanup(userAnswers)
       case _           => super.cleanup(value, userAnswers)
     }
+}
+
+case class AddDocumentsYesNoPage(itemIndex: Index) extends BaseAddDocumentsYesNoPage(itemIndex) {
+
+  override def toString: String = "addDocumentsYesNo"
+
+  override def cleanup(userAnswers: UserAnswers): Try[UserAnswers] =
+    userAnswers.remove(InferredAddDocumentsYesNoPage(itemIndex))
+}
+
+case class InferredAddDocumentsYesNoPage(itemIndex: Index) extends BaseAddDocumentsYesNoPage(itemIndex) with InferredPage[Boolean] {
+
+  override def toString: String = "inferredAddDocumentsYesNo"
+
+  override def cleanup(userAnswers: UserAnswers): Try[UserAnswers] =
+    userAnswers.remove(AddDocumentsYesNoPage(itemIndex))
 }
