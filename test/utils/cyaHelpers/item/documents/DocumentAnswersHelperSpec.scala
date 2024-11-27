@@ -24,7 +24,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.item.AddDocumentsYesNoPage
+import pages.item.{AddDocumentsYesNoPage, InferredAddDocumentsYesNoPage}
 import pages.item.documents.index.DocumentPage
 import services.DocumentsService
 import viewmodels.ListItem
@@ -110,7 +110,30 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
           }
         }
 
-        "and AddDocumentsYesNoPage is not populated" in {
+        "and InferredAddDocumentsYesNoPage is populated" in {
+          forAll(arbitrary[Mode], arbitrary[Document]) {
+            (mode, document) =>
+              when(mockDocumentsService.getDocument(any(), any(), any()))
+                .thenReturn(Some(document))
+
+              val userAnswers = emptyUserAnswers
+                .setValue(InferredAddDocumentsYesNoPage(itemIndex), true)
+                .setValue(DocumentPage(itemIndex, Index(0)), document.uuid)
+
+              val helper = new DocumentAnswersHelper(userAnswers, mode, itemIndex)
+              helper.listItems mustBe Seq(
+                Right(
+                  ListItem(
+                    name = document.toString,
+                    changeUrl = routes.DocumentController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url,
+                    removeUrl = Some(routes.RemoveDocumentController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url)
+                  )
+                )
+              )
+          }
+        }
+
+        "and neither are populated" in {
           forAll(arbitrary[Mode], arbitrary[Document]) {
             (mode, document) =>
               when(mockDocumentsService.getDocument(any(), any(), any()))
@@ -166,7 +189,39 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
           }
         }
 
-        "and AddDocumentsYesNoPage is not populated" in {
+        "and InferredAddDocumentsYesNoPage is populated" in {
+          forAll(arbitrary[Mode], arbitrary[Document], arbitrary[Document]) {
+            (mode, document1, document2) =>
+              when(mockDocumentsService.getDocument(any(), any(), any()))
+                .thenReturn(Some(document1))
+                .thenReturn(Some(document2))
+
+              val userAnswers = emptyUserAnswers
+                .setValue(InferredAddDocumentsYesNoPage(itemIndex), true)
+                .setValue(DocumentPage(itemIndex, Index(0)), document1.uuid)
+                .setValue(DocumentPage(itemIndex, Index(1)), document2.uuid)
+
+              val helper = new DocumentAnswersHelper(userAnswers, mode, itemIndex)
+              helper.listItems mustBe Seq(
+                Right(
+                  ListItem(
+                    name = document1.toString,
+                    changeUrl = routes.DocumentController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url,
+                    removeUrl = Some(routes.RemoveDocumentController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url)
+                  )
+                ),
+                Right(
+                  ListItem(
+                    name = document2.toString,
+                    changeUrl = routes.DocumentController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url,
+                    removeUrl = Some(routes.RemoveDocumentController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url)
+                  )
+                )
+              )
+          }
+        }
+
+        "and neither are populated" in {
           forAll(arbitrary[Mode], arbitrary[Document], arbitrary[Document]) {
             (mode, document1, document2) =>
               when(mockDocumentsService.getDocument(any(), any(), any()))
