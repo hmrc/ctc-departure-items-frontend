@@ -77,10 +77,18 @@ class AddAnotherDocumentController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, viewModel, itemIndex))),
           {
             case true =>
-              Future.successful(Redirect(controllers.item.documents.index.routes.DocumentController.onPageLoad(lrn, mode, itemIndex, viewModel.nextIndex)))
+              DocumentsInProgressPage(itemIndex)
+                .writeToUserAnswers(true)
+                .updateTask()
+                .writeToSession(sessionRepository)
+                .navigateTo(controllers.item.documents.index.routes.DocumentController.onPageLoad(lrn, mode, itemIndex, viewModel.nextIndex))
             case false =>
               val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
-              DocumentsInProgressPage(itemIndex).writeToUserAnswers(false).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
+              DocumentsInProgressPage(itemIndex)
+                .writeToUserAnswers(false)
+                .updateTask()
+                .writeToSession(sessionRepository)
+                .navigateWith(navigator)
           }
         )
   }

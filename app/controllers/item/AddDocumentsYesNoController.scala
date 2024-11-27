@@ -22,7 +22,6 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.{Document, Index, LocalReferenceNumber, Mode, RichJsArray}
 import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
-import pages.item.documents.DocumentsInProgressPage
 import pages.item.{AddDocumentsYesNoPage, InferredAddDocumentsYesNoPage}
 import pages.sections.external
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -54,7 +53,6 @@ class AddDocumentsYesNoController @Inject() (
         case Some(documents) if documents.exists(_.attachToAllItems) =>
           InferredAddDocumentsYesNoPage(itemIndex)
             .writeToUserAnswers(true)
-            .appendValue(DocumentsInProgressPage(itemIndex), true)
             .updateTask()
             .writeToSession(sessionRepository)
             .navigateTo(controllers.item.documents.routes.AddAnotherDocumentController.onPageLoad(lrn, mode, itemIndex))

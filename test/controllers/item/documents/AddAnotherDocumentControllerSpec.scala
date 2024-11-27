@@ -139,6 +139,10 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
 
           redirectLocation(result).value mustEqual
             controllers.item.documents.index.routes.DocumentController.onPageLoad(lrn, mode, itemIndex, Index(viewModel.listItems.length)).url
+
+          val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+          verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
+          userAnswersCaptor.getValue.get(DocumentsInProgressPage(itemIndex)).value mustBe true
         }
       }
 
