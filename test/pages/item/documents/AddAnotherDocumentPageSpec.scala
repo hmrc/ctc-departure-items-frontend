@@ -18,14 +18,14 @@ package pages.item.documents
 
 import pages.behaviours.PageBehaviours
 
-class DocumentsInProgressPageSpec extends PageBehaviours {
+class AddAnotherDocumentPageSpec extends PageBehaviours {
 
   "DocumentsInProgressPage" - {
 
-    beRetrievable[Boolean](DocumentsInProgressPage(itemIndex))
+    beRetrievable[Boolean](AddAnotherDocumentPage(itemIndex))
 
-    beSettable[Boolean](DocumentsInProgressPage(itemIndex))
+    beSettable[Boolean](AddAnotherDocumentPage(itemIndex))
 
-    beRemovable[Boolean](DocumentsInProgressPage(itemIndex))
+    beRemovable[Boolean](AddAnotherDocumentPage(itemIndex))
   }
 }

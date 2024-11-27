@@ -133,7 +133,7 @@ trait UserAnswersEntryGenerators {
   private def generateDocumentsAnswer: PartialFunction[Gettable[?], Gen[JsValue]] = {
     import pages.item.documents._
     val pf: PartialFunction[Gettable[?], Gen[JsValue]] = {
-      case DocumentsInProgressPage(_) => arbitrary[Boolean].map(JsBoolean)
+      case AddAnotherDocumentPage(_) => arbitrary[Boolean].map(JsBoolean)
     }
     pf orElse generateDocumentAnswer
   }

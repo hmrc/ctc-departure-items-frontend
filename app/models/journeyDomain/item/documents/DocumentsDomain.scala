@@ -18,7 +18,7 @@ package models.journeyDomain.item.documents
 
 import models.journeyDomain.*
 import models.{Document, Index, RichJsArray, UserAnswers}
-import pages.item.documents.DocumentsInProgressPage
+import pages.item.documents.AddAnotherDocumentPage
 import pages.sections.documents.DocumentsSection
 import pages.sections.{external, Section}
 
@@ -50,9 +50,11 @@ object DocumentsDomain {
         x.traverse[DocumentDomain](DocumentDomain.userAnswersReader(itemIndex, _).apply(_))
     }
 
-    DocumentsInProgressPage(itemIndex).reader.to {
-      _ =>
-        documentsReader.map(DocumentsDomain.apply(_)(itemIndex))
+    (
+      documentsReader,
+      AddAnotherDocumentPage(itemIndex).reader
+    ).map {
+      (documents, _) => DocumentsDomain.apply(documents)(itemIndex)
     }
   }
 }

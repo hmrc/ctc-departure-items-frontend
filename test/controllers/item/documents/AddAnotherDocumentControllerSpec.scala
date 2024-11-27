@@ -26,7 +26,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
-import pages.item.documents.DocumentsInProgressPage
+import pages.item.documents.AddAnotherDocumentPage
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -142,7 +142,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
 
           val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
           verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-          userAnswersCaptor.getValue.get(DocumentsInProgressPage(itemIndex)).value mustBe true
+          userAnswersCaptor.getValue.get(AddAnotherDocumentPage(itemIndex)).value mustBe true
         }
       }
 
@@ -164,7 +164,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
 
           val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
           verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-          userAnswersCaptor.getValue.get(DocumentsInProgressPage(itemIndex)).value mustBe false
+          userAnswersCaptor.getValue.get(AddAnotherDocumentPage(itemIndex)).value mustBe false
         }
       }
     }

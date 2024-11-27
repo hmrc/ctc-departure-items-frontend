@@ -17,24 +17,24 @@
 package pages.item.documents
 
 import controllers.item.documents.routes
-import models.journeyDomain._
+import models.journeyDomain.{UserAnswersReader, *}
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.ItemSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class DocumentsInProgressPage(itemIndex: Index) extends QuestionPage[Boolean] {
+case class AddAnotherDocumentPage(itemIndex: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = ItemSection(itemIndex).path \ toString
 
-  override def toString: String = "documentsInProgress"
+  override def toString: String = "addAnotherDocument"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.AddAnotherDocumentController.onPageLoad(userAnswers.lrn, mode, itemIndex))
 
   def reader: Read[Boolean] =
-    DocumentsInProgressPage(itemIndex).optionalReader.to {
+    AddAnotherDocumentPage(itemIndex).optionalReader.to {
       case Some(true) => UserAnswersReader.error(this)
       case _          => UserAnswersReader.pure(false)
     }

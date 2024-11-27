@@ -17,30 +17,30 @@
 package models.journeyDomain.item
 
 import base.SpecBase
-import config.Constants.CountryCode._
-import config.Constants.DeclarationType._
-import config.Constants.SecurityType._
+import config.Constants.CountryCode.*
+import config.Constants.DeclarationType.*
+import config.Constants.SecurityType.*
 import config.{PhaseConfig, TestConstants}
 import generators.Generators
-import models.DeclarationTypeItemLevel._
+import models.DeclarationTypeItemLevel.*
 import models.journeyDomain.item.additionalInformation.{AdditionalInformationDomain, AdditionalInformationListDomain}
 import models.journeyDomain.item.additionalReferences.{AdditionalReferenceDomain, AdditionalReferencesDomain}
 import models.journeyDomain.item.dangerousGoods.{DangerousGoodsDomain, DangerousGoodsListDomain}
 import models.journeyDomain.item.documents.{DocumentDomain, DocumentsDomain}
 import models.journeyDomain.item.packages.{PackageDomain, PackagesDomain}
-import models.reference._
+import models.reference.*
 import models.{DeclarationTypeItemLevel, Index, Phase, SubmissionState}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.external._
-import pages.item._
-import pages.item.additionalInformation.index._
-import pages.item.additionalReference.index._
+import pages.external.*
+import pages.item.*
+import pages.item.additionalInformation.index.*
+import pages.item.additionalReference.index.*
 import pages.item.dangerousGoods.index.UNNumberPage
 import pages.item.documents.index.DocumentPage
-import pages.item.packages.index._
+import pages.item.packages.index.*
 import pages.sections.additionalInformation.AdditionalInformationListSection
 import pages.sections.additionalReference.AdditionalReferencesSection
 import pages.sections.dangerousGoods.DangerousGoodsListSection
