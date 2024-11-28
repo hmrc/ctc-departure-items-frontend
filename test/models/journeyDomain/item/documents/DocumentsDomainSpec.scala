@@ -20,6 +20,7 @@ import base.SpecBase
 import generators.Generators
 import models.Index
 import org.scalacheck.Gen
+import pages.item.InferredAddDocumentsYesNoPage
 import pages.item.documents.AddAnotherDocumentPage
 import pages.sections.documents.DocumentsSection
 
@@ -28,6 +29,19 @@ class DocumentsDomainSpec extends SpecBase with Generators {
   "Documents" - {
 
     "can be parsed from UserAnswers" - {
+
+      "when InferredAddDocumentsYesNoPage is true and documents is empty" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(InferredAddDocumentsYesNoPage(itemIndex), true)
+          .setValue(AddAnotherDocumentPage(itemIndex), false)
+
+        val result = DocumentsDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
+
+        result.value.value.value.length mustBe 0
+        result.value.pages mustBe Seq(
+          DocumentsSection(itemIndex)
+        )
+      }
 
       "when AddAnotherDocumentPage is false" in {
         val numberOfDocuments = Gen.choose(1, frontendAppConfig.maxTransportDocuments).sample.value
