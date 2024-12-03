@@ -26,13 +26,12 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
-import pages.item.AddDocumentsYesNoPage
-import pages.item.documents.DocumentsInProgressPage
+import pages.item.documents.AddAnotherDocumentPage
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import viewmodels.item.documents.AddAnotherDocumentViewModel
 import viewmodels.item.documents.AddAnotherDocumentViewModel.AddAnotherDocumentViewModelProvider
 import views.html.item.documents.AddAnotherDocumentView
@@ -81,12 +80,8 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual onwardRoute.url
-
-      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-      verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-      userAnswersCaptor.getValue.get(AddDocumentsYesNoPage(itemIndex)) must not be defined
-      userAnswersCaptor.getValue.get(DocumentsInProgressPage(itemIndex)) must not be defined
+      redirectLocation(result).value mustEqual
+        controllers.item.routes.AddDocumentsYesNoController.onPageLoad(lrn, mode, itemIndex).url
     }
 
     "must return OK and the correct view for a GET" - {
@@ -144,6 +139,10 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
 
           redirectLocation(result).value mustEqual
             controllers.item.documents.index.routes.DocumentController.onPageLoad(lrn, mode, itemIndex, Index(viewModel.listItems.length)).url
+
+          val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+          verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
+          userAnswersCaptor.getValue.get(AddAnotherDocumentPage(itemIndex)).value mustBe true
         }
       }
 
@@ -165,7 +164,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
 
           val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
           verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-          userAnswersCaptor.getValue.get(DocumentsInProgressPage(itemIndex)).value mustBe false
+          userAnswersCaptor.getValue.get(AddAnotherDocumentPage(itemIndex)).value mustBe false
         }
       }
     }
@@ -191,7 +190,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
     "when can't attach any more documents to item" - {
       "must redirect to next page" in {
         when(mockViewModelProvider.apply(any(), any(), any(), any())(any(), any(), any()))
-          .thenReturn(notMaxedOutViewModel.copy(documents = Nil))
+          .thenReturn(notMaxedOutViewModel.copy(allowMoreDocuments = false))
 
         setExistingUserAnswers(emptyUserAnswers)
 
@@ -255,6 +254,5 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
 
       redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
     }
-
   }
 }

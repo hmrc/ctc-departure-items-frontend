@@ -32,23 +32,67 @@ class AddDocumentsYesNoPageSpec extends PageBehaviours {
 
     "cleanup" - {
       "when no selected" - {
-        "must remove documents" in {
+        "must remove documents and inferred" in {
           val userAnswers = emptyUserAnswers
+            .setValue(InferredAddDocumentsYesNoPage(itemIndex), true)
             .setValue(DocumentsSection(itemIndex), JsArray(Seq(Json.obj("foo" -> "bar"))))
 
           val result = userAnswers.setValue(AddDocumentsYesNoPage(itemIndex), false)
 
+          result.get(InferredAddDocumentsYesNoPage(itemIndex)) must not be defined
           result.get(DocumentsSection(itemIndex)) must not be defined
         }
       }
 
       "when yes selected" - {
-        "must do nothing" in {
+        "must remove inferred" in {
           val userAnswers = emptyUserAnswers
+            .setValue(InferredAddDocumentsYesNoPage(itemIndex), true)
             .setValue(DocumentsSection(itemIndex), JsArray(Seq(Json.obj("foo" -> "bar"))))
 
           val result = userAnswers.setValue(AddDocumentsYesNoPage(itemIndex), true)
 
+          result.get(InferredAddDocumentsYesNoPage(itemIndex)) must not be defined
+          result.get(DocumentsSection(itemIndex)) must be(defined)
+        }
+      }
+    }
+  }
+}
+
+class InferredAddDocumentsYesNoPageSpec extends PageBehaviours {
+
+  "InferredAddDocumentsYesNoPage" - {
+
+    beRetrievable[Boolean](InferredAddDocumentsYesNoPage(itemIndex))
+
+    beSettable[Boolean](InferredAddDocumentsYesNoPage(itemIndex))
+
+    beRemovable[Boolean](InferredAddDocumentsYesNoPage(itemIndex))
+
+    "cleanup" - {
+      "when no selected" - {
+        "must remove documents and non-inferred" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(AddDocumentsYesNoPage(itemIndex), true)
+            .setValue(DocumentsSection(itemIndex), JsArray(Seq(Json.obj("foo" -> "bar"))))
+
+          val result = userAnswers.setValue(InferredAddDocumentsYesNoPage(itemIndex), false)
+
+          result.get(AddDocumentsYesNoPage(itemIndex)) must not be defined
+          result.get(DocumentsSection(itemIndex)) must not be defined
+        }
+      }
+
+      "when yes selected" - {
+        "must remove non-inferred" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(AddDocumentsYesNoPage(itemIndex), true)
+            .setValue(DocumentsSection(itemIndex), JsArray(Seq(Json.obj("foo" -> "bar"))))
+
+          val result = userAnswers.setValue(InferredAddDocumentsYesNoPage(itemIndex), true)
+
+          result.get(AddDocumentsYesNoPage(itemIndex)) must not be defined
           result.get(DocumentsSection(itemIndex)) must be(defined)
         }
       }

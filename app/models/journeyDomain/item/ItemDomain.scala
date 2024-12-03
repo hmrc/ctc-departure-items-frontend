@@ -246,24 +246,39 @@ object ItemDomain {
             .exists {
               x => x.attachToAllItems && x.`type` == Previous
             } match {
-            case true  => AddDocumentsYesNoPage(itemIndex).filterOptionalDependent(identity)(DocumentsDomain.userAnswersReader(itemIndex))
-            case false => DocumentsDomain.userAnswersReader(itemIndex).toOption
+            case true  => optionalDocumentsReader
+            case false => mandatoryDocumentsReader.toOption
           }
         }
+
+    def optionalDocumentsReader: Read[Option[DocumentsDomain]] =
+      UserAnswersReader
+        .readInferred(AddDocumentsYesNoPage(itemIndex), InferredAddDocumentsYesNoPage(itemIndex))
+        .to {
+          case true  => mandatoryDocumentsReader.toOption
+          case false => UserAnswersReader.none
+        }
+
+    def mandatoryDocumentsReader: Read[DocumentsDomain] =
+      DocumentsDomain.userAnswersReader(itemIndex)
 
     ConsignmentAddDocumentsPage.optionalReader.to {
       case Some(true) | None =>
         externalPages.to {
-          case (T2 | T2F, true) => isConsignmentPreviousDocDefined(itemIndex)
+          case (T2 | T2F, true) =>
+            isConsignmentPreviousDocDefined(itemIndex)
           case (_, true) =>
             DeclarationTypePage(itemIndex).optionalReader.to {
               case Some(DeclarationTypeItemLevel(T2, _)) | Some(DeclarationTypeItemLevel(T2F, _)) =>
                 isConsignmentPreviousDocDefined(itemIndex)
-              case _ => AddDocumentsYesNoPage(itemIndex).filterOptionalDependent(identity)(DocumentsDomain.userAnswersReader(itemIndex))
+              case _ =>
+                optionalDocumentsReader
             }
-          case _ => AddDocumentsYesNoPage(itemIndex).filterOptionalDependent(identity)(DocumentsDomain.userAnswersReader(itemIndex))
+          case _ =>
+            optionalDocumentsReader
         }
-      case _ => UserAnswersReader.none
+      case _ =>
+        UserAnswersReader.none
     }
   }
 

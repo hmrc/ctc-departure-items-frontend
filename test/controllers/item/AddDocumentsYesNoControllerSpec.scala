@@ -18,16 +18,19 @@ package controllers.item
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
-import models.NormalMode
+import models.{NormalMode, UserAnswers}
 import navigation.ItemNavigatorProvider
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.item.AddDocumentsYesNoPage
+import pages.item.{AddDocumentsYesNoPage, InferredAddDocumentsYesNoPage}
+import pages.sections.external
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.{JsArray, Json}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import views.html.item.AddDocumentsYesNoView
 
 import scala.concurrent.Future
@@ -45,6 +48,47 @@ class AddDocumentsYesNoControllerSpec extends SpecBase with AppWithDefaultMockFi
       .overrides(bind(classOf[ItemNavigatorProvider]).toInstance(fakeItemNavigatorProvider))
 
   "AddDocumentsYesNo Controller" - {
+
+    "must infer as true when there are consignment level documents" in {
+
+      when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
+
+      val documents = Json
+        .parse(s"""
+          |[
+          |  {
+          |    "attachToAllItems" : true,
+          |    "type" : {
+          |      "type" : "Transport",
+          |      "code" : "Code 1",
+          |      "description" : "Description 1"
+          |    },
+          |    "details" : {
+          |      "documentReferenceNumber" : "Ref no. 1",
+          |      "uuid" : "91631d90-e890-440a-9c0c-a7a88815ac4e"
+          |    }
+          |  }
+          |]
+          |""".stripMargin)
+        .as[JsArray]
+
+      val userAnswers = emptyUserAnswers.setValue(external.DocumentsSection, documents)
+
+      setExistingUserAnswers(userAnswers)
+
+      val request = FakeRequest(GET, addDocumentsYesNoRoute)
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual
+        controllers.item.documents.routes.AddAnotherDocumentController.onPageLoad(lrn, mode, itemIndex).url
+
+      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+      verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
+      userAnswersCaptor.getValue.get(InferredAddDocumentsYesNoPage(itemIndex)).value mustBe true
+    }
 
     "must return OK and the correct view for a GET" in {
 

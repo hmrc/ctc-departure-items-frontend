@@ -17,12 +17,13 @@
 package controllers.item
 
 import config.PhaseConfig
-import controllers.actions._
+import controllers.actions.*
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{Document, Index, LocalReferenceNumber, Mode, RichJsArray}
 import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
-import pages.item.AddDocumentsYesNoPage
+import pages.item.{AddDocumentsYesNoPage, InferredAddDocumentsYesNoPage}
+import pages.sections.external
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -46,14 +47,23 @@ class AddDocumentsYesNoController @Inject() (
 
   private val form = formProvider("item.addDocumentsYesNo")
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddDocumentsYesNoPage(itemIndex)) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+      request.userAnswers.get(external.DocumentsSection).map(_.validateAsListOf[Document]) match {
+        case Some(documents) if documents.exists(_.attachToAllItems) =>
+          InferredAddDocumentsYesNoPage(itemIndex)
+            .writeToUserAnswers(true)
+            .updateTask()
+            .writeToSession(sessionRepository)
+            .navigateTo(controllers.item.documents.routes.AddAnotherDocumentController.onPageLoad(lrn, mode, itemIndex))
+        case _ =>
+          val preparedForm = request.userAnswers.get(AddDocumentsYesNoPage(itemIndex)) match {
+            case None        => form
+            case Some(value) => form.fill(value)
+          }
 
-      Ok(view(preparedForm, lrn, mode, itemIndex))
+          Future.successful(Ok(view(preparedForm, lrn, mode, itemIndex)))
+      }
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {

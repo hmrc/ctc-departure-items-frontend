@@ -8,3 +8,5 @@ GET        /:itemIndex/documents/:documentIndex/remove/:lrn                     
 POST       /:itemIndex/documents/:documentIndex/remove/:lrn                                    controllers.item.documents.index.RemoveDocumentController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index, documentIndex: Index)
 GET        /:itemIndex/documents/:documentIndex/change-remove/:lrn                             controllers.item.documents.index.RemoveDocumentController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index, documentIndex: Index)
 POST       /:itemIndex/documents/:documentIndex/change-remove/:lrn                             controllers.item.documents.index.RemoveDocumentController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index, documentIndex: Index)
+
+GET        /:itemIndex/documents/:documentIndex/add-another/:lrn                               controllers.item.documents.index.DocumentController.redirectToDocuments(lrn: LocalReferenceNumber, itemIndex: Index, documentIndex: Index)

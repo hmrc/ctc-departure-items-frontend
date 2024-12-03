@@ -16,8 +16,8 @@
 
 package models.journeyDomain.item.documents
 
-import models.journeyDomain.Stage._
-import models.journeyDomain._
+import models.journeyDomain.*
+import models.journeyDomain.Stage.*
 import models.{Index, Mode, Phase, UserAnswers}
 import pages.item.documents.index.DocumentPage
 import play.api.mvc.Call

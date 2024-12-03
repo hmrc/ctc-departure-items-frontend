@@ -16,9 +16,10 @@
 
 package models.journeyDomain.item.documents
 
-import models.journeyDomain._
+import models.journeyDomain.*
 import models.{Index, RichJsArray, UserAnswers}
-import pages.item.documents.DocumentsInProgressPage
+import pages.item.InferredAddDocumentsYesNoPage
+import pages.item.documents.AddAnotherDocumentPage
 import pages.sections.Section
 import pages.sections.documents.DocumentsSection
 
@@ -34,16 +35,23 @@ object DocumentsDomain {
 
   def userAnswersReader(itemIndex: Index): Read[DocumentsDomain] = {
     lazy val documentsReader: Read[Seq[DocumentDomain]] =
-      DocumentsSection(itemIndex).arrayReader.to {
-        case x if x.isEmpty =>
+      (
+        InferredAddDocumentsYesNoPage(itemIndex).optionalReader,
+        DocumentsSection(itemIndex).arrayReader
+      ).to {
+        case (Some(true), x) if x.isEmpty =>
+          Read.apply(Nil)
+        case (_, x) if x.isEmpty =>
           DocumentDomain.userAnswersReader(itemIndex, Index(0)).toSeq
-        case x =>
+        case (_, x) =>
           x.traverse[DocumentDomain](DocumentDomain.userAnswersReader(itemIndex, _).apply(_))
       }
 
-    DocumentsInProgressPage(itemIndex).reader.to {
-      _ =>
-        documentsReader.map(DocumentsDomain.apply(_)(itemIndex))
+    (
+      documentsReader,
+      AddAnotherDocumentPage(itemIndex).reader
+    ).map {
+      (documents, _) => DocumentsDomain.apply(documents)(itemIndex)
     }
   }
 }

@@ -20,7 +20,8 @@ import base.SpecBase
 import generators.Generators
 import models.Index
 import org.scalacheck.Gen
-import pages.item.documents.DocumentsInProgressPage
+import pages.item.InferredAddDocumentsYesNoPage
+import pages.item.documents.AddAnotherDocumentPage
 import pages.sections.documents.DocumentsSection
 
 class DocumentsDomainSpec extends SpecBase with Generators {
@@ -29,7 +30,20 @@ class DocumentsDomainSpec extends SpecBase with Generators {
 
     "can be parsed from UserAnswers" - {
 
-      "when documents not in progress" in {
+      "when InferredAddDocumentsYesNoPage is true and documents is empty" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(InferredAddDocumentsYesNoPage(itemIndex), true)
+          .setValue(AddAnotherDocumentPage(itemIndex), false)
+
+        val result = DocumentsDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
+
+        result.value.value.value.length mustBe 0
+        result.value.pages mustBe Seq(
+          DocumentsSection(itemIndex)
+        )
+      }
+
+      "when AddAnotherDocumentPage is false" in {
         val numberOfDocuments = Gen.choose(1, frontendAppConfig.maxTransportDocuments).sample.value
 
         val userAnswers = (0 until numberOfDocuments)
@@ -37,7 +51,7 @@ class DocumentsDomainSpec extends SpecBase with Generators {
             case (updatedUserAnswers, index) =>
               arbitraryDocumentAnswers(updatedUserAnswers, itemIndex, Index(index)).sample.value
           }
-          .setValue(DocumentsInProgressPage(itemIndex), false)
+          .setValue(AddAnotherDocumentPage(itemIndex), false)
 
         val result = DocumentsDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
 
@@ -45,7 +59,7 @@ class DocumentsDomainSpec extends SpecBase with Generators {
         result.value.pages.last mustBe DocumentsSection(itemIndex)
       }
 
-      "when no value set for DocumentsInProgressPage" in {
+      "when no value set for AddAnotherDocumentPage" in {
         val numberOfDocuments = Gen.choose(1, frontendAppConfig.maxTransportDocuments).sample.value
 
         val userAnswers = (0 until numberOfDocuments).foldLeft(emptyUserAnswers) {
@@ -61,7 +75,7 @@ class DocumentsDomainSpec extends SpecBase with Generators {
     }
 
     "can not be parsed from user answers" - {
-      "when documents in progress" in {
+      "when AddAnotherDocumentPage is true" in {
         val numberOfDocuments = Gen.choose(1, frontendAppConfig.maxTransportDocuments).sample.value
 
         val userAnswers = (0 until numberOfDocuments)
@@ -69,14 +83,12 @@ class DocumentsDomainSpec extends SpecBase with Generators {
             case (updatedUserAnswers, index) =>
               arbitraryDocumentAnswers(updatedUserAnswers, itemIndex, Index(index)).sample.value
           }
-          .setValue(DocumentsInProgressPage(itemIndex), true)
+          .setValue(AddAnotherDocumentPage(itemIndex), true)
 
         val result = DocumentsDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
 
-        result.left.value.page mustBe DocumentsInProgressPage(itemIndex)
-        result.left.value.pages mustBe Seq(
-          DocumentsInProgressPage(itemIndex)
-        )
+        result.left.value.page mustBe AddAnotherDocumentPage(itemIndex)
+        result.left.value.pages.last mustBe AddAnotherDocumentPage(itemIndex)
       }
     }
   }

@@ -17,14 +17,13 @@
 package controllers.item.documents
 
 import config.{FrontendAppConfig, PhaseConfig}
-import controllers.actions._
+import controllers.actions.*
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.AddAnotherFormProvider
 import models.requests.DataRequest
 import models.{Document, Index, LocalReferenceNumber, Mode}
 import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
-import pages.item.AddDocumentsYesNoPage
-import pages.item.documents.DocumentsInProgressPage
+import pages.item.documents.AddAnotherDocumentPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -53,25 +52,19 @@ class AddAnotherDocumentController @Inject() (
     with I18nSupport {
 
   private def form(viewModel: AddAnotherDocumentViewModel): Form[Boolean] =
-    formProvider(viewModel.prefix, viewModel.allowMoreDocuments && viewModel.canAttachMoreDocumentsToItem)
+    formProvider(viewModel.prefix, viewModel.allowMore)
 
   private def documents(itemIndex: Index)(implicit request: DataRequest[?]): Seq[Document] =
     service.getDocuments(request.userAnswers, itemIndex, None).values
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
       val viewModel = viewModelProvider(request.userAnswers, mode, itemIndex, documents(itemIndex))
       viewModel.count match {
         case 0 =>
-          val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
-          AddDocumentsYesNoPage(itemIndex)
-            .removeFromUserAnswers()
-            .removeValue(DocumentsInProgressPage(itemIndex))
-            .updateTask()
-            .writeToSession(sessionRepository)
-            .navigateWith(navigator)
+          Redirect(controllers.item.routes.AddDocumentsYesNoController.onPageLoad(lrn, mode, itemIndex))
         case _ =>
-          Future.successful(Ok(view(form(viewModel), lrn, viewModel, itemIndex)))
+          Ok(view(form(viewModel), lrn, viewModel, itemIndex))
       }
   }
 
@@ -83,17 +76,19 @@ class AddAnotherDocumentController @Inject() (
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, viewModel, itemIndex))),
           {
-            case true =>
-              Future.successful(Redirect(controllers.item.documents.index.routes.DocumentController.onPageLoad(lrn, mode, itemIndex, viewModel.nextIndex)))
-            case false =>
-              val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
-              DocumentsInProgressPage(itemIndex).writeToUserAnswers(false).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
+            value =>
+              val write = AddAnotherDocumentPage(itemIndex)
+                .writeToUserAnswers(value)
+                .updateTask()
+                .writeToSession(sessionRepository)
+
+              if (value) {
+                write.navigateTo(controllers.item.documents.index.routes.DocumentController.onPageLoad(lrn, mode, itemIndex, viewModel.nextIndex))
+              } else {
+                val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
+                write.navigateWith(navigator)
+              }
           }
         )
-  }
-
-  def redirectToDocuments(lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
-    implicit request =>
-      DocumentsInProgressPage(itemIndex).writeToUserAnswers(true).updateTask().writeToSession(sessionRepository).navigateTo(config.documentsFrontendUrl(lrn))
   }
 }

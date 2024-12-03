@@ -17,30 +17,24 @@
 package views.item.documents.index
 
 import controllers.item.documents.index.routes
-import forms.SelectableFormProvider
-import models.{Document, NormalMode, SelectableList}
-import org.scalacheck.Arbitrary
-import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.InputSelectViewBehaviours
-import views.html.item.documents.index.DocumentView
+import views.behaviours.ViewBehaviours
+import views.html.item.documents.index.NoDocumentsToAttachView
 
-class DocumentViewSpec extends InputSelectViewBehaviours[Document] {
+class NoDocumentsToAttachViewSpec extends ViewBehaviours {
 
-  override def form: Form[Document] = new SelectableFormProvider()(prefix, SelectableList(values))
+  override def view: HtmlFormat.Appendable =
+    injector.instanceOf[NoDocumentsToAttachView].apply(lrn, itemIndex, documentIndex)(fakeRequest, messages)
 
-  override def applyView(form: Form[Document]): HtmlFormat.Appendable =
-    injector.instanceOf[DocumentView].apply(form, lrn, values, NormalMode, itemIndex, documentIndex)(fakeRequest, messages)
-
-  implicit override val arbitraryT: Arbitrary[Document] = arbitraryDocument
-
-  override val prefix: String = "item.documents.index.document"
+  override val prefix: String = "item.documents.index.document.noneToAttach"
 
   behave like pageWithTitle()
 
   behave like pageWithBackLink()
 
   behave like pageWithSectionCaption(s"Item ${itemIndex.display} - Documents")
+
+  behave like pageWithHeading()
 
   behave like pageWithContent("p", "You can only attach a document if you have added it in your Documents section.")
 
@@ -49,12 +43,4 @@ class DocumentViewSpec extends InputSelectViewBehaviours[Document] {
     expectedText = "Go to your Documents section to add another document",
     expectedHref = routes.DocumentController.redirectToDocuments(lrn, itemIndex, documentIndex).url
   )
-
-  behave like pageWithHeading()
-
-  behave like pageWithoutHint()
-
-  behave like pageWithSelect()
-
-  behave like pageWithSubmitButton("Save and continue")
 }

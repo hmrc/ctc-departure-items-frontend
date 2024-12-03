@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
-package pages.external
+package pages.item.documents
 
-import pages.{documentsPath, ReadOnlyPage}
-import play.api.libs.json.JsPath
+import pages.behaviours.PageBehaviours
 
-object ConsignmentAddDocumentsPage extends ReadOnlyPage[Boolean] {
+class AddAnotherDocumentPageSpec extends PageBehaviours {
 
-  override def path: JsPath = documentsPath \ toString
+  "DocumentsInProgressPage" - {
 
-  override def toString: String = "addDocumentsYesNo"
+    beRetrievable[Boolean](AddAnotherDocumentPage(itemIndex))
+
+    beSettable[Boolean](AddAnotherDocumentPage(itemIndex))
+
+    beRemovable[Boolean](AddAnotherDocumentPage(itemIndex))
+  }
 }

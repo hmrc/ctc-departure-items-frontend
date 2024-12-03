@@ -76,6 +76,7 @@ trait UserAnswersEntryGenerators {
       case SupplementaryUnitsPage(_)               => arbitrary[BigDecimal].map(Json.toJson(_))
       case AddSupplyChainActorYesNoPage(_)         => arbitrary[Boolean].map(JsBoolean)
       case AddDocumentsYesNoPage(_)                => arbitrary[Boolean].map(JsBoolean)
+      case InferredAddDocumentsYesNoPage(_)        => arbitrary[Boolean].map(JsBoolean)
       case ConsignmentAddDocumentsPage             => arbitrary[Boolean].map(JsBoolean)
       case AddAdditionalReferenceYesNoPage(_)      => arbitrary[Boolean].map(JsBoolean)
       case AddAdditionalInformationYesNoPage(_)    => arbitrary[Boolean].map(JsBoolean)
@@ -132,7 +133,7 @@ trait UserAnswersEntryGenerators {
   private def generateDocumentsAnswer: PartialFunction[Gettable[?], Gen[JsValue]] = {
     import pages.item.documents._
     val pf: PartialFunction[Gettable[?], Gen[JsValue]] = {
-      case DocumentsInProgressPage(_) => arbitrary[Boolean].map(JsBoolean)
+      case AddAnotherDocumentPage(_) => arbitrary[Boolean].map(JsBoolean)
     }
     pf orElse generateDocumentAnswer
   }

@@ -19,11 +19,12 @@ package utils.cyaHelpers.item.documents
 import config.{FrontendAppConfig, PhaseConfig}
 import controllers.item.documents.index.routes
 import models.{Index, Mode, UserAnswers}
+import pages.item.{AddDocumentsYesNoPage, InferredAddDocumentsYesNoPage}
 import pages.item.documents.index.DocumentPage
 import pages.sections.documents.DocumentsSection
 import play.api.i18n.Messages
 import services.DocumentsService
-import utils.cyaHelpers.AnswersHelper
+import utils.cyaHelpers.{AnswersHelper, RichListItems}
 import viewmodels.ListItem
 
 class DocumentAnswersHelper(userAnswers: UserAnswers, mode: Mode, itemIndex: Index)(implicit
@@ -56,6 +57,11 @@ class DocumentAnswersHelper(userAnswers: UserAnswers, mode: Mode, itemIndex: Ind
             removeUrl = Option(routes.RemoveDocumentController.onPageLoad(lrn, mode, itemIndex, documentIndex).url)
           )
         )
+    }.checkRemoveLinks {
+      (
+        userAnswers.get(AddDocumentsYesNoPage(itemIndex)) orElse
+          userAnswers.get(InferredAddDocumentsYesNoPage(itemIndex))
+      ).isEmpty
     }
 
 }
