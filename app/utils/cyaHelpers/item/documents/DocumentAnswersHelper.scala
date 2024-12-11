@@ -27,13 +27,16 @@ import services.DocumentsService
 import utils.cyaHelpers.{AnswersHelper, RichListItems}
 import viewmodels.ListItem
 
-class DocumentAnswersHelper(userAnswers: UserAnswers, mode: Mode, itemIndex: Index)(implicit
-  messages: Messages,
-  config: FrontendAppConfig,
-  phaseConfig: PhaseConfig
-) extends AnswersHelper(userAnswers, mode) {
+class DocumentAnswersHelper(
+  documentsService: DocumentsService
+)(
+  userAnswers: UserAnswers,
+  mode: Mode,
+  itemIndex: Index
+)(implicit messages: Messages, config: FrontendAppConfig, phaseConfig: PhaseConfig)
+    extends AnswersHelper(userAnswers, mode) {
 
-  def consignmentLevelListItems(implicit documentsService: DocumentsService): Seq[ListItem] =
+  def consignmentLevelListItems: Seq[ListItem] =
     documentsService.getConsignmentLevelDocuments(userAnswers).map {
       document =>
         ListItem(
@@ -43,7 +46,7 @@ class DocumentAnswersHelper(userAnswers: UserAnswers, mode: Mode, itemIndex: Ind
         )
     }
 
-  def listItems(implicit documentsService: DocumentsService): Seq[Either[ListItem, ListItem]] =
+  def listItems: Seq[Either[ListItem, ListItem]] =
     buildListItems(DocumentsSection(itemIndex)) {
       documentIndex =>
         val page = DocumentPage(itemIndex, documentIndex)

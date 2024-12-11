@@ -19,21 +19,19 @@ package viewmodels.item
 import base.SpecBase
 import generators.Generators
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import services.{DocumentsService, TransportEquipmentService}
 import viewmodels.item.ItemAnswersViewModel.ItemAnswersViewModelProvider
 
 class ItemAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  implicit private val documentsService: DocumentsService                   = injector.instanceOf[DocumentsService]
-  implicit private val transportEquipmentService: TransportEquipmentService = injector.instanceOf[TransportEquipmentService]
+  private val viewModelProvider = injector.instanceOf[ItemAnswersViewModelProvider]
 
   "apply" - {
     "must return all sections for transition" in {
 
       forAll(arbitraryItemAnswers(emptyUserAnswers, itemIndex)) {
         answers =>
-          val viewModelProvider = new ItemAnswersViewModelProvider()
-          val sections          = viewModelProvider.apply(answers, itemIndex).sections
+          val viewModel = viewModelProvider.apply(answers, itemIndex)
+          val sections  = viewModel.sections
 
           sections.size mustBe 10
 

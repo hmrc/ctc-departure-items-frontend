@@ -41,7 +41,7 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
   private val documentList = SelectableList(Seq(document1, document2))
 
   private lazy val formProvider  = new DocumentFormProvider()
-  private val itemLevelDocuments = ItemLevelDocuments()
+  private val itemLevelDocuments = ItemLevelDocuments(Nil)
 
   private lazy val form = formProvider("item.documents.index.document", documentList, itemLevelDocuments)
   private val mode      = NormalMode
@@ -59,9 +59,11 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
     "must return OK and the correct view for a GET" - {
 
-      "when documents is non-empty" in {
+      "when documents is empty" in {
 
         when(mockDocumentsService.getDocuments(any(), any(), any())).thenReturn(SelectableList(Nil))
+
+        when(mockDocumentsService.getItemLevelDocuments(any(), any(), any())).thenReturn(itemLevelDocuments)
 
         setExistingUserAnswers(emptyUserAnswers)
 
@@ -77,9 +79,11 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
           view(lrn, itemIndex, documentIndex)(request, messages).toString
       }
 
-      "when documents is empty" in {
+      "when documents is non-empty" in {
 
         when(mockDocumentsService.getDocuments(any(), any(), any())).thenReturn(documentList)
+
+        when(mockDocumentsService.getItemLevelDocuments(any(), any(), any())).thenReturn(itemLevelDocuments)
 
         setExistingUserAnswers(emptyUserAnswers)
 
@@ -99,6 +103,8 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       when(mockDocumentsService.getDocuments(any(), any(), any())).thenReturn(documentList)
+
+      when(mockDocumentsService.getItemLevelDocuments(any(), any(), any())).thenReturn(itemLevelDocuments)
 
       val userAnswers = emptyUserAnswers.setValue(DocumentPage(itemIndex, documentIndex), document1.uuid)
       setExistingUserAnswers(userAnswers)
@@ -120,6 +126,9 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
     "must redirect to the next page when valid data is submitted" in {
 
       when(mockDocumentsService.getDocuments(any(), any(), any())).thenReturn(documentList)
+
+      when(mockDocumentsService.getItemLevelDocuments(any(), any(), any())).thenReturn(itemLevelDocuments)
+
       when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
       setExistingUserAnswers(emptyUserAnswers)
@@ -137,6 +146,9 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
     "must return a Bad Request and errors when invalid data is submitted" in {
 
       when(mockDocumentsService.getDocuments(any(), any(), any())).thenReturn(documentList)
+
+      when(mockDocumentsService.getItemLevelDocuments(any(), any(), any())).thenReturn(itemLevelDocuments)
+
       setExistingUserAnswers(emptyUserAnswers)
 
       val request   = FakeRequest(POST, documentRoute).withFormUrlEncodedBody(("value", "invalid value"))

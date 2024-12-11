@@ -19,19 +19,22 @@ package utils.cyaHelpers.item.documents
 import base.SpecBase
 import controllers.item.documents.index.routes
 import generators.Generators
-import models.{Document, Index, Mode}
+import models.{Document, Index, Mode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.item.{AddDocumentsYesNoPage, InferredAddDocumentsYesNoPage}
 import pages.item.documents.index.DocumentPage
+import pages.item.{AddDocumentsYesNoPage, InferredAddDocumentsYesNoPage}
 import services.DocumentsService
 import viewmodels.ListItem
 
 class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   implicit private val mockDocumentsService: DocumentsService = mock[DocumentsService]
+
+  private def buildHelper(userAnswers: UserAnswers, mode: Mode, index: Index): DocumentAnswersHelper =
+    new DocumentAnswersHelper(mockDocumentsService)(userAnswers, mode, index)
 
   "DocumentAnswersHelper" - {
 
@@ -43,7 +46,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               when(mockDocumentsService.getConsignmentLevelDocuments(any()))
                 .thenReturn(Nil)
 
-              val helper = new DocumentAnswersHelper(emptyUserAnswers, mode, itemIndex)
+              val helper = buildHelper(emptyUserAnswers, mode, itemIndex)
               helper.consignmentLevelListItems mustBe Nil
           }
         }
@@ -55,7 +58,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
             when(mockDocumentsService.getConsignmentLevelDocuments(any()))
               .thenReturn(Seq(document1, document2))
 
-            val helper = new DocumentAnswersHelper(emptyUserAnswers, mode, itemIndex)
+            val helper = buildHelper(emptyUserAnswers, mode, itemIndex)
             helper.consignmentLevelListItems mustBe Seq(
               ListItem(
                 name = document1.toString,
@@ -80,7 +83,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
             mode =>
               val userAnswers = emptyUserAnswers
 
-              val helper = new DocumentAnswersHelper(userAnswers, mode, itemIndex)
+              val helper = buildHelper(userAnswers, mode, itemIndex)
               helper.listItems mustBe Nil
           }
         }
@@ -97,7 +100,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
                 .setValue(AddDocumentsYesNoPage(itemIndex), true)
                 .setValue(DocumentPage(itemIndex, Index(0)), document.uuid)
 
-              val helper = new DocumentAnswersHelper(userAnswers, mode, itemIndex)
+              val helper = buildHelper(userAnswers, mode, itemIndex)
               helper.listItems mustBe Seq(
                 Right(
                   ListItem(
@@ -120,7 +123,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
                 .setValue(InferredAddDocumentsYesNoPage(itemIndex), true)
                 .setValue(DocumentPage(itemIndex, Index(0)), document.uuid)
 
-              val helper = new DocumentAnswersHelper(userAnswers, mode, itemIndex)
+              val helper = buildHelper(userAnswers, mode, itemIndex)
               helper.listItems mustBe Seq(
                 Right(
                   ListItem(
@@ -142,7 +145,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               val userAnswers = emptyUserAnswers
                 .setValue(DocumentPage(itemIndex, Index(0)), document.uuid)
 
-              val helper = new DocumentAnswersHelper(userAnswers, mode, itemIndex)
+              val helper = buildHelper(userAnswers, mode, itemIndex)
               helper.listItems mustBe Seq(
                 Right(
                   ListItem(
@@ -169,7 +172,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
                 .setValue(DocumentPage(itemIndex, Index(0)), document1.uuid)
                 .setValue(DocumentPage(itemIndex, Index(1)), document2.uuid)
 
-              val helper = new DocumentAnswersHelper(userAnswers, mode, itemIndex)
+              val helper = buildHelper(userAnswers, mode, itemIndex)
               helper.listItems mustBe Seq(
                 Right(
                   ListItem(
@@ -201,7 +204,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
                 .setValue(DocumentPage(itemIndex, Index(0)), document1.uuid)
                 .setValue(DocumentPage(itemIndex, Index(1)), document2.uuid)
 
-              val helper = new DocumentAnswersHelper(userAnswers, mode, itemIndex)
+              val helper = buildHelper(userAnswers, mode, itemIndex)
               helper.listItems mustBe Seq(
                 Right(
                   ListItem(
@@ -232,7 +235,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
                 .setValue(DocumentPage(itemIndex, Index(0)), document1.uuid)
                 .setValue(DocumentPage(itemIndex, Index(1)), document2.uuid)
 
-              val helper = new DocumentAnswersHelper(userAnswers, mode, itemIndex)
+              val helper = buildHelper(userAnswers, mode, itemIndex)
               helper.listItems mustBe Seq(
                 Right(
                   ListItem(

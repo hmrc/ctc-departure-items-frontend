@@ -20,15 +20,13 @@ import config.{FrontendAppConfig, PhaseConfig}
 import controllers.actions.*
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.AddAnotherFormProvider
-import models.requests.DataRequest
-import models.{Document, Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
 import pages.item.documents.AddAnotherDocumentPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.DocumentsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.item.documents.AddAnotherDocumentViewModel
 import viewmodels.item.documents.AddAnotherDocumentViewModel.AddAnotherDocumentViewModelProvider
@@ -43,7 +41,6 @@ class AddAnotherDocumentController @Inject() (
   actions: Actions,
   navigatorProvider: ItemNavigatorProvider,
   formProvider: AddAnotherFormProvider,
-  service: DocumentsService,
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherDocumentView,
   viewModelProvider: AddAnotherDocumentViewModelProvider
@@ -54,12 +51,9 @@ class AddAnotherDocumentController @Inject() (
   private def form(viewModel: AddAnotherDocumentViewModel): Form[Boolean] =
     formProvider(viewModel.prefix, viewModel.allowMore)
 
-  private def documents(itemIndex: Index)(implicit request: DataRequest[?]): Seq[Document] =
-    service.getDocuments(request.userAnswers, itemIndex, None).values
-
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      val viewModel = viewModelProvider(request.userAnswers, mode, itemIndex, documents(itemIndex))
+      val viewModel = viewModelProvider(request.userAnswers, mode, itemIndex)
       viewModel.count match {
         case 0 =>
           Redirect(controllers.item.routes.AddDocumentsYesNoController.onPageLoad(lrn, mode, itemIndex))
@@ -70,7 +64,7 @@ class AddAnotherDocumentController @Inject() (
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      val viewModel = viewModelProvider(request.userAnswers, mode, itemIndex, documents(itemIndex))
+      val viewModel = viewModelProvider(request.userAnswers, mode, itemIndex)
       form(viewModel)
         .bindFromRequest()
         .fold(

@@ -20,7 +20,7 @@ import config.{FrontendAppConfig, PhaseConfig}
 import controllers.actions.*
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.DocumentFormProvider
-import models.{Index, ItemLevelDocuments, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{DocumentNavigatorProvider, UserAnswersNavigator}
 import pages.item.documents.index.DocumentPage
 import play.api.Logging
@@ -59,7 +59,7 @@ class DocumentController @Inject() (
         case Nil =>
           Ok(noDocumentsAvailableView(lrn, itemIndex, documentIndex))
         case values =>
-          val itemLevelDocuments = ItemLevelDocuments(request.userAnswers, itemIndex, documentIndex)(service)
+          val itemLevelDocuments = service.getItemLevelDocuments(request.userAnswers, itemIndex, Some(documentIndex))
           val form               = formProvider(prefix, documentList, itemLevelDocuments)(config)
           val preparedForm = request.userAnswers.get(DocumentPage(itemIndex, documentIndex)) match {
             case None => form
@@ -76,7 +76,7 @@ class DocumentController @Inject() (
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
       val documentList       = service.getDocuments(request.userAnswers, itemIndex, Some(documentIndex))
-      val itemLevelDocuments = ItemLevelDocuments(request.userAnswers, itemIndex, documentIndex)(service)
+      val itemLevelDocuments = service.getItemLevelDocuments(request.userAnswers, itemIndex, Some(documentIndex))
       val form               = formProvider(prefix, documentList, itemLevelDocuments)(config)
       form
         .bindFromRequest()

@@ -18,7 +18,7 @@ package viewmodels.item.documents
 
 import base.SpecBase
 import generators.Generators
-import models.{Document, Index, Mode}
+import models.{Document, Index, ItemLevelDocuments, Mode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -43,12 +43,19 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with BeforeAndAfterEach w
       "at item level" in {
         forAll(arbitrary[Mode], arbitrary[Document]) {
           (mode, document) =>
-            when(mockDocumentsService.getDocument(any(), any(), any())).thenReturn(Some(document))
-            when(mockDocumentsService.getConsignmentLevelDocuments(any())).thenReturn(Nil)
+            when(mockDocumentsService.getDocument(any(), any(), any()))
+              .thenReturn(Some(document))
+
+            when(mockDocumentsService.getConsignmentLevelDocuments(any()))
+              .thenReturn(Nil)
+
+            when(mockDocumentsService.getItemLevelDocuments(any(), any(), any()))
+              .thenReturn(ItemLevelDocuments(Seq(document)))
 
             val userAnswers = emptyUserAnswers.setValue(DocumentPage(itemIndex, documentIndex), document.uuid)
 
-            val result = new AddAnotherDocumentViewModelProvider().apply(userAnswers, mode, itemIndex, Nil)
+            val viewModelProvider = new AddAnotherDocumentViewModelProvider(mockDocumentsService)
+            val result            = viewModelProvider.apply(userAnswers, mode, itemIndex)
 
             result.listItems.length mustBe 1
             result.consignmentLevelDocumentsListItems.length mustBe 0
@@ -62,10 +69,17 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with BeforeAndAfterEach w
       "at consignment level" in {
         forAll(arbitrary[Mode], arbitrary[Document]) {
           (mode, document) =>
-            when(mockDocumentsService.getDocument(any(), any(), any())).thenReturn(None)
-            when(mockDocumentsService.getConsignmentLevelDocuments(any())).thenReturn(Seq(document))
+            when(mockDocumentsService.getDocument(any(), any(), any()))
+              .thenReturn(None)
 
-            val result = new AddAnotherDocumentViewModelProvider().apply(emptyUserAnswers, mode, itemIndex, Nil)
+            when(mockDocumentsService.getConsignmentLevelDocuments(any()))
+              .thenReturn(Seq(document))
+
+            when(mockDocumentsService.getItemLevelDocuments(any(), any(), any()))
+              .thenReturn(ItemLevelDocuments(Nil))
+
+            val viewModelProvider = new AddAnotherDocumentViewModelProvider(mockDocumentsService)
+            val result            = viewModelProvider.apply(emptyUserAnswers, mode, itemIndex)
 
             result.consignmentLevelDocumentsListItems.length mustBe 1
             result.listItems.length mustBe 0
@@ -85,13 +99,19 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with BeforeAndAfterEach w
             .thenReturn(Some(document1))
             .thenReturn(Some(document2))
 
-          when(mockDocumentsService.getConsignmentLevelDocuments(any())).thenReturn(Seq(document3))
+          when(mockDocumentsService.getConsignmentLevelDocuments(any()))
+            .thenReturn(Seq(document3))
+
+          when(mockDocumentsService.getItemLevelDocuments(any(), any(), any()))
+            .thenReturn(ItemLevelDocuments(Seq(document1, document2)))
 
           val userAnswers = emptyUserAnswers
             .setValue(DocumentPage(itemIndex, Index(0)), document1.uuid)
             .setValue(DocumentPage(itemIndex, Index(1)), document2.uuid)
 
-          val result = new AddAnotherDocumentViewModelProvider().apply(userAnswers, mode, itemIndex, Nil)
+          val viewModelProvider = new AddAnotherDocumentViewModelProvider(mockDocumentsService)
+          val result            = viewModelProvider.apply(userAnswers, mode, itemIndex)
+
           result.listItems.length mustBe 2
           result.consignmentLevelDocumentsListItems.length mustBe 1
           result.title mustBe s"You have attached 3 documents to this item"
@@ -109,13 +129,19 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with BeforeAndAfterEach w
               .thenReturn(Some(document1))
               .thenReturn(Some(document2))
 
-            when(mockDocumentsService.getConsignmentLevelDocuments(any())).thenReturn(Seq(document3))
+            when(mockDocumentsService.getConsignmentLevelDocuments(any()))
+              .thenReturn(Seq(document3))
+
+            when(mockDocumentsService.getItemLevelDocuments(any(), any(), any()))
+              .thenReturn(ItemLevelDocuments(Seq(document1, document2)))
 
             val userAnswers = emptyUserAnswers
               .setValue(DocumentPage(itemIndex, Index(0)), document1.uuid)
               .setValue(DocumentPage(itemIndex, Index(1)), document2.uuid)
 
-            val result = new AddAnotherDocumentViewModelProvider().apply(userAnswers, mode, itemIndex, Nil)
+            val viewModelProvider = new AddAnotherDocumentViewModelProvider(mockDocumentsService)
+            val result            = viewModelProvider.apply(userAnswers, mode, itemIndex)
+
             result.listItems.length mustBe 2
             result.consignmentLevelDocumentsListItems.length mustBe 1
             result.nextIndex mustBe Index(2)
