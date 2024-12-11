@@ -21,8 +21,8 @@ import models.{Index, UserAnswers}
 import play.api.i18n.Messages
 import services.{DocumentsService, TransportEquipmentService}
 import utils.cyaHelpers.item.ItemAnswersHelper
+import viewmodels.*
 import viewmodels.sections.Section
-import viewmodels._
 
 import javax.inject.Inject
 
@@ -30,25 +30,14 @@ case class ItemAnswersViewModel(sections: Seq[Section])
 
 object ItemAnswersViewModel {
 
-  def apply(
-    userAnswers: UserAnswers,
-    itemIndex: Index
-  )(implicit
-    messages: Messages,
-    config: FrontendAppConfig,
-    documentsService: DocumentsService,
-    transportEquipmentService: TransportEquipmentService,
-    phaseConfig: PhaseConfig
-  ): ItemAnswersViewModel =
-    new ItemAnswersViewModelProvider().apply(userAnswers, itemIndex)
-
-  class ItemAnswersViewModelProvider @Inject() (implicit documentsService: DocumentsService, transportEquipmentService: TransportEquipmentService) {
+  class ItemAnswersViewModelProvider @Inject() (documentsService: DocumentsService, transportEquipmentService: TransportEquipmentService) {
 
     // scalastyle:off method.length
-    def apply(userAnswers: UserAnswers,
-              itemIndex: Index
+    def apply(
+      userAnswers: UserAnswers,
+      itemIndex: Index
     )(implicit messages: Messages, config: FrontendAppConfig, phaseConfig: PhaseConfig): ItemAnswersViewModel = {
-      val helper = new ItemAnswersHelper(userAnswers, itemIndex)
+      val helper = new ItemAnswersHelper(documentsService, transportEquipmentService)(userAnswers, itemIndex)
 
       val firstItemSection = Section(
         rows = Seq(

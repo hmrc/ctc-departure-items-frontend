@@ -16,16 +16,15 @@
 
 package generators
 
-import models.Document
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.FormError
 import play.api.mvc.Call
 import play.twirl.api.Html
-import uk.gov.hmrc.govukfrontend.views.Aliases._
-import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-import viewmodels.item.additionalReference.{AddAnotherAdditionalReferenceViewModel, AdditionalReferenceNumberViewModel}
+import uk.gov.hmrc.govukfrontend.views.Aliases.*
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits.*
 import viewmodels.item.additionalInformation.AddAnotherAdditionalInformationViewModel
+import viewmodels.item.additionalReference.{AddAnotherAdditionalReferenceViewModel, AdditionalReferenceNumberViewModel}
 import viewmodels.item.dangerousGoods.AddAnotherDangerousGoodsViewModel
 import viewmodels.item.documents.AddAnotherDocumentViewModel
 import viewmodels.item.packages.AddAnotherPackageViewModel
@@ -195,10 +194,9 @@ trait ViewModelGenerators {
     for {
       listItems                          <- listWithMaxLength[ListItem]()
       onSubmitCall                       <- arbitrary[Call]
-      documents                          <- listWithMaxLength[Document]()
       consignmentLevelDocumentsListItems <- arbitrary[Seq[ListItem]]
       allowMore                          <- arbitrary[Boolean]
-    } yield AddAnotherDocumentViewModel(listItems, onSubmitCall, documents, consignmentLevelDocumentsListItems, allowMore)
+    } yield AddAnotherDocumentViewModel(listItems, onSubmitCall, consignmentLevelDocumentsListItems, allowMore)
   }
 
   implicit lazy val arbitraryAddAnotherAdditionalReferenceViewModel: Arbitrary[AddAnotherAdditionalReferenceViewModel] = Arbitrary {

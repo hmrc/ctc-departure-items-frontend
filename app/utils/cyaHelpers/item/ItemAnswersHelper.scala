@@ -25,7 +25,7 @@ import models.journeyDomain.item.packages.PackageDomain
 import models.journeyDomain.item.supplyChainActors.SupplyChainActorDomain
 import models.reference.{Country, TransportChargesMethodOfPayment}
 import models.{CheckMode, DeclarationTypeItemLevel, DynamicAddress, Index, SubmissionState, UserAnswers}
-import pages.item._
+import pages.item.*
 import pages.sections.additionalInformation.AdditionalInformationListSection
 import pages.sections.additionalReference.AdditionalReferencesSection
 import pages.sections.dangerousGoods.DangerousGoodsListSection
@@ -35,7 +35,7 @@ import pages.sections.supplyChainActors.SupplyChainActorsSection
 import play.api.i18n.Messages
 import services.{DocumentsService, TransportEquipmentService}
 import uk.gov.hmrc.govukfrontend.views.Aliases.Value
-import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.cyaHelpers.AnswersHelper
 import viewmodels.Link
@@ -44,6 +44,9 @@ import java.util.UUID
 
 // scalastyle:off number.of.methods
 class ItemAnswersHelper(
+  documentsService: DocumentsService,
+  transportEquipmentService: TransportEquipmentService
+)(
   userAnswers: UserAnswers,
   itemIndex: Index
 )(implicit messages: Messages, config: FrontendAppConfig, phaseConfig: PhaseConfig)
@@ -57,7 +60,7 @@ class ItemAnswersHelper(
     args = itemIndex.display
   )
 
-  def transportEquipment(implicit transportEquipmentService: TransportEquipmentService): Option[SummaryListRow] =
+  def transportEquipment: Option[SummaryListRow] =
     transportEquipmentService.getTransportEquipment(userAnswers, itemIndex).flatMap {
       transportEquipment =>
         getAnswerAndBuildRow[UUID](
@@ -287,10 +290,10 @@ class ItemAnswersHelper(
     args = itemIndex.display
   )
 
-  def documents(implicit documentsService: DocumentsService): Seq[SummaryListRow] =
+  def documents: Seq[SummaryListRow] =
     getAnswersAndBuildSectionRows(DocumentsSection(itemIndex))(document)
 
-  def document(documentIndex: Index)(implicit documentsService: DocumentsService): Option[SummaryListRow] =
+  def document(documentIndex: Index): Option[SummaryListRow] =
     documentsService.getDocument(userAnswers, itemIndex, documentIndex).flatMap {
       document =>
         getAnswerAndBuildSectionRow[DocumentDomain](
@@ -301,7 +304,7 @@ class ItemAnswersHelper(
         )(DocumentDomain.userAnswersReader(itemIndex, documentIndex).apply(Nil))
     }
 
-  def consignmentDocuments(implicit documentsService: DocumentsService): Seq[SummaryListRow] =
+  def consignmentDocuments: Seq[SummaryListRow] =
     documentsService.getConsignmentLevelDocuments(userAnswers).zipWithIndex.map {
       case (document, i) =>
         val consignmentIndex = Index(position = i)

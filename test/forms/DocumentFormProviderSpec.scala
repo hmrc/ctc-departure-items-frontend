@@ -36,7 +36,7 @@ class DocumentFormProviderSpec extends SpecBase with StringFieldBehaviours with 
   private val selectableList = SelectableList(Seq(selectable1, selectable2))
   private val arg            = Gen.alphaNumStr.sample.value
 
-  private val itemLevelDocuments = ItemLevelDocuments()
+  private val itemLevelDocuments = ItemLevelDocuments(Nil)
 
   private val form = new DocumentFormProvider()(prefix, selectableList, itemLevelDocuments, arg)
 

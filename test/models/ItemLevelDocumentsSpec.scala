@@ -19,9 +19,7 @@ package models
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import config.FrontendAppConfig
 import generators.Generators
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
-import org.scalacheck.Arbitrary.arbitrary
+import org.mockito.Mockito.reset
 import org.scalacheck.Gen
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -38,96 +36,6 @@ class ItemLevelDocumentsSpec extends SpecBase with AppWithDefaultMockFixtures wi
   }
 
   "Item Level Documents" - {
-
-    "must return counts of each document type at item level" - {
-
-      "when there is a previous document" - {
-
-        "and not providing a document index" in {
-          forAll(arbitrary[UserAnswers], arbitrary[Document](arbitraryPreviousDocument)) {
-            (userAnswers, document) =>
-              when(mockDocumentsService.numberOfDocuments(any(), any())).thenReturn(1)
-              when(mockDocumentsService.getDocument(any(), any(), any())).thenReturn(Some(document))
-
-              val result = ItemLevelDocuments.apply(userAnswers, itemIndex)
-              result.previous mustBe 1
-              result.support mustBe 0
-              result.transport mustBe 0
-          }
-        }
-
-        "and providing a document index" in {
-          forAll(arbitrary[UserAnswers], arbitrary[Document](arbitraryPreviousDocument)) {
-            (userAnswers, document) =>
-              when(mockDocumentsService.numberOfDocuments(any(), any())).thenReturn(1)
-              when(mockDocumentsService.getDocument(any(), any(), any())).thenReturn(Some(document))
-
-              val result = ItemLevelDocuments.apply(userAnswers, itemIndex, Some(documentIndex))
-              result.previous mustBe 0
-              result.support mustBe 0
-              result.transport mustBe 0
-          }
-        }
-      }
-
-      "when there is a transport document" - {
-
-        "and not providing a document index" in {
-          forAll(arbitrary[UserAnswers], arbitrary[Document](arbitraryTransportDocument)) {
-            (userAnswers, document) =>
-              when(mockDocumentsService.numberOfDocuments(any(), any())).thenReturn(1)
-              when(mockDocumentsService.getDocument(any(), any(), any())).thenReturn(Some(document))
-
-              val result = ItemLevelDocuments.apply(userAnswers, itemIndex)
-              result.previous mustBe 0
-              result.support mustBe 0
-              result.transport mustBe 1
-          }
-        }
-
-        "and providing a document index" in {
-          forAll(arbitrary[UserAnswers], arbitrary[Document](arbitraryTransportDocument)) {
-            (userAnswers, document) =>
-              when(mockDocumentsService.numberOfDocuments(any(), any())).thenReturn(1)
-              when(mockDocumentsService.getDocument(any(), any(), any())).thenReturn(Some(document))
-
-              val result = ItemLevelDocuments.apply(userAnswers, itemIndex, Some(documentIndex))
-              result.previous mustBe 0
-              result.support mustBe 0
-              result.transport mustBe 0
-          }
-        }
-      }
-
-      "when there is a supporting document" - {
-
-        "and not providing a document index" in {
-          forAll(arbitrary[UserAnswers], arbitrary[Document](arbitrarySupportingDocument)) {
-            (userAnswers, document) =>
-              when(mockDocumentsService.numberOfDocuments(any(), any())).thenReturn(1)
-              when(mockDocumentsService.getDocument(any(), any(), any())).thenReturn(Some(document))
-
-              val result = ItemLevelDocuments.apply(userAnswers, itemIndex)
-              result.previous mustBe 0
-              result.support mustBe 1
-              result.transport mustBe 0
-          }
-        }
-
-        "and providing a document index" in {
-          forAll(arbitrary[UserAnswers], arbitrary[Document](arbitrarySupportingDocument)) {
-            (userAnswers, document) =>
-              when(mockDocumentsService.numberOfDocuments(any(), any())).thenReturn(1)
-              when(mockDocumentsService.getDocument(any(), any(), any())).thenReturn(Some(document))
-
-              val result = ItemLevelDocuments.apply(userAnswers, itemIndex, Some(documentIndex))
-              result.previous mustBe 0
-              result.support mustBe 0
-              result.transport mustBe 0
-          }
-        }
-      }
-    }
 
     "must not allow addition of another document" - {
       "when current amount is maximum amount" - {

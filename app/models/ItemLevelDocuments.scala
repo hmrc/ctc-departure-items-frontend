@@ -18,7 +18,6 @@ package models
 
 import config.FrontendAppConfig
 import models.DocumentType.{Previous, Support, Transport}
-import services.DocumentsService
 
 case class ItemLevelDocuments(
   previous: Int,
@@ -38,25 +37,10 @@ case class ItemLevelDocuments(
 
 object ItemLevelDocuments {
 
-  def apply(): ItemLevelDocuments = ItemLevelDocuments(0, 0, 0)
-
-  private def apply(values: (Int, Int, Int)): ItemLevelDocuments =
-    ItemLevelDocuments(values._1, values._2, values._3)
-
-  def apply(userAnswers: UserAnswers, itemIndex: Index, documentIndex: Index)(implicit documentsService: DocumentsService): ItemLevelDocuments =
-    ItemLevelDocuments(userAnswers, itemIndex, Some(documentIndex))
-
-  def apply(userAnswers: UserAnswers, itemIndex: Index, documentIndex: Option[Index] = None)(implicit documentsService: DocumentsService): ItemLevelDocuments =
-    (0 until documentsService.numberOfDocuments(userAnswers, itemIndex)).map(Index(_)).foldLeft(ItemLevelDocuments()) {
-      case (ItemLevelDocuments(previous, support, transport), index) if !documentIndex.contains(index) =>
-        lazy val documentType = documentsService.getDocument(userAnswers, itemIndex, index).map(_.`type`)
-        val values = documentType match {
-          case Some(Previous)  => (previous + 1, support, transport)
-          case Some(Support)   => (previous, support + 1, transport)
-          case Some(Transport) => (previous, support, transport + 1)
-          case _               => (previous, support, transport)
-        }
-        ItemLevelDocuments(values)
-      case (itemLevelDocuments, _) => itemLevelDocuments
-    }
+  def apply(itemLevelDocuments: Seq[Document]): ItemLevelDocuments =
+    new ItemLevelDocuments(
+      previous = itemLevelDocuments.count(_.`type` == Previous),
+      support = itemLevelDocuments.count(_.`type` == Support),
+      transport = itemLevelDocuments.count(_.`type` == Transport)
+    )
 }

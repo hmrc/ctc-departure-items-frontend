@@ -18,7 +18,7 @@ package viewmodels.item.documents
 
 import config.{FrontendAppConfig, PhaseConfig}
 import controllers.item.documents.routes
-import models.{Document, Index, ItemLevelDocuments, Mode, UserAnswers}
+import models.{Index, Mode, UserAnswers}
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import services.DocumentsService
@@ -30,7 +30,6 @@ import javax.inject.Inject
 case class AddAnotherDocumentViewModel(
   override val listItems: Seq[ListItem],
   onSubmitCall: Call,
-  documents: Seq[Document],
   consignmentLevelDocumentsListItems: Seq[ListItem],
   allowMoreDocuments: Boolean
 ) extends AddAnotherViewModel {
@@ -46,26 +45,25 @@ case class AddAnotherDocumentViewModel(
 
 object AddAnotherDocumentViewModel {
 
-  class AddAnotherDocumentViewModelProvider @Inject() (implicit documentsService: DocumentsService) {
+  class AddAnotherDocumentViewModelProvider @Inject() (documentsService: DocumentsService) {
 
-    def apply(userAnswers: UserAnswers, mode: Mode, itemIndex: Index, documents: Seq[Document])(implicit
-      messages: Messages,
-      config: FrontendAppConfig,
-      phaseConfig: PhaseConfig
-    ): AddAnotherDocumentViewModel = {
-      val helper = new DocumentAnswersHelper(userAnswers, mode, itemIndex)
+    def apply(
+      userAnswers: UserAnswers,
+      mode: Mode,
+      itemIndex: Index
+    )(implicit messages: Messages, config: FrontendAppConfig, phaseConfig: PhaseConfig): AddAnotherDocumentViewModel = {
+      val helper = new DocumentAnswersHelper(documentsService)(userAnswers, mode, itemIndex)
 
       val listItems = helper.listItems.collect {
         case Left(value)  => value
         case Right(value) => value
       }
 
-      val itemLevelDocuments = ItemLevelDocuments(userAnswers, itemIndex)
+      val itemLevelDocuments = documentsService.getItemLevelDocuments(userAnswers, itemIndex, None)
 
       new AddAnotherDocumentViewModel(
         listItems,
         onSubmitCall = routes.AddAnotherDocumentController.onSubmit(userAnswers.lrn, mode, itemIndex),
-        documents = documents,
         consignmentLevelDocumentsListItems = helper.consignmentLevelListItems,
         allowMoreDocuments = !itemLevelDocuments.cannotAddAnyMore
       )

@@ -16,24 +16,23 @@
 
 package services
 
-import models.{Document, Index, RichJsArray, RichOptionalJsArray, SelectableList, UserAnswers}
+import models.*
 import pages.item.documents.index.DocumentPage
-import pages.sections.documents.{DocumentsSection => ItemDocumentsSection}
+import pages.sections.documents.DocumentsSection as ItemDocumentsSection
 import pages.sections.external.DocumentsSection
 import play.api.libs.json.{JsArray, JsError, JsSuccess, Reads}
-import services.DocumentsService._
+import services.DocumentsService.*
 
 import java.util.UUID
 import javax.inject.Inject
 
-class DocumentsService @Inject() () {
+class DocumentsService @Inject() {
 
-  def numberOfDocuments(userAnswers: UserAnswers, itemIndex: Index): Int =
-    userAnswers.getArraySize(ItemDocumentsSection(itemIndex))
-
+  // these are the documents that were added in the documents section
   private def getDocuments(userAnswers: UserAnswers): Seq[Document] =
     userAnswers.get(DocumentsSection).validate[Seq[Document]].getOrElse(Nil)
 
+  // these are the documents that are available to add to this item
   def getDocuments(userAnswers: UserAnswers, itemIndex: Index, documentIndex: Option[Index]): SelectableList[Document] = {
     val documents         = getDocuments(userAnswers)
     val document          = documentIndex.flatMap(getDocument(userAnswers, itemIndex, _))
@@ -48,6 +47,23 @@ class DocumentsService @Inject() () {
     SelectableList(filteredDocuments)
   }
 
+  // these are the documents that have been added to this item
+  // we ignore the current document index, if provided
+  def getItemLevelDocuments(userAnswers: UserAnswers, itemIndex: Index, documentIndex: Option[Index]): ItemLevelDocuments = {
+    val numberOfDocuments = userAnswers.getArraySize(ItemDocumentsSection(itemIndex))
+    val itemLevelDocuments = (0 until numberOfDocuments).map(Index(_)).foldLeft[Seq[Document]](Nil) {
+      case (documents, index) if !documentIndex.contains(index) =>
+        getDocument(userAnswers, itemIndex, index) match {
+          case Some(document) => documents :+ document
+          case None           => documents
+        }
+      case (documents, _) =>
+        documents
+    }
+    ItemLevelDocuments(itemLevelDocuments)
+  }
+
+  // these are the documents that were added to all items in the documents section
   def getConsignmentLevelDocuments(userAnswers: UserAnswers): Seq[Document] =
     getDocuments(userAnswers).filter(_.attachToAllItems)
 
