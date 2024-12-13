@@ -25,9 +25,10 @@ import navigation.{DocumentNavigatorProvider, UserAnswersNavigator}
 import pages.item.documents.index.DocumentPage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.DocumentsService
+import uk.gov.hmrc.http.HttpVerbs.GET
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.item.documents.index.{DocumentView, NoDocumentsToAttachView}
 
@@ -95,6 +96,10 @@ class DocumentController @Inject() (
 
   def redirectToDocuments(lrn: LocalReferenceNumber, itemIndex: Index, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      Redirect(config.documentsFrontendUrl(lrn))
+      if (service.isConsignmentPreviousDocumentRequired(request.userAnswers, itemIndex)) {
+        Redirect(Call(GET, "#")) // Redirect to new endpoint in documents frontend
+      } else {
+        Redirect(config.documentsFrontendUrl(lrn))
+      }
   }
 }

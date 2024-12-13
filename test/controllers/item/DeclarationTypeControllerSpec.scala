@@ -17,7 +17,6 @@
 package controllers.item
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import config.TestConstants.{declarationTypeItemValues, declarationTypeValues}
 import forms.EnumerableFormProvider
 import models.{DeclarationTypeItemLevel, NormalMode}
 import navigation.ItemNavigatorProvider
@@ -35,6 +34,12 @@ import scala.concurrent.Future
 
 class DeclarationTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
+  private val declarationTypeValues: Seq[DeclarationTypeItemLevel] = Seq(
+    DeclarationTypeItemLevel("T1", "Goods not having the customs status of..."),
+    DeclarationTypeItemLevel("T2", "Goods having the customs status of..."),
+    DeclarationTypeItemLevel("T2F", "Goods required to move under the...")
+  )
+
   private val formProvider              = new EnumerableFormProvider()
   private val form                      = formProvider[DeclarationTypeItemLevel]("item.declarationType")(declarationTypeValues)
   private val mode                      = NormalMode
@@ -51,7 +56,7 @@ class DeclarationTypeControllerSpec extends SpecBase with AppWithDefaultMockFixt
     super.beforeEach()
     reset(mockDeclarationService)
     when(mockDeclarationService.getDeclarationTypeItemLevel()(any()))
-      .thenReturn(Future.successful(declarationTypeItemValues))
+      .thenReturn(Future.successful(declarationTypeValues))
   }
 
   "DeclarationType Controller" - {
@@ -70,7 +75,7 @@ class DeclarationTypeControllerSpec extends SpecBase with AppWithDefaultMockFixt
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, declarationTypeItemValues, mode, itemIndex)(request, messages).toString
+        view(form, lrn, declarationTypeValues, mode, itemIndex)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -89,7 +94,7 @@ class DeclarationTypeControllerSpec extends SpecBase with AppWithDefaultMockFixt
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, declarationTypeItemValues, mode, itemIndex)(request, messages).toString
+        view(filledForm, lrn, declarationTypeValues, mode, itemIndex)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -123,7 +128,7 @@ class DeclarationTypeControllerSpec extends SpecBase with AppWithDefaultMockFixt
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, declarationTypeItemValues, mode, itemIndex)(request, messages).toString
+        view(boundForm, lrn, declarationTypeValues, mode, itemIndex)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

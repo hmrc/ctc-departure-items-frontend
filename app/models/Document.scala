@@ -54,4 +54,33 @@ object Document {
 
     readsForKey("type") orElse readsForKey("previousDocumentType")
   }
+
+  implicit val documentsReads: Reads[Seq[Document]] = Reads {
+    case x: JsArray =>
+      JsSuccess(x.validateAsListOf[Document])
+    case _ =>
+      JsError("DocumentsService::documentsReads: Failed to read documents from cache")
+  }
+
+  implicit val itemDocumentsReads: Reads[Seq[UUID]] = {
+    case JsArray(values) =>
+      JsSuccess(
+        values.flatMap {
+          value => (value \ "document").validate[UUID].asOpt
+        }.toSeq
+      )
+    case _ =>
+      JsError("DocumentsService::itemDocumentUuidsReads: Failed to read document UUIDs from cache")
+  }
+
+  implicit class RichDocuments(value: Seq[Document]) {
+
+    private def isConsignmentPreviousDocumentPresent: Boolean =
+      value.exists {
+        document => document.attachToAllItems && document.`type` == Previous
+      }
+
+    def noConsignmentPreviousDocumentPresent: Boolean =
+      !isConsignmentPreviousDocumentPresent
+  }
 }

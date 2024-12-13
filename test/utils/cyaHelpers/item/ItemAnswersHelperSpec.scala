@@ -18,23 +18,22 @@ package utils.cyaHelpers.item
 
 import base.SpecBase
 import config.PhaseConfig
-import config.TestConstants.declarationTypeItemValues
-import controllers.item.additionalInformation.index.routes._
-import controllers.item.additionalReference.index.routes._
-import controllers.item.consignee.routes._
+import controllers.item.additionalInformation.index.routes.*
+import controllers.item.additionalReference.index.routes.*
+import controllers.item.consignee.routes.*
 import controllers.item.dangerousGoods.index.routes.UNNumberController
 import controllers.item.documents.index.routes.DocumentController
 import controllers.item.packages.index.routes.PackageTypeController
-import controllers.item.routes._
+import controllers.item.routes.*
 import controllers.item.supplyChainActors.index.routes.SupplyChainActorTypeController
 import generators.Generators
-import models.reference._
-import models.{CheckMode, Document, DynamicAddress, Index, Mode, Phase, SubmissionState, TransportEquipment}
+import models.reference.*
+import models.{CheckMode, DeclarationTypeItemLevel, Document, DynamicAddress, Index, Mode, Phase, SubmissionState, TransportEquipment, UserAnswers}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.item._
+import pages.item.*
 import pages.item.additionalInformation.index.{AdditionalInformationPage, AdditionalInformationTypePage}
 import pages.item.additionalReference.index.{AddAdditionalReferenceNumberYesNoPage, AdditionalReferenceNumberPage, AdditionalReferencePage}
 import pages.item.dangerousGoods.index.UNNumberPage
@@ -50,7 +49,6 @@ import pages.sections.supplyChainActors.SupplyChainActorSection
 import play.api.libs.json.Json
 import services.{DocumentsService, TransportEquipmentService}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import models.UserAnswers
 
 class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -148,7 +146,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
       "must return Some(Row)" - {
         "when DeclarationTypePage is defined" in {
           val userAnswers = emptyUserAnswers
-          forAll(Gen.oneOf(declarationTypeItemValues)) {
+          forAll(arbitrary[DeclarationTypeItemLevel]) {
             declarationType =>
               val answers = userAnswers.setValue(DeclarationTypePage(itemIndex), declarationType)
 

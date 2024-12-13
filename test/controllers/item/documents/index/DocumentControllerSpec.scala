@@ -24,6 +24,7 @@ import navigation.DocumentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.item.documents.index.DocumentPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -34,7 +35,7 @@ import views.html.item.documents.index.{DocumentView, NoDocumentsToAttachView}
 
 import scala.concurrent.Future
 
-class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   private val document1    = arbitrary[Document](arbitrarySupportingDocument).sample.value
   private val document2    = arbitrary[Document](arbitraryTransportDocument).sample.value
@@ -191,18 +192,38 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
     }
 
     "redirectToDocuments" - {
-      "must update user answers and redirect" in {
-        lazy val redirectToDocuments = routes.DocumentController.redirectToDocuments(lrn, itemIndex, documentIndex).url
+      lazy val redirectToDocuments = routes.DocumentController.redirectToDocuments(lrn, itemIndex, documentIndex).url
 
-        setExistingUserAnswers(emptyUserAnswers)
+      "when consignment previous document is required" - {
+        "redirect to previous document type page at next index" in {
+          setExistingUserAnswers(emptyUserAnswers)
 
-        val request = FakeRequest(GET, redirectToDocuments)
+          when(mockDocumentsService.isConsignmentPreviousDocumentRequired(any(), any()))
+            .thenReturn(true)
 
-        val result = route(app, request).value
+          val request = FakeRequest(GET, redirectToDocuments)
+          val result  = route(app, request).value
 
-        status(result) mustEqual SEE_OTHER
+          status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.documentsFrontendUrl(lrn)
+          redirectLocation(result).value mustEqual "#"
+        }
+      }
+
+      "when consignment previous document is not required" - {
+        "must redirect to the 'add another' page" in {
+          setExistingUserAnswers(emptyUserAnswers)
+
+          when(mockDocumentsService.isConsignmentPreviousDocumentRequired(any(), any()))
+            .thenReturn(false)
+
+          val request = FakeRequest(GET, redirectToDocuments)
+          val result  = route(app, request).value
+
+          status(result) mustEqual SEE_OTHER
+
+          redirectLocation(result).value mustEqual frontendAppConfig.documentsFrontendUrl(lrn)
+        }
       }
     }
   }

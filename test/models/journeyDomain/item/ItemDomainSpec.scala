@@ -20,7 +20,7 @@ import base.SpecBase
 import config.Constants.CountryCode.*
 import config.Constants.DeclarationType.*
 import config.Constants.SecurityType.*
-import config.{PhaseConfig, TestConstants}
+import config.PhaseConfig
 import generators.Generators
 import models.DeclarationTypeItemLevel.*
 import models.journeyDomain.item.additionalInformation.{AdditionalInformationDomain, AdditionalInformationListDomain}
@@ -1558,12 +1558,17 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
       )
       val nonGgbCustomsOfficeGen = nonEmptyString.retryUntil(!_.startsWith(GB))
 
-      val genForT2OrT2FConsignmentLevel                         = Gen.oneOf(T2, T2F)
-      val genForT2OrT2FItemLevel: Gen[DeclarationTypeItemLevel] = Gen.oneOf(TestConstants.declarationTypeT2, TestConstants.declarationTypeT2F)
+      val genForT2OrT2FConsignmentLevel =
+        Gen.oneOf(T2, T2F)
+
+      val genForT2OrT2FItemLevel: Gen[DeclarationTypeItemLevel] =
+        arbitrary[DeclarationTypeItemLevel](arbitraryT2OrT2FDeclarationType)
+
       val genForNonT2OrT2F: Gen[DeclarationTypeItemLevel] =
-        Gen.oneOf(TestConstants.declarationTypeT1, TestConstants.declarationTypeTIR, TestConstants.declarationTypeT)
-      val genForOtherConsignmentLevel: Gen[String]            = Gen.oneOf(TIR, T1)
-      val genForOtherItemLevel: Gen[DeclarationTypeItemLevel] = Gen.oneOf(TestConstants.declarationTypeTIR, TestConstants.declarationTypeT1)
+        arbitrary[DeclarationTypeItemLevel](arbitraryT1DeclarationType)
+
+      val genForOtherConsignmentLevel: Gen[String] =
+        Gen.oneOf(TIR, T1)
 
       "can be read from user answers" - {
 
@@ -1908,7 +1913,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
             "and AddDocumentsYesNoPage is true" in {
 
-              forAll(gbCustomsOfficeGen, genForOtherConsignmentLevel, genForOtherItemLevel, arbitrary[UUID]) {
+              forAll(gbCustomsOfficeGen, genForOtherConsignmentLevel, genForNonT2OrT2F, arbitrary[UUID]) {
                 (customsOfficeId, declarationTypeConsignmentLevel, declarationTypeItemLevel, documentUUID) =>
                   val userAnswers = emptyUserAnswers
                     .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
@@ -1939,7 +1944,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
             "and AddDocumentsYesNoPage is false" in {
 
-              forAll(gbCustomsOfficeGen, genForOtherConsignmentLevel, genForOtherItemLevel) {
+              forAll(gbCustomsOfficeGen, genForOtherConsignmentLevel, genForNonT2OrT2F) {
                 (customsOfficeId, declarationTypeConsignmentLevel, declarationTypeItemLevel) =>
                   val userAnswers = emptyUserAnswers
                     .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
@@ -1960,7 +1965,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           "and ConsignmentAddDocumentsPage is false" in {
 
-            forAll(gbCustomsOfficeGen, genForOtherConsignmentLevel, genForOtherItemLevel) {
+            forAll(gbCustomsOfficeGen, genForOtherConsignmentLevel, genForNonT2OrT2F) {
               (customsOfficeId, declarationTypeConsignmentLevel, declarationTypeItemLevel) =>
                 val userAnswers = emptyUserAnswers
                   .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)

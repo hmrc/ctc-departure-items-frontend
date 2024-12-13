@@ -16,19 +16,19 @@
 
 package generators
 
-import config.Constants.AdditionalInformation._
-import config.Constants.AdditionalReference._
-import config.TestConstants.declarationTypeItemValues
-import models.AddressLine.{Country => _, _}
+import config.Constants.AdditionalInformation.*
+import config.Constants.AdditionalReference.*
+import config.Constants.DeclarationType.*
+import models.*
+import models.AddressLine.{Country as _, *}
 import models.DocumentType.{Previous, Support, Transport}
 import models.LockCheck.{LockCheckFailure, Locked, Unlocked}
-import models._
-import models.reference._
+import models.reference.*
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
-import uk.gov.hmrc.http.HttpVerbs._
+import uk.gov.hmrc.http.HttpVerbs.*
 
 import java.util.UUID
 
@@ -58,12 +58,45 @@ trait ModelGenerators {
 
   implicit lazy val arbitraryDeclarationTypeItemLevel: Arbitrary[DeclarationTypeItemLevel] =
     Arbitrary {
-      Gen.oneOf(declarationTypeItemValues)
+      for {
+        code        <- Gen.oneOf(T1, T2, T2F)
+        description <- nonEmptyString
+      } yield DeclarationTypeItemLevel(
+        code = code,
+        description = description
+      )
+    }
+
+  lazy val arbitraryT2OrT2FDeclarationType: Arbitrary[DeclarationTypeItemLevel] =
+    Arbitrary {
+      for {
+        code        <- Gen.oneOf(T2, T2F)
+        description <- nonEmptyString
+      } yield DeclarationTypeItemLevel(
+        code = code,
+        description = description
+      )
+    }
+
+  lazy val arbitraryT1DeclarationType: Arbitrary[DeclarationTypeItemLevel] =
+    Arbitrary {
+      for {
+        code        <- Gen.const(T1)
+        description <- nonEmptyString
+      } yield DeclarationTypeItemLevel(
+        code = code,
+        description = description
+      )
     }
 
   lazy val arbitraryConsignmentDeclarationType: Arbitrary[String] =
     Arbitrary {
       Gen.oneOf("T", "T1", "T2", "T2F", "TIR")
+    }
+
+  lazy val arbitraryNonTConsignmentDeclarationType: Arbitrary[String] =
+    Arbitrary {
+      Gen.oneOf("T1", "T2", "T2F", "TIR")
     }
 
   lazy val arbitraryNonTDeclarationType: Arbitrary[String] =

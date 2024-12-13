@@ -17,14 +17,21 @@
 package services
 
 import base.SpecBase
+import config.Constants.DeclarationType.*
+import generators.Generators
 import models.DocumentType.Previous
-import models.{Document, Index, ItemLevelDocuments, SelectableList}
+import models.{DeclarationTypeItemLevel, Document, Index, ItemLevelDocuments, SelectableList}
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.external.*
+import pages.item.DeclarationTypePage
 import pages.item.documents.index.DocumentPage
-import play.api.libs.json.{JsObject, Json}
+import pages.sections.external
+import play.api.libs.json.{JsArray, JsObject, Json}
 
 import java.util.UUID
 
-class DocumentsServiceSpec extends SpecBase {
+class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   private val service = injector.instanceOf[DocumentsService]
 
@@ -776,6 +783,109 @@ class DocumentsServiceSpec extends SpecBase {
             val result = service.getItemLevelDocuments(userAnswers, Index(0), None)
 
             result mustBe ItemLevelDocuments(0, 0, 1)
+          }
+        }
+      }
+    }
+
+    "isConsignmentPreviousDocumentRequired" - {
+
+      "when consignment declaration type is T, item declaration type is T2 or T2F, office of departure in GB, and no consignment level previous documents" - {
+        "return true" in {
+          forAll(arbitrary[DeclarationTypeItemLevel](arbitraryT2OrT2FDeclarationType)) {
+            itemDeclarationType =>
+              val userAnswers = emptyUserAnswers
+                .setValue(TransitOperationDeclarationTypePage, T)
+                .setValue(DeclarationTypePage(Index(0)), itemDeclarationType)
+                .setValue(CustomsOfficeOfDepartureInCL112Page, true)
+
+              val result = service.isConsignmentPreviousDocumentRequired(userAnswers, itemIndex)
+
+              result mustEqual true
+          }
+        }
+      }
+
+      "when consignment declaration type is not T" - {
+        "must return false" in {
+          forAll(arbitrary[String](arbitraryNonTConsignmentDeclarationType), arbitrary[DeclarationTypeItemLevel]) {
+            (declarationType, itemDeclarationType) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(TransitOperationDeclarationTypePage, declarationType)
+                .setValue(DeclarationTypePage(Index(0)), itemDeclarationType)
+                .setValue(CustomsOfficeOfDepartureInCL112Page, true)
+
+              val result = service.isConsignmentPreviousDocumentRequired(userAnswers, itemIndex)
+
+              result mustEqual false
+          }
+        }
+      }
+
+      "when consignment declaration type is T, item declaration type is not T2 or T2F" - {
+        "must return false" in {
+          forAll(arbitrary[DeclarationTypeItemLevel](arbitraryT1DeclarationType)) {
+            itemDeclarationType =>
+              val userAnswers = emptyUserAnswers
+                .setValue(TransitOperationDeclarationTypePage, T)
+                .setValue(DeclarationTypePage(Index(0)), itemDeclarationType)
+                .setValue(CustomsOfficeOfDepartureInCL112Page, true)
+
+              val result = service.isConsignmentPreviousDocumentRequired(userAnswers, itemIndex)
+
+              result mustEqual false
+          }
+        }
+      }
+
+      "when consignment declaration type is T, item declaration type is T2 or T2F, office of departure not in GB" - {
+        "must return false" in {
+          forAll(arbitrary[DeclarationTypeItemLevel](arbitraryT2OrT2FDeclarationType)) {
+            itemDeclarationType =>
+              val userAnswers = emptyUserAnswers
+                .setValue(TransitOperationDeclarationTypePage, T)
+                .setValue(DeclarationTypePage(Index(0)), itemDeclarationType)
+                .setValue(CustomsOfficeOfDepartureInCL112Page, false)
+
+              val result = service.isConsignmentPreviousDocumentRequired(userAnswers, itemIndex)
+
+              result mustEqual false
+          }
+        }
+      }
+
+      "when consignment declaration type is T, item declaration type is T2 or T2F, office of departure in GB, and a consignment level previous document" - {
+        "must redirect to the 'add another' page" in {
+          forAll(arbitrary[DeclarationTypeItemLevel](arbitraryT2OrT2FDeclarationType)) {
+            itemDeclarationType =>
+              val documentsJson = Json
+                .parse("""
+                  |[
+                  |  {
+                  |    "attachToAllItems" : true,
+                  |    "type" : {
+                  |      "type" : "Previous",
+                  |      "code" : "Code",
+                  |      "description" : "Description"
+                  |    },
+                  |    "details" : {
+                  |      "documentReferenceNumber" : "Ref no.",
+                  |      "uuid" : "91631d90-e890-440a-9c0c-a7a88815ac4e"
+                  |    }
+                  |  }
+                  |]
+                  |""".stripMargin)
+                .as[JsArray]
+
+              val userAnswers = emptyUserAnswers
+                .setValue(TransitOperationDeclarationTypePage, T)
+                .setValue(DeclarationTypePage(Index(0)), itemDeclarationType)
+                .setValue(CustomsOfficeOfDepartureInCL112Page, true)
+                .setValue(external.DocumentsSection, documentsJson)
+
+              val result = service.isConsignmentPreviousDocumentRequired(userAnswers, itemIndex)
+
+              result mustEqual false
           }
         }
       }

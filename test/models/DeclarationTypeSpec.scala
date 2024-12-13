@@ -17,9 +17,8 @@
 package models
 
 import base.SpecBase
-import config.TestConstants.declarationTypeValues
 import generators.Generators
-import models.DeclarationTypeItemLevel._
+import models.DeclarationTypeItemLevel.*
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatest.OptionValues
@@ -50,7 +49,7 @@ class DeclarationTypeSpec extends AnyFreeSpec with Matchers with ScalaCheckPrope
 
     "must fail to deserialise invalid values" in {
 
-      val gen = arbitrary[String] suchThat (!declarationTypeValues.map(_.toString).contains(_))
+      val gen = arbitrary[String]
 
       forAll(gen) {
         invalidValue =>
