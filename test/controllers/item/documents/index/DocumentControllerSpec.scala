@@ -31,7 +31,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import services.DocumentsService
-import views.html.item.documents.index.{DocumentView, NoDocumentsToAttachView}
+import views.html.item.documents.index.{DocumentView, MustAttachPreviousDocumentView, NoDocumentsToAttachView}
 
 import scala.concurrent.Future
 
@@ -60,7 +60,27 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
     "must return OK and the correct view for a GET" - {
 
+      "when previous document required" in {
+
+        when(mockDocumentsService.isConsignmentPreviousDocumentRequired(any(), any())).thenReturn(true)
+
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(GET, documentRoute)
+
+        val result = route(app, request).value
+
+        val view = injector.instanceOf[MustAttachPreviousDocumentView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(lrn, itemIndex, documentIndex)(request, messages).toString
+      }
+
       "when documents is empty" in {
+
+        when(mockDocumentsService.isConsignmentPreviousDocumentRequired(any(), any())).thenReturn(false)
 
         when(mockDocumentsService.getDocuments(any(), any(), any())).thenReturn(SelectableList(Nil))
 
@@ -82,6 +102,8 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
       "when documents is non-empty" in {
 
+        when(mockDocumentsService.isConsignmentPreviousDocumentRequired(any(), any())).thenReturn(false)
+
         when(mockDocumentsService.getDocuments(any(), any(), any())).thenReturn(documentList)
 
         when(mockDocumentsService.getItemLevelDocuments(any(), any(), any())).thenReturn(itemLevelDocuments)
@@ -102,6 +124,8 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
+
+      when(mockDocumentsService.isConsignmentPreviousDocumentRequired(any(), any())).thenReturn(false)
 
       when(mockDocumentsService.getDocuments(any(), any(), any())).thenReturn(documentList)
 
@@ -189,42 +213,6 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
-    }
-
-    "redirectToDocuments" - {
-      lazy val redirectToDocuments = routes.DocumentController.redirectToDocuments(lrn, itemIndex, documentIndex).url
-
-      "when consignment previous document is required" - {
-        "redirect to previous document type page at next index" in {
-          setExistingUserAnswers(emptyUserAnswers)
-
-          when(mockDocumentsService.isConsignmentPreviousDocumentRequired(any(), any()))
-            .thenReturn(true)
-
-          val request = FakeRequest(GET, redirectToDocuments)
-          val result  = route(app, request).value
-
-          status(result) mustEqual SEE_OTHER
-
-          redirectLocation(result).value mustEqual "#"
-        }
-      }
-
-      "when consignment previous document is not required" - {
-        "must redirect to the 'add another' page" in {
-          setExistingUserAnswers(emptyUserAnswers)
-
-          when(mockDocumentsService.isConsignmentPreviousDocumentRequired(any(), any()))
-            .thenReturn(false)
-
-          val request = FakeRequest(GET, redirectToDocuments)
-          val result  = route(app, request).value
-
-          status(result) mustEqual SEE_OTHER
-
-          redirectLocation(result).value mustEqual frontendAppConfig.documentsFrontendUrl(lrn)
-        }
-      }
     }
   }
 }

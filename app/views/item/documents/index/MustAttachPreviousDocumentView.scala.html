@@ -29,19 +29,19 @@
 @(lrn: LocalReferenceNumber, itemIndex: Index, documentIndex: Index)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
-    title = messages("item.documents.index.document.noneToAttach.title"),
+    title = messages("item.documents.index.document.mustAttachPrevious.title"),
     showBackLink = true,
     lrn = lrn
 ) {
 
     @heading(
-        heading = messages("item.documents.index.document.noneToAttach.heading"),
+        heading = messages("item.documents.index.document.mustAttachPrevious.heading"),
         caption = Some(messages("item.documents.caption", itemIndex.display))
     )
 
-    <p class="govuk-body">@messages("item.documents.index.document.noneToAttach.paragraph")</p>
+    <p class="govuk-body">@messages("item.documents.index.document.mustAttachPrevious.paragraph")</p>
 
     <p class="govuk-body">
-        <a class="govuk-link" id="documents" href="@config.documentsRedirectUrl(lrn)">@messages("item.documents.index.document.noneToAttach.link")</a>
+        <a class="govuk-link" id="documents" href="@config.mandatoryPreviousDocumentUrl(lrn)">@messages("item.documents.index.document.mustAttachPrevious.link")</a>
     </p>
 }

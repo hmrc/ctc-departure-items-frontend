@@ -25,12 +25,11 @@ import navigation.{DocumentNavigatorProvider, UserAnswersNavigator}
 import pages.item.documents.index.DocumentPage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.DocumentsService
-import uk.gov.hmrc.http.HttpVerbs.GET
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.item.documents.index.{DocumentView, NoDocumentsToAttachView}
+import views.html.item.documents.index.{DocumentView, MustAttachPreviousDocumentView, NoDocumentsToAttachView}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -45,6 +44,7 @@ class DocumentController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   documentsAvailableView: DocumentView,
   noDocumentsAvailableView: NoDocumentsToAttachView,
+  mustAttachPreviousDocumentView: MustAttachPreviousDocumentView,
   config: FrontendAppConfig
 )(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
@@ -55,22 +55,27 @@ class DocumentController @Inject() (
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      val documentList = service.getDocuments(request.userAnswers, itemIndex, Some(documentIndex))
-      documentList.values match {
-        case Nil =>
-          Ok(noDocumentsAvailableView(lrn, itemIndex, documentIndex))
-        case values =>
-          val itemLevelDocuments = service.getItemLevelDocuments(request.userAnswers, itemIndex, Some(documentIndex))
-          val form               = formProvider(prefix, documentList, itemLevelDocuments)(config)
-          val preparedForm = request.userAnswers.get(DocumentPage(itemIndex, documentIndex)) match {
-            case None => form
-            case Some(uuid) =>
-              values.find(_.uuid == uuid) match {
-                case None        => form
-                case Some(value) => form.fill(value)
+      service.isConsignmentPreviousDocumentRequired(request.userAnswers, itemIndex) match {
+        case true =>
+          Ok(mustAttachPreviousDocumentView(lrn, itemIndex, documentIndex))
+        case false =>
+          val documentList = service.getDocuments(request.userAnswers, itemIndex, Some(documentIndex))
+          documentList.values match {
+            case Nil =>
+              Ok(noDocumentsAvailableView(lrn, itemIndex, documentIndex))
+            case values =>
+              val itemLevelDocuments = service.getItemLevelDocuments(request.userAnswers, itemIndex, Some(documentIndex))
+              val form               = formProvider(prefix, documentList, itemLevelDocuments)(config)
+              val preparedForm = request.userAnswers.get(DocumentPage(itemIndex, documentIndex)) match {
+                case None => form
+                case Some(uuid) =>
+                  values.find(_.uuid == uuid) match {
+                    case None        => form
+                    case Some(value) => form.fill(value)
+                  }
               }
+              Ok(documentsAvailableView(preparedForm, lrn, values, mode, itemIndex, documentIndex))
           }
-          Ok(documentsAvailableView(preparedForm, lrn, values, mode, itemIndex, documentIndex))
       }
   }
 
@@ -92,14 +97,5 @@ class DocumentController @Inject() (
               .navigateWith(navigator)
           }
         )
-  }
-
-  def redirectToDocuments(lrn: LocalReferenceNumber, itemIndex: Index, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
-    implicit request =>
-      if (service.isConsignmentPreviousDocumentRequired(request.userAnswers, itemIndex)) {
-        Redirect(Call(GET, "#")) // Redirect to new endpoint in documents frontend
-      } else {
-        Redirect(config.documentsFrontendUrl(lrn))
-      }
   }
 }

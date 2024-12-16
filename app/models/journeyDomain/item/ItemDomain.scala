@@ -16,24 +16,23 @@
 
 package models.journeyDomain.item
 
-import config.Constants.CountryCode._
-import config.Constants.DeclarationType._
+import config.Constants.DeclarationType.*
 import config.Constants.SecurityType.NoSecurityDetails
 import config.PhaseConfig
-import models.DeclarationTypeItemLevel._
-import models.DocumentType.{Previous, Transport}
-import models.Phase._
-import models._
+import models.*
+import models.DeclarationTypeItemLevel.*
+import models.DocumentType.Transport
+import models.Phase.*
+import models.journeyDomain.*
 import models.journeyDomain.item.additionalInformation.AdditionalInformationListDomain
 import models.journeyDomain.item.additionalReferences.AdditionalReferencesDomain
 import models.journeyDomain.item.dangerousGoods.DangerousGoodsListDomain
 import models.journeyDomain.item.documents.DocumentsDomain
 import models.journeyDomain.item.packages.PackagesDomain
 import models.journeyDomain.item.supplyChainActors.SupplyChainActorsDomain
-import models.journeyDomain._
 import models.reference.{Country, TransportChargesMethodOfPayment}
-import pages.external._
-import pages.item._
+import pages.external.*
+import pages.item.*
 import pages.sections.external.{DocumentsSection, TransportEquipmentsSection}
 import pages.sections.{ItemSection, Section}
 import play.api.i18n.Messages
@@ -231,25 +230,19 @@ object ItemDomain {
 
   def documentsReader(itemIndex: Index): Read[Option[DocumentsDomain]] = {
 
-    lazy val externalPages: Read[(String, Boolean)] =
-      (
-        TransitOperationDeclarationTypePage.reader,
-        CustomsOfficeOfDeparturePage.reader.apply(_: Pages).map(_.to(_.startsWith(GB)))
-      ).to {
-        case (consignmentDecType, isGBOfficeOfDeparture) => Read.apply((consignmentDecType, isGBOfficeOfDeparture))
-      }
-
-    def isConsignmentPreviousDocDefined(itemIndex: Index): Read[Option[DocumentsDomain]] =
+    def isConsignmentPreviousDocDefined(itemIndex: Index): Read[Option[DocumentsDomain]] = {
+      import models.Document.RichDocuments
       DocumentsSection.arrayReader
         .to {
-          _.validateAsListOf[Document]
-            .exists {
-              x => x.attachToAllItems && x.`type` == Previous
-            } match {
-            case true  => optionalDocumentsReader
-            case false => mandatoryDocumentsReader.toOption
-          }
+          arr =>
+            val documents = arr.validateAsListOf[Document]
+            if (documents.isConsignmentPreviousDocumentPresent) {
+              optionalDocumentsReader
+            } else {
+              mandatoryDocumentsReader.toOption
+            }
         }
+    }
 
     def optionalDocumentsReader: Read[Option[DocumentsDomain]] =
       UserAnswersReader
@@ -264,7 +257,10 @@ object ItemDomain {
 
     ConsignmentAddDocumentsPage.optionalReader.to {
       case Some(true) | None =>
-        externalPages.to {
+        (
+          TransitOperationDeclarationTypePage.reader,
+          CustomsOfficeOfDepartureInCL112Page.reader
+        ).to {
           case (T2 | T2F, true) =>
             isConsignmentPreviousDocDefined(itemIndex)
           case (_, true) =>

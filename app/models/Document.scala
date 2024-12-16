@@ -75,7 +75,7 @@ object Document {
 
   implicit class RichDocuments(value: Seq[Document]) {
 
-    private def isConsignmentPreviousDocumentPresent: Boolean =
+    def isConsignmentPreviousDocumentPresent: Boolean =
       value.exists {
         document => document.attachToAllItems && document.`type` == Previous
       }

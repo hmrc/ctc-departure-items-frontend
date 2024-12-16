@@ -33,6 +33,8 @@ case class ItemLevelDocuments(
 
   def cannotAddAnyMore(implicit config: FrontendAppConfig): Boolean =
     !canAdd(Previous) && !canAdd(Support) && !canAdd(Transport)
+
+  def noPreviousDocuments: Boolean = previous == 0
 }
 
 object ItemLevelDocuments {

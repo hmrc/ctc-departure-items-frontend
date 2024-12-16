@@ -18,7 +18,7 @@ package services
 
 import config.Constants.DeclarationType.*
 import models.*
-import pages.external.{CustomsOfficeOfDepartureInCL112Page, TransitOperationDeclarationTypePage}
+import pages.external.CustomsOfficeOfDepartureInCL112Page
 import pages.item.DeclarationTypePage
 import pages.item.documents.index.DocumentPage
 import pages.sections.documents.DocumentsSection as ItemDocumentsSection
@@ -80,13 +80,13 @@ class DocumentsService @Inject() {
 
   def isConsignmentPreviousDocumentRequired(userAnswers: UserAnswers, itemIndex: Index): Boolean =
     (
-      userAnswers.get(TransitOperationDeclarationTypePage),
       userAnswers.get(DeclarationTypePage(itemIndex)).map(_.code),
       userAnswers.get(CustomsOfficeOfDepartureInCL112Page),
-      getDocuments(userAnswers)
+      getDocuments(userAnswers),
+      getItemLevelDocuments(userAnswers, itemIndex, None)
     ) match {
-      case (Some(T), Some(T2 | T2F), Some(true), documents) if documents.noConsignmentPreviousDocumentPresent =>
-        true
+      case (Some(T2 | T2F), Some(true), documents, itemDocuments) =>
+        documents.noConsignmentPreviousDocumentPresent && itemDocuments.noPreviousDocuments
       case _ =>
         false
     }
