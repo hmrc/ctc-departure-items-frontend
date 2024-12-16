@@ -18,6 +18,7 @@ package services
 
 import config.Constants.DeclarationType.*
 import models.*
+import models.DocumentType.Previous
 import pages.external.CustomsOfficeOfDepartureInCL112Page
 import pages.item.DeclarationTypePage
 import pages.item.documents.index.DocumentPage
@@ -83,10 +84,13 @@ class DocumentsService @Inject() {
       userAnswers.get(DeclarationTypePage(itemIndex)).map(_.code),
       userAnswers.get(CustomsOfficeOfDepartureInCL112Page),
       getDocuments(userAnswers),
-      getItemLevelDocuments(userAnswers, itemIndex, None)
+      getItemLevelDocuments(userAnswers, itemIndex, None),
+      getDocuments(userAnswers, itemIndex, None)
     ) match {
-      case (Some(T2 | T2F), Some(true), documents, itemDocuments) =>
-        documents.noConsignmentPreviousDocumentPresent && itemDocuments.noPreviousDocuments
+      case (Some(T2 | T2F), Some(true), documents, itemDocuments, availableDocuments) =>
+        documents.noConsignmentPreviousDocumentPresent &&
+        itemDocuments.noPreviousDocuments &&
+        !availableDocuments.values.exists(_.`type` == Previous)
       case _ =>
         false
     }

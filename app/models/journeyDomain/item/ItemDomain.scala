@@ -214,8 +214,8 @@ object ItemDomain {
     phaseConfig.phase match {
       case Phase.Transition =>
         (
-          MoreThanOneConsigneePage.optionalReader.apply(_: Pages).map(_.to(_.contains(true))),
-          ConsignmentCountryOfDestinationInCL009Page.optionalReader.apply(_: Pages).map(_.to(_.getOrElse(false)))
+          MoreThanOneConsigneePage.optionalReader.mapTo(_.contains(true)),
+          ConsignmentCountryOfDestinationInCL009Page.optionalReader.mapTo(_.exists(identity))
         ).to {
           case (false, true) => UserAnswersReader.none
           case _             => ConsigneeDomain.userAnswersReader(itemIndex).toOption
@@ -230,17 +230,13 @@ object ItemDomain {
 
   def documentsReader(itemIndex: Index): Read[Option[DocumentsDomain]] = {
 
-    def isConsignmentPreviousDocDefined(itemIndex: Index): Read[Option[DocumentsDomain]] = {
+    def isConsignmentPreviousDocDefined(itemIndex: Index): Read[Boolean] = {
       import models.Document.RichDocuments
       DocumentsSection.arrayReader
         .to {
           arr =>
             val documents = arr.validateAsListOf[Document]
-            if (documents.isConsignmentPreviousDocumentPresent) {
-              optionalDocumentsReader
-            } else {
-              mandatoryDocumentsReader.toOption
-            }
+            Read(documents.isConsignmentPreviousDocumentPresent)
         }
     }
 
@@ -255,26 +251,23 @@ object ItemDomain {
     def mandatoryDocumentsReader: Read[DocumentsDomain] =
       DocumentsDomain.userAnswersReader(itemIndex)
 
-    ConsignmentAddDocumentsPage.optionalReader.to {
-      case Some(true) | None =>
-        (
-          TransitOperationDeclarationTypePage.reader,
-          CustomsOfficeOfDepartureInCL112Page.reader
-        ).to {
-          case (T2 | T2F, true) =>
-            isConsignmentPreviousDocDefined(itemIndex)
-          case (_, true) =>
-            DeclarationTypePage(itemIndex).optionalReader.to {
-              case Some(DeclarationTypeItemLevel(T2, _)) | Some(DeclarationTypeItemLevel(T2F, _)) =>
-                isConsignmentPreviousDocDefined(itemIndex)
-              case _ =>
-                optionalDocumentsReader
-            }
+    (
+      TransitOperationDeclarationTypePage.reader,
+      CustomsOfficeOfDepartureInCL112Page.reader,
+      DeclarationTypePage(itemIndex).optionalReader.flatMapTo(_.code),
+      isConsignmentPreviousDocDefined(itemIndex)
+    ).to {
+      case (T2 | T2F, true, _, false) =>
+        mandatoryDocumentsReader.toOption
+      case (_, true, Some(T2 | T2F), false) =>
+        mandatoryDocumentsReader.toOption
+      case _ =>
+        ConsignmentAddDocumentsPage.optionalReader.to {
+          case Some(false) =>
+            UserAnswersReader.none
           case _ =>
             optionalDocumentsReader
         }
-      case _ =>
-        UserAnswersReader.none
     }
   }
 
