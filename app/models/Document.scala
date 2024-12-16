@@ -58,7 +58,7 @@ object Document {
     case x: JsArray =>
       JsSuccess(x.validateAsListOf[Document])
     case _ =>
-      JsError("DocumentsService::documentsReads: Failed to read documents from cache")
+      JsError("documentsReads: Failed to read documents from cache")
   }
 
   implicit val itemDocumentsReads: Reads[Seq[UUID]] = {
@@ -69,7 +69,7 @@ object Document {
         }.toSeq
       )
     case _ =>
-      JsError("DocumentsService::itemDocumentUuidsReads: Failed to read document UUIDs from cache")
+      JsError("itemDocumentReads: Failed to read document UUIDs from cache")
   }
 
   implicit class RichDocuments(value: Seq[Document]) {
