@@ -19,13 +19,14 @@ package controllers.item.documents.index
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.DocumentFormProvider
 import generators.Generators
-import models.{Document, ItemLevelDocuments, NormalMode, SelectableList}
+import models.{Document, ItemLevelDocuments, NormalMode, SelectableList, UserAnswers}
 import navigation.DocumentNavigatorProvider
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.item.documents.index.DocumentPage
+import pages.item.documents.index.{DocumentPage, MandatoryDocumentPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -62,7 +63,7 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
       "when previous document required" in {
 
-        when(mockDocumentsService.isConsignmentPreviousDocumentRequired(any(), any())).thenReturn(true)
+        when(mockDocumentsService.isPreviousDocumentRequired(any(), any())).thenReturn(true)
 
         setExistingUserAnswers(emptyUserAnswers)
 
@@ -80,7 +81,7 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
       "when documents is empty" in {
 
-        when(mockDocumentsService.isConsignmentPreviousDocumentRequired(any(), any())).thenReturn(false)
+        when(mockDocumentsService.isPreviousDocumentRequired(any(), any())).thenReturn(false)
 
         when(mockDocumentsService.getDocuments(any(), any(), any())).thenReturn(SelectableList(Nil))
 
@@ -102,7 +103,7 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
       "when documents is non-empty" in {
 
-        when(mockDocumentsService.isConsignmentPreviousDocumentRequired(any(), any())).thenReturn(false)
+        when(mockDocumentsService.isPreviousDocumentRequired(any(), any())).thenReturn(false)
 
         when(mockDocumentsService.getDocuments(any(), any(), any())).thenReturn(documentList)
 
@@ -125,7 +126,7 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      when(mockDocumentsService.isConsignmentPreviousDocumentRequired(any(), any())).thenReturn(false)
+      when(mockDocumentsService.isPreviousDocumentRequired(any(), any())).thenReturn(false)
 
       when(mockDocumentsService.getDocuments(any(), any(), any())).thenReturn(documentList)
 
@@ -154,6 +155,8 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
       when(mockDocumentsService.getItemLevelDocuments(any(), any(), any())).thenReturn(itemLevelDocuments)
 
+      when(mockDocumentsService.isPreviousDocumentRequired(any(), any())).thenReturn(false)
+
       when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
       setExistingUserAnswers(emptyUserAnswers)
@@ -166,6 +169,39 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual onwardRoute.url
+
+      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+      verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
+      userAnswersCaptor.getValue.get(MandatoryDocumentPage(itemIndex, documentIndex)).value mustEqual false
+    }
+
+    "must redirect to the next page when required previous document is submitted" in {
+
+      val document     = arbitrary[Document](arbitraryPreviousDocument).sample.value
+      val documentList = SelectableList(Seq(document))
+
+      when(mockDocumentsService.getDocuments(any(), any(), any())).thenReturn(documentList)
+
+      when(mockDocumentsService.getItemLevelDocuments(any(), any(), any())).thenReturn(itemLevelDocuments)
+
+      when(mockDocumentsService.isPreviousDocumentRequired(any(), any())).thenReturn(true)
+
+      when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
+
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val request = FakeRequest(POST, documentRoute)
+        .withFormUrlEncodedBody(("value", document.value))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual onwardRoute.url
+
+      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+      verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
+      userAnswersCaptor.getValue.get(MandatoryDocumentPage(itemIndex, documentIndex)).value mustEqual true
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

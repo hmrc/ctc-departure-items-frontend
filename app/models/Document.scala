@@ -16,7 +16,6 @@
 
 package models
 
-import models.DocumentType.*
 import play.api.libs.functional.syntax.*
 import play.api.libs.json.*
 
@@ -77,7 +76,7 @@ object Document {
 
     def isConsignmentPreviousDocumentPresent: Boolean =
       value.exists {
-        document => document.attachToAllItems && document.`type` == Previous
+        document => document.attachToAllItems && document.`type`.isPrevious
       }
 
     def noConsignmentPreviousDocumentPresent: Boolean =

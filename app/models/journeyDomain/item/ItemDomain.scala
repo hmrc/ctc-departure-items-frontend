@@ -21,7 +21,6 @@ import config.Constants.SecurityType.NoSecurityDetails
 import config.PhaseConfig
 import models.*
 import models.DeclarationTypeItemLevel.*
-import models.DocumentType.Transport
 import models.Phase.*
 import models.journeyDomain.*
 import models.journeyDomain.item.additionalInformation.AdditionalInformationListDomain
@@ -143,7 +142,7 @@ object ItemDomain {
               array =>
                 val documents = array.validateAsListOf[Document]
                 val isConsignmentTransportDocumentDefined = documents.exists(
-                  x => x.attachToAllItems && x.`type` == Transport
+                  x => x.attachToAllItems && x.`type`.isTransport
                 )
                 if (isConsignmentTransportDocumentDefined) {
                   optionalUcrReader

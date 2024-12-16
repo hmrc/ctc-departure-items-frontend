@@ -24,7 +24,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.item.documents.index.DocumentPage
+import pages.item.documents.index.{DocumentPage, MandatoryDocumentPage}
 import pages.item.{AddDocumentsYesNoPage, InferredAddDocumentsYesNoPage}
 import services.DocumentsService
 import viewmodels.ListItem
@@ -249,6 +249,38 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
                     name = document2.toString,
                     changeUrl = routes.DocumentController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url,
                     removeUrl = Some(routes.RemoveDocumentController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url)
+                  )
+                )
+              )
+          }
+        }
+
+        "and document is mandatory" in {
+          forAll(arbitrary[Mode], arbitrary[Document], arbitrary[Document]) {
+            (mode, document1, document2) =>
+              when(mockDocumentsService.getDocument(any(), any(), any()))
+                .thenReturn(Some(document1))
+                .thenReturn(Some(document2))
+
+              val userAnswers = emptyUserAnswers
+                .setValue(DocumentPage(itemIndex, Index(0)), document1.uuid)
+                .setValue(DocumentPage(itemIndex, Index(1)), document2.uuid)
+                .setValue(MandatoryDocumentPage(itemIndex, Index(1)), true)
+
+              val helper = buildHelper(userAnswers, mode, itemIndex)
+              helper.listItems mustBe Seq(
+                Right(
+                  ListItem(
+                    name = document1.toString,
+                    changeUrl = routes.DocumentController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url,
+                    removeUrl = Some(routes.RemoveDocumentController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url)
+                  )
+                ),
+                Right(
+                  ListItem(
+                    name = document2.toString,
+                    changeUrl = routes.DocumentController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url,
+                    removeUrl = None
                   )
                 )
               )

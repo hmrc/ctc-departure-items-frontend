@@ -34,3 +34,11 @@ case class DocumentPage(itemIndex: Index, documentIndex: Index) extends Question
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.DocumentController.onPageLoad(userAnswers.lrn, mode, itemIndex, documentIndex))
 }
+
+// Tracks whether we are forced to add a previous document to an item as per rule C0035
+case class MandatoryDocumentPage(itemIndex: Index, documentIndex: Index) extends QuestionPage[Boolean] {
+
+  override def path: JsPath = DocumentSection(itemIndex, documentIndex).path \ toString
+
+  override def toString: String = "mandatory"
+}

@@ -787,7 +787,7 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
       }
     }
 
-    "isConsignmentPreviousDocumentRequired" - {
+    "isPreviousDocumentRequired" - {
 
       "item declaration type is T2 or T2F, office of departure in GB, no consignment level previous documents and no item level previous documents" - {
         "return true" in {
@@ -797,7 +797,7 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
                 .setValue(DeclarationTypePage(Index(0)), itemDeclarationType)
                 .setValue(CustomsOfficeOfDepartureInCL112Page, true)
 
-              val result = service.isConsignmentPreviousDocumentRequired(userAnswers, Index(0))
+              val result = service.isPreviousDocumentRequired(userAnswers, Index(0))
 
               result mustEqual true
           }
@@ -812,7 +812,7 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
                 .setValue(DeclarationTypePage(Index(0)), itemDeclarationType)
                 .setValue(CustomsOfficeOfDepartureInCL112Page, true)
 
-              val result = service.isConsignmentPreviousDocumentRequired(userAnswers, Index(0))
+              val result = service.isPreviousDocumentRequired(userAnswers, Index(0))
 
               result mustEqual false
           }
@@ -827,7 +827,7 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
                 .setValue(DeclarationTypePage(Index(0)), itemDeclarationType)
                 .setValue(CustomsOfficeOfDepartureInCL112Page, false)
 
-              val result = service.isConsignmentPreviousDocumentRequired(userAnswers, Index(0))
+              val result = service.isPreviousDocumentRequired(userAnswers, Index(0))
 
               result mustEqual false
           }
@@ -862,7 +862,7 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
                 .setValue(CustomsOfficeOfDepartureInCL112Page, true)
                 .setValue(external.DocumentsSection, documentsJson)
 
-              val result = service.isConsignmentPreviousDocumentRequired(userAnswers, Index(0))
+              val result = service.isPreviousDocumentRequired(userAnswers, Index(0))
 
               result mustEqual false
           }
@@ -898,7 +898,7 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
                 .setValue(external.DocumentsSection, documentsJson)
                 .setValue(DocumentPage(Index(0), Index(0)), uuid)
 
-              val result = service.isConsignmentPreviousDocumentRequired(userAnswers, Index(0))
+              val result = service.isPreviousDocumentRequired(userAnswers, Index(0))
 
               result mustEqual false
           }
@@ -933,7 +933,7 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
                 .setValue(CustomsOfficeOfDepartureInCL112Page, true)
                 .setValue(external.DocumentsSection, documentsJson)
 
-              val result = service.isConsignmentPreviousDocumentRequired(userAnswers, Index(0))
+              val result = service.isPreviousDocumentRequired(userAnswers, Index(0))
 
               result mustEqual false
           }

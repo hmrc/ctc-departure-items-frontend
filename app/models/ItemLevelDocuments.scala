@@ -41,8 +41,8 @@ object ItemLevelDocuments {
 
   def apply(itemLevelDocuments: Seq[Document]): ItemLevelDocuments =
     new ItemLevelDocuments(
-      previous = itemLevelDocuments.count(_.`type` == Previous),
-      support = itemLevelDocuments.count(_.`type` == Support),
-      transport = itemLevelDocuments.count(_.`type` == Transport)
+      previous = itemLevelDocuments.count(_.`type`.isPrevious),
+      support = itemLevelDocuments.count(_.`type`.isSupport),
+      transport = itemLevelDocuments.count(_.`type`.isTransport)
     )
 }

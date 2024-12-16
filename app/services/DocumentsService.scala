@@ -18,7 +18,6 @@ package services
 
 import config.Constants.DeclarationType.*
 import models.*
-import models.DocumentType.Previous
 import pages.external.CustomsOfficeOfDepartureInCL112Page
 import pages.item.DeclarationTypePage
 import pages.item.documents.index.DocumentPage
@@ -79,7 +78,7 @@ class DocumentsService @Inject() {
       document <- documents.find(_.uuid == uuid)
     } yield document
 
-  def isConsignmentPreviousDocumentRequired(userAnswers: UserAnswers, itemIndex: Index): Boolean =
+  def isPreviousDocumentRequired(userAnswers: UserAnswers, itemIndex: Index): Boolean =
     (
       userAnswers.get(DeclarationTypePage(itemIndex)).map(_.code),
       userAnswers.get(CustomsOfficeOfDepartureInCL112Page),
@@ -90,7 +89,7 @@ class DocumentsService @Inject() {
       case (Some(T2 | T2F), Some(true), documents, itemDocuments, availableDocuments) =>
         documents.noConsignmentPreviousDocumentPresent &&
         itemDocuments.noPreviousDocuments &&
-        !availableDocuments.values.exists(_.`type` == Previous)
+        !availableDocuments.values.exists(_.`type`.isPrevious)
       case _ =>
         false
     }
