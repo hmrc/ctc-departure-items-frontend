@@ -61,22 +61,51 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
     "must return OK and the correct view for a GET" - {
 
-      "when previous document required" in {
+      "when previous document required" - {
+        "and previous document not available to attach" in {
 
-        when(mockDocumentsService.isPreviousDocumentRequired(any(), any())).thenReturn(true)
+          when(mockDocumentsService.isPreviousDocumentRequired(any(), any())).thenReturn(true)
 
-        setExistingUserAnswers(emptyUserAnswers)
+          when(mockDocumentsService.getPreviousDocuments(any(), any(), any())).thenReturn(SelectableList(Nil))
 
-        val request = FakeRequest(GET, documentRoute)
+          setExistingUserAnswers(emptyUserAnswers)
 
-        val result = route(app, request).value
+          val request = FakeRequest(GET, documentRoute)
 
-        val view = injector.instanceOf[MustAttachPreviousDocumentView]
+          val result = route(app, request).value
 
-        status(result) mustEqual OK
+          val view = injector.instanceOf[MustAttachPreviousDocumentView]
 
-        contentAsString(result) mustEqual
-          view(lrn, itemIndex, documentIndex)(request, messages).toString
+          status(result) mustEqual OK
+
+          contentAsString(result) mustEqual
+            view(lrn, itemIndex, documentIndex)(request, messages).toString
+        }
+
+        "and previous document available to attach" in {
+
+          val document     = arbitrary[Document](arbitraryPreviousDocument).sample.value
+          val documentList = SelectableList(Seq(document))
+
+          when(mockDocumentsService.isPreviousDocumentRequired(any(), any())).thenReturn(true)
+
+          when(mockDocumentsService.getPreviousDocuments(any(), any(), any())).thenReturn(documentList)
+
+          when(mockDocumentsService.getItemLevelDocuments(any(), any(), any())).thenReturn(itemLevelDocuments)
+
+          setExistingUserAnswers(emptyUserAnswers)
+
+          val request = FakeRequest(GET, documentRoute)
+
+          val result = route(app, request).value
+
+          val view = injector.instanceOf[DocumentView]
+
+          status(result) mustEqual OK
+
+          contentAsString(result) mustEqual
+            view(form, lrn, documentList.values, mode, itemIndex, documentIndex)(request, messages).toString
+        }
       }
 
       "when documents is empty" in {

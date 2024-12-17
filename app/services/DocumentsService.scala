@@ -82,15 +82,16 @@ class DocumentsService @Inject() {
     (
       userAnswers.get(DeclarationTypePage(itemIndex)).map(_.code),
       userAnswers.get(CustomsOfficeOfDepartureInCL112Page),
-      getDocuments(userAnswers),
-      getItemLevelDocuments(userAnswers, itemIndex, None),
-      getDocuments(userAnswers, itemIndex, None)
+      getDocuments(userAnswers)
     ) match {
-      case (Some(T2 | T2F), Some(true), documents, itemDocuments, availableDocuments) =>
-        documents.noConsignmentPreviousDocumentPresent &&
-        itemDocuments.noPreviousDocuments &&
-        !availableDocuments.values.exists(_.`type`.isPrevious)
+      case (Some(T2 | T2F), Some(true), documents) =>
+        documents.noConsignmentPreviousDocumentPresent
       case _ =>
         false
     }
+
+  // these are the previous documents that are available to add to this item
+  def getPreviousDocuments(userAnswers: UserAnswers, itemIndex: Index, documentIndex: Index): SelectableList[Document] =
+    getDocuments(userAnswers, itemIndex, Some(documentIndex))
+      .filter(_.`type`.isPrevious)
 }
