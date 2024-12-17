@@ -23,7 +23,7 @@ import forms.DocumentFormProvider
 import models.requests.DataRequest
 import models.{Document, Index, LocalReferenceNumber, Mode, SelectableList, UserAnswers}
 import navigation.{DocumentNavigatorProvider, UserAnswersNavigator}
-import pages.item.documents.index.{DocumentPage, MandatoryDocumentPage}
+import pages.item.documents.index.DocumentPage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -87,10 +87,8 @@ class DocumentController @Inject() (
           formWithErrors => Future.successful(BadRequest(documentsAvailableView(formWithErrors, lrn, documentList.values, mode, itemIndex, documentIndex))),
           value => {
             val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex, documentIndex)
-            val previousDocumentRequired        = service.isPreviousDocumentRequired(request.userAnswers, itemIndex, documentIndex)
             DocumentPage(itemIndex, documentIndex)
               .writeToUserAnswers(value.uuid)
-              .appendValue(MandatoryDocumentPage(itemIndex, documentIndex), previousDocumentRequired && value.`type`.isPrevious)
               .updateTask()
               .writeToSession(sessionRepository)
               .navigateWith(navigator)

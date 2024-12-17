@@ -19,14 +19,13 @@ package controllers.item.documents.index
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.DocumentFormProvider
 import generators.Generators
-import models.{Document, ItemLevelDocuments, NormalMode, SelectableList, UserAnswers}
+import models.{Document, ItemLevelDocuments, NormalMode, SelectableList}
 import navigation.DocumentNavigatorProvider
-import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{verify, when}
+import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.item.documents.index.{DocumentPage, MandatoryDocumentPage}
+import pages.item.documents.index.DocumentPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -198,39 +197,6 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual onwardRoute.url
-
-      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-      verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-      userAnswersCaptor.getValue.get(MandatoryDocumentPage(itemIndex, documentIndex)).value mustEqual false
-    }
-
-    "must redirect to the next page when required previous document is submitted" in {
-
-      val document     = arbitrary[Document](arbitraryPreviousDocument).sample.value
-      val documentList = SelectableList(Seq(document))
-
-      when(mockDocumentsService.getDocuments(any(), any(), any())).thenReturn(documentList)
-
-      when(mockDocumentsService.getItemLevelDocuments(any(), any(), any())).thenReturn(itemLevelDocuments)
-
-      when(mockDocumentsService.isPreviousDocumentRequired(any(), any(), any())).thenReturn(true)
-
-      when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
-
-      setExistingUserAnswers(emptyUserAnswers)
-
-      val request = FakeRequest(POST, documentRoute)
-        .withFormUrlEncodedBody(("value", document.value))
-
-      val result = route(app, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual onwardRoute.url
-
-      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-      verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-      userAnswersCaptor.getValue.get(MandatoryDocumentPage(itemIndex, documentIndex)).value mustEqual true
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

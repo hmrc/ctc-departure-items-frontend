@@ -24,7 +24,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.item.documents.index.{DocumentPage, MandatoryDocumentPage}
+import pages.item.documents.index.DocumentPage
 import pages.item.{AddDocumentsYesNoPage, InferredAddDocumentsYesNoPage}
 import services.DocumentsService
 import viewmodels.ListItem
@@ -96,6 +96,9 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               when(mockDocumentsService.getDocument(any(), any(), any()))
                 .thenReturn(Some(document))
 
+              when(mockDocumentsService.isPreviousDocumentRequired(any(), any(), any()))
+                .thenReturn(false)
+
               val userAnswers = emptyUserAnswers
                 .setValue(AddDocumentsYesNoPage(itemIndex), true)
                 .setValue(DocumentPage(itemIndex, Index(0)), document.uuid)
@@ -119,6 +122,9 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               when(mockDocumentsService.getDocument(any(), any(), any()))
                 .thenReturn(Some(document))
 
+              when(mockDocumentsService.isPreviousDocumentRequired(any(), any(), any()))
+                .thenReturn(false)
+
               val userAnswers = emptyUserAnswers
                 .setValue(InferredAddDocumentsYesNoPage(itemIndex), true)
                 .setValue(DocumentPage(itemIndex, Index(0)), document.uuid)
@@ -141,6 +147,9 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
             (mode, document) =>
               when(mockDocumentsService.getDocument(any(), any(), any()))
                 .thenReturn(Some(document))
+
+              when(mockDocumentsService.isPreviousDocumentRequired(any(), any(), any()))
+                .thenReturn(false)
 
               val userAnswers = emptyUserAnswers
                 .setValue(DocumentPage(itemIndex, Index(0)), document.uuid)
@@ -166,6 +175,10 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               when(mockDocumentsService.getDocument(any(), any(), any()))
                 .thenReturn(Some(document1))
                 .thenReturn(Some(document2))
+
+              when(mockDocumentsService.isPreviousDocumentRequired(any(), any(), any()))
+                .thenReturn(false)
+                .thenReturn(false)
 
               val userAnswers = emptyUserAnswers
                 .setValue(AddDocumentsYesNoPage(itemIndex), true)
@@ -198,6 +211,10 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               when(mockDocumentsService.getDocument(any(), any(), any()))
                 .thenReturn(Some(document1))
                 .thenReturn(Some(document2))
+
+              when(mockDocumentsService.isPreviousDocumentRequired(any(), any(), any()))
+                .thenReturn(false)
+                .thenReturn(false)
 
               val userAnswers = emptyUserAnswers
                 .setValue(InferredAddDocumentsYesNoPage(itemIndex), true)
@@ -262,10 +279,13 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
                 .thenReturn(Some(document1))
                 .thenReturn(Some(document2))
 
+              when(mockDocumentsService.isPreviousDocumentRequired(any(), any(), any()))
+                .thenReturn(true)
+                .thenReturn(false)
+
               val userAnswers = emptyUserAnswers
                 .setValue(DocumentPage(itemIndex, Index(0)), document1.uuid)
                 .setValue(DocumentPage(itemIndex, Index(1)), document2.uuid)
-                .setValue(MandatoryDocumentPage(itemIndex, Index(1)), true)
 
               val helper = buildHelper(userAnswers, mode, itemIndex)
               helper.listItems mustBe Seq(
@@ -273,14 +293,14 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
                   ListItem(
                     name = document1.toString,
                     changeUrl = routes.DocumentController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url,
-                    removeUrl = Some(routes.RemoveDocumentController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(0)).url)
+                    removeUrl = None
                   )
                 ),
                 Right(
                   ListItem(
                     name = document2.toString,
                     changeUrl = routes.DocumentController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url,
-                    removeUrl = None
+                    removeUrl = Some(routes.RemoveDocumentController.onPageLoad(userAnswers.lrn, mode, itemIndex, Index(1)).url)
                   )
                 )
               )

@@ -19,8 +19,8 @@ package utils.cyaHelpers.item.documents
 import config.{FrontendAppConfig, PhaseConfig}
 import controllers.item.documents.index.routes
 import models.{Index, Mode, UserAnswers}
+import pages.item.documents.index.DocumentPage
 import pages.item.{AddDocumentsYesNoPage, InferredAddDocumentsYesNoPage}
-import pages.item.documents.index.{DocumentPage, MandatoryDocumentPage}
 import pages.sections.documents.DocumentsSection
 import play.api.i18n.Messages
 import services.DocumentsService
@@ -57,9 +57,10 @@ class DocumentAnswersHelper(
           ListItem(
             name = document.toString,
             changeUrl = changeUrl,
-            removeUrl = userAnswers.get(MandatoryDocumentPage(itemIndex, documentIndex)) match {
-              case Some(true) => None
-              case _          => Some(routes.RemoveDocumentController.onPageLoad(lrn, mode, itemIndex, documentIndex).url)
+            removeUrl = if (documentsService.isPreviousDocumentRequired(userAnswers, itemIndex, documentIndex)) {
+              None
+            } else {
+              Some(routes.RemoveDocumentController.onPageLoad(lrn, mode, itemIndex, documentIndex).url)
             }
           )
         )
