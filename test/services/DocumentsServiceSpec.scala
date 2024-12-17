@@ -868,6 +868,42 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
           }
         }
       }
+
+      "item declaration type is T2 or T2F, office of departure in GB, no consignment level previous documents and an attached item level previous document" - {
+        "must return false" in {
+          forAll(arbitrary[UUID], arbitrary[DeclarationTypeItemLevel](arbitraryT2OrT2FDeclarationType)) {
+            (uuid, itemDeclarationType) =>
+              val documentsJson = Json
+                .parse(s"""
+                  |[
+                  |  {
+                  |    "attachToAllItems" : false,
+                  |    "type" : {
+                  |      "type" : "Previous",
+                  |      "code" : "Code",
+                  |      "description" : "Description"
+                  |    },
+                  |    "details" : {
+                  |      "documentReferenceNumber" : "Ref no.",
+                  |      "uuid" : "${uuid.toString}"
+                  |    }
+                  |  }
+                  |]
+                  |""".stripMargin)
+                .as[JsArray]
+
+              val userAnswers = emptyUserAnswers
+                .setValue(DeclarationTypePage(Index(0)), itemDeclarationType)
+                .setValue(CustomsOfficeOfDepartureInCL112Page, true)
+                .setValue(external.DocumentsSection, documentsJson)
+                .setValue(DocumentPage(Index(0), Index(0)), uuid)
+
+              val result = service.isPreviousDocumentRequired(userAnswers, Index(0))
+
+              result mustEqual false
+          }
+        }
+      }
     }
 
     "getPreviousDocuments" - {

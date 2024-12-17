@@ -82,10 +82,11 @@ class DocumentsService @Inject() {
     (
       userAnswers.get(DeclarationTypePage(itemIndex)).map(_.code),
       userAnswers.get(CustomsOfficeOfDepartureInCL112Page),
-      getDocuments(userAnswers)
+      getDocuments(userAnswers),
+      getItemLevelDocuments(userAnswers, itemIndex, None)
     ) match {
-      case (Some(T2 | T2F), Some(true), documents) =>
-        documents.noConsignmentPreviousDocumentPresent
+      case (Some(T2 | T2F), Some(true), documents, itemDocuments) =>
+        documents.noConsignmentPreviousDocumentPresent && itemDocuments.noPreviousDocuments
       case _ =>
         false
     }
