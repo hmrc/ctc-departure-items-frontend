@@ -797,7 +797,7 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
                 .setValue(DeclarationTypePage(Index(0)), itemDeclarationType)
                 .setValue(CustomsOfficeOfDepartureInCL112Page, true)
 
-              val result = service.isPreviousDocumentRequired(userAnswers, Index(0))
+              val result = service.isPreviousDocumentRequired(userAnswers, Index(0), Index(0))
 
               result mustEqual true
           }
@@ -812,7 +812,7 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
                 .setValue(DeclarationTypePage(Index(0)), itemDeclarationType)
                 .setValue(CustomsOfficeOfDepartureInCL112Page, true)
 
-              val result = service.isPreviousDocumentRequired(userAnswers, Index(0))
+              val result = service.isPreviousDocumentRequired(userAnswers, Index(0), Index(0))
 
               result mustEqual false
           }
@@ -827,7 +827,7 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
                 .setValue(DeclarationTypePage(Index(0)), itemDeclarationType)
                 .setValue(CustomsOfficeOfDepartureInCL112Page, false)
 
-              val result = service.isPreviousDocumentRequired(userAnswers, Index(0))
+              val result = service.isPreviousDocumentRequired(userAnswers, Index(0), Index(0))
 
               result mustEqual false
           }
@@ -862,15 +862,15 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
                 .setValue(CustomsOfficeOfDepartureInCL112Page, true)
                 .setValue(external.DocumentsSection, documentsJson)
 
-              val result = service.isPreviousDocumentRequired(userAnswers, Index(0))
+              val result = service.isPreviousDocumentRequired(userAnswers, Index(0), Index(0))
 
               result mustEqual false
           }
         }
       }
 
-      "item declaration type is T2 or T2F, office of departure in GB, no consignment level previous documents and an attached item level previous document" - {
-        "must return false" in {
+      "item declaration type is T2 or T2F, office of departure in GB, no consignment level previous documents and an attached item level previous document at current index" - {
+        "must return true" in {
           forAll(arbitrary[UUID], arbitrary[DeclarationTypeItemLevel](arbitraryT2OrT2FDeclarationType)) {
             (uuid, itemDeclarationType) =>
               val documentsJson = Json
@@ -898,7 +898,43 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
                 .setValue(external.DocumentsSection, documentsJson)
                 .setValue(DocumentPage(Index(0), Index(0)), uuid)
 
-              val result = service.isPreviousDocumentRequired(userAnswers, Index(0))
+              val result = service.isPreviousDocumentRequired(userAnswers, Index(0), Index(0))
+
+              result mustEqual true
+          }
+        }
+      }
+
+      "item declaration type is T2 or T2F, office of departure in GB, no consignment level previous documents and an attached item level previous document at a different index" - {
+        "must return false" in {
+          forAll(arbitrary[UUID], arbitrary[DeclarationTypeItemLevel](arbitraryT2OrT2FDeclarationType)) {
+            (uuid, itemDeclarationType) =>
+              val documentsJson = Json
+                .parse(s"""
+                     |[
+                     |  {
+                     |    "attachToAllItems" : false,
+                     |    "type" : {
+                     |      "type" : "Previous",
+                     |      "code" : "Code",
+                     |      "description" : "Description"
+                     |    },
+                     |    "details" : {
+                     |      "documentReferenceNumber" : "Ref no.",
+                     |      "uuid" : "${uuid.toString}"
+                     |    }
+                     |  }
+                     |]
+                     |""".stripMargin)
+                .as[JsArray]
+
+              val userAnswers = emptyUserAnswers
+                .setValue(DeclarationTypePage(Index(0)), itemDeclarationType)
+                .setValue(CustomsOfficeOfDepartureInCL112Page, true)
+                .setValue(external.DocumentsSection, documentsJson)
+                .setValue(DocumentPage(Index(0), Index(0)), uuid)
+
+              val result = service.isPreviousDocumentRequired(userAnswers, Index(0), Index(1))
 
               result mustEqual false
           }

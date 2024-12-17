@@ -56,7 +56,7 @@ class DocumentController @Inject() (
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, documentIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      service.isPreviousDocumentRequired(request.userAnswers, itemIndex) match {
+      service.isPreviousDocumentRequired(request.userAnswers, itemIndex, documentIndex) match {
         case true =>
           val documentList = service.getPreviousDocuments(request.userAnswers, itemIndex, documentIndex)
           documentList.values match {
@@ -87,7 +87,7 @@ class DocumentController @Inject() (
           formWithErrors => Future.successful(BadRequest(documentsAvailableView(formWithErrors, lrn, documentList.values, mode, itemIndex, documentIndex))),
           value => {
             val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex, documentIndex)
-            val previousDocumentRequired        = service.isPreviousDocumentRequired(request.userAnswers, itemIndex)
+            val previousDocumentRequired        = service.isPreviousDocumentRequired(request.userAnswers, itemIndex, documentIndex)
             DocumentPage(itemIndex, documentIndex)
               .writeToUserAnswers(value.uuid)
               .appendValue(MandatoryDocumentPage(itemIndex, documentIndex), previousDocumentRequired && value.`type`.isPrevious)

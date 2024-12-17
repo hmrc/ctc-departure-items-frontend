@@ -64,7 +64,7 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
       "when previous document required" - {
         "and previous document not available to attach" in {
 
-          when(mockDocumentsService.isPreviousDocumentRequired(any(), any())).thenReturn(true)
+          when(mockDocumentsService.isPreviousDocumentRequired(any(), any(), any())).thenReturn(true)
 
           when(mockDocumentsService.getPreviousDocuments(any(), any(), any())).thenReturn(SelectableList(Nil))
 
@@ -87,7 +87,7 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
           val document     = arbitrary[Document](arbitraryPreviousDocument).sample.value
           val documentList = SelectableList(Seq(document))
 
-          when(mockDocumentsService.isPreviousDocumentRequired(any(), any())).thenReturn(true)
+          when(mockDocumentsService.isPreviousDocumentRequired(any(), any(), any())).thenReturn(true)
 
           when(mockDocumentsService.getPreviousDocuments(any(), any(), any())).thenReturn(documentList)
 
@@ -110,7 +110,7 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
       "when documents is empty" in {
 
-        when(mockDocumentsService.isPreviousDocumentRequired(any(), any())).thenReturn(false)
+        when(mockDocumentsService.isPreviousDocumentRequired(any(), any(), any())).thenReturn(false)
 
         when(mockDocumentsService.getDocuments(any(), any(), any())).thenReturn(SelectableList(Nil))
 
@@ -132,7 +132,7 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
       "when documents is non-empty" in {
 
-        when(mockDocumentsService.isPreviousDocumentRequired(any(), any())).thenReturn(false)
+        when(mockDocumentsService.isPreviousDocumentRequired(any(), any(), any())).thenReturn(false)
 
         when(mockDocumentsService.getDocuments(any(), any(), any())).thenReturn(documentList)
 
@@ -155,7 +155,7 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      when(mockDocumentsService.isPreviousDocumentRequired(any(), any())).thenReturn(false)
+      when(mockDocumentsService.isPreviousDocumentRequired(any(), any(), any())).thenReturn(false)
 
       when(mockDocumentsService.getDocuments(any(), any(), any())).thenReturn(documentList)
 
@@ -184,7 +184,7 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
       when(mockDocumentsService.getItemLevelDocuments(any(), any(), any())).thenReturn(itemLevelDocuments)
 
-      when(mockDocumentsService.isPreviousDocumentRequired(any(), any())).thenReturn(false)
+      when(mockDocumentsService.isPreviousDocumentRequired(any(), any(), any())).thenReturn(false)
 
       when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
@@ -213,7 +213,7 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
       when(mockDocumentsService.getItemLevelDocuments(any(), any(), any())).thenReturn(itemLevelDocuments)
 
-      when(mockDocumentsService.isPreviousDocumentRequired(any(), any())).thenReturn(true)
+      when(mockDocumentsService.isPreviousDocumentRequired(any(), any(), any())).thenReturn(true)
 
       when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 

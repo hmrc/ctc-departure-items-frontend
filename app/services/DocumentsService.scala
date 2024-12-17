@@ -78,12 +78,12 @@ class DocumentsService @Inject() {
       document <- documents.find(_.uuid == uuid)
     } yield document
 
-  def isPreviousDocumentRequired(userAnswers: UserAnswers, itemIndex: Index): Boolean =
+  def isPreviousDocumentRequired(userAnswers: UserAnswers, itemIndex: Index, documentIndex: Index): Boolean =
     (
       userAnswers.get(DeclarationTypePage(itemIndex)).map(_.code),
       userAnswers.get(CustomsOfficeOfDepartureInCL112Page),
       getDocuments(userAnswers),
-      getItemLevelDocuments(userAnswers, itemIndex, None)
+      getItemLevelDocuments(userAnswers, itemIndex, Some(documentIndex))
     ) match {
       case (Some(T2 | T2F), Some(true), documents, itemDocuments) =>
         documents.noConsignmentPreviousDocumentPresent && itemDocuments.noPreviousDocuments
