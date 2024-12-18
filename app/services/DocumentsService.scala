@@ -16,12 +16,13 @@
 
 package services
 
+import config.Constants.DeclarationType.*
 import models.*
+import pages.external.CustomsOfficeOfDepartureInCL112Page
+import pages.item.DeclarationTypePage
 import pages.item.documents.index.DocumentPage
 import pages.sections.documents.DocumentsSection as ItemDocumentsSection
 import pages.sections.external.DocumentsSection
-import play.api.libs.json.{JsArray, JsError, JsSuccess, Reads}
-import services.DocumentsService.*
 
 import java.util.UUID
 import javax.inject.Inject
@@ -29,11 +30,14 @@ import javax.inject.Inject
 class DocumentsService @Inject() {
 
   // these are the documents that were added in the documents section
-  private def getDocuments(userAnswers: UserAnswers): Seq[Document] =
+  private def getDocuments(userAnswers: UserAnswers): Seq[Document] = {
+    import models.Document.documentsReads
     userAnswers.get(DocumentsSection).validate[Seq[Document]].getOrElse(Nil)
+  }
 
   // these are the documents that are available to add to this item
   def getDocuments(userAnswers: UserAnswers, itemIndex: Index, documentIndex: Option[Index]): SelectableList[Document] = {
+    import models.Document.itemDocumentsReads
     val documents         = getDocuments(userAnswers)
     val document          = documentIndex.flatMap(getDocument(userAnswers, itemIndex, _))
     val itemDocumentUuids = userAnswers.get(ItemDocumentsSection(itemIndex)).validate[Seq[UUID]].getOrElse(Nil)
@@ -73,25 +77,22 @@ class DocumentsService @Inject() {
       documents = getDocuments(userAnswers)
       document <- documents.find(_.uuid == uuid)
     } yield document
-}
 
-object DocumentsService {
+  def isPreviousDocumentRequired(userAnswers: UserAnswers, itemIndex: Index, documentIndex: Index): Boolean =
+    (
+      userAnswers.get(DeclarationTypePage(itemIndex)).map(_.code),
+      userAnswers.get(CustomsOfficeOfDepartureInCL112Page),
+      getDocuments(userAnswers),
+      getItemLevelDocuments(userAnswers, itemIndex, Some(documentIndex))
+    ) match {
+      case (Some(T2 | T2F), Some(true), documents, itemDocuments) =>
+        documents.noConsignmentPreviousDocumentPresent && itemDocuments.noPreviousDocuments
+      case _ =>
+        false
+    }
 
-  implicit val documentsReads: Reads[Seq[Document]] = Reads[Seq[Document]] {
-    case x: JsArray =>
-      JsSuccess(
-        x.validateAsListOf[Document]
-      )
-    case _ => JsError("DocumentsService::documentsReads: Failed to read documents from cache")
-  }
-
-  implicit val itemDocumentUuidsReads: Reads[Seq[UUID]] = Reads[Seq[UUID]] {
-    case JsArray(values) =>
-      JsSuccess(
-        values.flatMap {
-          value => (value \ "document").validate[UUID].asOpt
-        }.toSeq
-      )
-    case _ => JsError("DocumentsService::itemDocumentUuidsReads: Failed to read document UUIDs from cache")
-  }
+  // these are the previous documents that are available to add to this item
+  def getPreviousDocuments(userAnswers: UserAnswers, itemIndex: Index, documentIndex: Index): SelectableList[Document] =
+    getDocuments(userAnswers, itemIndex, Some(documentIndex))
+      .filter(_.`type`.isPrevious)
 }

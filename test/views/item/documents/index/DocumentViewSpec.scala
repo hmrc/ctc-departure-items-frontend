@@ -16,7 +16,6 @@
 
 package views.item.documents.index
 
-import controllers.item.documents.index.routes
 import forms.SelectableFormProvider
 import models.{Document, NormalMode, SelectableList}
 import org.scalacheck.Arbitrary
@@ -47,7 +46,7 @@ class DocumentViewSpec extends InputSelectViewBehaviours[Document] {
   behave like pageWithLink(
     id = "documents",
     expectedText = "Go to your Documents section to add another document",
-    expectedHref = routes.DocumentController.redirectToDocuments(lrn, itemIndex, documentIndex).url
+    expectedHref = frontendAppConfig.documentsRedirectUrl(lrn)
   )
 
   behave like pageWithHeading()

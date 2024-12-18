@@ -39,7 +39,7 @@
     <p class="govuk-body">@messages("item.documents.index.document.paragraph")</p>
 
     <p class="govuk-body">
-        <a class="govuk-link" id="documents" href="@routes.DocumentController.redirectToDocuments(lrn, itemIndex, documentIndex)">@messages("item.documents.index.document.link")</a>
+        <a class="govuk-link" id="documents" href="@config.documentsRedirectUrl(lrn)">@messages("item.documents.index.document.link")</a>
     </p>
 }
 

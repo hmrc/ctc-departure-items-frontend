@@ -16,10 +16,13 @@
 
 package models
 
-import play.api.libs.json._
+import play.api.libs.json.*
 
 sealed trait DocumentType {
   val display: String
+  def isSupport: Boolean   = this == DocumentType.Support
+  def isTransport: Boolean = this == DocumentType.Transport
+  def isPrevious: Boolean  = this == DocumentType.Previous
 }
 
 object DocumentType {

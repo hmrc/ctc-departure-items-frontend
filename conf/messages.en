@@ -323,6 +323,11 @@ item.documents.index.document.noneToAttach.heading = You do not have any documen
 item.documents.index.document.noneToAttach.paragraph = You can only attach a document if you have added it in your Documents section.
 item.documents.index.document.noneToAttach.link = Go to your Documents section to add another document
 
+item.documents.index.document.mustAttachPrevious.title = You do not have any previous documents to attach
+item.documents.index.document.mustAttachPrevious.heading = You do not have any previous documents to attach
+item.documents.index.document.mustAttachPrevious.paragraph = You have to attach a previous document to this item.
+item.documents.index.document.mustAttachPrevious.link = Go to your Documents section to add another document
+
 item.addDocumentsYesNo.title = Do you want to attach any documents to this item?
 item.addDocumentsYesNo.heading = Do you want to attach any documents to this item?
 item.addDocumentsYesNo.checkYourAnswersLabel = Do you want to add any documents for this item?

@@ -24,17 +24,18 @@ import navigation.DocumentNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.item.documents.index.DocumentPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import services.DocumentsService
-import views.html.item.documents.index.{DocumentView, NoDocumentsToAttachView}
+import views.html.item.documents.index.{DocumentView, MustAttachPreviousDocumentView, NoDocumentsToAttachView}
 
 import scala.concurrent.Future
 
-class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   private val document1    = arbitrary[Document](arbitrarySupportingDocument).sample.value
   private val document2    = arbitrary[Document](arbitraryTransportDocument).sample.value
@@ -59,7 +60,56 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
     "must return OK and the correct view for a GET" - {
 
+      "when previous document required" - {
+        "and previous document not available to attach" in {
+
+          when(mockDocumentsService.isPreviousDocumentRequired(any(), any(), any())).thenReturn(true)
+
+          when(mockDocumentsService.getPreviousDocuments(any(), any(), any())).thenReturn(SelectableList(Nil))
+
+          setExistingUserAnswers(emptyUserAnswers)
+
+          val request = FakeRequest(GET, documentRoute)
+
+          val result = route(app, request).value
+
+          val view = injector.instanceOf[MustAttachPreviousDocumentView]
+
+          status(result) mustEqual OK
+
+          contentAsString(result) mustEqual
+            view(lrn, itemIndex, documentIndex)(request, messages).toString
+        }
+
+        "and previous document available to attach" in {
+
+          val document     = arbitrary[Document](arbitraryPreviousDocument).sample.value
+          val documentList = SelectableList(Seq(document))
+
+          when(mockDocumentsService.isPreviousDocumentRequired(any(), any(), any())).thenReturn(true)
+
+          when(mockDocumentsService.getPreviousDocuments(any(), any(), any())).thenReturn(documentList)
+
+          when(mockDocumentsService.getItemLevelDocuments(any(), any(), any())).thenReturn(itemLevelDocuments)
+
+          setExistingUserAnswers(emptyUserAnswers)
+
+          val request = FakeRequest(GET, documentRoute)
+
+          val result = route(app, request).value
+
+          val view = injector.instanceOf[DocumentView]
+
+          status(result) mustEqual OK
+
+          contentAsString(result) mustEqual
+            view(form, lrn, documentList.values, mode, itemIndex, documentIndex)(request, messages).toString
+        }
+      }
+
       "when documents is empty" in {
+
+        when(mockDocumentsService.isPreviousDocumentRequired(any(), any(), any())).thenReturn(false)
 
         when(mockDocumentsService.getDocuments(any(), any(), any())).thenReturn(SelectableList(Nil))
 
@@ -81,6 +131,8 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
       "when documents is non-empty" in {
 
+        when(mockDocumentsService.isPreviousDocumentRequired(any(), any(), any())).thenReturn(false)
+
         when(mockDocumentsService.getDocuments(any(), any(), any())).thenReturn(documentList)
 
         when(mockDocumentsService.getItemLevelDocuments(any(), any(), any())).thenReturn(itemLevelDocuments)
@@ -101,6 +153,8 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
+
+      when(mockDocumentsService.isPreviousDocumentRequired(any(), any(), any())).thenReturn(false)
 
       when(mockDocumentsService.getDocuments(any(), any(), any())).thenReturn(documentList)
 
@@ -128,6 +182,8 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
       when(mockDocumentsService.getDocuments(any(), any(), any())).thenReturn(documentList)
 
       when(mockDocumentsService.getItemLevelDocuments(any(), any(), any())).thenReturn(itemLevelDocuments)
+
+      when(mockDocumentsService.isPreviousDocumentRequired(any(), any(), any())).thenReturn(false)
 
       when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
@@ -188,22 +244,6 @@ class DocumentControllerSpec extends SpecBase with AppWithDefaultMockFixtures wi
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
-    }
-
-    "redirectToDocuments" - {
-      "must update user answers and redirect" in {
-        lazy val redirectToDocuments = routes.DocumentController.redirectToDocuments(lrn, itemIndex, documentIndex).url
-
-        setExistingUserAnswers(emptyUserAnswers)
-
-        val request = FakeRequest(GET, redirectToDocuments)
-
-        val result = route(app, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual frontendAppConfig.documentsFrontendUrl(lrn)
-      }
     }
   }
 }

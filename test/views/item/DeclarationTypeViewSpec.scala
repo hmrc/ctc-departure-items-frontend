@@ -16,7 +16,6 @@
 
 package views.item
 
-import config.TestConstants.{declarationTypeItemValues, declarationTypeValues}
 import forms.EnumerableFormProvider
 import models.{DeclarationTypeItemLevel, NormalMode}
 import play.api.data.Form
@@ -27,7 +26,7 @@ import views.html.item.DeclarationTypeView
 
 class DeclarationTypeViewSpec extends EnumerableViewBehaviours[DeclarationTypeItemLevel] {
 
-  override def form: Form[DeclarationTypeItemLevel] = new EnumerableFormProvider()(prefix)(declarationTypeValues)
+  override def form: Form[DeclarationTypeItemLevel] = new EnumerableFormProvider()(prefix)(values)
 
   override def applyView(form: Form[DeclarationTypeItemLevel]): HtmlFormat.Appendable =
     injector.instanceOf[DeclarationTypeView].apply(form, lrn, values, NormalMode, itemIndex)(fakeRequest, messages)
@@ -37,7 +36,11 @@ class DeclarationTypeViewSpec extends EnumerableViewBehaviours[DeclarationTypeIt
   override def radioItems(fieldId: String, checkedValue: Option[DeclarationTypeItemLevel] = None): Seq[RadioItem] =
     values.toRadioItems(fieldId, checkedValue)
 
-  override def values: Seq[DeclarationTypeItemLevel] = declarationTypeItemValues
+  override def values: Seq[DeclarationTypeItemLevel] = Seq(
+    DeclarationTypeItemLevel("T1", "Goods not having the customs status of..."),
+    DeclarationTypeItemLevel("T2", "Goods having the customs status of..."),
+    DeclarationTypeItemLevel("T2F", "Goods required to move under the...")
+  )
 
   behave like pageWithTitle()
 

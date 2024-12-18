@@ -16,7 +16,6 @@
 
 package models
 
-import models.DocumentType.*
 import play.api.libs.functional.syntax.*
 import play.api.libs.json.*
 
@@ -53,5 +52,34 @@ object Document {
     )(Document.apply)
 
     readsForKey("type") orElse readsForKey("previousDocumentType")
+  }
+
+  implicit val documentsReads: Reads[Seq[Document]] = Reads {
+    case x: JsArray =>
+      JsSuccess(x.validateAsListOf[Document])
+    case _ =>
+      JsError("documentsReads: Failed to read documents from cache")
+  }
+
+  implicit val itemDocumentsReads: Reads[Seq[UUID]] = {
+    case JsArray(values) =>
+      JsSuccess(
+        values.flatMap {
+          value => (value \ "document").validate[UUID].asOpt
+        }.toSeq
+      )
+    case _ =>
+      JsError("itemDocumentReads: Failed to read document UUIDs from cache")
+  }
+
+  implicit class RichDocuments(value: Seq[Document]) {
+
+    def isConsignmentPreviousDocumentPresent: Boolean =
+      value.exists {
+        document => document.attachToAllItems && document.`type`.isPrevious
+      }
+
+    def noConsignmentPreviousDocumentPresent: Boolean =
+      !isConsignmentPreviousDocumentPresent
   }
 }

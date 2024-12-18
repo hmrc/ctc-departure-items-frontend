@@ -17,10 +17,9 @@
 package models.journeyDomain.item
 
 import base.SpecBase
-import config.Constants.CountryCode.*
 import config.Constants.DeclarationType.*
 import config.Constants.SecurityType.*
-import config.{PhaseConfig, TestConstants}
+import config.PhaseConfig
 import generators.Generators
 import models.DeclarationTypeItemLevel.*
 import models.journeyDomain.item.additionalInformation.{AdditionalInformationDomain, AdditionalInformationListDomain}
@@ -1553,17 +1552,18 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
     }
 
     "documentsReader" - {
-      val gbCustomsOfficeGen = nonEmptyString.map(
-        x => s"$GB$x"
-      )
-      val nonGgbCustomsOfficeGen = nonEmptyString.retryUntil(!_.startsWith(GB))
 
-      val genForT2OrT2FConsignmentLevel                         = Gen.oneOf(T2, T2F)
-      val genForT2OrT2FItemLevel: Gen[DeclarationTypeItemLevel] = Gen.oneOf(TestConstants.declarationTypeT2, TestConstants.declarationTypeT2F)
+      val genForT2OrT2FConsignmentLevel =
+        Gen.oneOf(T2, T2F)
+
+      val genForT2OrT2FItemLevel: Gen[DeclarationTypeItemLevel] =
+        arbitrary[DeclarationTypeItemLevel](arbitraryT2OrT2FDeclarationType)
+
       val genForNonT2OrT2F: Gen[DeclarationTypeItemLevel] =
-        Gen.oneOf(TestConstants.declarationTypeT1, TestConstants.declarationTypeTIR, TestConstants.declarationTypeT)
-      val genForOtherConsignmentLevel: Gen[String]            = Gen.oneOf(TIR, T1)
-      val genForOtherItemLevel: Gen[DeclarationTypeItemLevel] = Gen.oneOf(TestConstants.declarationTypeTIR, TestConstants.declarationTypeT1)
+        arbitrary[DeclarationTypeItemLevel](arbitraryT1DeclarationType)
+
+      val genForOtherConsignmentLevel: Gen[String] =
+        Gen.oneOf(TIR, T1)
 
       "can be read from user answers" - {
 
@@ -1573,8 +1573,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
             "and InferredAddDocumentsYesNoPage is true" in {
 
-              forAll(gbCustomsOfficeGen, genForT2OrT2FConsignmentLevel, arbitrary[UUID]) {
-                (customsOfficeId, declarationType, documentUUID) =>
+              forAll(genForT2OrT2FConsignmentLevel, arbitrary[UUID]) {
+                (declarationType, documentUUID) =>
                   val documents = Json
                     .parse(s"""
                               |[
@@ -1595,7 +1595,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                     .as[JsArray]
 
                   val userAnswers = emptyUserAnswers
-                    .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
+                    .setValue(CustomsOfficeOfDepartureInCL112Page, true)
                     .setValue(TransitOperationDeclarationTypePage, declarationType)
                     .setValue(InferredAddDocumentsYesNoPage(itemIndex), true)
                     .setValue(external.DocumentsSection, documents)
@@ -1622,10 +1622,10 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           "and Consignment level previous document is not defined" in {
 
-            forAll(gbCustomsOfficeGen, genForT2OrT2FConsignmentLevel, arbitrary[UUID]) {
-              (customsOfficeId, declarationType, documentUUID) =>
+            forAll(genForT2OrT2FConsignmentLevel, arbitrary[UUID]) {
+              (declarationType, documentUUID) =>
                 val userAnswers = emptyUserAnswers
-                  .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
+                  .setValue(CustomsOfficeOfDepartureInCL112Page, true)
                   .setValue(TransitOperationDeclarationTypePage, declarationType)
                   .setValue(DocumentPage(itemIndex, Index(0)), documentUUID)
 
@@ -1649,8 +1649,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           "and Consignment level previous document is defined but not for all items" in {
 
-            forAll(gbCustomsOfficeGen, genForT2OrT2FConsignmentLevel, arbitrary[UUID]) {
-              (customsOfficeId, declarationType, documentUUID) =>
+            forAll(genForT2OrT2FConsignmentLevel, arbitrary[UUID]) {
+              (declarationType, documentUUID) =>
                 val documents = Json
                   .parse(s"""
                             |[
@@ -1671,7 +1671,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                   .as[JsArray]
 
                 val userAnswers = emptyUserAnswers
-                  .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
+                  .setValue(CustomsOfficeOfDepartureInCL112Page, true)
                   .setValue(TransitOperationDeclarationTypePage, declarationType)
                   .setValue(DocumentPage(itemIndex, Index(0)), documentUUID)
                   .setValue(external.DocumentsSection, documents)
@@ -1703,8 +1703,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               "and InferredAddDocumentsYesNoPage is true" in {
 
-                forAll(gbCustomsOfficeGen, genForT2OrT2FItemLevel, arbitrary[UUID]) {
-                  (customsOfficeId, declarationType, documentUUID) =>
+                forAll(genForT2OrT2FItemLevel, arbitrary[UUID]) {
+                  (declarationType, documentUUID) =>
                     val documents = Json
                       .parse(s"""
                                 |[
@@ -1725,7 +1725,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                       .as[JsArray]
 
                     val userAnswers = emptyUserAnswers
-                      .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
+                      .setValue(CustomsOfficeOfDepartureInCL112Page, true)
                       .setValue(TransitOperationDeclarationTypePage, T)
                       .setValue(DeclarationTypePage(index), declarationType)
                       .setValue(InferredAddDocumentsYesNoPage(itemIndex), true)
@@ -1753,10 +1753,10 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
             "and Consignment level previous document is not defined" in {
 
-              forAll(gbCustomsOfficeGen, genForT2OrT2FItemLevel, arbitrary[UUID]) {
-                (customsOfficeId, declarationType, documentUUID) =>
+              forAll(genForT2OrT2FItemLevel, arbitrary[UUID]) {
+                (declarationType, documentUUID) =>
                   val userAnswers = emptyUserAnswers
-                    .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
+                    .setValue(CustomsOfficeOfDepartureInCL112Page, true)
                     .setValue(TransitOperationDeclarationTypePage, T)
                     .setValue(DeclarationTypePage(index), declarationType)
                     .setValue(DocumentPage(itemIndex, Index(0)), documentUUID)
@@ -1781,8 +1781,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
             "and Consignment level previous document is defined but not for all items" in {
 
-              forAll(gbCustomsOfficeGen, genForT2OrT2FItemLevel, arbitrary[UUID]) {
-                (customsOfficeId, declarationType, documentUUID) =>
+              forAll(genForT2OrT2FItemLevel, arbitrary[UUID]) {
+                (declarationType, documentUUID) =>
                   val documents = Json
                     .parse(s"""
                               |[
@@ -1803,7 +1803,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                     .as[JsArray]
 
                   val userAnswers = emptyUserAnswers
-                    .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
+                    .setValue(CustomsOfficeOfDepartureInCL112Page, true)
                     .setValue(TransitOperationDeclarationTypePage, T)
                     .setValue(DeclarationTypePage(index), declarationType)
                     .setValue(DocumentPage(itemIndex, Index(0)), documentUUID)
@@ -1834,8 +1834,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               "and InferredAddDocumentsYesNoPage is true" in {
 
-                forAll(gbCustomsOfficeGen, genForNonT2OrT2F, arbitrary[UUID]) {
-                  (customsOfficeId, declarationType, documentUUID) =>
+                forAll(genForNonT2OrT2F, arbitrary[UUID]) {
+                  (declarationType, documentUUID) =>
                     val documents = Json
                       .parse(s"""
                                 |[
@@ -1856,7 +1856,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                       .as[JsArray]
 
                     val userAnswers = emptyUserAnswers
-                      .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
+                      .setValue(CustomsOfficeOfDepartureInCL112Page, true)
                       .setValue(TransitOperationDeclarationTypePage, T)
                       .setValue(DeclarationTypePage(index), declarationType)
                       .setValue(ConsignmentAddDocumentsPage, true)
@@ -1885,10 +1885,10 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
             "and ConsignmentAddDocumentsPage is false" in {
 
-              forAll(gbCustomsOfficeGen, genForNonT2OrT2F) {
-                (customsOfficeId, declarationType) =>
+              forAll(genForNonT2OrT2F) {
+                declarationType =>
                   val userAnswers = emptyUserAnswers
-                    .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
+                    .setValue(CustomsOfficeOfDepartureInCL112Page, true)
                     .setValue(TransitOperationDeclarationTypePage, T)
                     .setValue(DeclarationTypePage(index), declarationType)
                     .setValue(ConsignmentAddDocumentsPage, false)
@@ -1908,10 +1908,10 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
             "and AddDocumentsYesNoPage is true" in {
 
-              forAll(gbCustomsOfficeGen, genForOtherConsignmentLevel, genForOtherItemLevel, arbitrary[UUID]) {
-                (customsOfficeId, declarationTypeConsignmentLevel, declarationTypeItemLevel, documentUUID) =>
+              forAll(genForOtherConsignmentLevel, genForNonT2OrT2F, arbitrary[UUID]) {
+                (declarationTypeConsignmentLevel, declarationTypeItemLevel, documentUUID) =>
                   val userAnswers = emptyUserAnswers
-                    .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
+                    .setValue(CustomsOfficeOfDepartureInCL112Page, true)
                     .setValue(TransitOperationDeclarationTypePage, declarationTypeConsignmentLevel)
                     .setValue(DeclarationTypePage(index), declarationTypeItemLevel)
                     .setValue(ConsignmentAddDocumentsPage, true)
@@ -1939,10 +1939,10 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
             "and AddDocumentsYesNoPage is false" in {
 
-              forAll(gbCustomsOfficeGen, genForOtherConsignmentLevel, genForOtherItemLevel) {
-                (customsOfficeId, declarationTypeConsignmentLevel, declarationTypeItemLevel) =>
+              forAll(genForOtherConsignmentLevel, genForNonT2OrT2F) {
+                (declarationTypeConsignmentLevel, declarationTypeItemLevel) =>
                   val userAnswers = emptyUserAnswers
-                    .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
+                    .setValue(CustomsOfficeOfDepartureInCL112Page, true)
                     .setValue(TransitOperationDeclarationTypePage, declarationTypeConsignmentLevel)
                     .setValue(DeclarationTypePage(index), declarationTypeItemLevel)
                     .setValue(ConsignmentAddDocumentsPage, true)
@@ -1960,10 +1960,10 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           "and ConsignmentAddDocumentsPage is false" in {
 
-            forAll(gbCustomsOfficeGen, genForOtherConsignmentLevel, genForOtherItemLevel) {
-              (customsOfficeId, declarationTypeConsignmentLevel, declarationTypeItemLevel) =>
+            forAll(genForOtherConsignmentLevel, genForNonT2OrT2F) {
+              (declarationTypeConsignmentLevel, declarationTypeItemLevel) =>
                 val userAnswers = emptyUserAnswers
-                  .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
+                  .setValue(CustomsOfficeOfDepartureInCL112Page, true)
                   .setValue(TransitOperationDeclarationTypePage, declarationTypeConsignmentLevel)
                   .setValue(DeclarationTypePage(index), declarationTypeItemLevel)
                   .setValue(ConsignmentAddDocumentsPage, false)
@@ -1982,10 +1982,10 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
             "and AddDocumentsYesNoPage is true" in {
 
-              forAll(nonGgbCustomsOfficeGen, genForT2OrT2FConsignmentLevel, genForT2OrT2FItemLevel, arbitrary[UUID]) {
-                (customsOfficeId, declarationTypeConsignmentLevel, declarationTypeItemLevel, documentUUID) =>
+              forAll(genForT2OrT2FConsignmentLevel, genForT2OrT2FItemLevel, arbitrary[UUID]) {
+                (declarationTypeConsignmentLevel, declarationTypeItemLevel, documentUUID) =>
                   val userAnswers = emptyUserAnswers
-                    .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
+                    .setValue(CustomsOfficeOfDepartureInCL112Page, false)
                     .setValue(TransitOperationDeclarationTypePage, declarationTypeConsignmentLevel)
                     .setValue(DeclarationTypePage(index), declarationTypeItemLevel)
                     .setValue(ConsignmentAddDocumentsPage, true)
@@ -2013,10 +2013,10 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
             "and AddDocumentsYesNoPage is false" in {
 
-              forAll(nonGgbCustomsOfficeGen, genForT2OrT2FConsignmentLevel, genForT2OrT2FItemLevel) {
-                (customsOfficeId, declarationTypeConsignmentLevel, declarationTypeItemLevel) =>
+              forAll(genForT2OrT2FConsignmentLevel, genForT2OrT2FItemLevel) {
+                (declarationTypeConsignmentLevel, declarationTypeItemLevel) =>
                   val userAnswers = emptyUserAnswers
-                    .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
+                    .setValue(CustomsOfficeOfDepartureInCL112Page, false)
                     .setValue(TransitOperationDeclarationTypePage, declarationTypeConsignmentLevel)
                     .setValue(DeclarationTypePage(index), declarationTypeItemLevel)
                     .setValue(ConsignmentAddDocumentsPage, true)
@@ -2033,10 +2033,10 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
             "and ConsignmentAddDocumentsPage is false" in {
 
-              forAll(nonGgbCustomsOfficeGen, genForT2OrT2FConsignmentLevel, genForT2OrT2FItemLevel) {
-                (customsOfficeId, declarationTypeConsignmentLevel, declarationTypeItemLevel) =>
+              forAll(genForT2OrT2FConsignmentLevel, genForT2OrT2FItemLevel) {
+                (declarationTypeConsignmentLevel, declarationTypeItemLevel) =>
                   val userAnswers = emptyUserAnswers
-                    .setValue(CustomsOfficeOfDeparturePage, customsOfficeId)
+                    .setValue(CustomsOfficeOfDepartureInCL112Page, false)
                     .setValue(TransitOperationDeclarationTypePage, declarationTypeConsignmentLevel)
                     .setValue(DeclarationTypePage(index), declarationTypeItemLevel)
                     .setValue(ConsignmentAddDocumentsPage, false)

@@ -18,14 +18,14 @@ package views.item.documents.index
 
 import play.twirl.api.HtmlFormat
 import views.behaviours.ViewBehaviours
-import views.html.item.documents.index.NoDocumentsToAttachView
+import views.html.item.documents.index.MustAttachPreviousDocumentView
 
-class NoDocumentsToAttachViewSpec extends ViewBehaviours {
+class MustAttachPreviousDocumentViewSpec extends ViewBehaviours {
 
   override def view: HtmlFormat.Appendable =
-    injector.instanceOf[NoDocumentsToAttachView].apply(lrn, itemIndex, documentIndex)(fakeRequest, messages)
+    injector.instanceOf[MustAttachPreviousDocumentView].apply(lrn, itemIndex, documentIndex)(fakeRequest, messages)
 
-  override val prefix: String = "item.documents.index.document.noneToAttach"
+  override val prefix: String = "item.documents.index.document.mustAttachPrevious"
 
   behave like pageWithTitle()
 
@@ -35,11 +35,11 @@ class NoDocumentsToAttachViewSpec extends ViewBehaviours {
 
   behave like pageWithHeading()
 
-  behave like pageWithContent("p", "You can only attach a document if you have added it in your Documents section.")
+  behave like pageWithContent("p", "You have to attach a previous document to this item.")
 
   behave like pageWithLink(
     id = "documents",
     expectedText = "Go to your Documents section to add another document",
-    expectedHref = frontendAppConfig.documentsRedirectUrl(lrn)
+    expectedHref = frontendAppConfig.mandatoryPreviousDocumentUrl(lrn)
   )
 }
