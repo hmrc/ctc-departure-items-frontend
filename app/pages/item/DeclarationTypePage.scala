@@ -37,7 +37,11 @@ case class DeclarationTypePage(itemIndex: Index) extends QuestionPage[Declaratio
 
   override def cleanup(value: Option[DeclarationTypeItemLevel], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(_) => userAnswers.remove(DocumentsSection(itemIndex))
-      case _       => super.cleanup(value, userAnswers)
+      case Some(_) =>
+        userAnswers
+          .remove(AddDocumentsYesNoPage(itemIndex))
+          .flatMap(_.remove(DocumentsSection(itemIndex)))
+      case _ =>
+        super.cleanup(value, userAnswers)
     }
 }

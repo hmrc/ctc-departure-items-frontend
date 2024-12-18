@@ -34,17 +34,19 @@ class DeclarationTypePageSpec extends PageBehaviours {
 
     "cleanup" - {
       "when answer changes" - {
-        "must remove documents" in {
+        "must cleanup" in {
           forAll(arbitrary[DeclarationTypeItemLevel]) {
             dt1 =>
               forAll(arbitrary[DeclarationTypeItemLevel].retryUntil(_ != dt1)) {
                 dt2 =>
                   val userAnswers = emptyUserAnswers
                     .setValue(DeclarationTypePage(index), dt1)
+                    .setValue(AddDocumentsYesNoPage(itemIndex), true)
                     .setValue(DocumentsSection(index), JsArray(Seq(Json.obj("foo" -> "bar"))))
 
                   val result = userAnswers.setValue(DeclarationTypePage(index), dt2)
 
+                  result.get(AddDocumentsYesNoPage(index)) must not be defined
                   result.get(DocumentsSection(index)) must not be defined
               }
           }
@@ -52,15 +54,17 @@ class DeclarationTypePageSpec extends PageBehaviours {
       }
 
       "when answer doesn't changes" - {
-        "must not remove documents" in {
+        "must not cleanup" in {
           forAll(arbitrary[DeclarationTypeItemLevel]) {
             dt =>
               val userAnswers = emptyUserAnswers
                 .setValue(DeclarationTypePage(index), dt)
+                .setValue(AddDocumentsYesNoPage(itemIndex), true)
                 .setValue(DocumentsSection(index), JsArray(Seq(Json.obj("foo" -> "bar"))))
 
               val result = userAnswers.setValue(DeclarationTypePage(index), dt)
 
+              result.get(AddDocumentsYesNoPage(index)) mustBe defined
               result.get(DocumentsSection(index)) mustBe defined
           }
         }
