@@ -17,7 +17,10 @@
 package pages.item
 
 import models.DeclarationTypeItemLevel
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
+import pages.sections.documents.DocumentsSection
+import play.api.libs.json.{JsArray, Json}
 
 class DeclarationTypePageSpec extends PageBehaviours {
 
@@ -28,5 +31,40 @@ class DeclarationTypePageSpec extends PageBehaviours {
     beSettable[DeclarationTypeItemLevel](DeclarationTypePage(itemIndex))
 
     beRemovable[DeclarationTypeItemLevel](DeclarationTypePage(itemIndex))
+
+    "cleanup" - {
+      "when answer changes" - {
+        "must remove documents" in {
+          forAll(arbitrary[DeclarationTypeItemLevel]) {
+            dt1 =>
+              forAll(arbitrary[DeclarationTypeItemLevel].retryUntil(_ != dt1)) {
+                dt2 =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(DeclarationTypePage(index), dt1)
+                    .setValue(DocumentsSection(index), JsArray(Seq(Json.obj("foo" -> "bar"))))
+
+                  val result = userAnswers.setValue(DeclarationTypePage(index), dt2)
+
+                  result.get(DocumentsSection(index)) must not be defined
+              }
+          }
+        }
+      }
+
+      "when answer doesn't changes" - {
+        "must not remove documents" in {
+          forAll(arbitrary[DeclarationTypeItemLevel]) {
+            dt =>
+              val userAnswers = emptyUserAnswers
+                .setValue(DeclarationTypePage(index), dt)
+                .setValue(DocumentsSection(index), JsArray(Seq(Json.obj("foo" -> "bar"))))
+
+              val result = userAnswers.setValue(DeclarationTypePage(index), dt)
+
+              result.get(DocumentsSection(index)) mustBe defined
+          }
+        }
+      }
+    }
   }
 }

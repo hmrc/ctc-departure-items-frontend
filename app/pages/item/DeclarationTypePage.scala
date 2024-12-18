@@ -20,8 +20,11 @@ import controllers.item.routes
 import models.{DeclarationTypeItemLevel, Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.ItemSection
+import pages.sections.documents.DocumentsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+
+import scala.util.Try
 
 case class DeclarationTypePage(itemIndex: Index) extends QuestionPage[DeclarationTypeItemLevel] {
 
@@ -31,4 +34,10 @@ case class DeclarationTypePage(itemIndex: Index) extends QuestionPage[Declaratio
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.DeclarationTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex))
+
+  override def cleanup(value: Option[DeclarationTypeItemLevel], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(_) => userAnswers.remove(DocumentsSection(itemIndex))
+      case _       => super.cleanup(value, userAnswers)
+    }
 }
