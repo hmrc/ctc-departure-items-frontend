@@ -19,6 +19,7 @@ package pages.item
 import models.DeclarationTypeItemLevel
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
+import pages.item.documents.AddAnotherDocumentPage
 import pages.sections.documents.DocumentsSection
 import play.api.libs.json.{JsArray, Json}
 
@@ -34,21 +35,47 @@ class DeclarationTypePageSpec extends PageBehaviours {
 
     "cleanup" - {
       "when answer changes" - {
-        "must cleanup" in {
-          forAll(arbitrary[DeclarationTypeItemLevel]) {
-            dt1 =>
-              forAll(arbitrary[DeclarationTypeItemLevel].retryUntil(_ != dt1)) {
-                dt2 =>
-                  val userAnswers = emptyUserAnswers
-                    .setValue(DeclarationTypePage(index), dt1)
-                    .setValue(AddDocumentsYesNoPage(itemIndex), true)
-                    .setValue(DocumentsSection(index), JsArray(Seq(Json.obj("foo" -> "bar"))))
+        "must cleanup" - {
+          "when add documents yes/no is inferred" in {
+            forAll(arbitrary[DeclarationTypeItemLevel]) {
+              dt1 =>
+                forAll(arbitrary[DeclarationTypeItemLevel].retryUntil(_ != dt1)) {
+                  dt2 =>
+                    val userAnswers = emptyUserAnswers
+                      .setValue(DeclarationTypePage(index), dt1)
+                      .setValue(InferredAddDocumentsYesNoPage(itemIndex), true)
+                      .setValue(DocumentsSection(index), JsArray(Seq(Json.obj("foo" -> "bar"))))
+                      .setValue(AddAnotherDocumentPage(index), false)
 
-                  val result = userAnswers.setValue(DeclarationTypePage(index), dt2)
+                    val result = userAnswers.setValue(DeclarationTypePage(index), dt2)
 
-                  result.get(AddDocumentsYesNoPage(index)) must not be defined
-                  result.get(DocumentsSection(index)) must not be defined
-              }
+                    result.get(InferredAddDocumentsYesNoPage(index)) must not be defined
+                    result.get(AddDocumentsYesNoPage(index)) must not be defined
+                    result.get(DocumentsSection(index)) must not be defined
+                    result.get(AddAnotherDocumentPage(index)) must not be defined
+                }
+            }
+          }
+
+          "when add documents yes/no is not inferred" in {
+            forAll(arbitrary[DeclarationTypeItemLevel]) {
+              dt1 =>
+                forAll(arbitrary[DeclarationTypeItemLevel].retryUntil(_ != dt1)) {
+                  dt2 =>
+                    val userAnswers = emptyUserAnswers
+                      .setValue(DeclarationTypePage(index), dt1)
+                      .setValue(AddDocumentsYesNoPage(itemIndex), true)
+                      .setValue(DocumentsSection(index), JsArray(Seq(Json.obj("foo" -> "bar"))))
+                      .setValue(AddAnotherDocumentPage(index), false)
+
+                    val result = userAnswers.setValue(DeclarationTypePage(index), dt2)
+
+                    result.get(InferredAddDocumentsYesNoPage(index)) must not be defined
+                    result.get(AddDocumentsYesNoPage(index)) must not be defined
+                    result.get(DocumentsSection(index)) must not be defined
+                    result.get(AddAnotherDocumentPage(index)) must not be defined
+                }
+            }
           }
         }
       }
@@ -61,11 +88,13 @@ class DeclarationTypePageSpec extends PageBehaviours {
                 .setValue(DeclarationTypePage(index), dt)
                 .setValue(AddDocumentsYesNoPage(itemIndex), true)
                 .setValue(DocumentsSection(index), JsArray(Seq(Json.obj("foo" -> "bar"))))
+                .setValue(AddAnotherDocumentPage(index), false)
 
               val result = userAnswers.setValue(DeclarationTypePage(index), dt)
 
               result.get(AddDocumentsYesNoPage(index)) mustBe defined
               result.get(DocumentsSection(index)) mustBe defined
+              result.get(AddAnotherDocumentPage(index)) mustBe defined
           }
         }
       }

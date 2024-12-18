@@ -19,6 +19,7 @@ package pages.item
 import controllers.item.routes
 import models.{DeclarationTypeItemLevel, Index, Mode, UserAnswers}
 import pages.QuestionPage
+import pages.item.documents.AddAnotherDocumentPage
 import pages.sections.ItemSection
 import pages.sections.documents.DocumentsSection
 import play.api.libs.json.JsPath
@@ -40,7 +41,9 @@ case class DeclarationTypePage(itemIndex: Index) extends QuestionPage[Declaratio
       case Some(_) =>
         userAnswers
           .remove(AddDocumentsYesNoPage(itemIndex))
+          .flatMap(_.remove(InferredAddDocumentsYesNoPage(itemIndex)))
           .flatMap(_.remove(DocumentsSection(itemIndex)))
+          .flatMap(_.remove(AddAnotherDocumentPage(itemIndex)))
       case _ =>
         super.cleanup(value, userAnswers)
     }
