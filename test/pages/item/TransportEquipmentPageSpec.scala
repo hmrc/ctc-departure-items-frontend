@@ -16,7 +16,6 @@
 
 package pages.item
 
-import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 import java.util.UUID
