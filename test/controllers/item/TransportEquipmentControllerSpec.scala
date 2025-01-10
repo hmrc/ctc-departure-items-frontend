@@ -24,7 +24,7 @@ import navigation.ItemNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
-import pages.item.{InferredTransportEquipmentPage, TransportEquipmentPage}
+import pages.item.TransportEquipmentPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -100,25 +100,6 @@ class TransportEquipmentControllerSpec extends SpecBase with AppWithDefaultMockF
       "in TransportEquipmentPage" in {
         when(mockTransportEquipmentService.getTransportEquipments(any())).thenReturn(transportEquipmentList)
         val userAnswers = emptyUserAnswers.setValue(TransportEquipmentPage(itemIndex), transportEquipment1.uuid)
-        setExistingUserAnswers(userAnswers)
-
-        val request = FakeRequest(GET, transportEquipmentRoute)
-
-        val result = route(app, request).value
-
-        val filledForm = form.bind(Map("value" -> transportEquipment1.value))
-
-        val view = injector.instanceOf[TransportEquipmentView]
-
-        status(result) mustEqual OK
-
-        contentAsString(result) mustEqual
-          view(filledForm, lrn, transportEquipmentList.values, mode, itemIndex)(request, messages).toString
-      }
-
-      "in InferredTransportEquipmentPage" in {
-        when(mockTransportEquipmentService.getTransportEquipments(any())).thenReturn(transportEquipmentList)
-        val userAnswers = emptyUserAnswers.setValue(InferredTransportEquipmentPage(itemIndex), transportEquipment1.uuid)
         setExistingUserAnswers(userAnswers)
 
         val request = FakeRequest(GET, transportEquipmentRoute)

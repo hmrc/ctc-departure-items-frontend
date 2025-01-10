@@ -18,40 +18,19 @@ package pages.item
 
 import controllers.item.routes
 import models.{Index, Mode, UserAnswers}
+import pages.QuestionPage
 import pages.sections.ItemSection
-import pages.{InferredPage, QuestionPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 import java.util.UUID
-import scala.util.Try
 
-sealed abstract class BaseTransportEquipmentPage(itemIndex: Index) extends QuestionPage[UUID] {
+case class TransportEquipmentPage(itemIndex: Index) extends QuestionPage[UUID] {
 
   override def path: JsPath = ItemSection(itemIndex).path \ toString
 
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.TransportEquipmentController.onPageLoad(userAnswers.lrn, mode, itemIndex))
-
-  def cleanup(userAnswers: UserAnswers): Try[UserAnswers]
-
-  override def cleanup(value: Option[UUID], userAnswers: UserAnswers): Try[UserAnswers] = value match {
-    case Some(_) => cleanup(userAnswers)
-    case None    => super.cleanup(value, userAnswers)
-  }
-}
-
-case class TransportEquipmentPage(itemIndex: Index) extends BaseTransportEquipmentPage(itemIndex) {
   override def toString: String = "transportEquipment"
 
-  override def cleanup(userAnswers: UserAnswers): Try[UserAnswers] =
-    userAnswers.remove(InferredTransportEquipmentPage(itemIndex))
-}
-
-// TODO - remove InferredTransportEquipmentPage and update submission logic 30 days after CTCP-5979 goes live
-case class InferredTransportEquipmentPage(itemIndex: Index) extends BaseTransportEquipmentPage(itemIndex) with InferredPage[UUID] {
-  override def toString: String = "inferredTransportEquipment"
-
-  override def cleanup(userAnswers: UserAnswers): Try[UserAnswers] =
-    userAnswers.remove(TransportEquipmentPage(itemIndex))
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.TransportEquipmentController.onPageLoad(userAnswers.lrn, mode, itemIndex))
 }

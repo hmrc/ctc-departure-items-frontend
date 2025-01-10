@@ -22,7 +22,7 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.SelectableFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
-import pages.item.{InferredTransportEquipmentPage, TransportEquipmentPage}
+import pages.item.TransportEquipmentPage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -55,8 +55,7 @@ class TransportEquipmentController @Inject() (
     implicit request =>
       val transportEquipmentList = service.getTransportEquipments(request.userAnswers)
       val form                   = formProvider(prefix, transportEquipmentList)
-      val preparedForm = request.userAnswers.get(TransportEquipmentPage(itemIndex)) orElse
-        request.userAnswers.get(InferredTransportEquipmentPage(itemIndex)) match {
+      val preparedForm = request.userAnswers.get(TransportEquipmentPage(itemIndex)) match {
         case None => form
         case Some(uuid) =>
           transportEquipmentList.values.find(_.uuid == uuid) match {
