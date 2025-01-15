@@ -97,7 +97,7 @@ object ItemDomain {
   def transportEquipmentReader(itemIndex: Index): Read[Option[UUID]] =
     TransportEquipmentsSection.optionalReader.to {
       case Some(array) if array.nonEmpty =>
-        UserAnswersReader.readInferred(TransportEquipmentPage(itemIndex), InferredTransportEquipmentPage(itemIndex)).toOption
+        TransportEquipmentPage(itemIndex).reader.toOption
       case _ =>
         UserAnswersReader.none
     }

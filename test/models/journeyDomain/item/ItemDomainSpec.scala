@@ -92,39 +92,21 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         .as[JsArray]
 
       "can be read from user answers" - {
-        "when transport equipment sequence is present" - {
-          "and not inferred" in {
-            forAll(arbitrary[UUID]) {
-              uuid =>
-                val userAnswers = emptyUserAnswers
-                  .setValue(TransportEquipmentsSection, equipments(uuid))
-                  .setValue(TransportEquipmentPage(itemIndex), uuid)
+        "when transport equipment sequence is present" in {
+          forAll(arbitrary[UUID]) {
+            uuid =>
+              val userAnswers = emptyUserAnswers
+                .setValue(TransportEquipmentsSection, equipments(uuid))
+                .setValue(TransportEquipmentPage(itemIndex), uuid)
 
-                val expectedResult = Some(uuid)
+              val expectedResult = Some(uuid)
 
-                val result = ItemDomain.transportEquipmentReader(itemIndex).apply(Nil).run(userAnswers)
+              val result = ItemDomain.transportEquipmentReader(itemIndex).apply(Nil).run(userAnswers)
 
-                result.value.value mustBe expectedResult
-                result.value.pages mustBe Seq(
-                  TransportEquipmentPage(itemIndex)
-                )
-            }
-          }
-
-          "and inferred" in {
-            forAll(arbitrary[UUID]) {
-              uuid =>
-                val userAnswers = emptyUserAnswers
-                  .setValue(TransportEquipmentsSection, equipments(uuid))
-                  .setValue(InferredTransportEquipmentPage(itemIndex), uuid)
-
-                val expectedResult = Some(uuid)
-
-                val result = ItemDomain.transportEquipmentReader(itemIndex).apply(Nil).run(userAnswers)
-
-                result.value.value mustBe expectedResult
-                result.value.pages mustBe Nil
-            }
+              result.value.value mustBe expectedResult
+              result.value.pages mustBe Seq(
+                TransportEquipmentPage(itemIndex)
+              )
           }
         }
 
