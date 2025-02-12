@@ -47,7 +47,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   val unauthorisedUrl: String                = s"$departureHubUrl/error/cannot-use-service-no-eori"
   val unauthorisedWithGroupAccessUrl: String = s"$departureHubUrl/unauthorised-group-access"
 
-  val lockedUrl: String = s"$departureHubUrl/cannot-open"
+  def lockedUrl(lrn: LocalReferenceNumber): String = s"$departureHubUrl/$lrn/cannot-open"
 
   def keepAliveUrl(lrn: LocalReferenceNumber): String = s"$departureHubUrl/$lrn/keep-alive"
 

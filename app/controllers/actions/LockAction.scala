@@ -52,7 +52,7 @@ class LockAction(lockService: LockService)(implicit val executionContext: Execut
         None
       case Locked =>
         logger.info(s"Someone else is amending draft ${request.userAnswers.lrn}. Redirecting to /cannot-open")
-        Some(Redirect(config.lockedUrl))
+        Some(Redirect(config.lockedUrl(request.userAnswers.lrn)))
       case LockCheckFailure =>
         Some(Redirect(config.technicalDifficultiesUrl))
     }

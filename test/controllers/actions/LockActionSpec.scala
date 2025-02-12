@@ -55,7 +55,7 @@ class LockActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
       val lockActionProvider = new LockActionProviderImpl(mockLockService)
 
-      harness(lockActionProvider) mustBe Results.SeeOther(frontendAppConfig.lockedUrl)
+      harness(lockActionProvider) mustBe Results.SeeOther(frontendAppConfig.lockedUrl(lrn))
     }
 
     "must redirect to technical difficulties when lock check fails" in {
