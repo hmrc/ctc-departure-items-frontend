@@ -27,8 +27,8 @@ import pages.item.additionalInformation.index.AdditionalInformationTypePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import services.{AdditionalInformationService, TransitionAdditionalInformationService}
+import play.api.test.Helpers.*
+import services.AdditionalInformationService
 import views.html.item.additionalInformation.index.AdditionalInformationTypeView
 
 import scala.concurrent.Future
@@ -43,7 +43,7 @@ class AdditionalInformationTypeControllerSpec extends SpecBase with AppWithDefau
   private val form         = formProvider("item.additionalInformation.index.additionalInformationType", additionalInformationList)
   private val mode         = NormalMode
 
-  private val mockAdditionalInformationService: AdditionalInformationService = mock[TransitionAdditionalInformationService]
+  private val mockAdditionalInformationService: AdditionalInformationService = mock[AdditionalInformationService]
 
   private lazy val additionalInformationTypeRoute = routes.AdditionalInformationTypeController.onPageLoad(lrn, mode, itemIndex, additionalInformationIndex).url
 

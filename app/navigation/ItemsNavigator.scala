@@ -16,14 +16,14 @@
 
 package navigation
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import models.Mode
 import models.journeyDomain.{ItemsDomain, UserAnswersReader}
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class ItemsNavigatorProviderImpl @Inject() (implicit config: FrontendAppConfig, phaseConfig: PhaseConfig) extends ItemsNavigatorProvider {
+class ItemsNavigatorProviderImpl @Inject() (implicit config: FrontendAppConfig) extends ItemsNavigatorProvider {
 
   override def apply(mode: Mode): UserAnswersNavigator =
     new ItemsNavigator(mode)
@@ -33,8 +33,7 @@ trait ItemsNavigatorProvider {
   def apply(mode: Mode): UserAnswersNavigator
 }
 
-class ItemsNavigator(override val mode: Mode)(implicit override val config: FrontendAppConfig, override val phaseConfig: PhaseConfig)
-    extends UserAnswersNavigator {
+class ItemsNavigator(override val mode: Mode)(implicit override val config: FrontendAppConfig) extends UserAnswersNavigator {
 
   override type T = ItemsDomain
 

@@ -16,8 +16,7 @@
 
 package controllers.item.additionalReference.index
 
-import config.PhaseConfig
-import controllers.actions._
+import controllers.actions.*
 import controllers.item.additionalReference.routes
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
@@ -46,7 +45,7 @@ class RemoveAdditionalReferenceController @Inject() (
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: RemoveAdditionalReferenceView
-)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {

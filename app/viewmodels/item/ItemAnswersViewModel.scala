@@ -16,7 +16,7 @@
 
 package viewmodels.item
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import models.{Index, UserAnswers}
 import play.api.i18n.Messages
 import services.{DocumentsService, TransportEquipmentService}
@@ -36,7 +36,7 @@ object ItemAnswersViewModel {
     def apply(
       userAnswers: UserAnswers,
       itemIndex: Index
-    )(implicit messages: Messages, config: FrontendAppConfig, phaseConfig: PhaseConfig): ItemAnswersViewModel = {
+    )(implicit messages: Messages, config: FrontendAppConfig): ItemAnswersViewModel = {
       val helper = new ItemAnswersHelper(documentsService, transportEquipmentService)(userAnswers, itemIndex)
 
       val firstItemSection = Section(

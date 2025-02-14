@@ -16,7 +16,7 @@
 
 package utils.cyaHelpers.item.additionalInformation
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import controllers.item.additionalInformation.index.routes
 import models.journeyDomain.item.additionalInformation.AdditionalInformationDomain
 import models.{Index, Mode, UserAnswers}
@@ -28,8 +28,7 @@ import viewmodels.ListItem
 
 class AdditionalInformationAnswersHelper(userAnswers: UserAnswers, mode: Mode, itemIndex: Index)(implicit
   messages: Messages,
-  config: FrontendAppConfig,
-  phaseConfig: PhaseConfig
+  config: FrontendAppConfig
 ) extends AnswersHelper(userAnswers, mode) {
 
   def listItems: Seq[Either[ListItem, ListItem]] =

@@ -16,12 +16,12 @@
 
 package models.journeyDomain.item.additionalInformation
 
-import controllers.item.additionalInformation.index.routes._
+import controllers.item.additionalInformation.index.routes.*
+import models.journeyDomain.*
 import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
-import models.journeyDomain._
 import models.reference.AdditionalInformation
-import models.{Index, Mode, Phase, UserAnswers}
-import pages.item.additionalInformation.index._
+import models.{Index, Mode, UserAnswers}
+import pages.item.additionalInformation.index.*
 import play.api.mvc.Call
 
 case class AdditionalInformationDomain(
@@ -32,7 +32,7 @@ case class AdditionalInformationDomain(
 
   override def toString: String = s"${`type`} - $value"
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] = Some {
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some {
     stage match {
       case AccessingJourney =>
         AdditionalInformationTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, additionalInformationIndex)

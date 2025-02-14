@@ -16,7 +16,7 @@
 
 package viewmodels.item.additionalReference
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import controllers.item.additionalReference.routes
 import models.{Index, Mode, UserAnswers}
 import play.api.i18n.Messages
@@ -42,8 +42,7 @@ object AddAnotherAdditionalReferenceViewModel {
 
     def apply(userAnswers: UserAnswers, mode: Mode, itemIndex: Index)(implicit
       messages: Messages,
-      config: FrontendAppConfig,
-      phaseConfig: PhaseConfig
+      config: FrontendAppConfig
     ): AddAnotherAdditionalReferenceViewModel = {
       val helper = new AdditionalReferenceAnswersHelper(userAnswers, mode, itemIndex)
 

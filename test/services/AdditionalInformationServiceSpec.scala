@@ -32,8 +32,7 @@ import scala.concurrent.Future
 class AdditionalInformationServiceSpec extends SpecBase with BeforeAndAfterEach with Generators {
 
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
-  private val transitionService                            = new TransitionAdditionalInformationService(mockRefDataConnector)
-  private val postTransitionService                        = new PostTransitionAdditionalInformationService(mockRefDataConnector)
+  private val service                                      = new AdditionalInformationService(mockRefDataConnector)
 
   private val additionalInformation1: AdditionalInformation = AdditionalInformation(
     code = "20100",
@@ -58,34 +57,16 @@ class AdditionalInformationServiceSpec extends SpecBase with BeforeAndAfterEach 
   }
 
   "AdditionalInformation" - {
+    "getAdditionalInformationTypes" - {
+      "must return a list of sorted additional information types, filtering out code 30600" in {
 
-    "In Post Transition" - {
-      "getAdditionalInformationTypes" - {
-        "must return a list of sorted additional information types, filtering out code 30600" in {
+        when(mockRefDataConnector.getAdditionalInformationTypes()(any(), any()))
+          .thenReturn(Future.successful(additionalInformationTypes))
 
-          when(mockRefDataConnector.getAdditionalInformationTypes()(any(), any()))
-            .thenReturn(Future.successful(additionalInformationTypes))
+        service.getAdditionalInformationTypes().futureValue mustBe
+          SelectableList(Seq(additionalInformation2, additionalInformation1))
 
-          postTransitionService.getAdditionalInformationTypes().futureValue mustBe
-            SelectableList(Seq(additionalInformation2, additionalInformation1))
-
-          verify(mockRefDataConnector).getAdditionalInformationTypes()(any(), any())
-        }
-      }
-    }
-
-    "In Transition" - {
-      "getAdditionalInformationTypes" - {
-        "must return a list of sorted additional information types, not filtering out code 30600" in {
-
-          when(mockRefDataConnector.getAdditionalInformationTypes()(any(), any()))
-            .thenReturn(Future.successful(additionalInformationTypes))
-
-          transitionService.getAdditionalInformationTypes().futureValue mustBe
-            SelectableList(Seq(additionalInformation2, additionalInformation1, additionalInformation3))
-
-          verify(mockRefDataConnector).getAdditionalInformationTypes()(any(), any())
-        }
+        verify(mockRefDataConnector).getAdditionalInformationTypes()(any(), any())
       }
     }
   }

@@ -16,8 +16,7 @@
 
 package controllers.item.packages.index
 
-import config.PhaseConfig
-import controllers.actions._
+import controllers.actions.*
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{PackageNavigatorProvider, UserAnswersNavigator}
@@ -38,7 +37,7 @@ class BeforeYouContinueController @Inject() (
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: BeforeYouContinueView
-)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 

@@ -16,15 +16,14 @@
 
 package controllers.item.consignee
 
-import config.PhaseConfig
-import controllers.actions._
+import controllers.actions.*
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.DynamicAddressFormProvider
 import models.reference.Country
 import models.requests.SpecificDataRequestProvider2
 import models.{DynamicAddress, Index, LocalReferenceNumber, Mode}
 import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
-import pages.item.consignee._
+import pages.item.consignee.*
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -46,7 +45,7 @@ class AddressController @Inject() (
   countriesService: CountriesService,
   val controllerComponents: MessagesControllerComponents,
   view: AddressView
-)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 

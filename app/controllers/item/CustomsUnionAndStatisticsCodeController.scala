@@ -16,8 +16,7 @@
 
 package controllers.item
 
-import config.PhaseConfig
-import controllers.actions._
+import controllers.actions.*
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.item.CUSCodeFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
@@ -43,7 +42,7 @@ class CustomsUnionAndStatisticsCodeController @Inject() (
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: CustomsUnionAndStatisticsCodeView
-)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 

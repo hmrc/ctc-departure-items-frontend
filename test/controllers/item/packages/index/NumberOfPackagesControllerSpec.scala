@@ -17,6 +17,7 @@
 package controllers.item.packages.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import forms.Constants.maxNumberOfPackages
 import forms.IntFormProvider
 import generators.Generators
 import models.PackingType.Unpacked
@@ -27,11 +28,10 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Gen
 import pages.item.packages.index.{NumberOfPackagesPage, PackageTypePage}
-import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import views.html.item.packages.index.NumberOfPackagesView
 
 import scala.concurrent.Future
@@ -42,7 +42,8 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
   private val packageType = PackageType("code", "description", packingType)
 
   private def formProvider(minimum: Int) =
-    new IntFormProvider().apply("item.packages.index.numberOfPackages", phaseConfig.values.maxNumberOfPackages, minimum, Seq(packageType.toString))
+    new IntFormProvider().apply("item.packages.index.numberOfPackages", maxNumberOfPackages, minimum, Seq(packageType.toString))
+
   private val form                       = formProvider(0)
   private val unpackedForm               = formProvider(1)
   private val mode                       = NormalMode
@@ -113,71 +114,43 @@ class NumberOfPackagesControllerSpec extends SpecBase with AppWithDefaultMockFix
     }
 
     "when 0 is submitted" - {
-      "and in transition" - {
-        val app = transitionApplicationBuilder().build()
-        "must redirect to next page" in {
-          running(app) {
-            val userAnswers = emptyUserAnswers.setValue(PackageTypePage(itemIndex, packageIndex), packageType)
+      "and package type is unpacked" - {
+        "must return Bad Request" in {
+          val packageType = PackageType("Unpacked", "Unpacked", Unpacked)
+          val userAnswers = emptyUserAnswers.setValue(PackageTypePage(itemIndex, packageIndex), packageType)
 
-            setExistingUserAnswers(userAnswers)
+          setExistingUserAnswers(userAnswers)
 
-            when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
+          val request    = FakeRequest(POST, numberOfPackagesRoute).withFormUrlEncodedBody(("value", "0"))
+          val filledForm = unpackedForm.bind(Map("value" -> "0"))
 
-            val request = FakeRequest(POST, numberOfPackagesRoute)
-              .withFormUrlEncodedBody(("value", "0"))
+          val result = route(app, request).value
 
-            val result = route(app, request).value
+          status(result) mustEqual BAD_REQUEST
 
-            status(result) mustEqual SEE_OTHER
+          val view = injector.instanceOf[NumberOfPackagesView]
 
-            redirectLocation(result).value mustEqual onwardRoute.url
-          }
+          contentAsString(result) mustEqual
+            view(filledForm, lrn, mode, itemIndex, packageIndex, packageType.toString)(request, messages).toString
         }
       }
-      "and in post-transition" - {
-        def app: Application = postTransitionApplicationBuilder().build()
-        "and package type is unpacked" - {
-          "must return Bad Request" in {
-            running(app) {
-              val packageType = PackageType("Unpacked", "Unpacked", Unpacked)
-              val userAnswers = emptyUserAnswers.setValue(PackageTypePage(itemIndex, packageIndex), packageType)
 
-              setExistingUserAnswers(userAnswers)
+      "and package type is not unpacked" - {
+        "must redirect to next page" in {
+          val userAnswers = emptyUserAnswers.setValue(PackageTypePage(itemIndex, packageIndex), packageType)
 
-              val request    = FakeRequest(POST, numberOfPackagesRoute).withFormUrlEncodedBody(("value", "0"))
-              val filledForm = unpackedForm.bind(Map("value" -> "0"))
+          setExistingUserAnswers(userAnswers)
 
-              val result = route(app, request).value
+          when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
-              status(result) mustEqual BAD_REQUEST
+          val request = FakeRequest(POST, numberOfPackagesRoute)
+            .withFormUrlEncodedBody(("value", "0"))
 
-              val view = injector.instanceOf[NumberOfPackagesView]
+          val result = route(app, request).value
 
-              contentAsString(result) mustEqual
-                view(filledForm, lrn, mode, itemIndex, packageIndex, packageType.toString)(request, messages).toString
-            }
-          }
-        }
+          status(result) mustEqual SEE_OTHER
 
-        "and package type is not unpacked" - {
-          "must redirect to next page" in {
-            running(app) {
-              val userAnswers = emptyUserAnswers.setValue(PackageTypePage(itemIndex, packageIndex), packageType)
-
-              setExistingUserAnswers(userAnswers)
-
-              when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
-
-              val request = FakeRequest(POST, numberOfPackagesRoute)
-                .withFormUrlEncodedBody(("value", "0"))
-
-              val result = route(app, request).value
-
-              status(result) mustEqual SEE_OTHER
-
-              redirectLocation(result).value mustEqual onwardRoute.url
-            }
-          }
+          redirectLocation(result).value mustEqual onwardRoute.url
         }
       }
     }

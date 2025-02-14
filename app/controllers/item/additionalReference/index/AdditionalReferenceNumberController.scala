@@ -16,11 +16,10 @@
 
 package controllers.item.additionalReference.index
 
-import config.PhaseConfig
-import controllers.actions._
+import controllers.actions.*
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.item.additionalReference.AdditionalReferenceNumberFormProvider
-import models.{Index, LocalReferenceNumber, Mode, Phase}
+import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{AdditionalReferenceNavigatorProvider, UserAnswersNavigator}
 import pages.item.additionalReference.index.{
   AddAdditionalReferenceNumberYesNoPage,
@@ -49,12 +48,12 @@ class AdditionalReferenceNumberController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: AdditionalReferenceNumberView,
   viewModelProvider: AdditionalReferenceNumberViewModelProvider
-)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(otherAdditionalReferenceNumbers: Seq[String], isDocumentInCL234: Boolean, phase: Phase): Form[String] =
-    formProvider("item.additionalReference.index.additionalReferenceNumber", otherAdditionalReferenceNumbers, isDocumentInCL234, phase)
+  private def form(otherAdditionalReferenceNumbers: Seq[String], isDocumentInCL234: Boolean): Form[String] =
+    formProvider("item.additionalReference.index.additionalReferenceNumber", otherAdditionalReferenceNumbers, isDocumentInCL234)
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, additionalReferenceIndex: Index): Action[AnyContent] = actions
     .requireData(lrn)
@@ -63,8 +62,8 @@ class AdditionalReferenceNumberController @Inject() (
       implicit request =>
         val viewModel = viewModelProvider.apply(request.userAnswers, itemIndex, additionalReferenceIndex, request.arg._1)
         val preparedForm = request.userAnswers.get(AdditionalReferenceNumberPage(itemIndex, additionalReferenceIndex)) match {
-          case None        => form(viewModel.otherAdditionalReferenceNumbers, request.arg._2, phaseConfig.phase)
-          case Some(value) => form(viewModel.otherAdditionalReferenceNumbers, request.arg._2, phaseConfig.phase).fill(value)
+          case None        => form(viewModel.otherAdditionalReferenceNumbers, request.arg._2)
+          case Some(value) => form(viewModel.otherAdditionalReferenceNumbers, request.arg._2).fill(value)
         }
         Ok(view(preparedForm, lrn, mode, itemIndex, additionalReferenceIndex, viewModel.isReferenceNumberRequired))
     }
@@ -77,7 +76,7 @@ class AdditionalReferenceNumberController @Inject() (
       implicit request =>
         val viewModel = viewModelProvider.apply(request.userAnswers, itemIndex, additionalReferenceIndex, request.arg._1)
 
-        form(viewModel.otherAdditionalReferenceNumbers, request.arg._2, phaseConfig.phase)
+        form(viewModel.otherAdditionalReferenceNumbers, request.arg._2)
           .bindFromRequest()
           .fold(
             formWithErrors =>

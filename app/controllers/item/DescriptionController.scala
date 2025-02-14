@@ -16,8 +16,7 @@
 
 package controllers.item
 
-import config.PhaseConfig
-import controllers.actions._
+import controllers.actions.*
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.item.DescriptionFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
@@ -41,7 +40,7 @@ class DescriptionController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   formProvider: DescriptionFormProvider,
   view: DescriptionView
-)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
