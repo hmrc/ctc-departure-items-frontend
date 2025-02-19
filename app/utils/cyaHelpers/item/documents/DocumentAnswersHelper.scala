@@ -16,7 +16,7 @@
 
 package utils.cyaHelpers.item.documents
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import controllers.item.documents.index.routes
 import models.{Index, Mode, UserAnswers}
 import pages.item.documents.index.DocumentPage
@@ -33,7 +33,7 @@ class DocumentAnswersHelper(
   userAnswers: UserAnswers,
   mode: Mode,
   itemIndex: Index
-)(implicit messages: Messages, config: FrontendAppConfig, phaseConfig: PhaseConfig)
+)(implicit messages: Messages, config: FrontendAppConfig)
     extends AnswersHelper(userAnswers, mode) {
 
   def consignmentLevelListItems: Seq[ListItem] =

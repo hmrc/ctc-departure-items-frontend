@@ -16,8 +16,7 @@
 
 package controllers.item
 
-import config.PhaseConfig
-import controllers.actions._
+import controllers.actions.*
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.{Index, LocalReferenceNumber}
@@ -41,7 +40,7 @@ class RemoveItemController @Inject() (
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: RemoveItemView
-)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 

@@ -16,10 +16,9 @@
 
 package base
 
-import config.{PostTransitionModule, TransitionModule}
-import controllers.actions._
+import controllers.actions.*
 import models.{Index, LockCheck, Mode, UserAnswers}
-import navigation._
+import navigation.*
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, TestSuite}
@@ -105,14 +104,4 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
 
   protected def guiceApplicationBuilder(): GuiceApplicationBuilder =
     defaultApplicationBuilder()
-
-  protected def transitionApplicationBuilder(): GuiceApplicationBuilder =
-    guiceApplicationBuilder()
-      .disable[PostTransitionModule]
-      .bindings(new TransitionModule)
-
-  protected def postTransitionApplicationBuilder(): GuiceApplicationBuilder =
-    guiceApplicationBuilder()
-      .disable[TransitionModule]
-      .bindings(new PostTransitionModule)
 }

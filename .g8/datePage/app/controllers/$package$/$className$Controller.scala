@@ -1,6 +1,5 @@
 package controllers.$package$
 
-import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.DateFormProvider
@@ -28,7 +27,7 @@ class $className;format="cap"$Controller @Inject()(
   val controllerComponents: MessagesControllerComponents,
   view: $className$View,
   dateTimeService: DateTimeService
-)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig) extends FrontendBaseController with I18nSupport {
+)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private def form: Form[LocalDate] = {
     val minDate: LocalDate = dateTimeService.plusMinusDays(-1)

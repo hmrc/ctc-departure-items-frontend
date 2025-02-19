@@ -16,8 +16,7 @@
 
 package controllers.item
 
-import config.PhaseConfig
-import controllers.actions._
+import controllers.actions.*
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.item.CommodityCodeFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
@@ -40,7 +39,7 @@ class CommodityCodeController @Inject() (
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: CommodityCodeView
-)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 

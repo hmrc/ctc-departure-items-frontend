@@ -16,8 +16,7 @@
 
 @import controllers.item.packages.index.routes
 @import models.LocalReferenceNumber
-@import config.PhaseConfig
-@import viewmodels.components.InputCharacterCountViewModel._
+@import viewmodels.components.InputCharacterCountViewModel.*
 @import views.html.components.{Button, ErrorSummary, InputCharacterCount}
 
 
@@ -26,8 +25,7 @@
     formHelper: FormWithCSRF,
     inputCharacterCount: InputCharacterCount,
     errorSummary: ErrorSummary,
-    button: Button,
-    phaseConfig: PhaseConfig
+    button: Button
 )
 
 @(form: Form[String], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, packageIndex: Index)(implicit request: Request[?], messages: Messages)
@@ -49,7 +47,7 @@
                 caption = Some(messages("item.packages.caption", itemIndex.display)),
             ),
             label = messages("item.packages.index.shippingMark.heading"),
-            maxLength = phaseConfig.values.maxShippingMarkLength
+            maxLength = forms.Constants.maxShippingMarkLength
         )
 
         @button(attributes = Map("id" -> "submit"))

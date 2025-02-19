@@ -16,7 +16,6 @@
 
 package controllers.item
 
-import config.PhaseConfig
 import controllers.actions.*
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
@@ -41,7 +40,7 @@ class AddDocumentsYesNoController @Inject() (
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddDocumentsYesNoView
-)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 

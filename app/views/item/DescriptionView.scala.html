@@ -14,10 +14,9 @@
  * limitations under the License.
  *@
 
-@import config.PhaseConfig
 @import controllers.item.routes
 @import models.LocalReferenceNumber
-@import viewmodels.components.InputCharacterCountViewModel._
+@import viewmodels.components.InputCharacterCountViewModel.*
 @import views.html.components.{Button, ErrorSummary, InputCharacterCount}
 
 @this(
@@ -25,8 +24,7 @@
     formHelper: FormWithCSRF,
     inputCharacterCount: InputCharacterCount,
     errorSummary: ErrorSummary,
-    button: Button,
-    phaseConfig: PhaseConfig
+    button: Button
 )
 
 @(form: Form[String], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index)(implicit request: Request[?], messages: Messages)
@@ -49,7 +47,7 @@
                 additionalHtml = messages("item.description.paragraph").toParagraph
             ),
             label = messages("item.description.heading", itemIndex.display),
-            maxLength = phaseConfig.values.maxItemDescriptionLength
+            maxLength = forms.Constants.maxItemDescriptionLength
         )
 
         @button(attributes = Map("id" -> "submit"))

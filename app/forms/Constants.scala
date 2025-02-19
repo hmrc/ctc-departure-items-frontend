@@ -28,4 +28,10 @@ object Constants {
   lazy val minEoriTcuinLength: Int                  = 3
   lazy val supplementaryUnitsDecimalPlaces: Int     = 6
   lazy val supplementaryUnitsCharacterCount: Int    = 16
+  lazy val maxItemDescriptionLength: Int            = 512
+  lazy val maxShippingMarkLength: Int               = 512
+  lazy val maxAdditionalReferenceNumLength: Int     = 70
+  lazy val maxNumberOfPackages: Int                 = 99999999
+  lazy val decimalPlaces: Int                       = 6
+  lazy val characterCount: Int                      = 16
 }

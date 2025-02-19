@@ -16,8 +16,7 @@
 
 package controllers.item.documents.index
 
-import config.PhaseConfig
-import controllers.actions._
+import controllers.actions.*
 import controllers.item.documents.routes
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
@@ -26,7 +25,7 @@ import pages.sections.documents.DocumentSection
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc._
+import play.api.mvc.*
 import repositories.SessionRepository
 import services.DocumentsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -43,7 +42,7 @@ class RemoveDocumentController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: RemoveDocumentView,
   service: DocumentsService
-)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {

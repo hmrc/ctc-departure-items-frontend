@@ -16,8 +16,7 @@
 
 package controllers.item.packages.index
 
-import config.PhaseConfig
-import controllers.actions._
+import controllers.actions.*
 import controllers.item.packages.routes
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
@@ -42,7 +41,7 @@ class RemovePackageController @Inject() (
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: RemovePackageView
-)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 

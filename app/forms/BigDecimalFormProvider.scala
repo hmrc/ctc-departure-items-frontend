@@ -16,16 +16,16 @@
 
 package forms
 
-import config.PhaseConfig
+import forms.Constants.*
 import forms.mappings.Mappings
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class BigDecimalFormProvider @Inject() (implicit phaseConfig: PhaseConfig) extends Mappings {
+class BigDecimalFormProvider @Inject() extends Mappings {
 
   def apply(prefix: String): Form[BigDecimal] =
-    apply(prefix, phaseConfig.values.decimalPlaces, phaseConfig.values.characterCount)
+    apply(prefix, decimalPlaces, characterCount)
 
   def apply(prefix: String, decimalPlaceCount: Int, characterCount: Int): Form[BigDecimal] =
     Form(

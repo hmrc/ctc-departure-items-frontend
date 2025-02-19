@@ -22,15 +22,15 @@ import generators.Generators
 import models.{Index, NormalMode}
 import navigation.ItemNavigatorProvider
 import org.mockito.ArgumentMatchers.any
-import org.scalatestplus.mockito.MockitoSugar
-import org.scalacheck.Arbitrary.arbitrary
 import org.mockito.Mockito.{reset, when}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import viewmodels.ListItem
 import viewmodels.item.packages.AddAnotherPackageViewModel
 import viewmodels.item.packages.AddAnotherPackageViewModel.AddAnotherPackageViewModelProvider
@@ -72,7 +72,7 @@ class AddAnotherPackageControllerSpec extends SpecBase with AppWithDefaultMockFi
   "AddAnotherPackage Controller" - {
 
     "must redirect to package type page when 0 package added" in {
-      when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
+      when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
         .thenReturn(emptyViewModel)
 
       setExistingUserAnswers(emptyUserAnswers)
@@ -90,7 +90,7 @@ class AddAnotherPackageControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must return OK and the correct view for a GET" - {
       "when max limit not reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
           .thenReturn(notMaxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -108,7 +108,7 @@ class AddAnotherPackageControllerSpec extends SpecBase with AppWithDefaultMockFi
       }
 
       "when max limit reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
           .thenReturn(maxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -129,7 +129,7 @@ class AddAnotherPackageControllerSpec extends SpecBase with AppWithDefaultMockFi
     "when max limit not reached" - {
       "when yes submitted" - {
         "must redirect to PackageType page at next index" in {
-          when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
+          when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
             .thenReturn(notMaxedOutViewModel)
 
           setExistingUserAnswers(emptyUserAnswers)
@@ -148,7 +148,7 @@ class AddAnotherPackageControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       "when no submitted" - {
         "must redirect to next page" in {
-          when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
+          when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
             .thenReturn(notMaxedOutViewModel)
 
           setExistingUserAnswers(emptyUserAnswers)
@@ -167,7 +167,7 @@ class AddAnotherPackageControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "when max limit reached" - {
       "must redirect to next page" in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
           .thenReturn(maxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -185,7 +185,7 @@ class AddAnotherPackageControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must return a Bad Request and errors" - {
       "when invalid data is submitted and max limit not reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
           .thenReturn(notMaxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)

@@ -22,7 +22,6 @@ import models.NormalMode
 import org.scalacheck.Arbitrary
 import play.api.Application
 import play.api.data.Form
-import play.api.test.Helpers.running
 import play.twirl.api.HtmlFormat
 import viewmodels.InputSize
 import views.behaviours.InputTextViewBehaviours
@@ -41,9 +40,6 @@ class GrossWeightViewSpec extends SpecBase with InputTextViewBehaviours[BigDecim
 
   override def applyView(form: Form[BigDecimal]): HtmlFormat.Appendable =
     applyView(app, form)
-
-  private def applyView(app: Application): HtmlFormat.Appendable =
-    applyView(app, formProvider(app))
 
   private def applyView(app: Application, form: Form[BigDecimal]): HtmlFormat.Appendable =
     app.injector.instanceOf[GrossWeightView].apply(form, lrn, NormalMode, itemIndex)(fakeRequest, messages)
@@ -64,19 +60,5 @@ class GrossWeightViewSpec extends SpecBase with InputTextViewBehaviours[BigDecim
 
   behave like pageWithSubmitButton("Save and continue")
 
-  "when during transition" - {
-    val app = transitionApplicationBuilder().build()
-    running(app) {
-      val doc = parseView(applyView(app))
-      behave like pageWithHint(doc, "Enter the weight in kilograms (kg), up to 3 decimal places.")
-    }
-  }
-
-  "when post transition" - {
-    val app = postTransitionApplicationBuilder().build()
-    running(app) {
-      val doc = parseView(applyView(app))
-      behave like pageWithHint(doc, "Enter the weight in kilograms (kg), up to 6 decimal places.")
-    }
-  }
+  behave like pageWithHint(doc, "Enter the weight in kilograms (kg), up to 6 decimal places.")
 }
