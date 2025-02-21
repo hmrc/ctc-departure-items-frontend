@@ -17,20 +17,20 @@
 package connectors
 
 import cats.data.NonEmptySet
-import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import itbase.{ItSpecBase, WireMockServerHandler}
-import models.reference._
+import models.reference.*
 import models.{DeclarationTypeItemLevel, PackingType}
 import org.scalacheck.Gen
-import org.scalatest.Assertion
+import org.scalatest.{Assertion, EitherValues}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.inject.guice.GuiceApplicationBuilder
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler with ScalaCheckPropertyChecks {
+class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler with ScalaCheckPropertyChecks with EitherValues {
 
   private val baseUrl = "customs-reference-data/test-only"
 
@@ -313,6 +313,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
   "Reference Data" - {
 
     "getCusCode" - {
+
       val cusCode = "0010001-6"
       val url     = s"/$baseUrl/lists/CUSCode?data.code=$cusCode"
 
@@ -324,7 +325,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
         val expectedResult = CUSCode(cusCode)
 
-        connector.getCUSCode(cusCode).futureValue mustEqual expectedResult
+        connector.getCUSCode(cusCode).futureValue.value mustEqual expectedResult
       }
     }
 
@@ -341,7 +342,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         val expectedResult =
           DocTypeExcise(code = "C651", description = "AAD - Administrative Accompanying Document (EMCS)")
 
-        connector.getDocumentTypeExcise(code).futureValue mustEqual expectedResult
+        connector.getDocumentTypeExcise(code).futureValue.value mustEqual expectedResult
       }
     }
 
@@ -359,7 +360,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
           DeclarationTypeItemLevel("TIR", "TIR carnet")
         )
 
-        val res = connector.getDeclarationTypeItemLevel().futureValue
+        val res = connector.getDeclarationTypeItemLevel().futureValue.value
 
         res mustEqual expectedResult
       }
@@ -387,7 +388,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
           Country(CountryCode("AD"), "Andorra")
         )
 
-        connector.getCountries().futureValue mustEqual expectedResult
+        connector.getCountries().futureValue.value mustEqual expectedResult
       }
 
       "must throw a NoReferenceDataFoundException for an empty response" in {
@@ -413,7 +414,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
           Country(CountryCode("AD"), "Andorra")
         )
 
-        connector.getCountryCodesForAddress().futureValue mustEqual expectedResult
+        connector.getCountryCodesForAddress().futureValue.value mustEqual expectedResult
       }
 
       "must throw a NoReferenceDataFoundException for an empty response" in {
@@ -438,7 +439,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
         val country = Country(CountryCode(code), "United Kingdom")
 
-        connector.getCountryCodeCommonTransit(country).futureValue mustEqual country
+        connector.getCountryCodeCommonTransit(country).futureValue.value mustEqual country
       }
 
       "must throw a NoReferenceDataFoundException for an empty response" in {
@@ -466,7 +467,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
         val expectedResult = CountryCode(countryId)
 
-        connector.getCountriesWithoutZipCountry(countryId).futureValue mustEqual expectedResult
+        connector.getCountriesWithoutZipCountry(countryId).futureValue.value mustEqual expectedResult
       }
 
       "must throw a NoReferenceDataFoundException for an empty response" in {
@@ -494,7 +495,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
           PackageType("UC", "Uncaged", PackingType.Other)
         )
 
-        connector.getPackageTypes().futureValue mustEqual expectResult
+        connector.getPackageTypes().futureValue.value mustEqual expectResult
       }
 
       "must throw a NoReferenceDataFoundException for an empty response" in {
@@ -520,7 +521,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
           PackageType("UC", "Uncaged", PackingType.Bulk)
         )
 
-        connector.getPackageTypesBulk().futureValue mustEqual expectResult
+        connector.getPackageTypesBulk().futureValue.value mustEqual expectResult
       }
 
       "must throw a NoReferenceDataFoundException for an empty response" in {
@@ -546,7 +547,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
           PackageType("UC", "Uncaged", PackingType.Unpacked)
         )
 
-        connector.getPackageTypesUnpacked().futureValue mustEqual expectResult
+        connector.getPackageTypesUnpacked().futureValue.value mustEqual expectResult
       }
 
       "must throw a NoReferenceDataFoundException for an empty response" in {
@@ -572,7 +573,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
           AdditionalReference("documentType2", "desc2")
         )
 
-        connector.getAdditionalReferences().futureValue mustEqual expectedResult
+        connector.getAdditionalReferences().futureValue.value mustEqual expectedResult
       }
 
       "must throw a NoReferenceDataFoundException for an empty response" in {
@@ -598,7 +599,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
           AdditionalInformation("additionalInfoCode2", "additionalInfoDesc2")
         )
 
-        connector.getAdditionalInformationTypes().futureValue mustEqual expectResult
+        connector.getAdditionalInformationTypes().futureValue.value mustEqual expectResult
       }
 
       "must throw a NoReferenceDataFoundException for an empty response" in {
@@ -624,7 +625,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
           TransportChargesMethodOfPayment("B", "PayPal")
         )
 
-        connector.getTransportChargesMethodOfPaymentTypes().futureValue mustEqual expectedResult
+        connector.getTransportChargesMethodOfPaymentTypes().futureValue.value mustEqual expectedResult
       }
 
       "must throw a NoReferenceDataFoundException for an empty response" in {
@@ -650,7 +651,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
           SupplyChainActorType("MF", "Manufacturer")
         )
 
-        connector.getSupplyChainActorTypes().futureValue mustEqual expectedResult
+        connector.getSupplyChainActorTypes().futureValue.value mustEqual expectedResult
       }
 
       "must throw a NoReferenceDataFoundException for an empty response" in {
@@ -663,18 +664,16 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
     }
   }
 
-  private def checkNoReferenceDataFoundResponse(url: String, result: => Future[?]): Assertion = {
+  private def checkNoReferenceDataFoundResponse(url: String, result: => Future[Either[Exception, ?]]): Assertion = {
     server.stubFor(
       get(urlEqualTo(url))
         .willReturn(okJson(emptyResponseJson))
     )
 
-    whenReady[Throwable, Assertion](result.failed) {
-      _ mustBe a[NoReferenceDataFoundException]
-    }
+    result.futureValue.left.value mustBe an[NoReferenceDataFoundException]
   }
 
-  private def checkErrorResponse(url: String, result: => Future[?]): Assertion = {
+  private def checkErrorResponse(url: String, result: => Future[Either[Exception, ?]]): Assertion = {
     val errorResponses: Gen[Int] = Gen.chooseNum(400: Int, 599: Int)
 
     forAll(errorResponses) {
@@ -687,9 +686,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
             )
         )
 
-        whenReady[Throwable, Assertion](result.failed) {
-          _ mustBe an[Exception]
-        }
+        result.futureValue.left.value mustBe a[Exception]
     }
   }
 }

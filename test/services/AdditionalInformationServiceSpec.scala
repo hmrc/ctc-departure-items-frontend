@@ -64,7 +64,7 @@ class AdditionalInformationServiceSpec extends SpecBase with BeforeAndAfterEach 
         "must return a list of sorted additional information types, filtering out code 30600" in {
 
           when(mockRefDataConnector.getAdditionalInformationTypes()(any(), any()))
-            .thenReturn(Future.successful(additionalInformationTypes))
+            .thenReturn(Future.successful(Right(additionalInformationTypes)))
 
           postTransitionService.getAdditionalInformationTypes().futureValue mustBe
             SelectableList(Seq(additionalInformation2, additionalInformation1))
@@ -79,7 +79,7 @@ class AdditionalInformationServiceSpec extends SpecBase with BeforeAndAfterEach 
         "must return a list of sorted additional information types, not filtering out code 30600" in {
 
           when(mockRefDataConnector.getAdditionalInformationTypes()(any(), any()))
-            .thenReturn(Future.successful(additionalInformationTypes))
+            .thenReturn(Future.successful(Right(additionalInformationTypes)))
 
           transitionService.getAdditionalInformationTypes().futureValue mustBe
             SelectableList(Seq(additionalInformation2, additionalInformation1, additionalInformation3))

@@ -17,7 +17,6 @@
 package services
 
 import connectors.ReferenceDataConnector
-import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import models.SelectableList
 import models.reference.AdditionalReference
 import uk.gov.hmrc.http.HeaderCarrier
@@ -30,15 +29,11 @@ class AdditionalReferencesService @Inject() (referenceDataConnector: ReferenceDa
   def getAdditionalReferences()(implicit hc: HeaderCarrier): Future[SelectableList[AdditionalReference]] =
     referenceDataConnector
       .getAdditionalReferences()
+      .map(_.resolve())
       .map(SelectableList(_))
 
   def isDocumentTypeExcise(docType: String)(implicit hc: HeaderCarrier): Future[Boolean] =
     referenceDataConnector
       .getDocumentTypeExcise(docType)
-      .map {
-        _ => true
-      }
-      .recover {
-        case _: NoReferenceDataFoundException => false
-      }
+      .map(_.isDefined)
 }

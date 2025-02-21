@@ -50,7 +50,7 @@ class SupplyChainActorTypesServiceSpec extends SpecBase with BeforeAndAfterEach 
     "getTransportModeCodes" - {
       "must return a list of sorted inland modes" in {
         when(mockRefDataConnector.getSupplyChainActorTypes()(any(), any()))
-          .thenReturn(Future.successful(supplyChainActorTypes))
+          .thenReturn(Future.successful(Right(supplyChainActorTypes)))
 
         service.getSupplyChainActorTypes().futureValue mustBe
           Seq(supplyChainActorType4, supplyChainActorType3, supplyChainActorType2, supplyChainActorType1)
