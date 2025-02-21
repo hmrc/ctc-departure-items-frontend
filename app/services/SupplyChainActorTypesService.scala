@@ -28,5 +28,6 @@ class SupplyChainActorTypesService @Inject() (referenceDataConnector: ReferenceD
   def getSupplyChainActorTypes()(implicit hc: HeaderCarrier): Future[Seq[SupplyChainActorType]] =
     referenceDataConnector
       .getSupplyChainActorTypes()
+      .map(_.resolve())
       .map(_.toSeq)
 }

@@ -46,7 +46,7 @@ class CUSCodeServiceSpec extends SpecBase with BeforeAndAfterEach {
       val cusCode = "0010001-6"
 
       when(mockRefDataConnector.getCUSCode(anyString())(any(), any()))
-        .thenReturn(Future.successful(cusCodeItem))
+        .thenReturn(Future.successful(Right(cusCodeItem)))
 
       service.doesCUSCodeExist(cusCode).futureValue mustBe true
       verify(mockRefDataConnector).getCUSCode(ArgumentMatchers.eq(cusCode))(any(), any())
@@ -57,7 +57,7 @@ class CUSCodeServiceSpec extends SpecBase with BeforeAndAfterEach {
       val cusCode = "0010001-6"
 
       when(mockRefDataConnector.getCUSCode(anyString())(any(), any()))
-        .thenReturn(Future.failed(new NoReferenceDataFoundException("")))
+        .thenReturn(Future.successful(Left(new NoReferenceDataFoundException(""))))
 
       service.doesCUSCodeExist(cusCode).futureValue mustBe false
       verify(mockRefDataConnector).getCUSCode(ArgumentMatchers.eq(cusCode))(any(), any())
