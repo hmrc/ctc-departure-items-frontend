@@ -17,7 +17,7 @@
 package controllers.item
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.EquipmentFormProvider
 import generators.Generators
 import models.{NormalMode, SelectableList, TransportEquipment}
 import navigation.ItemNavigatorProvider
@@ -40,7 +40,8 @@ class TransportEquipmentControllerSpec extends SpecBase with AppWithDefaultMockF
   private val transportEquipment2    = arbitrary[TransportEquipment].sample.value
   private val transportEquipmentList = SelectableList(Seq(transportEquipment1, transportEquipment2))
 
-  private val formProvider = new SelectableFormProvider()
+  private val formProvider = new EquipmentFormProvider()
+  private val field        = formProvider.field
   private val form         = formProvider("item.transportEquipment", transportEquipmentList)
   private val mode         = NormalMode
 
@@ -106,7 +107,7 @@ class TransportEquipmentControllerSpec extends SpecBase with AppWithDefaultMockF
 
         val result = route(app, request).value
 
-        val filledForm = form.bind(Map("value" -> transportEquipment1.value))
+        val filledForm = form.bind(Map(field -> transportEquipment1.value))
 
         val view = injector.instanceOf[TransportEquipmentView]
 
@@ -125,7 +126,7 @@ class TransportEquipmentControllerSpec extends SpecBase with AppWithDefaultMockF
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, transportEquipmentRoute)
-        .withFormUrlEncodedBody(("value", transportEquipment1.value))
+        .withFormUrlEncodedBody((field, transportEquipment1.value))
 
       val result = route(app, request).value
 
@@ -139,8 +140,8 @@ class TransportEquipmentControllerSpec extends SpecBase with AppWithDefaultMockF
       when(mockTransportEquipmentService.getTransportEquipments(any())).thenReturn(transportEquipmentList)
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, transportEquipmentRoute).withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+      val request   = FakeRequest(POST, transportEquipmentRoute).withFormUrlEncodedBody((field, "invalid value"))
+      val boundForm = form.bind(Map(field -> "invalid value"))
 
       val result = route(app, request).value
 
@@ -169,7 +170,7 @@ class TransportEquipmentControllerSpec extends SpecBase with AppWithDefaultMockF
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, transportEquipmentRoute)
-        .withFormUrlEncodedBody(("value", transportEquipment1.value))
+        .withFormUrlEncodedBody((field, transportEquipment1.value))
 
       val result = route(app, request).value
 

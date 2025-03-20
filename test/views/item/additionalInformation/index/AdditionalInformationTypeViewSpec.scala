@@ -16,7 +16,7 @@
 
 package views.item.additionalInformation.index
 
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.AdditionalInformationTypeFormProvider
 import views.behaviours.InputSelectViewBehaviours
 import models.{NormalMode, SelectableList}
 import models.reference.AdditionalInformation
@@ -27,7 +27,9 @@ import views.html.item.additionalInformation.index.AdditionalInformationTypeView
 
 class AdditionalInformationTypeViewSpec extends InputSelectViewBehaviours[AdditionalInformation] {
 
-  override def form: Form[AdditionalInformation] = new SelectableFormProvider()(prefix, SelectableList(values))
+  val formProvider                               = new AdditionalInformationTypeFormProvider()
+  override val field: String                     = formProvider.field
+  override def form: Form[AdditionalInformation] = formProvider(prefix, SelectableList(values))
 
   override def applyView(form: Form[AdditionalInformation]): HtmlFormat.Appendable =
     injector.instanceOf[AdditionalInformationTypeView].apply(form, lrn, values, NormalMode, itemIndex, additionalInformationIndex)(fakeRequest, messages)

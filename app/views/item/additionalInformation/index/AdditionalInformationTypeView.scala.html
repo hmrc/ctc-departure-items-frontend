@@ -19,6 +19,7 @@
 @import models.reference.AdditionalInformation
 @import models.Selectable
 @import models.Selectable._
+@import forms.SelectableFormProvider.AdditionalInformationTypeFormProvider.field
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import viewmodels.components.InputSelectViewModel._
 @import views.html.components.{Button, ErrorSummary, InputSelect}
@@ -44,7 +45,7 @@
         @errorSummary(form.errors)
 
         @inputSelect(
-            field = form("value"),
+            field = form(field),
             selectType = OrdinarySelect(
                 heading = messages("item.additionalInformation.index.additionalInformationType.heading"),
                 caption = Some(messages("item.additionalInformation.caption", itemIndex.display))

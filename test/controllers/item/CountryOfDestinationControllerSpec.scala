@@ -17,7 +17,7 @@
 package controllers.item
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.CountryFormProvider
 import generators.Generators
 import models.{Index, NormalMode, SelectableList, UserAnswers}
 import navigation.ItemNavigatorProvider
@@ -42,7 +42,8 @@ class CountryOfDestinationControllerSpec extends SpecBase with AppWithDefaultMoc
   private val country2    = arbitraryCountry.arbitrary.sample.get
   private val countryList = SelectableList(Seq(country1, country2))
 
-  private val formProvider = new SelectableFormProvider()
+  private val formProvider = new CountryFormProvider()
+  private val field        = formProvider.field
   private val form         = formProvider("item.countryOfDestination", countryList)
   private val mode         = NormalMode
 
@@ -85,7 +86,7 @@ class CountryOfDestinationControllerSpec extends SpecBase with AppWithDefaultMoc
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> country1.code.code))
+      val filledForm = form.bind(Map(field -> country1.code.code))
 
       val view = injector.instanceOf[CountryOfDestinationView]
 
@@ -109,7 +110,7 @@ class CountryOfDestinationControllerSpec extends SpecBase with AppWithDefaultMoc
         setExistingUserAnswers(userAnswers)
 
         val request = FakeRequest(POST, itemCountryOfDestinationRoute)
-          .withFormUrlEncodedBody(("value", country1.code.code))
+          .withFormUrlEncodedBody((field, country1.code.code))
 
         val result = route(app, request).value
 
@@ -138,7 +139,7 @@ class CountryOfDestinationControllerSpec extends SpecBase with AppWithDefaultMoc
         setExistingUserAnswers(userAnswers)
 
         val request = FakeRequest(POST, itemCountryOfDestinationRoute)
-          .withFormUrlEncodedBody(("value", country1.code.code))
+          .withFormUrlEncodedBody((field, country1.code.code))
 
         val result = route(app, request).value
 
@@ -160,8 +161,8 @@ class CountryOfDestinationControllerSpec extends SpecBase with AppWithDefaultMoc
       when(mockCountriesService.getCountries()(any())).thenReturn(Future.successful(countryList))
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, itemCountryOfDestinationRoute).withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+      val request   = FakeRequest(POST, itemCountryOfDestinationRoute).withFormUrlEncodedBody((field, "invalid value"))
+      val boundForm = form.bind(Map(field -> "invalid value"))
 
       val result = route(app, request).value
 
@@ -190,7 +191,7 @@ class CountryOfDestinationControllerSpec extends SpecBase with AppWithDefaultMoc
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, itemCountryOfDestinationRoute)
-        .withFormUrlEncodedBody(("value", country1.code.code))
+        .withFormUrlEncodedBody((field, country1.code.code))
 
       val result = route(app, request).value
 
