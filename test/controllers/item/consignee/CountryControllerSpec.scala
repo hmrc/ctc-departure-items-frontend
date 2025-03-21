@@ -17,7 +17,7 @@
 package controllers.item.consignee
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.CountryFormProvider
 import models.{NormalMode, SelectableList}
 import navigation.ItemNavigatorProvider
 import generators.Generators
@@ -41,7 +41,8 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
   private val countryList = SelectableList(Seq(country1, country2))
   private val name        = Gen.alphaNumStr.sample.value
 
-  private val formProvider = new SelectableFormProvider()
+  private val formProvider = new CountryFormProvider()
+  private val field        = formProvider.field
   private val form         = formProvider("item.consignee.country", countryList, name)
   private val mode         = NormalMode
 
@@ -90,7 +91,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> country1.value))
+      val filledForm = form.bind(Map(field -> country1.value))
 
       val view = injector.instanceOf[CountryView]
 
@@ -108,7 +109,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
       setExistingUserAnswers(updatedUserAnswers)
 
       val request = FakeRequest(POST, countryRoute)
-        .withFormUrlEncodedBody(("value", country1.value))
+        .withFormUrlEncodedBody((field, country1.value))
 
       val result = route(app, request).value
 
@@ -121,8 +122,8 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
       when(mockCountriesService.getCountryCodesForAddress()(any())).thenReturn(Future.successful(countryList))
       setExistingUserAnswers(updatedUserAnswers)
 
-      val request   = FakeRequest(POST, countryRoute).withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+      val request   = FakeRequest(POST, countryRoute).withFormUrlEncodedBody((field, "invalid value"))
+      val boundForm = form.bind(Map(field -> "invalid value"))
 
       val result = route(app, request).value
 
@@ -151,7 +152,7 @@ class CountryControllerSpec extends SpecBase with AppWithDefaultMockFixtures wit
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, countryRoute)
-        .withFormUrlEncodedBody(("value", country1.value))
+        .withFormUrlEncodedBody((field, country1.value))
 
       val result = route(app, request).value
 

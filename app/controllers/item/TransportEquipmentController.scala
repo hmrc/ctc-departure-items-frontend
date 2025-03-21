@@ -19,7 +19,7 @@ package controllers.item
 import config.PhaseConfig
 import controllers.actions.*
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.EquipmentFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
 import pages.item.TransportEquipmentPage
@@ -40,7 +40,7 @@ class TransportEquipmentController @Inject() (
   sessionRepository: SessionRepository,
   navigatorProvider: ItemNavigatorProvider,
   actions: Actions,
-  formProvider: SelectableFormProvider,
+  formProvider: EquipmentFormProvider,
   service: TransportEquipmentService,
   val controllerComponents: MessagesControllerComponents,
   view: TransportEquipmentView

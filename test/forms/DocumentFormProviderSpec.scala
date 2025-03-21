@@ -42,7 +42,7 @@ class DocumentFormProviderSpec extends SpecBase with StringFieldBehaviours with 
 
   ".value" - {
 
-    val fieldName = "value"
+    val fieldName = "document"
 
     behave like fieldThatBindsValidData(
       form,

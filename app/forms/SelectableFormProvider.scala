@@ -20,12 +20,55 @@ import forms.mappings.Mappings
 import models.{Selectable, SelectableList}
 import play.api.data.Form
 
-import javax.inject.Inject
+trait SelectableFormProvider extends Mappings {
 
-class SelectableFormProvider @Inject() extends Mappings {
+  val field: String
 
   def apply[T <: Selectable](prefix: String, selectableList: SelectableList[T], args: Any*): Form[T] =
     Form(
-      "value" -> selectable[T](selectableList, s"$prefix.error.required", args)
+      field -> selectable[T](selectableList, s"$prefix.error.required", args)
     )
+}
+
+object SelectableFormProvider {
+
+  class EquipmentFormProvider extends SelectableFormProvider {
+    override val field: String = EquipmentFormProvider.field
+  }
+
+  object EquipmentFormProvider {
+    val field: String = "equipment"
+  }
+
+  class CountryFormProvider extends SelectableFormProvider {
+    override val field: String = CountryFormProvider.field
+  }
+
+  object CountryFormProvider {
+    val field: String = "country"
+  }
+
+  class AdditionalInformationTypeFormProvider extends SelectableFormProvider {
+    override val field: String = AdditionalInformationTypeFormProvider.field
+  }
+
+  object AdditionalInformationTypeFormProvider {
+    val field: String = "additional-information"
+  }
+
+  class AdditionalReferenceTypeFormProvider extends SelectableFormProvider {
+    override val field: String = AdditionalReferenceTypeFormProvider.field
+  }
+
+  object AdditionalReferenceTypeFormProvider {
+    val field: String = "additional-reference"
+  }
+
+  class PackageFormProvider extends SelectableFormProvider {
+    override val field: String = PackageFormProvider.field
+  }
+
+  object PackageFormProvider {
+    val field: String = "package"
+  }
 }

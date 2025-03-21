@@ -16,7 +16,7 @@
 
 package views.item.additionalReference.index
 
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.AdditionalReferenceTypeFormProvider
 import views.behaviours.InputSelectViewBehaviours
 import models.{NormalMode, SelectableList}
 import models.reference.AdditionalReference
@@ -27,7 +27,9 @@ import views.html.item.additionalReference.index.AdditionalReferenceView
 
 class AdditionalReferenceViewSpec extends InputSelectViewBehaviours[AdditionalReference] {
 
-  override def form: Form[AdditionalReference] = new SelectableFormProvider()(prefix, SelectableList(values))
+  val formProvider                             = new AdditionalReferenceTypeFormProvider()
+  override val field: String                   = formProvider.field
+  override def form: Form[AdditionalReference] = formProvider(prefix, SelectableList(values))
 
   override def applyView(form: Form[AdditionalReference]): HtmlFormat.Appendable =
     injector.instanceOf[AdditionalReferenceView].apply(form, lrn, values, NormalMode, itemIndex, additionalReferenceIndex)(fakeRequest, messages)

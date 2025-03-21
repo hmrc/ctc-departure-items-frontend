@@ -19,7 +19,7 @@ package controllers.item
 import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.CountryFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
 import pages.item.CountryOfDispatchPage
@@ -38,7 +38,7 @@ class CountryOfDispatchController @Inject() (
   sessionRepository: SessionRepository,
   navigatorProvider: ItemNavigatorProvider,
   actions: Actions,
-  formProvider: SelectableFormProvider,
+  formProvider: CountryFormProvider,
   service: CountriesService,
   val controllerComponents: MessagesControllerComponents,
   view: CountryOfDispatchView

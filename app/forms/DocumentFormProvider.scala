@@ -32,7 +32,7 @@ class DocumentFormProvider @Inject() extends Mappings {
     args: Any*
   )(implicit config: FrontendAppConfig): Form[Document] =
     Form(
-      "value" -> selectable[Document](selectableList, s"$prefix.error.required", args)
+      "document" -> selectable[Document](selectableList, s"$prefix.error.required", args)
         .verifying(
           maxLimit(itemLevelDocuments, s"$prefix.error.maxLimitReached")
         )

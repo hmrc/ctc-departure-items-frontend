@@ -16,7 +16,7 @@
 
 package views.item
 
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.EquipmentFormProvider
 import views.behaviours.InputSelectViewBehaviours
 import models.{NormalMode, SelectableList, TransportEquipment}
 import org.scalacheck.Arbitrary
@@ -26,7 +26,9 @@ import views.html.item.TransportEquipmentView
 
 class TransportEquipmentViewSpec extends InputSelectViewBehaviours[TransportEquipment] {
 
-  override def form: Form[TransportEquipment] = new SelectableFormProvider()(prefix, SelectableList(values))
+  val formProvider                            = new EquipmentFormProvider()
+  override val field: String                  = formProvider.field
+  override def form: Form[TransportEquipment] = formProvider(prefix, SelectableList(values))
 
   override def applyView(form: Form[TransportEquipment]): HtmlFormat.Appendable =
     injector.instanceOf[TransportEquipmentView].apply(form, lrn, values, NormalMode, itemIndex)(fakeRequest, messages)
