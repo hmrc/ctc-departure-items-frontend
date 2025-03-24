@@ -32,11 +32,16 @@ class SelectableFormProviderSpec extends StringFieldBehaviours with Generators {
   private val country2    = arbitraryCountry.arbitrary.sample.get
   private val countryList = SelectableList(Seq(country1, country2))
 
-  private val form = new SelectableFormProvider()(prefix, countryList)
+  private class FakeFormProvider extends SelectableFormProvider {
+    override val field: String = "value"
+  }
+
+  private val formProvider = new FakeFormProvider()
+  private val form         = formProvider.apply(prefix, countryList)
 
   ".value" - {
 
-    val fieldName = "value"
+    val fieldName = formProvider.field
 
     behave like fieldThatBindsValidData(
       form,
@@ -51,14 +56,14 @@ class SelectableFormProviderSpec extends StringFieldBehaviours with Generators {
     )
 
     "not bind if value does not exist in the list" in {
-      val boundForm = form.bind(Map("value" -> "foobar"))
-      val field     = boundForm("value")
+      val boundForm = form.bind(Map(fieldName -> "foobar"))
+      val field     = boundForm(fieldName)
       field.errors mustNot be(empty)
     }
 
     "bind a value which is in the list" in {
-      val boundForm = form.bind(Map("value" -> country1.value))
-      val field     = boundForm("value")
+      val boundForm = form.bind(Map(fieldName -> country1.value))
+      val field     = boundForm(fieldName)
       field.errors must be(empty)
     }
   }

@@ -16,7 +16,7 @@
 
 package views.item.consignee
 
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.CountryFormProvider
 import models.reference.Country
 import models.{NormalMode, SelectableList}
 import org.scalacheck.Arbitrary
@@ -29,7 +29,9 @@ class CountryViewSpec extends InputSelectViewBehaviours[Country] {
 
   private val name = nonEmptyString.sample.value
 
-  override def form: Form[Country] = new SelectableFormProvider()(prefix, SelectableList(values))
+  val formProvider                 = new CountryFormProvider()
+  override val field: String       = formProvider.field
+  override def form: Form[Country] = formProvider(prefix, SelectableList(values))
 
   override def applyView(form: Form[Country]): HtmlFormat.Appendable =
     injector.instanceOf[CountryView].apply(form, lrn, values, NormalMode, itemIndex, name)(fakeRequest, messages)
