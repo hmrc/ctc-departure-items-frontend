@@ -56,7 +56,7 @@ class AdditionalReferencesServiceSpec extends SpecBase with BeforeAndAfterEach w
       "must return a list of sorted countries" in {
 
         when(mockRefDataConnector.getAdditionalReferences()(any(), any()))
-          .thenReturn(Future.successful(additionalReferences))
+          .thenReturn(Future.successful(Right(additionalReferences)))
 
         service.getAdditionalReferences().futureValue mustBe
           SelectableList(Seq(additionalReference2, additionalReference3, additionalReference1))

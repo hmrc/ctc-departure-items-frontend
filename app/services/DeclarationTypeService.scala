@@ -29,6 +29,7 @@ class DeclarationTypeService @Inject() (referenceDataConnector: ReferenceDataCon
   def getDeclarationTypeItemLevel()(implicit hc: HeaderCarrier): Future[Seq[DeclarationTypeItemLevel]] =
     referenceDataConnector
       .getDeclarationTypeItemLevel()
+      .map(_.resolve())
       .map(_.filter(_.isOneOf(T1, T2, T2F)))
       .map(_.toSeq)
 }

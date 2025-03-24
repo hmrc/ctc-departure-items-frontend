@@ -42,13 +42,13 @@ class PackagesServiceSpec extends SpecBase {
         val unpacked = PackageType("NE", "Unpacked or unpackaged", PackingType.Unpacked)
 
         when(mockRefDataConnector.getPackageTypes()(any(), any()))
-          .thenReturn(Future.successful(NonEmptySet.of(other)))
+          .thenReturn(Future.successful(Right(NonEmptySet.of(other))))
 
         when(mockRefDataConnector.getPackageTypesBulk()(any(), any()))
-          .thenReturn(Future.successful(NonEmptySet.of(bulk)))
+          .thenReturn(Future.successful(Right(NonEmptySet.of(bulk))))
 
         when(mockRefDataConnector.getPackageTypesUnpacked()(any(), any()))
-          .thenReturn(Future.successful(NonEmptySet.of(unpacked)))
+          .thenReturn(Future.successful(Right(NonEmptySet.of(unpacked))))
 
         val result = service.getPackageTypes().futureValue
 
@@ -63,13 +63,13 @@ class PackagesServiceSpec extends SpecBase {
         val unpacked = PackageType("NE", "Unpacked or unpackaged", PackingType.Unpacked)
 
         when(mockRefDataConnector.getPackageTypes()(any(), any()))
-          .thenReturn(Future.successful(NonEmptySet.of(other1, other2, other3)))
+          .thenReturn(Future.successful(Right(NonEmptySet.of(other1, other2, other3))))
 
         when(mockRefDataConnector.getPackageTypesBulk()(any(), any()))
-          .thenReturn(Future.successful(NonEmptySet.of(bulk)))
+          .thenReturn(Future.successful(Right(NonEmptySet.of(bulk))))
 
         when(mockRefDataConnector.getPackageTypesUnpacked()(any(), any()))
-          .thenReturn(Future.successful(NonEmptySet.of(unpacked)))
+          .thenReturn(Future.successful(Right(NonEmptySet.of(unpacked))))
 
         val result = service.getPackageTypes().futureValue
 

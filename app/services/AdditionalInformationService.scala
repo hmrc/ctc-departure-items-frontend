@@ -33,6 +33,7 @@ class AdditionalInformationService @Inject() (
   def getAdditionalInformationTypes()(implicit hc: HeaderCarrier): Future[SelectableList[AdditionalInformation]] =
     referenceDataConnector
       .getAdditionalInformationTypes()
+      .map(_.resolve())
       .map(_.toSeq)
       .map(_.filter(predicate))
       .map(SelectableList(_))

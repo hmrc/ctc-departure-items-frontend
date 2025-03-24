@@ -29,9 +29,9 @@ class PackagesService @Inject() (referenceDataConnector: ReferenceDataConnector)
   // The order here is important to allow duplicates to be correctly identified as Bulk or Unpacked instead of Other
   def getPackageTypes()(implicit hc: HeaderCarrier): Future[SelectableList[PackageType]] =
     for {
-      bulk     <- referenceDataConnector.getPackageTypesBulk()
-      unpacked <- referenceDataConnector.getPackageTypesUnpacked()
-      other    <- referenceDataConnector.getPackageTypes()
+      bulk     <- referenceDataConnector.getPackageTypesBulk().map(_.resolve())
+      unpacked <- referenceDataConnector.getPackageTypesUnpacked().map(_.resolve())
+      other    <- referenceDataConnector.getPackageTypes().map(_.resolve())
       packages = bulk ++ unpacked ++ other
     } yield SelectableList(packages)
 }
