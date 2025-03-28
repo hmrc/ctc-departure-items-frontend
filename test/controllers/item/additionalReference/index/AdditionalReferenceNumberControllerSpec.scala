@@ -19,7 +19,6 @@ package controllers.item.additionalReference.index
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.item.additionalReference.AdditionalReferenceNumberFormProvider
 import generators.Generators
-import models.Phase.Transition
 import models.reference.AdditionalReference
 import models.{NormalMode, UserAnswers}
 import navigation.AdditionalReferenceNavigatorProvider
@@ -36,7 +35,7 @@ import pages.item.additionalReference.index.{
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import viewmodels.item.additionalReference.AdditionalReferenceNumberViewModel
 import viewmodels.item.additionalReference.AdditionalReferenceNumberViewModel.AdditionalReferenceNumberViewModelProvider
 import views.html.item.additionalReference.index.AdditionalReferenceNumberView
@@ -50,7 +49,7 @@ class AdditionalReferenceNumberControllerSpec extends SpecBase with AppWithDefau
   private lazy val formProvider = new AdditionalReferenceNumberFormProvider()
 
   private lazy val form =
-    formProvider("item.additionalReference.index.additionalReferenceNumber", viewModel.otherAdditionalReferenceNumbers, isDocumentInCL234 = false, Transition)
+    formProvider("item.additionalReference.index.additionalReferenceNumber", viewModel.otherAdditionalReferenceNumbers, isDocumentInCL234 = false)
   private val mode                                = NormalMode
   private lazy val additionalReferenceNumberRoute = routes.AdditionalReferenceNumberController.onPageLoad(lrn, mode, itemIndex, additionalReferenceIndex).url
 

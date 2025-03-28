@@ -17,13 +17,12 @@
 package forms
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import forms.Constants.maxAdditionalReferenceNumLength
 import forms.behaviours.StringFieldBehaviours
 import forms.item.additionalReference.AdditionalReferenceNumberFormProvider
-import models.Phase.{PostTransition, Transition}
 import models.domain.StringFieldRegex.stringFieldRegexComma
 import org.scalacheck.{Arbitrary, Gen}
-import play.api.data.{Form, FormError}
-import play.api.test.Helpers.running
+import play.api.data.FormError
 
 class AdditionalReferenceNumberFormProviderSpec extends SpecBase with AppWithDefaultMockFixtures with StringFieldBehaviours {
 
@@ -35,72 +34,49 @@ class AdditionalReferenceNumberFormProviderSpec extends SpecBase with AppWithDef
   private val cl234Key    = s"$prefix.error.cl234Constraint"
 
   private val values = listWithMaxLength[String]()(Arbitrary(nonEmptyString)).sample.value
-
-  private val maxAdditionalReferenceNumTransitionLength     = 35
-  private val maxAdditionalReferenceNumPostTransitionLength = 70
+  private val form   = new AdditionalReferenceNumberFormProvider().apply(prefix, values, isDocumentInCL234 = true)
 
   ".value" - {
 
-    def runTests(form: Form[String], maxAdditionalReferenceNumLength: Int): Unit = {
-      val fieldName = "value"
+    val fieldName = "value"
 
-      behave like fieldThatBindsValidData(
-        form,
-        fieldName,
-        stringsWithMaxLength(maxAdditionalReferenceNumLength)
-      )
+    behave like fieldThatBindsValidData(
+      form,
+      fieldName,
+      stringsWithMaxLength(maxAdditionalReferenceNumLength)
+    )
 
-      behave like mandatoryField(
-        form,
-        fieldName,
-        requiredError = FormError(fieldName, requiredKey)
-      )
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
 
-      behave like fieldWithMaxLength(
-        form,
-        fieldName,
-        maxLength = maxAdditionalReferenceNumLength,
-        lengthError = FormError(fieldName, lengthKey, Seq(maxAdditionalReferenceNumLength))
-      )
+    behave like fieldWithMaxLength(
+      form,
+      fieldName,
+      maxLength = maxAdditionalReferenceNumLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(maxAdditionalReferenceNumLength))
+    )
 
-      behave like fieldWithInvalidCharacters(
-        form,
-        fieldName,
-        error = FormError(fieldName, invalidKey, Seq(stringFieldRegexComma.regex)),
-        maxAdditionalReferenceNumLength
-      )
+    behave like fieldWithInvalidCharacters(
+      form,
+      fieldName,
+      error = FormError(fieldName, invalidKey, Seq(stringFieldRegexComma.regex)),
+      maxAdditionalReferenceNumLength
+    )
 
-      behave like fieldThatBindsUniqueData(
-        form = form,
-        fieldName = fieldName,
-        uniqueError = FormError(fieldName, uniqueKey),
-        values = values
-      )
-    }
+    behave like fieldThatBindsUniqueData(
+      form = form,
+      fieldName = fieldName,
+      uniqueError = FormError(fieldName, uniqueKey),
+      values = values
+    )
 
-    "during transition" - {
-      val app = transitionApplicationBuilder().build()
-      running(app) {
-        val form = app.injector.instanceOf[AdditionalReferenceNumberFormProvider].apply(prefix, values, isDocumentInCL234 = true, Transition)
-        runTests(form, maxAdditionalReferenceNumTransitionLength)
-      }
-    }
-
-    "post transition" - {
-
-      val fieldName = "value"
-
-      val app = postTransitionApplicationBuilder().build()
-      running(app) {
-        val form = app.injector.instanceOf[AdditionalReferenceNumberFormProvider].apply(prefix, values, isDocumentInCL234 = true, PostTransition)
-        runTests(form, maxAdditionalReferenceNumPostTransitionLength)
-
-        behave like fieldWithInvalidInputCL234(
-          form,
-          fieldName,
-          error = FormError(fieldName, cl234Key)
-        )
-      }
-    }
+    behave like fieldWithInvalidInputCL234(
+      form,
+      fieldName,
+      error = FormError(fieldName, cl234Key)
+    )
   }
 }

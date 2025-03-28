@@ -16,7 +16,7 @@
 
 package utils.cyaHelpers
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import models.journeyDomain.Stage.AccessingJourney
 import models.journeyDomain.{JourneyDomainModel, ReaderSuccess, UserAnswersReader}
 import models.{Index, LocalReferenceNumber, Mode, RichJsArray, RichOptionalJsArray, UserAnswers}
@@ -29,8 +29,7 @@ import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.html.components.{Content, SummaryListRow}
 import viewmodels.{Link, ListItem}
 
-class AnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages, config: FrontendAppConfig, phaseConfig: PhaseConfig)
-    extends SummaryListRowHelper {
+class AnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages, config: FrontendAppConfig) extends SummaryListRowHelper {
 
   protected def lrn: LocalReferenceNumber = userAnswers.lrn
 
@@ -137,7 +136,7 @@ class AnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Mes
               .map(Left(_))
         }
       case Right(ReaderSuccess(journeyDomainModel, _)) =>
-        journeyDomainModel.routeIfCompleted(userAnswers, mode, AccessingJourney, phaseConfig.phase).map {
+        journeyDomainModel.routeIfCompleted(userAnswers, mode, AccessingJourney).map {
           changeRoute =>
             Right(
               ListItem(

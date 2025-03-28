@@ -61,7 +61,6 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler {
       "must return user answers when status is Ok" in {
         server.stubFor(
           get(urlEqualTo(url))
-            .withHeader("APIVersion", equalTo("2.0"))
             .willReturn(okJson(json))
         )
 
@@ -73,7 +72,6 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler {
       "return NoAnswers when no cached data found for provided LRN" in {
         server.stubFor(
           get(urlEqualTo(url))
-            .withHeader("APIVersion", equalTo("2.0"))
             .willReturn(notFound())
         )
 
@@ -85,7 +83,6 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler {
       "return BadRequest when http status indicates" in {
         server.stubFor(
           get(urlEqualTo(url))
-            .withHeader("APIVersion", equalTo("2.0"))
             .willReturn(aResponse.withStatus(BAD_REQUEST))
         )
 
@@ -97,7 +94,6 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler {
       "return failed future when response have an unexpected status" in {
         server.stubFor(
           get(urlEqualTo(url))
-            .withHeader("APIVersion", equalTo("2.0"))
             .willReturn(aResponse.withStatus(505).withBody("body"))
         )
 

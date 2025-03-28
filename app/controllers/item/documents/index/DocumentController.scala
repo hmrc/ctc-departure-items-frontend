@@ -16,7 +16,7 @@
 
 package controllers.item.documents.index
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import controllers.actions.*
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.DocumentFormProvider
@@ -47,7 +47,7 @@ class DocumentController @Inject() (
   noDocumentsAvailableView: NoDocumentsToAttachView,
   mustAttachPreviousDocumentView: MustAttachPreviousDocumentView,
   config: FrontendAppConfig
-)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {

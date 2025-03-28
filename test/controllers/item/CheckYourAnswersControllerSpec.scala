@@ -24,7 +24,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import viewmodels.item.ItemAnswersViewModel
 import viewmodels.item.ItemAnswersViewModel.ItemAnswersViewModelProvider
 import viewmodels.sections.Section
@@ -44,7 +44,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
     "must return OK and the correct view for a GET" in {
       val sampleSections = arbitrary[List[Section]].sample.value
 
-      when(mockViewModelProvider.apply(any(), any())(any(), any(), any()))
+      when(mockViewModelProvider.apply(any(), any())(any(), any()))
         .thenReturn(ItemAnswersViewModel(sampleSections))
 
       setExistingUserAnswers(emptyUserAnswers)

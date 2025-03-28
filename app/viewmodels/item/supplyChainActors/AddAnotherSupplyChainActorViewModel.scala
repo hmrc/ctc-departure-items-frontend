@@ -16,9 +16,9 @@
 
 package viewmodels.item.supplyChainActors
 
-import config.{FrontendAppConfig, PhaseConfig}
-import models.{Index, Mode, UserAnswers}
+import config.FrontendAppConfig
 import controllers.item.supplyChainActors.routes
+import models.{Index, Mode, UserAnswers}
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import utils.cyaHelpers.item.supplyChainActors.SupplyChainActorsAnswersHelper
@@ -41,8 +41,7 @@ object AddAnotherSupplyChainActorViewModel {
 
     def apply(userAnswers: UserAnswers, mode: Mode, itemIndex: Index)(implicit
       messages: Messages,
-      config: FrontendAppConfig,
-      phaseConfig: PhaseConfig
+      config: FrontendAppConfig
     ): AddAnotherSupplyChainActorViewModel = {
       val helper = new SupplyChainActorsAnswersHelper(userAnswers, mode, itemIndex)
 

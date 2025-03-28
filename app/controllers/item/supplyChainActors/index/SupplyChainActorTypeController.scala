@@ -16,8 +16,7 @@
 
 package controllers.item.supplyChainActors.index
 
-import config.PhaseConfig
-import controllers.actions._
+import controllers.actions.*
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
 import models.reference.SupplyChainActorType
@@ -44,7 +43,7 @@ class SupplyChainActorTypeController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: SupplyChainActorTypeView,
   service: SupplyChainActorTypesService
-)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 

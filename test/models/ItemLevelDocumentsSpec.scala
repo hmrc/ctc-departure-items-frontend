@@ -23,7 +23,6 @@ import org.mockito.Mockito.reset
 import org.scalacheck.Gen
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.test.Helpers.running
 import services.DocumentsService
 
 class ItemLevelDocumentsSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators with BeforeAndAfterEach {
@@ -39,93 +38,42 @@ class ItemLevelDocumentsSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
     "must not allow addition of another document" - {
       "when current amount is maximum amount" - {
-        "when during transition" - {
 
-          val app = transitionApplicationBuilder().build()
-          running(app) {
+        val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
 
-            val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
-
-            "and previous document" in {
-              forAll(Gen.choose(frontendAppConfig.maxPreviousDocuments, Int.MaxValue)) {
-                previous =>
-                  val ild = ItemLevelDocuments(
-                    previous = previous,
-                    support = 0,
-                    transport = 0
-                  )
-                  ild.canAdd(DocumentType.Previous)(frontendAppConfig) mustBe false
-              }
-            }
-
-            "and supporting document" in {
-              forAll(Gen.choose(frontendAppConfig.maxSupportingDocuments, Int.MaxValue)) {
-                support =>
-                  val ild = ItemLevelDocuments(
-                    previous = 0,
-                    support = support,
-                    transport = 0
-                  )
-                  ild.canAdd(DocumentType.Support)(frontendAppConfig) mustBe false
-              }
-            }
-
-            "and transport document" in {
-              forAll(Gen.choose(frontendAppConfig.maxTransportDocuments, Int.MaxValue)) {
-                transport =>
-                  val ild = ItemLevelDocuments(
-                    previous = 0,
-                    support = 0,
-                    transport = transport
-                  )
-                  ild.canAdd(DocumentType.Transport)(frontendAppConfig) mustBe false
-              }
-            }
+        "and previous document" in {
+          forAll(Gen.choose(frontendAppConfig.maxPreviousDocuments, Int.MaxValue)) {
+            previous =>
+              val ild = ItemLevelDocuments(
+                previous = previous,
+                support = 0,
+                transport = 0
+              )
+              ild.canAdd(DocumentType.Previous)(frontendAppConfig) mustBe false
           }
         }
 
-        "when post-transition" - {
+        "and supporting document" in {
+          forAll(Gen.choose(frontendAppConfig.maxSupportingDocuments, Int.MaxValue)) {
+            support =>
+              val ild = ItemLevelDocuments(
+                previous = 0,
+                support = support,
+                transport = 0
+              )
+              ild.canAdd(DocumentType.Support)(frontendAppConfig) mustBe false
+          }
+        }
 
-          val app = postTransitionApplicationBuilder().build()
-          running(app) {
-
-            val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
-
-            "and previous document" in {
-              forAll(Gen.choose(frontendAppConfig.maxPreviousDocuments, Int.MaxValue)) {
-                previous =>
-                  val ild = ItemLevelDocuments(
-                    previous = previous,
-                    support = 0,
-                    transport = 0
-                  )
-                  ild.canAdd(DocumentType.Previous)(frontendAppConfig) mustBe false
-              }
-            }
-
-            "and supporting document" in {
-              forAll(Gen.choose(frontendAppConfig.maxSupportingDocuments, Int.MaxValue)) {
-                support =>
-                  val ild = ItemLevelDocuments(
-                    previous = 0,
-                    support = support,
-                    transport = 0
-                  )
-                  ild.canAdd(DocumentType.Support)(frontendAppConfig) mustBe false
-              }
-            }
-
-            "and transport document" in {
-              forAll(Gen.choose(frontendAppConfig.maxTransportDocuments, Int.MaxValue)) {
-                transport =>
-                  val ild = ItemLevelDocuments(
-                    previous = 0,
-                    support = 0,
-                    transport = transport
-                  )
-                  ild.canAdd(DocumentType.Transport)(frontendAppConfig) mustBe false
-              }
-            }
+        "and transport document" in {
+          forAll(Gen.choose(frontendAppConfig.maxTransportDocuments, Int.MaxValue)) {
+            transport =>
+              val ild = ItemLevelDocuments(
+                previous = 0,
+                support = 0,
+                transport = transport
+              )
+              ild.canAdd(DocumentType.Transport)(frontendAppConfig) mustBe false
           }
         }
       }
@@ -133,93 +81,39 @@ class ItemLevelDocumentsSpec extends SpecBase with AppWithDefaultMockFixtures wi
 
     "must allow addition of another document" - {
       "when current amount is less than maximum amount" - {
-        "when during transition" - {
-
-          val app = transitionApplicationBuilder().build()
-          running(app) {
-
-            val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
-
-            "and previous document" in {
-              forAll(Gen.choose(0, frontendAppConfig.maxPreviousDocuments - 1)) {
-                previous =>
-                  val ild = ItemLevelDocuments(
-                    previous = previous,
-                    support = 0,
-                    transport = 0
-                  )
-                  ild.canAdd(DocumentType.Previous)(frontendAppConfig) mustBe true
-              }
-            }
-
-            "and supporting document" in {
-              forAll(Gen.choose(0, frontendAppConfig.maxSupportingDocuments - 1)) {
-                support =>
-                  val ild = ItemLevelDocuments(
-                    previous = 0,
-                    support = support,
-                    transport = 0
-                  )
-                  ild.canAdd(DocumentType.Support)(frontendAppConfig) mustBe true
-              }
-            }
-
-            "and transport document" in {
-              forAll(Gen.choose(0, frontendAppConfig.maxTransportDocuments - 1)) {
-                transport =>
-                  val ild = ItemLevelDocuments(
-                    previous = 0,
-                    support = 0,
-                    transport = transport
-                  )
-                  ild.canAdd(DocumentType.Transport)(frontendAppConfig) mustBe true
-              }
-            }
+        "and previous document" in {
+          forAll(Gen.choose(0, frontendAppConfig.maxPreviousDocuments - 1)) {
+            previous =>
+              val ild = ItemLevelDocuments(
+                previous = previous,
+                support = 0,
+                transport = 0
+              )
+              ild.canAdd(DocumentType.Previous)(frontendAppConfig) mustBe true
           }
         }
 
-        "when post-transition" - {
+        "and supporting document" in {
+          forAll(Gen.choose(0, frontendAppConfig.maxSupportingDocuments - 1)) {
+            support =>
+              val ild = ItemLevelDocuments(
+                previous = 0,
+                support = support,
+                transport = 0
+              )
+              ild.canAdd(DocumentType.Support)(frontendAppConfig) mustBe true
+          }
+        }
 
-          val app = postTransitionApplicationBuilder().build()
-          running(app) {
-
-            val frontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
-
-            "and previous document" in {
-              forAll(Gen.choose(0, frontendAppConfig.maxPreviousDocuments - 1)) {
-                previous =>
-                  val ild = ItemLevelDocuments(
-                    previous = previous,
-                    support = 0,
-                    transport = 0
-                  )
-                  ild.canAdd(DocumentType.Previous)(frontendAppConfig) mustBe true
-              }
-            }
-
-            "and supporting document" in {
-              forAll(Gen.choose(0, frontendAppConfig.maxSupportingDocuments - 1)) {
-                support =>
-                  val ild = ItemLevelDocuments(
-                    previous = 0,
-                    support = support,
-                    transport = 0
-                  )
-                  ild.canAdd(DocumentType.Support)(frontendAppConfig) mustBe true
-              }
-            }
-
-            "and transport document" in {
-              forAll(Gen.choose(0, frontendAppConfig.maxTransportDocuments - 1)) {
-                transport =>
-                  val ild = ItemLevelDocuments(
-                    previous = 0,
-                    support = 0,
-                    transport = transport
-                  )
-                  ild.canAdd(DocumentType.Transport)(frontendAppConfig) mustBe true
-              }
-            }
+        "and transport document" in {
+          forAll(Gen.choose(0, frontendAppConfig.maxTransportDocuments - 1)) {
+            transport =>
+              val ild = ItemLevelDocuments(
+                previous = 0,
+                support = 0,
+                transport = transport
+              )
+              ild.canAdd(DocumentType.Transport)(frontendAppConfig) mustBe true
           }
         }
       }

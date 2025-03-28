@@ -16,12 +16,11 @@
 
 package navigation
 
-import config.{FrontendAppConfig, PhaseConfig}
-import models.journeyDomain._
+import config.FrontendAppConfig
 import models.journeyDomain.OpsError.ReaderError
 import models.journeyDomain.Stage.CompletingJourney
-import models.journeyDomain.{JourneyDomainModel, ReaderSuccess, Stage}
-import models.{CheckMode, Mode, Phase, UserAnswers}
+import models.journeyDomain.*
+import models.{CheckMode, Mode, UserAnswers}
 import pages.Page
 import play.api.Logging
 import play.api.mvc.Call
@@ -32,7 +31,6 @@ import scala.annotation.tailrec
 trait UserAnswersNavigator extends Navigator {
 
   implicit val config: FrontendAppConfig
-  implicit val phaseConfig: PhaseConfig
 
   type T <: JourneyDomainModel
 
@@ -51,12 +49,12 @@ object UserAnswersNavigator extends Logging {
     currentPage: Option[Page],
     mode: Mode,
     stage: Stage = CompletingJourney
-  )(implicit userAnswersReader: UserAnswersReader[T], appConfig: FrontendAppConfig, phaseConfig: PhaseConfig): Call =
+  )(implicit userAnswersReader: UserAnswersReader[T], appConfig: FrontendAppConfig): Call =
     nextPage(
       currentPage,
       userAnswersReader.run(userAnswers),
       mode
-    ).apply(userAnswers, stage, phaseConfig.phase).getOrElse {
+    ).apply(userAnswers, stage).getOrElse {
       Call(GET, appConfig.notFoundUrl)
     }
 
@@ -64,16 +62,16 @@ object UserAnswersNavigator extends Logging {
     currentPage: Option[Page],
     userAnswersReaderResult: EitherType[ReaderSuccess[T]],
     mode: Mode
-  ): (UserAnswers, Stage, Phase) => Option[Call] = {
+  ): (UserAnswers, Stage) => Option[Call] = {
     @tailrec
     def rec(
       answeredPages: List[Page],
       exit: Boolean
     )(
-      userAnswersReaderResult: (UserAnswers, Stage, Phase) => Option[Call]
-    ): (UserAnswers, Stage, Phase) => Option[Call] =
+      userAnswersReaderResult: (UserAnswers, Stage) => Option[Call]
+    ): (UserAnswers, Stage) => Option[Call] =
       answeredPages match {
-        case head :: _ if exit                          => (userAnswers, _, _) => head.route(userAnswers, mode)
+        case head :: _ if exit                          => (userAnswers, _) => head.route(userAnswers, mode)
         case head :: tail if currentPage.contains(head) => rec(tail, exit = true)(userAnswersReaderResult)
         case _ :: tail                                  => rec(tail, exit)(userAnswersReaderResult)
         case Nil                                        => userAnswersReaderResult
@@ -81,14 +79,14 @@ object UserAnswersNavigator extends Logging {
 
     userAnswersReaderResult match {
       case Right(ReaderSuccess(t, _)) if mode == CheckMode =>
-        t.routeIfCompleted(_, mode, _, _)
+        t.routeIfCompleted(_, mode, _)
       case Right(ReaderSuccess(t, answeredPages)) =>
         rec(answeredPages.toList, exit = false) {
-          t.routeIfCompleted(_, mode, _, _)
+          t.routeIfCompleted(_, mode, _)
         }
       case Left(ReaderError(unansweredPage, answeredPages, _)) =>
         rec(answeredPages.toList, exit = false) {
-          (userAnswers, _, _) => unansweredPage.route(userAnswers, mode)
+          (userAnswers, _) => unansweredPage.route(userAnswers, mode)
         }
     }
   }

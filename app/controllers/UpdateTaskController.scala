@@ -17,7 +17,7 @@
 package controllers
 
 import com.google.inject.Inject
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import controllers.actions.Actions
 import models.LocalReferenceNumber
 import pages.sections.ItemsSection
@@ -34,7 +34,7 @@ class UpdateTaskController @Inject() (
   sessionRepository: SessionRepository,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents
-)(implicit ec: ExecutionContext, appConfig: FrontendAppConfig, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext, appConfig: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 

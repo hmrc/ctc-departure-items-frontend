@@ -16,25 +16,24 @@
 
 package forms.item.additionalReference
 
-import config.PhaseConfig
+import forms.Constants
 import forms.mappings.Mappings
-import models.Phase
 import models.domain.StringFieldRegex.stringFieldRegexComma
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class AdditionalReferenceNumberFormProvider @Inject() (implicit phaseConfig: PhaseConfig) extends Mappings {
+class AdditionalReferenceNumberFormProvider @Inject() extends Mappings {
 
-  def apply(prefix: String, otherAdditionalReferenceNumbers: Seq[String], isDocumentInCL234: Boolean, phase: Phase): Form[String] =
+  def apply(prefix: String, otherAdditionalReferenceNumbers: Seq[String], isDocumentInCL234: Boolean): Form[String] =
     Form(
       "value" -> text(s"$prefix.error.required")
         .verifying(
           forms.StopOnFirstFail[String](
             regexp(stringFieldRegexComma, s"$prefix.error.invalidCharacters"),
-            maxLength(phaseConfig.values.maxAdditionalReferenceNumLength, s"$prefix.error.length"),
+            maxLength(Constants.maxAdditionalReferenceNumLength, s"$prefix.error.length"),
             notInList(otherAdditionalReferenceNumbers, s"$prefix.error.unique"),
-            cl234Constraint(isDocumentInCL234, phase, s"$prefix.error.cl234Constraint")
+            cl234Constraint(isDocumentInCL234, s"$prefix.error.cl234Constraint")
           )
         )
     )

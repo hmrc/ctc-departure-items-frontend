@@ -14,11 +14,10 @@
  * limitations under the License.
  *@
 
-@import config.PhaseConfig
 @import controllers.item.routes
 @import models.LocalReferenceNumber
-@import viewmodels.components.InputTextViewModel._
 @import viewmodels.InputSize
+@import viewmodels.components.InputTextViewModel.*
 @import views.html.components.{Button, ErrorSummary, InputText}
 
 @this(
@@ -26,8 +25,7 @@
     formHelper: FormWithCSRF,
     inputText: InputText,
     errorSummary: ErrorSummary,
-    button: Button,
-    phaseConfig: PhaseConfig
+    button: Button
 )
 
 @(form: Form[BigDecimal], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index)(implicit request: Request[?], messages: Messages)
@@ -49,7 +47,7 @@
                 caption = Some(messages("item.measurement.caption", itemIndex.display)),
                 additionalHtml = messages("item.grossWeight.paragraph").toParagraph
             ),
-            hint = Some(messages("item.grossWeight.hint", phaseConfig.values.decimalPlaces)),
+            hint = Some(messages("item.grossWeight.hint", forms.Constants.decimalPlaces)),
             inputClass = InputSize.Width20,
             suffix = Some("kg")
         )

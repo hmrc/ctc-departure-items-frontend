@@ -1,6 +1,5 @@
 package controllers.$package$
 
-import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.$formProvider$
@@ -30,7 +29,7 @@ class $className;format="cap"$Controller @Inject()(
   countriesService: CountriesService,
   val controllerComponents: MessagesControllerComponents,
   view: $className$View
-)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 

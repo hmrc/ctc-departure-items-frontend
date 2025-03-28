@@ -16,8 +16,7 @@
 
 package models.journeyDomain.item.packages
 
-import config.PhaseConfig
-import models.journeyDomain._
+import models.journeyDomain.*
 import models.{Index, RichJsArray, UserAnswers}
 import pages.sections.Section
 import pages.sections.packages.PackagesSection
@@ -32,7 +31,7 @@ case class PackagesDomain(
 
 object PackagesDomain {
 
-  implicit def userAnswersReader(itemIndex: Index)(implicit phaseConfig: PhaseConfig): Read[PackagesDomain] = {
+  implicit def userAnswersReader(itemIndex: Index): Read[PackagesDomain] = {
     val packagesReader: Read[Seq[PackageDomain]] =
       PackagesSection(itemIndex).arrayReader.to {
         case x if x.isEmpty =>

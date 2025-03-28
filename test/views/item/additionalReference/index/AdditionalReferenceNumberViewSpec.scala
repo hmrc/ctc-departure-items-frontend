@@ -16,10 +16,11 @@
 
 package views.item.additionalReference.index
 
+import forms.Constants.maxAdditionalReferenceNumLength
 import forms.item.additionalReference.AdditionalReferenceNumberFormProvider
 import models.NormalMode
-import org.scalacheck.{Arbitrary, Gen}
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewmodels.item.additionalReference.AdditionalReferenceNumberViewModel
@@ -32,9 +33,9 @@ class AdditionalReferenceNumberViewSpec extends InputTextViewBehaviours[String] 
 
   private val viewModel = arbitrary[AdditionalReferenceNumberViewModel].sample.value
 
-  private val formProvider = new AdditionalReferenceNumberFormProvider()(phaseConfig)
+  private val formProvider = new AdditionalReferenceNumberFormProvider()
 
-  override def form: Form[String] = formProvider(prefix, viewModel.otherAdditionalReferenceNumbers, isDocumentInCL234 = false, phaseConfig.phase)
+  override def form: Form[String] = formProvider(prefix, viewModel.otherAdditionalReferenceNumbers, isDocumentInCL234 = false)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
     injector
@@ -51,7 +52,7 @@ class AdditionalReferenceNumberViewSpec extends InputTextViewBehaviours[String] 
 
   behave like pageWithHeading()
 
-  behave like pageWithHint(s"This can be up to ${phaseConfig.values.maxAdditionalReferenceNumLength} characters long.")
+  behave like pageWithHint(s"This can be up to $maxAdditionalReferenceNumLength characters long.")
 
   behave like pageWithSubmitButton("Save and continue")
 

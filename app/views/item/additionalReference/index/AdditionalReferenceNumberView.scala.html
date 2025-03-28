@@ -15,7 +15,6 @@
  *@
 
 @import controllers.item.additionalReference.index.routes
-@import config.PhaseConfig
 @import models.LocalReferenceNumber
 @import viewmodels.components.InputTextViewModel
 @import views.html.components.{Button, ErrorSummary, InputText}
@@ -25,8 +24,7 @@
     formHelper: FormWithCSRF,
     inputText: InputText,
     errorSummary: ErrorSummary,
-    button: Button,
-    phaseConfig: PhaseConfig
+    button: Button
 )
 
 @(form: Form[String], lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index, additionalReferenceIndex: Index, isRequired: Boolean)(implicit request: Request[?], messages: Messages)
@@ -48,7 +46,7 @@
                 caption = Some(messages("item.additionalReference.caption", itemIndex.display)),
                 additionalHtml = if (isRequired) Some(messages("item.additionalReference.index.additionalReferenceNumber.paragraph").toParagraph) else None
             ),
-            hint = Some(messages("item.additionalReference.index.additionalReferenceNumber.hint", phaseConfig.values.maxAdditionalReferenceNumLength))
+            hint = Some(messages("item.additionalReference.index.additionalReferenceNumber.hint", forms.Constants.maxAdditionalReferenceNumLength))
         )
 
         @button(attributes = Map("id" -> "submit"))
