@@ -18,7 +18,7 @@ package controllers.item.additionalInformation.index
 
 import controllers.actions.*
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.AdditionalInformationTypeFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{AdditionalInformationNavigatorProvider, UserAnswersNavigator}
 import pages.item.additionalInformation.index.AdditionalInformationTypePage
@@ -37,7 +37,7 @@ class AdditionalInformationTypeController @Inject() (
   sessionRepository: SessionRepository,
   navigatorProvider: AdditionalInformationNavigatorProvider,
   actions: Actions,
-  formProvider: SelectableFormProvider,
+  formProvider: AdditionalInformationTypeFormProvider,
   service: AdditionalInformationService,
   val controllerComponents: MessagesControllerComponents,
   view: AdditionalInformationTypeView

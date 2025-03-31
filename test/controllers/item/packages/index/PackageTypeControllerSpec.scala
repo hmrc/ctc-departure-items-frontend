@@ -17,7 +17,7 @@
 package controllers.item.packages.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.PackageFormProvider
 import generators.Generators
 import models.{NormalMode, SelectableList}
 import navigation.PackageNavigatorProvider
@@ -39,7 +39,8 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
   private val packageType2    = arbitraryPackageType.arbitrary.sample.get
   private val packageTypeList = SelectableList(Seq(packageType1, packageType2))
 
-  private val formProvider = new SelectableFormProvider()
+  private val formProvider = new PackageFormProvider()
+  private val field        = formProvider.field
   private val form         = formProvider("item.packages.index.packageType", packageTypeList)
   private val mode         = NormalMode
 
@@ -81,7 +82,7 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> packageType1.code))
+      val filledForm = form.bind(Map(field -> packageType1.code))
 
       val view = injector.instanceOf[PackageTypeView]
 
@@ -99,7 +100,7 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, packageTypeRoute)
-        .withFormUrlEncodedBody(("value", packageType1.code))
+        .withFormUrlEncodedBody((field, packageType1.code))
 
       val result = route(app, request).value
 
@@ -113,8 +114,8 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       when(mockPackagesService.getPackageTypes()(any())).thenReturn(Future.successful(packageTypeList))
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, packageTypeRoute).withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+      val request   = FakeRequest(POST, packageTypeRoute).withFormUrlEncodedBody((field, "invalid value"))
+      val boundForm = form.bind(Map(field -> "invalid value"))
 
       val result = route(app, request).value
 
@@ -143,7 +144,7 @@ class PackageTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, packageTypeRoute)
-        .withFormUrlEncodedBody(("value", packageType1.code))
+        .withFormUrlEncodedBody((field, packageType1.code))
 
       val result = route(app, request).value
 

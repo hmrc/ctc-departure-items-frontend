@@ -18,7 +18,7 @@ package controllers.item.packages.index
 
 import controllers.actions.*
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.PackageFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{PackageNavigatorProvider, UserAnswersNavigator}
 import pages.item.packages.index
@@ -37,7 +37,7 @@ class PackageTypeController @Inject() (
   sessionRepository: SessionRepository,
   navigatorProvider: PackageNavigatorProvider,
   actions: Actions,
-  formProvider: SelectableFormProvider,
+  formProvider: PackageFormProvider,
   service: PackagesService,
   val controllerComponents: MessagesControllerComponents,
   view: PackageTypeView
