@@ -24,6 +24,7 @@ import models.requests.DataRequest
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
 import pages.item.packages.index.AddAnotherPackagePage
+import pages.sections.packages.PackagesSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -87,7 +88,7 @@ class AddAnotherPackageController @Inject() (
 
   private def redirectToNextPage(mode: Mode, itemIndex: Index)(implicit request: DataRequest[?]): Call = {
     val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
-    navigator.nextPage(request.userAnswers, Some(AddAnotherPackagePage(itemIndex)))
+    navigator.nextPage(request.userAnswers, Some(PackagesSection(itemIndex)))
 
   }
 }

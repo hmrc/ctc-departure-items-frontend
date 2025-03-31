@@ -30,7 +30,7 @@ case class AdditionalReferencePage(itemIndex: Index, additionalReferenceIndex: I
 
   override def path: JsPath = AdditionalReferenceSection(itemIndex, additionalReferenceIndex).path \ toString
 
-  override def toString: String = "additionalReference"
+  override def toString: String = "addAdditionalReference"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.AdditionalReferenceController.onPageLoad(userAnswers.lrn, mode, itemIndex, additionalReferenceIndex))
