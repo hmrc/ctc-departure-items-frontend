@@ -27,7 +27,7 @@ case class AddAnotherAdditionalReferencePage(itemIndex: Index) extends QuestionP
 
   override def path: JsPath = ItemSection(itemIndex).path \ toString
 
-  override def toString: String = "addAdditionalReference"
+  override def toString: String = "addAnotherAdditionalReference"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.AddAnotherAdditionalReferenceController.onPageLoad(userAnswers.lrn, mode, itemIndex))

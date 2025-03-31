@@ -27,7 +27,7 @@ case class AddAnotherAdditionalInformationPage(itemIndex: Index) extends Questio
 
   override def path: JsPath = ItemSection(itemIndex).path \ toString
 
-  override def toString: String = "addAdditionalInformation"
+  override def toString: String = "addAnotherAdditionalInformation"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.AddAnotherAdditionalInformationController.onPageLoad(userAnswers.lrn, mode, itemIndex))

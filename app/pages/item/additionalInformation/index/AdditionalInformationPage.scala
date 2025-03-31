@@ -27,7 +27,7 @@ case class AdditionalInformationPage(itemIndex: Index, additionalInformationInde
 
   override def path: JsPath = AdditionalInformationSection(itemIndex, additionalInformationIndex).path \ toString
 
-  override def toString: String = "addAdditionalInformation"
+  override def toString: String = "additionalInformation"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.AdditionalInformationController.onPageLoad(userAnswers.lrn, mode, itemIndex, additionalInformationIndex))
