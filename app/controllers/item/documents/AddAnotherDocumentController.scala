@@ -20,12 +20,13 @@ import config.{FrontendAppConfig, PhaseConfig}
 import controllers.actions.*
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.AddAnotherFormProvider
+import models.requests.DataRequest
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
 import pages.item.documents.AddAnotherDocumentPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.item.documents.AddAnotherDocumentViewModel
@@ -58,7 +59,11 @@ class AddAnotherDocumentController @Inject() (
         case 0 =>
           Redirect(controllers.item.routes.AddDocumentsYesNoController.onPageLoad(lrn, mode, itemIndex))
         case _ =>
-          Ok(view(form(viewModel), lrn, viewModel, itemIndex))
+          val preparedForm = request.userAnswers.get(AddAnotherDocumentPage(itemIndex)) match {
+            case None        => form(viewModel)
+            case Some(value) => form(viewModel).fill(value)
+          }
+          Ok(view(preparedForm, lrn, viewModel, itemIndex))
       }
   }
 
@@ -69,20 +74,20 @@ class AddAnotherDocumentController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, viewModel, itemIndex))),
-          {
-            value =>
-              val write = AddAnotherDocumentPage(itemIndex)
-                .writeToUserAnswers(value)
-                .updateTask()
-                .writeToSession(sessionRepository)
-
-              if (value) {
-                write.navigateTo(controllers.item.documents.index.routes.DocumentController.onPageLoad(lrn, mode, itemIndex, viewModel.nextIndex))
-              } else {
-                val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
-                write.navigateWith(navigator)
+          value =>
+            AddAnotherDocumentPage(itemIndex)
+              .writeToUserAnswers(value)
+              .updateTask()
+              .writeToSession(sessionRepository)
+              .navigateTo {
+                if value then controllers.item.documents.index.routes.DocumentController.onPageLoad(lrn, mode, itemIndex, viewModel.nextIndex)
+                else redirectToNextPage(mode, itemIndex)
               }
-          }
         )
+  }
+
+  private def redirectToNextPage(mode: Mode, itemIndex: Index)(implicit request: DataRequest[?]): Call = {
+    val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
+    navigator.nextPage(request.userAnswers, Some(AddAnotherDocumentPage(itemIndex)))
   }
 }
