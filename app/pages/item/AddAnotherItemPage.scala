@@ -17,7 +17,7 @@
 package pages.item
 
 import controllers.routes
-import models.UserAnswers
+import models.{Mode, UserAnswers}
 import pages.AddAnotherPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -28,6 +28,6 @@ case object AddAnotherItemPage extends AddAnotherPage {
 
   override def toString: String = "addAnotherItem"
 
-  def route(userAnswers: UserAnswers): Option[Call] =
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.AddAnotherItemController.onPageLoad(userAnswers.lrn))
 }
