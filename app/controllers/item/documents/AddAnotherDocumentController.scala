@@ -20,13 +20,12 @@ import config.{FrontendAppConfig, PhaseConfig}
 import controllers.actions.*
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.AddAnotherFormProvider
-import models.requests.DataRequest
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
 import pages.item.documents.AddAnotherDocumentPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.item.documents.AddAnotherDocumentViewModel
@@ -79,15 +78,14 @@ class AddAnotherDocumentController @Inject() (
               .writeToUserAnswers(value)
               .updateTask()
               .writeToSession(sessionRepository)
-              .navigateTo {
-                if value then controllers.item.documents.index.routes.DocumentController.onPageLoad(lrn, mode, itemIndex, viewModel.nextIndex)
-                else redirectToNextPage(mode, itemIndex)
+              .and {
+                if (value) {
+                  _.navigateTo(controllers.item.documents.index.routes.DocumentController.onPageLoad(lrn, mode, itemIndex, viewModel.nextIndex))
+                } else {
+                  val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
+                  _.navigateWith(navigator)
+                }
               }
         )
-  }
-
-  private def redirectToNextPage(mode: Mode, itemIndex: Index)(implicit request: DataRequest[?]): Call = {
-    val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
-    navigator.nextPage(request.userAnswers, Some(AddAnotherDocumentPage(itemIndex)))
   }
 }

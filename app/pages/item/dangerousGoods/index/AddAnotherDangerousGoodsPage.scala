@@ -18,12 +18,12 @@ package pages.item.dangerousGoods.index
 
 import controllers.item.dangerousGoods.routes
 import models.{Index, Mode, UserAnswers}
-import pages.QuestionPage
+import pages.AddAnotherPage
 import pages.sections.ItemSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class AddAnotherDangerousGoodsPage(itemIndex: Index) extends QuestionPage[Boolean] {
+case class AddAnotherDangerousGoodsPage(itemIndex: Index) extends AddAnotherPage {
 
   override def path: JsPath = ItemSection(itemIndex).path \ toString
 

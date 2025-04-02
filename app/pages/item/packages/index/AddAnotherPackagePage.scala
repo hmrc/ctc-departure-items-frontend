@@ -18,12 +18,12 @@ package pages.item.packages.index
 
 import controllers.item.packages.routes
 import models.{Index, Mode, UserAnswers}
-import pages.QuestionPage
+import pages.AddAnotherPage
 import pages.sections.ItemSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class AddAnotherPackagePage(itemIndex: Index) extends QuestionPage[Boolean] {
+case class AddAnotherPackagePage(itemIndex: Index) extends AddAnotherPage {
 
   override def path: JsPath = ItemSection(itemIndex).path \ toString
 

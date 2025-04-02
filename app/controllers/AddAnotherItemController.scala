@@ -23,9 +23,8 @@ import models.{Index, LocalReferenceNumber, NormalMode}
 import pages.item.AddAnotherItemPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import uk.gov.hmrc.http.HttpVerbs.GET
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.AddAnotherItemViewModel
 import viewmodels.AddAnotherItemViewModel.AddAnotherItemViewModelProvider
@@ -77,11 +76,13 @@ class AddAnotherItemController @Inject() (
               .writeToUserAnswers(value)
               .updateTask()
               .writeToSession(sessionRepository)
-              .navigateTo {
-                if value then controllers.item.routes.DescriptionController.onPageLoad(lrn, mode, viewModel.nextIndex)
-                else Call(GET, config.taskListUrl(lrn))
+              .and {
+                if (value) {
+                  _.navigateTo(controllers.item.routes.DescriptionController.onPageLoad(lrn, mode, viewModel.nextIndex))
+                } else {
+                  _.navigateTo(config.taskListUrl(lrn))
+                }
               }
         )
   }
-
 }

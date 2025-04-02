@@ -16,18 +16,17 @@
 
 package pages.sections.dangerousGoods
 
-import controllers.item.dangerousGoods.routes
-import models.{Index, Mode, UserAnswers}
-import pages.sections.{ItemSection, Section}
-import play.api.libs.json.{JsArray, JsPath}
-import play.api.mvc.Call
+import models.Index
+import pages.AddAnotherPage
+import pages.item.dangerousGoods.index.AddAnotherDangerousGoodsPage
+import pages.sections.{AddAnotherSection, ItemSection}
+import play.api.libs.json.JsPath
 
-case class DangerousGoodsListSection(itemIndex: Index) extends Section[JsArray] {
+case class DangerousGoodsListSection(itemIndex: Index) extends AddAnotherSection {
 
   override def path: JsPath = ItemSection(itemIndex).path \ toString
 
   override def toString: String = "dangerousGoodsList"
 
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.AddAnotherDangerousGoodsController.onPageLoad(userAnswers.lrn, mode, itemIndex))
+  override val addAnotherPage: AddAnotherPage = AddAnotherDangerousGoodsPage(itemIndex)
 }

@@ -18,11 +18,11 @@ package pages.item
 
 import controllers.routes
 import models.UserAnswers
-import pages.QuestionPage
+import pages.AddAnotherPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object AddAnotherItemPage extends QuestionPage[Boolean] {
+case object AddAnotherItemPage extends AddAnotherPage {
 
   override def path: JsPath = JsPath \ toString
 

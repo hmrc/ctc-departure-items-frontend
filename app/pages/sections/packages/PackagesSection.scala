@@ -16,18 +16,17 @@
 
 package pages.sections.packages
 
-import controllers.item.packages.routes
-import models.{Index, Mode, UserAnswers}
-import pages.sections.{ItemSection, Section}
-import play.api.libs.json.{JsArray, JsPath}
-import play.api.mvc.Call
+import models.Index
+import pages.AddAnotherPage
+import pages.item.packages.index.AddAnotherPackagePage
+import pages.sections.{AddAnotherSection, ItemSection}
+import play.api.libs.json.JsPath
 
-case class PackagesSection(itemIndex: Index) extends Section[JsArray] {
+case class PackagesSection(itemIndex: Index) extends AddAnotherSection {
 
   override def path: JsPath = ItemSection(itemIndex).path \ toString
 
   override def toString: String = "packages"
 
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.AddAnotherPackageController.onPageLoad(userAnswers.lrn, mode, itemIndex))
+  override val addAnotherPage: AddAnotherPage = AddAnotherPackagePage(itemIndex)
 }
