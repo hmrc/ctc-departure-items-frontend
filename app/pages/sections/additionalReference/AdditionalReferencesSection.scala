@@ -16,18 +16,17 @@
 
 package pages.sections.additionalReference
 
-import controllers.item.additionalReference.routes
-import models.{Index, Mode, UserAnswers}
-import pages.sections.{ItemSection, Section}
-import play.api.libs.json.{JsArray, JsPath}
-import play.api.mvc.Call
+import models.Index
+import pages.AddAnotherPage
+import pages.item.additionalReference.AddAnotherAdditionalReferencePage
+import pages.sections.{AddAnotherSection, ItemSection}
+import play.api.libs.json.JsPath
 
-case class AdditionalReferencesSection(itemIndex: Index) extends Section[JsArray] {
+case class AdditionalReferencesSection(itemIndex: Index) extends AddAnotherSection {
 
   override def path: JsPath = ItemSection(itemIndex).path \ toString
 
   override def toString: String = "additionalReferences"
 
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.AddAnotherAdditionalReferenceController.onPageLoad(userAnswers.lrn, mode, itemIndex))
+  override val addAnotherPage: AddAnotherPage = AddAnotherAdditionalReferencePage(itemIndex)
 }

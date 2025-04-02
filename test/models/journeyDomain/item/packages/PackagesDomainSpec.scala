@@ -20,7 +20,7 @@ import base.SpecBase
 import generators.Generators
 import models.Index
 import org.scalacheck.Gen
-import pages.sections.packages.PackagesSection
+import pages.item.packages.index.AddAnotherPackagePage
 
 class PackagesDomainSpec extends SpecBase with Generators {
 
@@ -38,7 +38,7 @@ class PackagesDomainSpec extends SpecBase with Generators {
       val result = PackagesDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
 
       result.value.value.value.length mustBe numberOfPackages
-      result.value.pages.last mustBe PackagesSection(itemIndex)
+      result.value.pages.last mustBe AddAnotherPackagePage(itemIndex)
     }
   }
 }

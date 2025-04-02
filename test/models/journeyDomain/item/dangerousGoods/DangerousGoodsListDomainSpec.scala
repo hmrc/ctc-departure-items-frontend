@@ -19,8 +19,7 @@ package models.journeyDomain.item.dangerousGoods
 import base.SpecBase
 import models.Index
 import org.scalacheck.Gen
-import pages.item.dangerousGoods.index.UNNumberPage
-import pages.sections.dangerousGoods.DangerousGoodsListSection
+import pages.item.dangerousGoods.index.{AddAnotherDangerousGoodsPage, UNNumberPage}
 
 class DangerousGoodsListDomainSpec extends SpecBase {
 
@@ -45,7 +44,7 @@ class DangerousGoodsListDomainSpec extends SpecBase {
         val result = DangerousGoodsListDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
 
         result.value.value mustBe expectedResult
-        result.value.pages.last mustBe DangerousGoodsListSection(itemIndex)
+        result.value.pages.last mustBe AddAnotherDangerousGoodsPage(itemIndex)
       }
     }
 

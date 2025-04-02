@@ -21,7 +21,7 @@ import generators.Generators
 import models.Index
 import models.journeyDomain.ItemsDomain
 import org.scalacheck.Gen
-import pages.sections.ItemsSection
+import pages.item.AddAnotherItemPage
 
 class ItemsDomainSpec extends SpecBase with Generators {
 
@@ -39,7 +39,7 @@ class ItemsDomainSpec extends SpecBase with Generators {
       val result = ItemsDomain.userAnswersReader.run(userAnswers)
 
       result.value.value.item.length mustBe numberOfItems
-      result.value.pages.last mustBe ItemsSection
+      result.value.pages.last mustBe AddAnotherItemPage
     }
   }
 }

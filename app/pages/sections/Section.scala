@@ -16,9 +16,19 @@
 
 package pages.sections
 
-import pages.{QuestionPage, ReadOnlyPage}
-import play.api.libs.json.JsValue
+import models.{Mode, UserAnswers}
+import pages.{AddAnotherPage, QuestionPage, ReadOnlyPage}
+import play.api.libs.json.{JsArray, JsValue}
+import play.api.mvc.Call
 
 trait Section[T <: JsValue] extends QuestionPage[T]
 
 trait ReadOnlySection[T <: JsValue] extends ReadOnlyPage[T]
+
+trait AddAnotherSection extends Section[JsArray] {
+
+  val addAnotherPage: AddAnotherPage
+
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    addAnotherPage.route(userAnswers, mode)
+}

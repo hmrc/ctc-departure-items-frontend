@@ -20,7 +20,7 @@ import base.SpecBase
 import generators.Generators
 import models.Index
 import org.scalacheck.Gen
-import pages.sections.additionalInformation.AdditionalInformationListSection
+import pages.item.additionalInformation.index.AddAnotherAdditionalInformationPage
 
 class AdditionalInformationListDomainSpec extends SpecBase with Generators {
 
@@ -38,7 +38,7 @@ class AdditionalInformationListDomainSpec extends SpecBase with Generators {
       val result = AdditionalInformationListDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
 
       result.value.value.value.length mustBe numberOfAdditionalInformation
-      result.value.pages.last mustBe AdditionalInformationListSection(itemIndex)
+      result.value.pages.last mustBe AddAnotherAdditionalInformationPage(itemIndex)
     }
   }
 }

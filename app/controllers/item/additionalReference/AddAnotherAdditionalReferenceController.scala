@@ -23,7 +23,6 @@ import forms.AddAnotherFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.ItemNavigatorProvider
 import pages.item.additionalReference.AddAnotherAdditionalReferencePage
-import pages.sections.additionalReference.AdditionalReferencesSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -78,13 +77,16 @@ class AddAnotherAdditionalReferenceController @Inject() (
               .writeToUserAnswers(value)
               .updateTask()
               .writeToSession(sessionRepository)
-              .navigateTo {
-                if value then
-                  controllers.item.additionalReference.index.routes.AdditionalReferenceController.onPageLoad(lrn, mode, itemIndex, viewModel.nextIndex)
-                else navigatorProvider(mode, itemIndex).nextPage(request.userAnswers, Some(AdditionalReferencesSection(itemIndex)))
-
+              .and {
+                if (value) {
+                  _.navigateTo(
+                    controllers.item.additionalReference.index.routes.AdditionalReferenceController.onPageLoad(lrn, mode, itemIndex, viewModel.nextIndex)
+                  )
+                } else {
+                  val navigator = navigatorProvider(mode, itemIndex)
+                  _.navigateWith(navigator)
+                }
               }
         )
   }
-
 }

@@ -16,7 +16,7 @@
 
 import cats.data.ReaderT
 import config.{FrontendAppConfig, PhaseConfig}
-import models.TaskStatus._
+import models.TaskStatus.*
 import models.journeyDomain.OpsError.WriterError
 import models.journeyDomain.{ItemsDomain, UserAnswersReader}
 import models.requests.MandatoryDataRequest
@@ -145,6 +145,9 @@ package object controllers {
   }
 
   implicit class NavigatorOps[A](write: Future[Write[A]]) {
+
+    def and(block: Future[Write[A]] => Future[Result]): Future[Result] =
+      block(write)
 
     def navigateWith(navigator: UserAnswersNavigator)(implicit executionContext: ExecutionContext): Future[Result] =
       navigate {

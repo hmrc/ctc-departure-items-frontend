@@ -22,7 +22,6 @@ import models.Index
 import org.scalacheck.Gen
 import pages.item.InferredAddDocumentsYesNoPage
 import pages.item.documents.AddAnotherDocumentPage
-import pages.sections.documents.DocumentsSection
 
 class DocumentsDomainSpec extends SpecBase with Generators {
 
@@ -39,7 +38,7 @@ class DocumentsDomainSpec extends SpecBase with Generators {
 
         result.value.value.value.length mustBe 0
         result.value.pages mustBe Seq(
-          DocumentsSection(itemIndex)
+          AddAnotherDocumentPage(itemIndex)
         )
       }
 
@@ -56,7 +55,7 @@ class DocumentsDomainSpec extends SpecBase with Generators {
         val result = DocumentsDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
 
         result.value.value.value.length mustBe numberOfDocuments
-        result.value.pages.last mustBe DocumentsSection(itemIndex)
+        result.value.pages.last mustBe AddAnotherDocumentPage(itemIndex)
       }
 
       "when no value set for AddAnotherDocumentPage" in {
@@ -70,7 +69,7 @@ class DocumentsDomainSpec extends SpecBase with Generators {
         val result = DocumentsDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
 
         result.value.value.value.length mustBe numberOfDocuments
-        result.value.pages.last mustBe DocumentsSection(itemIndex)
+        result.value.pages.last mustBe AddAnotherDocumentPage(itemIndex)
       }
     }
 
