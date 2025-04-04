@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 
-package pages
+package controllers.item.additionalInformation.index
 
-import queries.{Gettable, Removable, Settable}
+import pages.behaviours.PageBehaviours
+import pages.item.additionalInformation.index.AddAnotherAdditionalInformationPage
 
-trait QuestionPage[A] extends Gettable[A] with Settable[A] with Removable[A]
+class AddAdditionalInformationPageSpec extends PageBehaviours {
 
-trait InferredPage[A] extends QuestionPage[A]
+  "AddAdditionalInformationPage" - {
+    beRetrievable[Boolean](AddAnotherAdditionalInformationPage(index))
 
-trait ReadOnlyPage[A] extends Gettable[A] with Removable[A]
+    beSettable[Boolean](AddAnotherAdditionalInformationPage(index))
 
-trait AddAnotherPage extends QuestionPage[Boolean]
+    beRemovable[Boolean](AddAnotherAdditionalInformationPage(index))
+  }
+
+}

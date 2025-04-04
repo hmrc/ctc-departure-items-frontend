@@ -19,29 +19,33 @@ package controllers.item.supplyChainActors
 import config.FrontendAppConfig
 import controllers.actions.*
 import controllers.item.supplyChainActors.index.routes as supplyChainActorRoutes
+import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.AddAnotherFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.ItemNavigatorProvider
-import pages.sections.supplyChainActors.SupplyChainActorsSection
+import pages.item.supplyChainActors.AddAnotherSupplyChainActorPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.item.supplyChainActors.AddAnotherSupplyChainActorViewModel
 import viewmodels.item.supplyChainActors.AddAnotherSupplyChainActorViewModel.AddAnotherSupplyChainActorViewModelProvider
 import views.html.item.supplyChainActors.AddAnotherSupplyChainActorView
 
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class AddAnotherSupplyChainActorController @Inject() (
   override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: AddAnotherFormProvider,
   navigatorProvider: ItemNavigatorProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherSupplyChainActorView,
   viewModelProvider: AddAnotherSupplyChainActorViewModelProvider
-)(implicit config: FrontendAppConfig)
+)(implicit ec: ExecutionContext, config: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -54,24 +58,34 @@ class AddAnotherSupplyChainActorController @Inject() (
         case 0 =>
           Redirect(controllers.item.routes.AddSupplyChainActorYesNoController.onPageLoad(lrn, mode, itemIndex))
         case _ =>
-          Ok(view(form(viewModel), lrn, viewModel, itemIndex))
+          val preparedForm = request.userAnswers.get(AddAnotherSupplyChainActorPage(itemIndex)) match {
+            case None        => form(viewModel)
+            case Some(value) => form(viewModel).fill(value)
+          }
+          Ok(view(preparedForm, lrn, viewModel, itemIndex))
       }
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
       val viewModel = viewModelProvider(request.userAnswers, mode, itemIndex)
       form(viewModel)
         .bindFromRequest()
         .fold(
-          formWithErrors => BadRequest(view(formWithErrors, lrn, viewModel, itemIndex)),
-          {
-            case true =>
-              Redirect(supplyChainActorRoutes.SupplyChainActorTypeController.onPageLoad(lrn, mode, itemIndex, viewModel.nextIndex))
-            case false =>
-              Redirect(navigatorProvider(mode, itemIndex).nextPage(request.userAnswers, Some(SupplyChainActorsSection(itemIndex))))
-          }
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, viewModel, itemIndex))),
+          value =>
+            AddAnotherSupplyChainActorPage(itemIndex)
+              .writeToUserAnswers(value)
+              .updateTask()
+              .writeToSession(sessionRepository)
+              .and {
+                if (value) {
+                  _.navigateTo(supplyChainActorRoutes.SupplyChainActorTypeController.onPageLoad(lrn, mode, itemIndex, viewModel.nextIndex))
+                } else {
+                  val navigator = navigatorProvider(mode, itemIndex)
+                  _.navigateWith(navigator)
+                }
+              }
         )
   }
-
 }

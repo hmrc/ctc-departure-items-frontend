@@ -16,17 +16,15 @@
 
 package pages.sections
 
-import controllers.routes
-import models.{Mode, UserAnswers}
-import play.api.libs.json.{JsArray, JsPath}
-import play.api.mvc.Call
+import pages.AddAnotherPage
+import pages.item.AddAnotherItemPage
+import play.api.libs.json.JsPath
 
-case object ItemsSection extends Section[JsArray] {
+case object ItemsSection extends AddAnotherSection {
 
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "items"
 
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.AddAnotherItemController.onPageLoad(userAnswers.lrn))
+  override val addAnotherPage: AddAnotherPage = AddAnotherItemPage
 }

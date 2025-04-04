@@ -20,7 +20,7 @@ import base.SpecBase
 import generators.Generators
 import models.Index
 import org.scalacheck.Gen
-import pages.sections.supplyChainActors.SupplyChainActorsSection
+import pages.item.supplyChainActors.AddAnotherSupplyChainActorPage
 
 class SupplyChainActorsDomainSpec extends SpecBase with Generators {
 
@@ -38,7 +38,7 @@ class SupplyChainActorsDomainSpec extends SpecBase with Generators {
       val result = SupplyChainActorsDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
 
       result.value.value.SupplyChainActorsDomain.length mustBe numberOfSupplyChainActors
-      result.value.pages.last mustBe SupplyChainActorsSection(itemIndex)
+      result.value.pages.last mustBe AddAnotherSupplyChainActorPage(itemIndex)
     }
   }
 }

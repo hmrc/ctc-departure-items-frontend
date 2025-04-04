@@ -19,13 +19,15 @@ package controllers.item.packages
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.AddAnotherFormProvider
 import generators.Generators
-import models.{Index, NormalMode}
+import models.{Index, NormalMode, UserAnswers}
 import navigation.ItemNavigatorProvider
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
+import pages.item.packages.index.AddAnotherPackagePage
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -126,6 +128,48 @@ class AddAnotherPackageControllerSpec extends SpecBase with AppWithDefaultMockFi
       }
     }
 
+    "must populate the view correctly on a GET when the question has previously been answered " - {
+      "when max limit not reached " in {
+        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
+          .thenReturn(notMaxedOutViewModel)
+
+        setExistingUserAnswers(emptyUserAnswers.setValue(AddAnotherPackagePage(index), true))
+
+        val request = FakeRequest(GET, addAnotherPackageRoute)
+
+        val result = route(app, request).value
+
+        val filledForm = form(notMaxedOutViewModel).bind(Map("value" -> "true"))
+
+        val view = injector.instanceOf[AddAnotherPackageView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(filledForm, lrn, notMaxedOutViewModel, index)(request, messages, frontendAppConfig).toString
+      }
+
+      "when max limit reached " in {
+        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
+          .thenReturn(maxedOutViewModel)
+
+        setExistingUserAnswers(emptyUserAnswers.setValue(AddAnotherPackagePage(index), true))
+
+        val request = FakeRequest(GET, addAnotherPackageRoute)
+
+        val result = route(app, request).value
+
+        val filledForm = form(maxedOutViewModel).bind(Map("value" -> "true"))
+
+        val view = injector.instanceOf[AddAnotherPackageView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(filledForm, lrn, maxedOutViewModel, index)(request, messages, frontendAppConfig).toString
+      }
+    }
+
     "when max limit not reached" - {
       "when yes submitted" - {
         "must redirect to PackageType page at next index" in {
@@ -143,6 +187,10 @@ class AddAnotherPackageControllerSpec extends SpecBase with AppWithDefaultMockFi
 
           redirectLocation(result).value mustEqual
             controllers.item.packages.index.routes.PackageTypeController.onPageLoad(lrn, mode, itemIndex, Index(listItems.length)).url
+
+          val userAnswerCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+          verify(mockSessionRepository).set(userAnswerCaptor.capture())(any())
+          userAnswerCaptor.getValue.get(AddAnotherPackagePage(index)).value mustEqual true
         }
       }
 
@@ -161,6 +209,10 @@ class AddAnotherPackageControllerSpec extends SpecBase with AppWithDefaultMockFi
           status(result) mustEqual SEE_OTHER
 
           redirectLocation(result).value mustEqual onwardRoute.url
+
+          val userAnswerCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+          verify(mockSessionRepository).set(userAnswerCaptor.capture())(any())
+          userAnswerCaptor.getValue.get(AddAnotherPackagePage(index)).value mustEqual false
         }
       }
     }

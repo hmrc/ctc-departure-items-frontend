@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,22 @@
  * limitations under the License.
  */
 
-package pages.sections.dangerousGoods
+package pages.item.additionalReference
 
-import models.Index
+import controllers.item.additionalReference.routes
+import models.{Index, Mode, UserAnswers}
 import pages.AddAnotherPage
-import pages.item.dangerousGoods.index.AddAnotherDangerousGoodsPage
-import pages.sections.{AddAnotherSection, ItemSection}
+import pages.sections.ItemSection
 import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-case class DangerousGoodsListSection(itemIndex: Index) extends AddAnotherSection {
+case class AddAnotherAdditionalReferencePage(itemIndex: Index) extends AddAnotherPage {
 
   override def path: JsPath = ItemSection(itemIndex).path \ toString
 
-  override def toString: String = "dangerousGoodsList"
+  override def toString: String = "addAnotherAdditionalReference"
 
-  override val addAnotherPage: AddAnotherPage = AddAnotherDangerousGoodsPage(itemIndex)
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.AddAnotherAdditionalReferenceController.onPageLoad(userAnswers.lrn, mode, itemIndex))
+
 }

@@ -146,6 +146,9 @@ package object controllers {
 
   implicit class NavigatorOps[A](write: Future[Write[A]]) {
 
+    def and(block: Future[Write[A]] => Future[Result]): Future[Result] =
+      block(write)
+
     def navigateWith(navigator: UserAnswersNavigator)(implicit executionContext: ExecutionContext): Future[Result] =
       navigate {
         case (page, userAnswers) => navigator.nextPage(userAnswers, Some(page))

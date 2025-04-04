@@ -58,7 +58,11 @@ class AddAnotherDocumentController @Inject() (
         case 0 =>
           Redirect(controllers.item.routes.AddDocumentsYesNoController.onPageLoad(lrn, mode, itemIndex))
         case _ =>
-          Ok(view(form(viewModel), lrn, viewModel, itemIndex))
+          val preparedForm = request.userAnswers.get(AddAnotherDocumentPage(itemIndex)) match {
+            case None        => form(viewModel)
+            case Some(value) => form(viewModel).fill(value)
+          }
+          Ok(view(preparedForm, lrn, viewModel, itemIndex))
       }
   }
 
@@ -69,20 +73,19 @@ class AddAnotherDocumentController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, viewModel, itemIndex))),
-          {
-            value =>
-              val write = AddAnotherDocumentPage(itemIndex)
-                .writeToUserAnswers(value)
-                .updateTask()
-                .writeToSession(sessionRepository)
-
-              if (value) {
-                write.navigateTo(controllers.item.documents.index.routes.DocumentController.onPageLoad(lrn, mode, itemIndex, viewModel.nextIndex))
-              } else {
-                val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
-                write.navigateWith(navigator)
+          value =>
+            AddAnotherDocumentPage(itemIndex)
+              .writeToUserAnswers(value)
+              .updateTask()
+              .writeToSession(sessionRepository)
+              .and {
+                if (value) {
+                  _.navigateTo(controllers.item.documents.index.routes.DocumentController.onPageLoad(lrn, mode, itemIndex, viewModel.nextIndex))
+                } else {
+                  val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
+                  _.navigateWith(navigator)
+                }
               }
-          }
         )
   }
 }

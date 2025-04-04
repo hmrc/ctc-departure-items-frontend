@@ -20,24 +20,28 @@ import config.FrontendAppConfig
 import controllers.actions.*
 import forms.AddAnotherFormProvider
 import models.{Index, LocalReferenceNumber, NormalMode}
+import pages.item.AddAnotherItemPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.AddAnotherItemViewModel
 import viewmodels.AddAnotherItemViewModel.AddAnotherItemViewModelProvider
 import views.html.AddAnotherItemView
 
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class AddAnotherItemController @Inject() (
   override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: AddAnotherFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherItemView,
   viewModelProvider: AddAnotherItemViewModelProvider
-)(implicit config: FrontendAppConfig)
+)(implicit ec: ExecutionContext, config: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -52,22 +56,33 @@ class AddAnotherItemController @Inject() (
         case 0 =>
           Redirect(controllers.item.routes.DescriptionController.onPageLoad(lrn, mode, Index(0)))
         case _ =>
-          Ok(view(form(viewModel), lrn, viewModel))
+          val preparedForm = request.userAnswers.get(AddAnotherItemPage) match {
+            case None        => form(viewModel)
+            case Some(value) => form(viewModel).fill(value)
+          }
+          Ok(view(preparedForm, lrn, viewModel))
       }
   }
 
-  def onSubmit(lrn: LocalReferenceNumber): Action[AnyContent] = actions.requireData(lrn) {
+  def onSubmit(lrn: LocalReferenceNumber): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
       val viewModel = viewModelProvider(request.userAnswers)
       form(viewModel)
         .bindFromRequest()
         .fold(
-          formWithErrors => BadRequest(view(formWithErrors, lrn, viewModel)),
-          {
-            case true  => Redirect(controllers.item.routes.DescriptionController.onPageLoad(lrn, mode, viewModel.nextIndex))
-            case false => Redirect(config.taskListUrl(lrn))
-          }
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, viewModel))),
+          value =>
+            AddAnotherItemPage
+              .writeToUserAnswers(value)
+              .updateTask()
+              .writeToSession(sessionRepository)
+              .and {
+                if (value) {
+                  _.navigateTo(controllers.item.routes.DescriptionController.onPageLoad(lrn, mode, viewModel.nextIndex))
+                } else {
+                  _.navigateTo(config.taskListUrl(lrn))
+                }
+              }
         )
   }
-
 }

@@ -19,12 +19,12 @@ package pages.item.documents
 import controllers.item.documents.routes
 import models.journeyDomain.{UserAnswersReader, *}
 import models.{Index, Mode, UserAnswers}
-import pages.QuestionPage
+import pages.AddAnotherPage
 import pages.sections.ItemSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class AddAnotherDocumentPage(itemIndex: Index) extends QuestionPage[Boolean] {
+case class AddAnotherDocumentPage(itemIndex: Index) extends AddAnotherPage {
 
   override def path: JsPath = ItemSection(itemIndex).path \ toString
 

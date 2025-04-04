@@ -20,7 +20,7 @@ import base.SpecBase
 import generators.Generators
 import models.Index
 import org.scalacheck.Gen
-import pages.sections.additionalReference.AdditionalReferencesSection
+import pages.item.additionalReference.AddAnotherAdditionalReferencePage
 
 class AdditionalReferencesDomainSpec extends SpecBase with Generators {
 
@@ -38,7 +38,7 @@ class AdditionalReferencesDomainSpec extends SpecBase with Generators {
       val result = AdditionalReferencesDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
 
       result.value.value.value.length mustBe numberOfAdditionalReferences
-      result.value.pages.last mustBe AdditionalReferencesSection(itemIndex)
+      result.value.pages.last mustBe AddAnotherAdditionalReferencePage(itemIndex)
     }
   }
 }

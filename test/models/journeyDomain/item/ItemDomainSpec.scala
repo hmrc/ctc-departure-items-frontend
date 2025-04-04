@@ -34,17 +34,14 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.external.*
 import pages.item.*
 import pages.item.additionalInformation.index.*
+import pages.item.additionalReference.AddAnotherAdditionalReferencePage
 import pages.item.additionalReference.index.*
-import pages.item.dangerousGoods.index.UNNumberPage
+import pages.item.dangerousGoods.index.{AddAnotherDangerousGoodsPage, UNNumberPage}
+import pages.item.documents.AddAnotherDocumentPage
 import pages.item.documents.index.DocumentPage
 import pages.item.packages.index.*
-import pages.sections.additionalInformation.AdditionalInformationListSection
-import pages.sections.additionalReference.AdditionalReferencesSection
-import pages.sections.dangerousGoods.DangerousGoodsListSection
-import pages.sections.documents.DocumentsSection
 import pages.sections.external
 import pages.sections.external.TransportEquipmentsSection
-import pages.sections.packages.PackagesSection
 import play.api.libs.json.{JsArray, Json}
 
 import java.util.UUID
@@ -850,7 +847,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
               result.value.pages mustBe Seq(
                 AddDangerousGoodsYesNoPage(itemIndex),
                 UNNumberPage(itemIndex, dangerousGoodsIndex),
-                DangerousGoodsListSection(itemIndex)
+                AddAnotherDangerousGoodsPage(itemIndex)
               )
           }
         }
@@ -1062,7 +1059,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                 NumberOfPackagesPage(itemIndex, packageIndex),
                 AddShippingMarkYesNoPage(itemIndex, packageIndex),
                 ShippingMarkPage(itemIndex, packageIndex),
-                PackagesSection(itemIndex)
+                AddAnotherPackagePage(itemIndex)
               )
           }
         }
@@ -1093,7 +1090,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                 PackageTypePage(itemIndex, packageIndex),
                 AddShippingMarkYesNoPage(itemIndex, packageIndex),
                 ShippingMarkPage(itemIndex, packageIndex),
-                PackagesSection(itemIndex)
+                AddAnotherPackagePage(itemIndex)
               )
           }
         }
@@ -1124,7 +1121,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                 PackageTypePage(itemIndex, packageIndex),
                 NumberOfPackagesPage(itemIndex, packageIndex),
                 ShippingMarkPage(itemIndex, packageIndex),
-                PackagesSection(itemIndex)
+                AddAnotherPackagePage(itemIndex)
               )
           }
         }
@@ -1217,7 +1214,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                   result.value.value mustBe expectedResult
                   result.value.pages mustBe Seq(
                     DocumentPage(itemIndex, Index(0)),
-                    DocumentsSection(itemIndex)
+                    AddAnotherDocumentPage(itemIndex)
                   )
               }
             }
@@ -1245,7 +1242,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                 result.value.value mustBe expectedResult
                 result.value.pages mustBe Seq(
                   DocumentPage(itemIndex, Index(0)),
-                  DocumentsSection(itemIndex)
+                  AddAnotherDocumentPage(itemIndex)
                 )
             }
           }
@@ -1292,7 +1289,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                 result.value.value mustBe expectedResult
                 result.value.pages mustBe Seq(
                   DocumentPage(itemIndex, Index(0)),
-                  DocumentsSection(itemIndex)
+                  AddAnotherDocumentPage(itemIndex)
                 )
             }
           }
@@ -1348,7 +1345,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                     result.value.value mustBe expectedResult
                     result.value.pages mustBe Seq(
                       DocumentPage(itemIndex, Index(0)),
-                      DocumentsSection(itemIndex)
+                      AddAnotherDocumentPage(itemIndex)
                     )
                 }
               }
@@ -1377,7 +1374,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                   result.value.value mustBe expectedResult
                   result.value.pages mustBe Seq(
                     DocumentPage(itemIndex, Index(0)),
-                    DocumentsSection(itemIndex)
+                    AddAnotherDocumentPage(itemIndex)
                   )
               }
             }
@@ -1425,7 +1422,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                   result.value.value mustBe expectedResult
                   result.value.pages mustBe Seq(
                     DocumentPage(itemIndex, Index(0)),
-                    DocumentsSection(itemIndex)
+                    AddAnotherDocumentPage(itemIndex)
                   )
               }
             }
@@ -1480,7 +1477,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                     result.value.value mustBe expectedResult
                     result.value.pages mustBe Seq(
                       DocumentPage(itemIndex, Index(0)),
-                      DocumentsSection(itemIndex)
+                      AddAnotherDocumentPage(itemIndex)
                     )
                 }
               }
@@ -1535,7 +1532,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                   result.value.pages mustBe Seq(
                     AddDocumentsYesNoPage(itemIndex),
                     DocumentPage(itemIndex, Index(0)),
-                    DocumentsSection(itemIndex)
+                    AddAnotherDocumentPage(itemIndex)
                   )
               }
             }
@@ -1609,7 +1606,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                   result.value.pages mustBe Seq(
                     AddDocumentsYesNoPage(itemIndex),
                     DocumentPage(itemIndex, Index(0)),
-                    DocumentsSection(itemIndex)
+                    AddAnotherDocumentPage(itemIndex)
                   )
               }
             }
@@ -1680,7 +1677,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                 AddAdditionalReferenceYesNoPage(itemIndex),
                 AdditionalReferencePage(itemIndex, additionalReferenceIndex),
                 AddAdditionalReferenceNumberYesNoPage(itemIndex, additionalReferenceIndex),
-                AdditionalReferencesSection(itemIndex)
+                AddAnotherAdditionalReferencePage(itemIndex)
               )
           }
         }
@@ -1737,7 +1734,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                 AddAdditionalInformationYesNoPage(itemIndex),
                 AdditionalInformationTypePage(itemIndex, additionalInformationIndex),
                 AdditionalInformationPage(itemIndex, additionalInformationIndex),
-                AdditionalInformationListSection(itemIndex)
+                AddAnotherAdditionalInformationPage(itemIndex)
               )
           }
         }

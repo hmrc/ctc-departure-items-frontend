@@ -18,7 +18,7 @@ package models
 
 import cats.data.ReaderT
 import models.journeyDomain.OpsError.ReaderError
-import pages.sections.Section
+import pages.sections.{AddAnotherSection, Section}
 import pages.{InferredPage, Page, QuestionPage, ReadOnlyPage}
 import play.api.libs.json.{JsArray, Reads}
 import queries.Gettable
@@ -175,8 +175,10 @@ package object journeyDomain {
 
     def append(page: Option[Section[?]]): Pages =
       page.fold(pages) {
-        case x if pages.contains(x) => pages
-        case x                      => pages :+ x
+        case x: AddAnotherSection if pages.contains(x.addAnotherPage) => pages
+        case x if pages.contains(x)                                   => pages
+        case x: AddAnotherSection                                     => pages :+ x.addAnotherPage
+        case x                                                        => pages :+ x
       }
   }
 
