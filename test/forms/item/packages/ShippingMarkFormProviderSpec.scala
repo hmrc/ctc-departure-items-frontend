@@ -17,11 +17,11 @@
 package forms.item.packages
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import forms.Constants.maxShippingMarkLength
 import forms.behaviours.StringFieldBehaviours
 import models.domain.StringFieldRegex.stringFieldRegex
 import org.scalacheck.Gen
-import play.api.data.{Form, FormError}
-import play.api.test.Helpers.running
+import play.api.data.FormError
 
 class ShippingMarkFormProviderSpec extends SpecBase with StringFieldBehaviours with AppWithDefaultMockFixtures {
 
@@ -30,57 +30,35 @@ class ShippingMarkFormProviderSpec extends SpecBase with StringFieldBehaviours w
   val invalidKey     = s"$prefix.error.invalidCharacters"
   val lengthKey      = s"$prefix.error.length"
 
-  private val maxShippingMarkLengthTransitionLength: Int = 42
-
-  private val maxShippingMarkLengthPostTransitionLength: Int = 512
+  private val form = new ShippingMarkFormProvider().apply(prefix)
 
   ".value" - {
+    val fieldName = "value"
 
-    def runTests(form: Form[String], maxShippingMarkLength: Int): Unit = {
+    behave like fieldThatBindsValidData(
+      form,
+      fieldName,
+      stringsWithMaxLength(maxShippingMarkLength)
+    )
 
-      val fieldName = "value"
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
 
-      behave like fieldThatBindsValidData(
-        form,
-        fieldName,
-        stringsWithMaxLength(maxShippingMarkLength)
-      )
+    behave like fieldWithMaxLength(
+      form,
+      fieldName,
+      maxLength = maxShippingMarkLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(maxShippingMarkLength))
+    )
 
-      behave like mandatoryField(
-        form,
-        fieldName,
-        requiredError = FormError(fieldName, requiredKey)
-      )
-
-      behave like fieldWithMaxLength(
-        form,
-        fieldName,
-        maxLength = maxShippingMarkLength,
-        lengthError = FormError(fieldName, lengthKey, Seq(maxShippingMarkLength))
-      )
-
-      behave like fieldWithInvalidCharacters(
-        form,
-        fieldName,
-        error = FormError(fieldName, invalidKey, Seq(stringFieldRegex.regex)),
-        maxShippingMarkLength
-      )
-    }
-
-    "during transition" - {
-      val app = transitionApplicationBuilder().build()
-      running(app) {
-        val form = app.injector.instanceOf[ShippingMarkFormProvider].apply(prefix)
-        runTests(form, maxShippingMarkLengthTransitionLength)
-      }
-    }
-
-    "post transition" - {
-      val app = postTransitionApplicationBuilder().build()
-      running(app) {
-        val form = app.injector.instanceOf[ShippingMarkFormProvider].apply(prefix)
-        runTests(form, maxShippingMarkLengthPostTransitionLength)
-      }
-    }
+    behave like fieldWithInvalidCharacters(
+      form,
+      fieldName,
+      error = FormError(fieldName, invalidKey, Seq(stringFieldRegex.regex)),
+      maxShippingMarkLength
+    )
   }
 }

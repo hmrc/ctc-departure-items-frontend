@@ -16,8 +16,7 @@
 
 package controllers.item.additionalInformation.index
 
-import config.PhaseConfig
-import controllers.actions._
+import controllers.actions.*
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.SelectableFormProvider.AdditionalInformationTypeFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
@@ -42,7 +41,7 @@ class AdditionalInformationTypeController @Inject() (
   service: AdditionalInformationService,
   val controllerComponents: MessagesControllerComponents,
   view: AdditionalInformationTypeView
-)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 

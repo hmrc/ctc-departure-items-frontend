@@ -17,7 +17,6 @@
 package utils.cyaHelpers.item
 
 import base.SpecBase
-import config.PhaseConfig
 import controllers.item.additionalInformation.index.routes.*
 import controllers.item.additionalReference.index.routes.*
 import controllers.item.consignee.routes.*
@@ -28,8 +27,7 @@ import controllers.item.routes.*
 import controllers.item.supplyChainActors.index.routes.SupplyChainActorTypeController
 import generators.Generators
 import models.reference.*
-import models.{CheckMode, DeclarationTypeItemLevel, Document, DynamicAddress, Index, Mode, Phase, SubmissionState, TransportEquipment, UserAnswers}
-import org.mockito.Mockito.when
+import models.{CheckMode, DeclarationTypeItemLevel, Document, DynamicAddress, Index, Mode, SubmissionState, TransportEquipment, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -61,8 +59,6 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
     new ItemAnswersHelper(mockDocumentsService, mockTransportEquipmentsService)(userAnswers, index)
 
   "ItemAnswersHelper" - {
-    val mockPostTransitionPhaseConfig = mock[PhaseConfig]
-    when(mockPostTransitionPhaseConfig.phase).thenReturn(Phase.PostTransition)
 
     "itemDescription" - {
       "must return None" - {
@@ -784,7 +780,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
             .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
             .setValue(ShippingMarkPage(itemIndex, packageIndex), nonEmptyString.sample.value)
 
-          forAll(arbitraryPackageAnswers(initialUserAnswers, itemIndex, packageIndex)(mockPostTransitionPhaseConfig)) {
+          forAll(arbitraryPackageAnswers(initialUserAnswers, itemIndex, packageIndex)) {
             userAnswers =>
               val helper = buildHelper(userAnswers, itemIndex)
               val result = helper.`package`(packageIndex).get
@@ -810,7 +806,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
             .setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
             .setValue(ShippingMarkPage(itemIndex, packageIndex), nonEmptyString.sample.value)
 
-          forAll(arbitraryPackageAnswers(initialUserAnswers, itemIndex, packageIndex)(mockPostTransitionPhaseConfig)) {
+          forAll(arbitraryPackageAnswers(initialUserAnswers, itemIndex, packageIndex)) {
             userAnswers =>
               val helper = buildHelper(userAnswers, itemIndex)
               val result = helper.`package`(packageIndex).get

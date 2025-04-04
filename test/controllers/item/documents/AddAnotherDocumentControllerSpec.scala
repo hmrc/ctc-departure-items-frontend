@@ -68,7 +68,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
   "AddAnotherDocument Controller" - {
 
     "must redirect to next page when 0 document added" in {
-      when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
+      when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
         .thenReturn(emptyViewModel)
 
       setExistingUserAnswers(emptyUserAnswers)
@@ -86,7 +86,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
 
     "must return OK and the correct view for a GET" - {
       "when max limit not reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
           .thenReturn(notMaxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -104,7 +104,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
       }
 
       "when max limit reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
           .thenReturn(maxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -123,7 +123,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
     }
     "must populate the view correctly on a GET when the question has previously been answered " - {
       "when max limit not reached " in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
           .thenReturn(notMaxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers.setValue(AddAnotherDocumentPage(index), true))
@@ -143,7 +143,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
       }
 
       "when max limit reached " in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
           .thenReturn(maxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers.setValue(AddAnotherDocumentPage(index), true))
@@ -166,7 +166,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
     "when max limit not reached" - {
       "when yes submitted" - {
         "must redirect to Document page at next index" in {
-          when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
+          when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
             .thenReturn(notMaxedOutViewModel)
 
           setExistingUserAnswers(emptyUserAnswers)
@@ -189,7 +189,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
 
       "when no submitted" - {
         "must redirect to next page and set DocumentsInProgressPage to false" in {
-          when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
+          when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
             .thenReturn(notMaxedOutViewModel)
 
           setExistingUserAnswers(emptyUserAnswers)
@@ -212,7 +212,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
 
     "when max limit reached" - {
       "must redirect to next page" in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
           .thenReturn(maxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -230,7 +230,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
 
     "when can't attach any more documents to item" - {
       "must redirect to next page" in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
           .thenReturn(notMaxedOutViewModel.copy(allowMoreDocuments = false))
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -248,7 +248,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
 
     "must return a Bad Request and errors" - {
       "when invalid data is submitted and max limit not reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
           .thenReturn(notMaxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)

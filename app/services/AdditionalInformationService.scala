@@ -16,7 +16,7 @@
 
 package services
 
-import config.Constants.AdditionalInformation._
+import config.Constants.AdditionalInformation.*
 import connectors.ReferenceDataConnector
 import models.SelectableList
 import models.reference.AdditionalInformation
@@ -25,13 +25,10 @@ import uk.gov.hmrc.http.HeaderCarrier
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-sealed trait AdditionalInformationService {
-
+class AdditionalInformationService @Inject() (
   val referenceDataConnector: ReferenceDataConnector
-
-  implicit val ec: ExecutionContext
-
-  def predicate: AdditionalInformation => Boolean
+)(implicit val ec: ExecutionContext) {
+  def predicate: AdditionalInformation => Boolean = _.code != Type30600
 
   def getAdditionalInformationTypes()(implicit hc: HeaderCarrier): Future[SelectableList[AdditionalInformation]] =
     referenceDataConnector
@@ -40,20 +37,4 @@ sealed trait AdditionalInformationService {
       .map(_.toSeq)
       .map(_.filter(predicate))
       .map(SelectableList(_))
-}
-
-class TransitionAdditionalInformationService @Inject() (
-  override val referenceDataConnector: ReferenceDataConnector
-)(implicit override val ec: ExecutionContext)
-    extends AdditionalInformationService {
-
-  override def predicate: AdditionalInformation => Boolean = _ => true
-}
-
-class PostTransitionAdditionalInformationService @Inject() (
-  override val referenceDataConnector: ReferenceDataConnector
-)(implicit override val ec: ExecutionContext)
-    extends AdditionalInformationService {
-  override def predicate: AdditionalInformation => Boolean = _.code != Type30600
-
 }

@@ -16,13 +16,11 @@
 
 package models.journeyDomain.item.packages
 
-import config.PhaseConfig
-import models.Phase.PostTransition
-import models.journeyDomain.Stage._
-import models.journeyDomain._
+import models.journeyDomain.*
+import models.journeyDomain.Stage.*
 import models.reference.PackageType
-import models.{Index, Mode, PackingType, Phase, UserAnswers}
-import pages.item.packages.index._
+import models.{Index, Mode, PackingType, UserAnswers}
+import pages.item.packages.index.*
 import play.api.mvc.Call
 
 case class PackageDomain(
@@ -34,7 +32,7 @@ case class PackageDomain(
 
   override def toString: String = s"${numberOfPackages.getOrElse(1)} * ${`type`}"
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] = Some {
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some {
     stage match {
       case AccessingJourney =>
         controllers.item.packages.index.routes.PackageTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, packageIndex)
@@ -46,7 +44,7 @@ case class PackageDomain(
 
 object PackageDomain {
 
-  implicit def userAnswersReader(itemIndex: Index, packageIndex: Index)(implicit phaseConfig: PhaseConfig): Read[PackageDomain] = {
+  implicit def userAnswersReader(itemIndex: Index, packageIndex: Index): Read[PackageDomain] = {
 
     lazy val shippingMarkReads = AddShippingMarkYesNoPage(itemIndex, packageIndex)
       .filterOptionalDependent(identity)(ShippingMarkPage(itemIndex, packageIndex).reader)
@@ -58,7 +56,7 @@ object PackageDomain {
             numberOfPackages =>
               lazy val reader = Read.apply(numberOfPackages).toOption
               numberOfPackages match {
-                case 0 if phaseConfig.phase == PostTransition =>
+                case 0 =>
                   BeforeYouContinuePage(itemIndex, packageIndex).reader.to {
                     _ => reader
                   }

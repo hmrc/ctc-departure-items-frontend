@@ -19,12 +19,12 @@ package controllers.item.supplyChainActors
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.AddAnotherFormProvider
 import generators.Generators
-import org.scalacheck.Arbitrary.arbitrary
 import models.{Index, NormalMode, UserAnswers}
 import navigation.ItemNavigatorProvider
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
 import pages.item.supplyChainActors.AddAnotherSupplyChainActorPage
@@ -72,7 +72,7 @@ class AddAnotherSupplyChainActorControllerSpec extends SpecBase with AppWithDefa
   "AddAnotherSupplyChainActor Controller" - {
 
     "must redirect to add supply chain actor yes no page when 0 supply chain actor added" in {
-      when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
+      when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
         .thenReturn(emptyViewModel)
 
       setExistingUserAnswers(emptyUserAnswers)
@@ -90,7 +90,7 @@ class AddAnotherSupplyChainActorControllerSpec extends SpecBase with AppWithDefa
 
     "must return OK and the correct view for a GET" - {
       "when max limit not reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
           .thenReturn(notMaxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -108,7 +108,7 @@ class AddAnotherSupplyChainActorControllerSpec extends SpecBase with AppWithDefa
       }
 
       "when max limit reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
           .thenReturn(maxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -125,9 +125,10 @@ class AddAnotherSupplyChainActorControllerSpec extends SpecBase with AppWithDefa
           view(form(maxedOutViewModel), lrn, maxedOutViewModel, itemIndex)(request, messages, frontendAppConfig).toString
       }
     }
+
     "must populate the view correctly on a GET when the question has previously been answered " - {
       "when max limit not reached " in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
           .thenReturn(notMaxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers.setValue(AddAnotherSupplyChainActorPage(index), true))
@@ -147,7 +148,7 @@ class AddAnotherSupplyChainActorControllerSpec extends SpecBase with AppWithDefa
       }
 
       "when max limit reached " in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
           .thenReturn(maxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers.setValue(AddAnotherSupplyChainActorPage(index), true))
@@ -165,13 +166,12 @@ class AddAnotherSupplyChainActorControllerSpec extends SpecBase with AppWithDefa
         contentAsString(result) mustEqual
           view(filledForm, lrn, maxedOutViewModel, index)(request, messages, frontendAppConfig).toString
       }
-
     }
 
     "when max limit not reached" - {
       "when yes submitted" - {
         "must redirect to supply chain actor type page at next index" in {
-          when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
+          when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
             .thenReturn(notMaxedOutViewModel)
 
           setExistingUserAnswers(emptyUserAnswers)
@@ -196,7 +196,7 @@ class AddAnotherSupplyChainActorControllerSpec extends SpecBase with AppWithDefa
 
       "when no submitted" - {
         "must redirect to next page" in {
-          when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
+          when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
             .thenReturn(notMaxedOutViewModel)
 
           setExistingUserAnswers(emptyUserAnswers)
@@ -220,7 +220,7 @@ class AddAnotherSupplyChainActorControllerSpec extends SpecBase with AppWithDefa
 
     "when max limit reached" - {
       "must redirect to next page" in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
           .thenReturn(maxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -238,7 +238,7 @@ class AddAnotherSupplyChainActorControllerSpec extends SpecBase with AppWithDefa
 
     "must return a Bad Request and errors" - {
       "when invalid data is submitted and max limit not reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
           .thenReturn(notMaxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)

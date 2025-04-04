@@ -17,13 +17,10 @@
 package forms
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import config.PhaseConfig
+import forms.Constants.*
 import forms.behaviours.BigDecimalFieldBehaviours
-import models.Phase
-import org.mockito.Mockito.when
 import org.scalacheck.Gen
-import play.api.data.{Form, FormError}
-import play.api.test.Helpers.running
+import play.api.data.FormError
 
 class BigDecimalFormProviderSpec extends SpecBase with BigDecimalFieldBehaviours with AppWithDefaultMockFixtures {
 
@@ -33,62 +30,29 @@ class BigDecimalFormProviderSpec extends SpecBase with BigDecimalFieldBehaviours
   val generatedBigDecimal: Gen[BigDecimal] = Gen.choose(BigDecimal(1), maxValue)
 
   ".value" - {
+    val fieldName = "value"
 
-    def runTests(form: Form[BigDecimal], decimalPlaceCount: Int, characterCount: Int, totalCount: Int, phaseConfig: PhaseConfig): Unit = {
+    val form = new BigDecimalFormProvider().apply(prefix, decimalPlaces, characterCount)
+    val args = Seq(decimalPlaces, characterCount, decimalPlaces + characterCount + 1)
 
-      val fieldName = "value"
+    behave like fieldThatBindsValidData(
+      form,
+      fieldName,
+      generatedBigDecimal.toString
+    )
 
-      val args = Seq(decimalPlaceCount, characterCount, totalCount)
+    behave like bigDecimalField(
+      form,
+      fieldName,
+      invalidCharactersError = FormError(fieldName, s"$prefix.error.invalidCharacters", args),
+      invalidFormatError = FormError(fieldName, s"$prefix.error.invalidFormat", args),
+      invalidValueError = FormError(fieldName, s"$prefix.error.invalidValue", args)
+    )
 
-      behave like fieldThatBindsValidData(
-        form,
-        fieldName,
-        generatedBigDecimal.toString
-      )
-
-      behave like bigDecimalField(
-        form,
-        fieldName,
-        invalidCharactersError = FormError(fieldName, s"$prefix.error.invalidCharacters", args),
-        invalidFormatError = FormError(fieldName, s"$prefix.error.invalidFormat", args),
-        invalidValueError = FormError(fieldName, s"$prefix.error.invalidValue", args)
-      )(phaseConfig)
-
-      behave like mandatoryField(
-        form,
-        fieldName,
-        requiredError = FormError(fieldName, requiredKey)
-      )
-    }
-
-    "during transition" - {
-      val app                          = transitionApplicationBuilder().build()
-      val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
-      when(mockPhaseConfig.phase).thenReturn(Phase.Transition)
-
-      val decimalPlaceTransition: Int   = 3
-      val characterCountTransition: Int = 11
-      val totalCount: Int               = 15
-
-      running(app) {
-        val form = app.injector.instanceOf[BigDecimalFormProvider].apply(prefix, decimalPlaceTransition, characterCountTransition)
-        runTests(form, decimalPlaceTransition, characterCountTransition, totalCount, mockPhaseConfig)
-      }
-    }
-
-    "post transition" - {
-      val app                          = postTransitionApplicationBuilder().build()
-      val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
-      when(mockPhaseConfig.phase).thenReturn(Phase.PostTransition)
-
-      val decimalPlacePostTransition: Int   = 6
-      val characterCountPostTransition: Int = 16
-      val totalCount: Int                   = 23
-
-      running(app) {
-        val form = app.injector.instanceOf[BigDecimalFormProvider].apply(prefix, decimalPlacePostTransition, characterCountPostTransition)
-        runTests(form, decimalPlacePostTransition, characterCountPostTransition, totalCount, mockPhaseConfig)
-      }
-    }
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
   }
 }

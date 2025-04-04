@@ -15,7 +15,7 @@
  */
 
 import cats.data.ReaderT
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import models.TaskStatus.*
 import models.journeyDomain.OpsError.WriterError
 import models.journeyDomain.{ItemsDomain, UserAnswersReader}
@@ -47,7 +47,7 @@ package object controllers {
         case None          => Left(WriterError(page, Some(s"Failed to find section in JSON path ${page.path}")))
       }
 
-    def updateTask[A](page: QuestionPage[A], section: String, userAnswers: UserAnswers)(implicit phaseConfig: PhaseConfig): EitherType[Write[A]] = {
+    def updateTask[A](page: QuestionPage[A], section: String, userAnswers: UserAnswers): EitherType[Write[A]] = {
       val status = UserAnswersReader[ItemsDomain].run(userAnswers) match {
         case Left(_)  => InProgress
         case Right(_) => userAnswers.status.taskStatus
@@ -58,7 +58,7 @@ package object controllers {
 
   implicit class SettableOps[A](page: QuestionPage[A]) {
 
-    def updateTask()(implicit phaseConfig: PhaseConfig): UserAnswersWriter[Write[A]] =
+    def updateTask(): UserAnswersWriter[Write[A]] =
       ReaderT[EitherType, UserAnswers, Write[A]] {
         userAnswers =>
           UserAnswersWriter.updateTask(page) {
@@ -115,7 +115,7 @@ package object controllers {
           }
       }
 
-    def updateTask()(implicit phaseConfig: PhaseConfig): UserAnswersWriter[Write[A]] =
+    def updateTask(): UserAnswersWriter[Write[A]] =
       userAnswersWriter.flatMapF {
         case (page, userAnswers) =>
           UserAnswersWriter.updateTask(page) {

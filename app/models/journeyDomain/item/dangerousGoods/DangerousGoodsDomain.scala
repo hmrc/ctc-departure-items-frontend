@@ -16,9 +16,9 @@
 
 package models.journeyDomain.item.dangerousGoods
 
+import models.journeyDomain.*
 import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
-import models.journeyDomain._
-import models.{Index, Mode, Phase, UserAnswers}
+import models.{Index, Mode, UserAnswers}
 import pages.item.dangerousGoods.index.UNNumberPage
 import play.api.mvc.Call
 
@@ -29,23 +29,16 @@ case class DangerousGoodsDomain(
 
   override def toString: String = unNumber
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] = stage match {
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = stage match {
     case AccessingJourney =>
       Some(controllers.item.dangerousGoods.index.routes.UNNumberController.onPageLoad(userAnswers.lrn, mode, itemIndex, dangerousGoodsIndex))
 
-    case CompletingJourney if DangerousGoodsDomain.hasMultiplicity(phase) =>
+    case CompletingJourney =>
       Some(controllers.item.dangerousGoods.routes.AddAnotherDangerousGoodsController.onPageLoad(userAnswers.lrn, mode, itemIndex))
-
-    case _ => Some(controllers.item.routes.GrossWeightController.onPageLoad(userAnswers.lrn, mode, itemIndex))
   }
 }
 
 object DangerousGoodsDomain {
-
-  def hasMultiplicity(phase: Phase): Boolean = phase match {
-    case Phase.PostTransition => true
-    case Phase.Transition     => false
-  }
 
   implicit def userAnswersReader(itemIndex: Index, dangerousGoodsIndex: Index): Read[DangerousGoodsDomain] =
     UNNumberPage(itemIndex, dangerousGoodsIndex).reader.map(DangerousGoodsDomain(_)(itemIndex, dangerousGoodsIndex))

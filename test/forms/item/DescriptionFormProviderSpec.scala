@@ -17,11 +17,11 @@
 package forms.item
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import forms.Constants.maxItemDescriptionLength
 import forms.behaviours.StringFieldBehaviours
 import models.domain.StringFieldRegex.stringFieldRegexComma
 import org.scalacheck.Gen
-import play.api.data.{Form, FormError}
-import play.api.test.Helpers.running
+import play.api.data.FormError
 
 class DescriptionFormProviderSpec extends SpecBase with StringFieldBehaviours with AppWithDefaultMockFixtures {
 
@@ -30,57 +30,36 @@ class DescriptionFormProviderSpec extends SpecBase with StringFieldBehaviours wi
   private val invalidKey  = s"$prefix.error.invalidCharacters"
   private val lengthKey   = s"$prefix.error.length"
 
-  private val maxItemDescriptionTransitionLength: Int = 280
-
-  private val maxItemDescriptionPostTransitionLength: Int = 512
+  private val form = new DescriptionFormProvider().apply(prefix)
 
   ".value" - {
 
-    def runTests(form: Form[String], maxItemDescriptionLength: Int): Unit = {
+    val fieldName = "value"
 
-      val fieldName = "value"
+    behave like fieldThatBindsValidData(
+      form,
+      fieldName,
+      stringsWithMaxLength(maxItemDescriptionLength)
+    )
 
-      behave like fieldThatBindsValidData(
-        form,
-        fieldName,
-        stringsWithMaxLength(maxItemDescriptionLength)
-      )
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
 
-      behave like mandatoryField(
-        form,
-        fieldName,
-        requiredError = FormError(fieldName, requiredKey)
-      )
+    behave like fieldWithMaxLength(
+      form,
+      fieldName,
+      maxLength = maxItemDescriptionLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(maxItemDescriptionLength))
+    )
 
-      behave like fieldWithMaxLength(
-        form,
-        fieldName,
-        maxLength = maxItemDescriptionLength,
-        lengthError = FormError(fieldName, lengthKey, Seq(maxItemDescriptionLength))
-      )
-
-      behave like fieldWithInvalidCharacters(
-        form,
-        fieldName,
-        error = FormError(fieldName, invalidKey, Seq(stringFieldRegexComma.regex)),
-        maxItemDescriptionLength
-      )
-    }
-
-    "during transition" - {
-      val app = transitionApplicationBuilder().build()
-      running(app) {
-        val form = app.injector.instanceOf[DescriptionFormProvider].apply(prefix)
-        runTests(form, maxItemDescriptionTransitionLength)
-      }
-    }
-
-    "post transition" - {
-      val app = postTransitionApplicationBuilder().build()
-      running(app) {
-        val form = app.injector.instanceOf[DescriptionFormProvider].apply(prefix)
-        runTests(form, maxItemDescriptionPostTransitionLength)
-      }
-    }
+    behave like fieldWithInvalidCharacters(
+      form,
+      fieldName,
+      error = FormError(fieldName, invalidKey, Seq(stringFieldRegexComma.regex)),
+      maxItemDescriptionLength
+    )
   }
 }

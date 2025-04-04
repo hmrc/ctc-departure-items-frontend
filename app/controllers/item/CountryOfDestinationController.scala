@@ -16,8 +16,8 @@
 
 package controllers.item
 
-import config.{FrontendAppConfig, PhaseConfig}
-import controllers.actions._
+import config.FrontendAppConfig
+import controllers.actions.*
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner, UpdateOps}
 import forms.SelectableFormProvider.CountryFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
@@ -42,7 +42,7 @@ class CountryOfDestinationController @Inject() (
   service: CountriesService,
   val controllerComponents: MessagesControllerComponents,
   view: CountryOfDestinationView
-)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig, appConfig: FrontendAppConfig)
+)(implicit ec: ExecutionContext, appConfig: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 

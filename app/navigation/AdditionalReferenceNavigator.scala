@@ -16,7 +16,7 @@
 
 package navigation
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.item.additionalReferences.AdditionalReferenceDomain
 import models.{CheckMode, Index, Mode, NormalMode}
@@ -24,8 +24,7 @@ import models.{CheckMode, Index, Mode, NormalMode}
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class AdditionalReferenceNavigatorProviderImpl @Inject() (implicit config: FrontendAppConfig, phaseConfig: PhaseConfig)
-    extends AdditionalReferenceNavigatorProvider {
+class AdditionalReferenceNavigatorProviderImpl @Inject() (implicit config: FrontendAppConfig) extends AdditionalReferenceNavigatorProvider {
 
   override def apply(mode: Mode, itemIndex: Index, additionalReferenceIndex: Index): UserAnswersNavigator =
     mode match {
@@ -39,8 +38,7 @@ trait AdditionalReferenceNavigatorProvider {
 }
 
 class AdditionalReferenceNavigator(override val mode: Mode, itemIndex: Index, additionalReferenceIndex: Index)(implicit
-  override val config: FrontendAppConfig,
-  override val phaseConfig: PhaseConfig
+  override val config: FrontendAppConfig
 ) extends UserAnswersNavigator {
 
   override type T = AdditionalReferenceDomain

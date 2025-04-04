@@ -16,8 +16,7 @@
 
 package controllers.item
 
-import config.PhaseConfig
-import controllers.actions._
+import controllers.actions.*
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.item.CombinedNomenclatureCodeFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
@@ -40,7 +39,7 @@ class CombinedNomenclatureCodeController @Inject() (
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: CombinedNomenclatureCodeView
-)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 

@@ -17,12 +17,10 @@
 package utils.cyaHelpers.item.packages
 
 import base.SpecBase
-import config.PhaseConfig
 import controllers.item.packages.index.routes
 import generators.Generators
 import models.reference.PackageType
-import models.{Index, Mode, Phase}
-import org.mockito.Mockito.when
+import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -32,8 +30,6 @@ import viewmodels.ListItem
 class PackageAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   "PackageAnswersHelper" - {
-    val mockPostTransitionPhaseConfig = mock[PhaseConfig]
-    when(mockPostTransitionPhaseConfig.phase).thenReturn(Phase.PostTransition)
 
     "listItems" - {
 
@@ -43,7 +39,7 @@ class PackageAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks wi
             mode =>
               val userAnswers = emptyUserAnswers
 
-              val helper = new PackageAnswersHelper(userAnswers, mode, itemIndex)(messages, frontendAppConfig, mockPostTransitionPhaseConfig)
+              val helper = new PackageAnswersHelper(userAnswers, mode, itemIndex)(messages, frontendAppConfig)
               helper.listItems mustBe Nil
           }
         }
@@ -61,7 +57,7 @@ class PackageAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks wi
                 .setValue(AddShippingMarkYesNoPage(itemIndex, Index(1)), true)
                 .setValue(ShippingMarkPage(itemIndex, Index(1)), nonEmptyString.sample.value)
 
-              val helper = new PackageAnswersHelper(userAnswers, mode, itemIndex)(messages, frontendAppConfig, mockPostTransitionPhaseConfig)
+              val helper = new PackageAnswersHelper(userAnswers, mode, itemIndex)(messages, frontendAppConfig)
               helper.listItems mustBe Seq(
                 Right(
                   ListItem(
@@ -96,7 +92,7 @@ class PackageAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
               val quantityString = String.format("%,d", quantity)
 
-              val helper = new PackageAnswersHelper(userAnswers, mode, itemIndex)(messages, frontendAppConfig, mockPostTransitionPhaseConfig)
+              val helper = new PackageAnswersHelper(userAnswers, mode, itemIndex)(messages, frontendAppConfig)
               helper.listItems mustBe Seq(
                 Right(
                   ListItem(

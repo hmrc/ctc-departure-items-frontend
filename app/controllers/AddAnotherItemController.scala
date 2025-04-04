@@ -16,7 +16,7 @@
 
 package controllers
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import controllers.actions.*
 import forms.AddAnotherFormProvider
 import models.{Index, LocalReferenceNumber, NormalMode}
@@ -41,7 +41,7 @@ class AddAnotherItemController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherItemView,
   viewModelProvider: AddAnotherItemViewModelProvider
-)(implicit ec: ExecutionContext, config: FrontendAppConfig, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext, config: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 

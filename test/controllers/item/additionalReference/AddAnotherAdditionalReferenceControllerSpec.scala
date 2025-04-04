@@ -74,7 +74,7 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
   "AddAnotherAdditionalReference Controller" - {
 
     "must redirect to add additional reference yes no page when 0 additional references added" in {
-      when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
+      when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
         .thenReturn(emptyViewModel)
 
       setExistingUserAnswers(emptyUserAnswers)
@@ -92,7 +92,7 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
 
     "must return OK and the correct view for a GET" - {
       "when max limit not reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
           .thenReturn(notMaxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -110,7 +110,7 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
       }
 
       "when max limit reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
           .thenReturn(maxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -129,7 +129,7 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
     }
     "must populate the view correctly on a GET when the question has previously been answered " - {
       "when max limit not reached " in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
           .thenReturn(notMaxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers.setValue(AddAnotherAdditionalReferencePage(index), true))
@@ -149,7 +149,7 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
       }
 
       "when max limit reached " in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
           .thenReturn(maxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers.setValue(AddAnotherAdditionalReferencePage(index), true))
@@ -173,7 +173,7 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
     "when max limit not reached" - {
       "when yes submitted" - {
         "must redirect to additional reference type page at next index" in {
-          when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
+          when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
             .thenReturn(notMaxedOutViewModel)
 
           setExistingUserAnswers(emptyUserAnswers)
@@ -197,7 +197,7 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
 
       "when no submitted" - {
         "must redirect to next page" in {
-          when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
+          when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
             .thenReturn(notMaxedOutViewModel)
 
           setExistingUserAnswers(emptyUserAnswers)
@@ -220,7 +220,7 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
 
     "when max limit reached" - {
       "must redirect to next page" in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
           .thenReturn(maxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -238,7 +238,7 @@ class AddAnotherAdditionalReferenceControllerSpec extends SpecBase with AppWithD
 
     "must return a Bad Request and errors" - {
       "when invalid data is submitted and max limit not reached" in {
-        when(mockViewModelProvider.apply(any(), any(), any())(any(), any(), any()))
+        when(mockViewModelProvider.apply(any(), any(), any())(any(), any()))
           .thenReturn(notMaxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)

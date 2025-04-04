@@ -16,7 +16,6 @@
 
 package generators
 
-import config.PhaseConfig
 import models.journeyDomain.OpsError.ReaderError
 import models.journeyDomain.item.additionalInformation.AdditionalInformationDomain
 import models.journeyDomain.item.additionalReferences.AdditionalReferenceDomain
@@ -33,7 +32,7 @@ import org.scalacheck.{Arbitrary, Gen}
 trait UserAnswersGenerator extends UserAnswersEntryGenerators {
   self: Generators =>
 
-  implicit def arbitraryUserAnswers(implicit phaseConfig: PhaseConfig): Arbitrary[UserAnswers] =
+  implicit def arbitraryUserAnswers: Arbitrary[UserAnswers] =
     Arbitrary {
       for {
         lrn        <- arbitrary[LocalReferenceNumber]
@@ -65,10 +64,10 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators {
     rec(initialUserAnswers)
   }
 
-  def arbitraryItemsAnswers(userAnswers: UserAnswers)(implicit phaseConfig: PhaseConfig): Gen[UserAnswers] =
+  def arbitraryItemsAnswers(userAnswers: UserAnswers): Gen[UserAnswers] =
     buildUserAnswers[ItemsDomain](userAnswers)
 
-  def arbitraryItemAnswers(userAnswers: UserAnswers, index: Index)(implicit phaseConfig: PhaseConfig): Gen[UserAnswers] =
+  def arbitraryItemAnswers(userAnswers: UserAnswers, index: Index): Gen[UserAnswers] =
     buildUserAnswers[ItemDomain](userAnswers)(
       ItemDomain.userAnswersReader(index).apply(Nil)
     )
@@ -78,7 +77,7 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators {
       DangerousGoodsDomain.userAnswersReader(itemIndex, dangerousGoodsIndex).apply(Nil)
     )
 
-  def arbitraryPackageAnswers(userAnswers: UserAnswers, itemIndex: Index, packageIndex: Index)(implicit phaseConfig: PhaseConfig): Gen[UserAnswers] =
+  def arbitraryPackageAnswers(userAnswers: UserAnswers, itemIndex: Index, packageIndex: Index): Gen[UserAnswers] =
     buildUserAnswers[PackageDomain](userAnswers)(
       PackageDomain.userAnswersReader(itemIndex, packageIndex).apply(Nil)
     )

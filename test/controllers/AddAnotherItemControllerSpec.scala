@@ -73,7 +73,7 @@ class AddAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFixtu
   "AddAnotherItem Controller" - {
 
     "must redirect to item description page when 0 item added" in {
-      when(mockViewModelProvider.apply(any())(any(), any(), any()))
+      when(mockViewModelProvider.apply(any())(any(), any()))
         .thenReturn(emptyViewModel)
 
       setExistingUserAnswers(emptyUserAnswers)
@@ -92,7 +92,7 @@ class AddAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFixtu
     "must return OK and the correct view for a GET" - {
       "when max limit not reached" in {
 
-        when(mockViewModelProvider.apply(any())(any(), any(), any()))
+        when(mockViewModelProvider.apply(any())(any(), any()))
           .thenReturn(notMaxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -111,7 +111,7 @@ class AddAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
       "when max limit reached" in {
 
-        when(mockViewModelProvider.apply(any())(any(), any(), any()))
+        when(mockViewModelProvider.apply(any())(any(), any()))
           .thenReturn(maxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -130,7 +130,7 @@ class AddAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFixtu
     }
     "must populate the view correctly on a GET when the question has previously been answered " - {
       "when max limit not reached " in {
-        when(mockViewModelProvider.apply(any())(any(), any(), any()))
+        when(mockViewModelProvider.apply(any())(any(), any()))
           .thenReturn(notMaxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers.setValue(AddAnotherItemPage, true))
@@ -150,7 +150,7 @@ class AddAnotherItemControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       }
 
       "when max limit reached " in {
-        when(mockViewModelProvider.apply(any())(any(), any(), any()))
+        when(mockViewModelProvider.apply(any())(any(), any()))
           .thenReturn(maxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers.setValue(AddAnotherItemPage, true))

@@ -16,7 +16,7 @@
 
 package navigation
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import models.{Index, Mode, UserAnswers}
 import pages.Page
 import play.api.mvc.Call
@@ -25,51 +25,45 @@ class FakeNavigator(desiredRoute: Call) extends Navigator {
   override def nextPage(userAnswers: UserAnswers, currentPage: Option[Page]): Call = desiredRoute
 }
 
-class FakeItemsNavigator(desiredRoute: Call, mode: Mode)(implicit config: FrontendAppConfig, phaseConfig: PhaseConfig) extends ItemsNavigator(mode) {
+class FakeItemsNavigator(desiredRoute: Call, mode: Mode)(implicit config: FrontendAppConfig) extends ItemsNavigator(mode) {
   override def nextPage(userAnswers: UserAnswers, currentPage: Option[Page]): Call = desiredRoute
 }
 
-class FakeItemNavigator(desiredRoute: Call, mode: Mode, index: Index)(implicit config: FrontendAppConfig, phaseConfig: PhaseConfig)
-    extends ItemNavigator(mode, index) {
+class FakeItemNavigator(desiredRoute: Call, mode: Mode, index: Index)(implicit config: FrontendAppConfig) extends ItemNavigator(mode, index) {
   override def nextPage(userAnswers: UserAnswers, currentPage: Option[Page]): Call = desiredRoute
 }
 
 class FakeDangerousGoodsNavigator(desiredRoute: Call, mode: Mode, itemIndex: Index, dangerousGoodsIndex: Index)(implicit
-  config: FrontendAppConfig,
-  phaseConfig: PhaseConfig
+  config: FrontendAppConfig
 ) extends DangerousGoodsNavigator(mode, itemIndex, dangerousGoodsIndex) {
   override def nextPage(userAnswers: UserAnswers, currentPage: Option[Page]): Call = desiredRoute
 }
 
-class FakePackageNavigator(desiredRoute: Call, mode: Mode, itemIndex: Index, packageIndex: Index)(implicit config: FrontendAppConfig, phaseConfig: PhaseConfig)
+class FakePackageNavigator(desiredRoute: Call, mode: Mode, itemIndex: Index, packageIndex: Index)(implicit config: FrontendAppConfig)
     extends PackageNavigator(mode, itemIndex, packageIndex) {
   override def nextPage(userAnswers: UserAnswers, currentPage: Option[Page]): Call = desiredRoute
 }
 
 class FakeSupplyChainActorNavigator(desiredRoute: Call, mode: Mode, itemIndex: Index, actorIndex: Index)(implicit
-  config: FrontendAppConfig,
-  phaseConfig: PhaseConfig
+  config: FrontendAppConfig
 ) extends PackageNavigator(mode, itemIndex, actorIndex) {
   override def nextPage(userAnswers: UserAnswers, currentPage: Option[Page]): Call = desiredRoute
 }
 
 class FakeDocumentNavigator(desiredRoute: Call, mode: Mode, itemIndex: Index, documentIndex: Index)(implicit
-  config: FrontendAppConfig,
-  phaseConfig: PhaseConfig
+  config: FrontendAppConfig
 ) extends DocumentNavigator(mode, itemIndex, documentIndex) {
   override def nextPage(userAnswers: UserAnswers, currentPage: Option[Page]): Call = desiredRoute
 }
 
 class FakeAdditionalReferenceNavigator(desiredRoute: Call, mode: Mode, itemIndex: Index, additionalReferenceIndex: Index)(implicit
-  config: FrontendAppConfig,
-  phaseConfig: PhaseConfig
+  config: FrontendAppConfig
 ) extends AdditionalReferenceNavigator(mode, itemIndex, additionalReferenceIndex) {
   override def nextPage(userAnswers: UserAnswers, currentPage: Option[Page]): Call = desiredRoute
 }
 
 class FakeAdditionalInformationNavigator(desiredRoute: Call, mode: Mode, itemIndex: Index, additionalInformationIndex: Index)(implicit
-  config: FrontendAppConfig,
-  phaseConfig: PhaseConfig
+  config: FrontendAppConfig
 ) extends AdditionalInformationNavigator(mode, itemIndex, additionalInformationIndex) {
   override def nextPage(userAnswers: UserAnswers, currentPage: Option[Page]): Call = desiredRoute
 }

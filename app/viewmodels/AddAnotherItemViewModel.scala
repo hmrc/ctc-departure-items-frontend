@@ -16,7 +16,7 @@
 
 package viewmodels
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import models.UserAnswers
 import play.api.i18n.Messages
 import play.api.mvc.Call
@@ -40,8 +40,7 @@ object AddAnotherItemViewModel {
 
     def apply(userAnswers: UserAnswers)(implicit
       messages: Messages,
-      config: FrontendAppConfig,
-      phaseConfig: PhaseConfig
+      config: FrontendAppConfig
     ): AddAnotherItemViewModel = {
       val helper = new ItemsAnswersHelper(userAnswers)
 

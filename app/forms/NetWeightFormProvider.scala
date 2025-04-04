@@ -16,21 +16,19 @@
 
 package forms
 
-import config.PhaseConfig
 import forms.mappings.Mappings
 import models.RichBigDecimal
 import play.api.data.Form
 import play.api.data.validation.Constraint
 
-import javax.inject.Inject
+class NetWeightFormProvider extends Mappings {
 
-sealed abstract class NetWeightFormProvider(implicit phaseConfig: PhaseConfig) extends Mappings {
-
-  def maxValueConstraint(prefix: String, grossWeight: BigDecimal): Option[Constraint[BigDecimal]]
+  private def maxValueConstraint(prefix: String, grossWeight: BigDecimal): Option[Constraint[BigDecimal]] =
+    Option.when(grossWeight.isMoreThan(0))(maximumValue(grossWeight, s"$prefix.error.maximum"))
 
   def apply(prefix: String, isZeroAllowed: Boolean, grossWeight: BigDecimal): Form[BigDecimal] = {
-    val decimalPlaces  = phaseConfig.values.decimalPlaces
-    val characterCount = phaseConfig.values.characterCount
+    val decimalPlaces  = Constants.decimalPlaces
+    val characterCount = Constants.characterCount
     Form(
       "value" -> bigDecimal(
         decimalPlaces,
@@ -43,16 +41,4 @@ sealed abstract class NetWeightFormProvider(implicit phaseConfig: PhaseConfig) e
       )
     )
   }
-}
-
-class TransitionNetWeightFormProvider @Inject() (implicit phaseConfig: PhaseConfig) extends NetWeightFormProvider {
-
-  override def maxValueConstraint(prefix: String, grossWeight: BigDecimal): Option[Constraint[BigDecimal]] =
-    None
-}
-
-class PostTransitionNetWeightFormProvider @Inject() (implicit phaseConfig: PhaseConfig) extends NetWeightFormProvider {
-
-  override def maxValueConstraint(prefix: String, grossWeight: BigDecimal): Option[Constraint[BigDecimal]] =
-    Option.when(grossWeight.isMoreThan(0))(maximumValue(grossWeight, s"$prefix.error.maximum"))
 }
