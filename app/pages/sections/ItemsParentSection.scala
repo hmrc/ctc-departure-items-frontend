@@ -16,15 +16,11 @@
 
 package pages.sections
 
-import pages.AddAnotherPage
-import pages.item.AddAnotherItemPage
-import play.api.libs.json.JsPath
+import play.api.libs.json.{JsObject, JsPath}
 
-case object ItemsSection extends AddAnotherSection {
+case object ItemsParentSection extends Section[JsObject] {
 
-  override def path: JsPath = ItemsParentSection.path \ toString
+  override def path: JsPath = JsPath \ toString
 
   override def toString: String = "items"
-
-  override val addAnotherPage: AddAnotherPage = AddAnotherItemPage
 }

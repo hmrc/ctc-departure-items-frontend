@@ -19,12 +19,13 @@ package pages.item
 import controllers.routes
 import models.{Mode, UserAnswers}
 import pages.AddAnotherPage
+import pages.sections.ItemsParentSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case object AddAnotherItemPage extends AddAnotherPage {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = ItemsParentSection.path \ toString
 
   override def toString: String = "addAnotherItem"
 
