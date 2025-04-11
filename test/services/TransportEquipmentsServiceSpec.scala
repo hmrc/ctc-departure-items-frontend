@@ -93,23 +93,25 @@ class TransportEquipmentsServiceSpec extends SpecBase {
               |            }
               |          ],
               |          "uuid": "$uuid1"
-              |         },
-              |         {
-              |           "addContainerIdentificationNumberYesNo" : false,
-              |           "addSealsYesNo" : false,
-              |           "uuid": "$uuid2"
-              |          }
-              |        ]
-              |      }
-              |    },
-              |  "items": [
-              |    {
-              |      "transportEquipment" : "$uuid1"
-              |    },
-              |    {
-              |      "transportEquipment" : "$uuid2"
+              |        },
+              |        {
+              |          "addContainerIdentificationNumberYesNo" : false,
+              |          "addSealsYesNo" : false,
+              |          "uuid": "$uuid2"
+              |        }
+              |      ]
               |    }
-              |  ]
+              |  },
+              |  "items": {
+              |    "items": [
+              |      {
+              |        "transportEquipment" : "$uuid1"
+              |      },
+              |      {
+              |        "transportEquipment" : "$uuid2"
+              |      }
+              |    ]
+              |  }
               |}
               |""".stripMargin)
           .as[JsObject]

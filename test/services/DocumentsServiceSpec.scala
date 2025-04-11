@@ -85,15 +85,17 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
                   |      }
                   |    ]
                   |  },
-                  |  "items" : [
-                  |    {
-                  |      "documents" : [
-                  |        {
-                  |          "document" : "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
-                  |        }
-                  |      ]
-                  |    }
-                  |  ]
+                  |  "items" : {
+                  |    "items" : [
+                  |      {
+                  |        "documents" : [
+                  |          {
+                  |            "document" : "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
+                  |          }
+                  |        ]
+                  |      }
+                  |    ]
+                  |  }
                   |}
                   |""".stripMargin)
               .as[JsObject]
@@ -233,15 +235,17 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
                     |      }
                     |    ]
                     |  },
-                    |  "items" : [
-                    |    {
-                    |      "documents" : [
-                    |        {
-                    |          "document" : "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
-                    |        }
-                    |      ]
-                    |    }
-                    |  ]
+                    |  "items" : {
+                    |    "items" : [
+                    |      {
+                    |        "documents" : [
+                    |          {
+                    |            "document" : "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
+                    |          }
+                    |        ]
+                    |      }
+                    |    ]
+                    |  }
                     |}
                     |""".stripMargin)
                 .as[JsObject]
@@ -297,15 +301,17 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
                     |      }
                     |    ]
                     |  },
-                    |  "items" : [
-                    |    {
-                    |      "documents" : [
-                    |        {
-                    |          "document" : "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
-                    |        }
-                    |      ]
-                    |    }
-                    |  ]
+                    |  "items" : {
+                    |    "items" : [
+                    |      {
+                    |        "documents" : [
+                    |          {
+                    |            "document" : "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
+                    |          }
+                    |        ]
+                    |      }
+                    |    ]
+                    |  }
                     |}
                     |""".stripMargin)
                 .as[JsObject]
@@ -505,21 +511,23 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
           |      }
           |    ]
           |  },
-          |  "items" : [
-          |    {
-          |      "documents" : [
-          |        {
-          |          "document" : "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
-          |        },
-          |        {
-          |          "document" : "a573bfd3-6470-40c4-a290-ea2d8d43c02a"
-          |        },
-          |        {
-          |          "document" : "3882459f-b7bc-478d-9d24-359533aa8fe3"
-          |        }
-          |      ]
-          |    }
-          |  ]
+          |  "items" : {
+          |    "items" : [
+          |      {
+          |        "documents" : [
+          |          {
+          |            "document" : "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
+          |          },
+          |          {
+          |            "document" : "a573bfd3-6470-40c4-a290-ea2d8d43c02a"
+          |          },
+          |          {
+          |            "document" : "3882459f-b7bc-478d-9d24-359533aa8fe3"
+          |          }
+          |        ]
+          |      }
+          |    ]
+          |  }
           |}
           |""".stripMargin)
         .as[JsObject]
@@ -978,15 +986,17 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
                   |      }
                   |    ]
                   |  },
-                  |  "items" : [
-                  |    {
-                  |      "documents" : [
-                  |        {
-                  |          "document" : "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
-                  |        }
-                  |      ]
-                  |    }
-                  |  ]
+                  |  "items" : {
+                  |    "items" : [
+                  |      {
+                  |        "documents" : [
+                  |          {
+                  |            "document" : "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
+                  |          }
+                  |        ]
+                  |      }
+                  |    ]
+                  |  }
                   |}
                   |""".stripMargin)
               .as[JsObject]
@@ -1042,15 +1052,17 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
                   |      }
                   |    ]
                   |  },
-                  |  "items" : [
-                  |    {
-                  |      "documents" : [
-                  |        {
-                  |          "document" : "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
-                  |        }
-                  |      ]
-                  |    }
-                  |  ]
+                  |  "items" : {
+                  |    "items" : [
+                  |      {
+                  |        "documents" : [
+                  |          {
+                  |            "document" : "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
+                  |          }
+                  |        ]
+                  |      }
+                  |    ]
+                  |  }
                   |}
                   |""".stripMargin)
               .as[JsObject]
