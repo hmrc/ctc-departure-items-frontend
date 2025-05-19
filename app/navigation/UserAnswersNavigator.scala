@@ -63,29 +63,35 @@ object UserAnswersNavigator extends Logging {
     userAnswersReaderResult: EitherType[ReaderSuccess[T]],
     mode: Mode
   ): (UserAnswers, Stage) => Option[Call] = {
-    @tailrec
-    def rec(
-      answeredPages: List[Page],
-      exit: Boolean
+
+    def nextPage(
+      answeredPages: List[Page]
     )(
       userAnswersReaderResult: (UserAnswers, Stage) => Option[Call]
     ): (UserAnswers, Stage) => Option[Call] =
-      answeredPages match {
-        case head :: _ if exit                          => (userAnswers, _) => head.route(userAnswers, mode)
-        case head :: tail if currentPage.contains(head) => rec(tail, exit = true)(userAnswersReaderResult)
-        case _ :: tail                                  => rec(tail, exit)(userAnswersReaderResult)
-        case Nil                                        => userAnswersReaderResult
+      currentPage match {
+        case Some(currentPage) =>
+          @tailrec
+          def rec(answeredPages: List[Page]): (UserAnswers, Stage) => Option[Call] =
+            answeredPages match {
+              case Nil                        => userAnswersReaderResult
+              case `currentPage` :: next :: _ => (userAnswers, _) => next.route(userAnswers, mode)
+              case _ :: tail                  => rec(tail)
+            }
+          rec(answeredPages)
+        case None =>
+          userAnswersReaderResult
       }
 
     userAnswersReaderResult match {
       case Right(ReaderSuccess(t, _)) if mode == CheckMode =>
         t.routeIfCompleted(_, mode, _)
       case Right(ReaderSuccess(t, answeredPages)) =>
-        rec(answeredPages.toList, exit = false) {
+        nextPage(answeredPages.toList) {
           t.routeIfCompleted(_, mode, _)
         }
       case Left(ReaderError(unansweredPage, answeredPages, _)) =>
-        rec(answeredPages.toList, exit = false) {
+        nextPage(answeredPages.toList) {
           (userAnswers, _) => unansweredPage.route(userAnswers, mode)
         }
     }
