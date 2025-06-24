@@ -17,11 +17,22 @@
 package models.reference
 
 import cats.Order
-import play.api.libs.json._
+import config.FrontendAppConfig
+import play.api.libs.json.*
 
 case class CountryCode(code: String)
 
 object CountryCode {
+
+  def reads(config: FrontendAppConfig): Reads[CountryCode] =
+    if (config.isPhase6Enabled) {
+      case JsObject(mapping) => JsSuccess(CountryCode(mapping("key").as[String]))
+      case JsString(key)     => JsSuccess(CountryCode(key))
+      case x                 => JsError(s"Expected a string, got a ${x.getClass}")
+    }
+    else {
+      countryCodeReads
+    }
 
   implicit val countryCodeWrites: Writes[CountryCode] = (countryCode: CountryCode) => JsString(countryCode.code)
 
@@ -32,4 +43,9 @@ object CountryCode {
   }
 
   implicit val order: Order[CountryCode] = (x: CountryCode, y: CountryCode) => (x, y).compareBy(_.code)
+
+  def queryParams(code: String)(config: FrontendAppConfig): Seq[(String, String)] = {
+    val key = if (config.isPhase6Enabled) "keys" else "data.code"
+    Seq(key -> code)
+  }
 }

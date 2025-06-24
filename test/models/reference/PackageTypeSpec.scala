@@ -18,12 +18,14 @@ package models.reference
 
 import base.SpecBase
 import generators.Generators
+import config.FrontendAppConfig
 import models.PackingType
-import models.PackingType._
+import models.PackingType.*
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, Reads}
+import play.api.test.Helpers.running
 import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
 class PackageTypeSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -34,27 +36,69 @@ class PackageTypeSpec extends SpecBase with ScalaCheckPropertyChecks with Genera
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (code, description) =>
           val packageType = PackageType(code, description, Bulk)
-          Json.toJson(packageType) mustBe Json.parse(s"""
-            |{
-            |  "code": "$code",
-            |  "description": "$description",
-            |  "type": "Bulk"
-            |}
-            |""".stripMargin)
+          Json.toJson(packageType) mustEqual Json.parse(s"""
+               |{
+               |  "code": "$code",
+               |  "description": "$description",
+               |  "type": "Bulk"
+               |}
+               |""".stripMargin)
       }
     }
 
-    "must deserialise" in {
-      forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-        (code, description) =>
-          val json = Json.parse(s"""
-            |{
-            |  "code": "$code",
-            |  "description": "$description",
-            |  "type": "Bulk"
-            |}
-            |""".stripMargin)
-          json.as[PackageType] mustBe PackageType(code, description, Bulk)
+    "must deserialise" - {
+      "when reading from reference data" - {
+        "when phase 5" in {
+          running(_.configure("feature-flags.phase-6-enabled" -> false)) {
+            app =>
+              val config                             = app.injector.instanceOf[FrontendAppConfig]
+              implicit val reads: Reads[PackageType] = PackageType.reads(Bulk)(config)
+              forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+                (code, description) =>
+                  val json = Json.parse(s"""
+                       |{
+                       |  "code": "$code",
+                       |  "description": "$description",
+                       |  "type": "Bulk"
+                       |}
+                       |""".stripMargin)
+                  json.as[PackageType] mustEqual PackageType(code, description, Bulk)
+              }
+          }
+        }
+
+        "when phase 6" in {
+          running(_.configure("feature-flags.phase-6-enabled" -> true)) {
+            app =>
+              val config                             = app.injector.instanceOf[FrontendAppConfig]
+              implicit val reads: Reads[PackageType] = PackageType.reads(Bulk)(config)
+              forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+                (code, description) =>
+                  val json = Json.parse(s"""
+                       |{
+                       |  "key": "$code",
+                       |  "value": "$description",
+                       |  "type": "Bulk"
+                       |}
+                       |""".stripMargin)
+                  json.as[PackageType] mustEqual PackageType(code, description, Bulk)
+              }
+          }
+        }
+      }
+
+      "when reading from mongo" in {
+        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+          (code, description) =>
+            val json = Json.parse(s"""
+                 |{
+                 |  "code": "$code",
+                 |  "description": "$description",
+                 |  "type": "Bulk"
+                 |}
+                 |""".stripMargin)
+            json.as[PackageType] mustEqual PackageType(code, description, Bulk)
+        }
       }
     }
 
@@ -62,7 +106,7 @@ class PackageTypeSpec extends SpecBase with ScalaCheckPropertyChecks with Genera
       forAll(Gen.alphaNumStr, Gen.alphaNumStr, arbitrary[Boolean], arbitrary[PackingType]) {
         (code, description, selected, packingType) =>
           val packageType = PackageType(code, description, packingType)
-          packageType.toSelectItem(selected) mustBe SelectItem(Some(code), s"$packageType", selected)
+          packageType.toSelectItem(selected) mustEqual SelectItem(Some(code), s"$packageType", selected)
       }
     }
 
@@ -71,13 +115,13 @@ class PackageTypeSpec extends SpecBase with ScalaCheckPropertyChecks with Genera
         forAll(Gen.alphaNumStr, nonEmptyString, arbitrary[PackingType]) {
           (code, description, packingType) =>
             val packageType = PackageType(code, description, packingType)
-            packageType.toString mustBe s"($code) $description"
+            packageType.toString mustEqual s"($code) $description"
         }
       }
 
       "when description contains html" in {
         val packageType = PackageType("VY", "Bulk, solid, large particles (&quot;nodules&quot;)", PackingType.Bulk)
-        packageType.toString mustBe "(VY) Bulk, solid, large particles (\"nodules\")"
+        packageType.toString mustEqual "(VY) Bulk, solid, large particles (\"nodules\")"
       }
     }
   }

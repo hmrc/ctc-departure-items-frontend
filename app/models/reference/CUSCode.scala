@@ -17,15 +17,31 @@
 package models.reference
 
 import cats.Order
+import config.FrontendAppConfig
 import models.Selectable
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.{__, Json, OFormat, Reads}
 
 case class CUSCode(code: String) extends Selectable {
+
+  override def toString: String = code
 
   override val value: String = code
 }
 
 object CUSCode {
+
+  def reads(config: FrontendAppConfig): Reads[CUSCode] =
+    if (config.isPhase6Enabled) {
+      (__ \ "key").read[String].map(CUSCode.apply)
+    } else {
+      Json.reads[CUSCode]
+    }
+
+  def queryParams(code: String)(config: FrontendAppConfig): Seq[(String, String)] = {
+    val key = if (config.isPhase6Enabled) "keys" else "data.code"
+    Seq(key -> code)
+  }
+
   implicit val format: OFormat[CUSCode] = Json.format[CUSCode]
 
   implicit val order: Order[CUSCode] = (x: CUSCode, y: CUSCode) => (x, y).compareBy(_.code)

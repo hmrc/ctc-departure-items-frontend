@@ -17,10 +17,11 @@
 package models.reference
 
 import cats.Order
+import config.FrontendAppConfig
 import models.{PackingType, Selectable}
 import org.apache.commons.text.StringEscapeUtils
-import play.api.libs.functional.syntax._
-import play.api.libs.json._
+import play.api.libs.functional.syntax.*
+import play.api.libs.json.*
 
 case class PackageType(code: String, description: String, `type`: PackingType) extends Selectable {
 
@@ -34,12 +35,16 @@ case class PackageType(code: String, description: String, `type`: PackingType) e
 
 object PackageType {
 
-  def reads(`type`: PackingType): Reads[PackageType] = (
-    (__ \ "code").read[String] and
-      (__ \ "description").read[String]
-  ).apply {
-    (code, description) =>
-      PackageType(code, description, `type`)
+  def reads(`type`: PackingType)(config: FrontendAppConfig): Reads[PackageType] = {
+    val (codeField, descriptionField) =
+      if (config.isPhase6Enabled) ("key", "value") else ("code", "description")
+
+    (
+      (__ \ codeField).read[String] and
+        (__ \ descriptionField).read[String]
+    )(
+      (code, description) => PackageType(code, description, `type`)
+    )
   }
 
   implicit val format: OFormat[PackageType] = Json.format[PackageType]
