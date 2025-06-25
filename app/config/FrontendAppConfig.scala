@@ -25,6 +25,8 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
 
   val appName: String = configuration.get[String]("appName")
 
+  val isPhase6Enabled: Boolean = configuration.get[Boolean]("feature-flags.phase-6-enabled")
+
   val enrolmentProxyUrl: String      = servicesConfig.fullServiceUrl("enrolment-store-proxy")
   val eccEnrolmentSplashPage: String = configuration.get[String]("urls.eccEnrolmentSplashPage")
   val enrolmentKey: String           = configuration.get[String]("enrolment.key")

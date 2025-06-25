@@ -17,26 +17,27 @@
 package models.reference
 
 import base.SpecBase
-import org.scalacheck.Gen
 import config.FrontendAppConfig
+import generators.Generators
+import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{Json, Reads}
 import play.api.test.Helpers.running
 
-class SupplyChainActorTypeSpec extends SpecBase with ScalaCheckPropertyChecks {
+class DocTypeExciseSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  "SupplyChainActorType" - {
+  "DocTypeExcise" - {
 
     "must serialise" in {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (code, description) =>
-          val supplyChainActorType = SupplyChainActorType(code, description)
-          Json.toJson(supplyChainActorType) mustEqual Json.parse(s"""
-                                                            |{
-                                                            |  "role": "$code",
-                                                            |  "description": "$description"
-                                                            |}
-                                                            |""".stripMargin)
+          val docTypeExcise = DocTypeExcise(code, description)
+          Json.toJson(docTypeExcise) mustEqual Json.parse(s"""
+              |{
+              |  "code": "$code",
+              |  "description": "$description"
+              |}
+              |""".stripMargin)
       }
     }
 
@@ -45,19 +46,19 @@ class SupplyChainActorTypeSpec extends SpecBase with ScalaCheckPropertyChecks {
         "when phase 5" in {
           running(_.configure("feature-flags.phase-6-enabled" -> false)) {
             app =>
-              val config                                      = app.injector.instanceOf[FrontendAppConfig]
-              implicit val reads: Reads[SupplyChainActorType] = SupplyChainActorType.reads(config)
+              val config                               = app.injector.instanceOf[FrontendAppConfig]
+              implicit val reads: Reads[DocTypeExcise] = DocTypeExcise.reads(config)
               forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
                 (code, description) =>
-                  val supplyChainActorType = SupplyChainActorType(code, description)
+                  val docTypeExcise = DocTypeExcise(code, description)
                   Json
                     .parse(s"""
                          |{
-                         |  "role": "$code",
+                         |  "code": "$code",
                          |  "description": "$description"
                          |}
                          |""".stripMargin)
-                    .as[SupplyChainActorType] mustBe supplyChainActorType
+                    .as[DocTypeExcise] mustEqual docTypeExcise
               }
           }
         }
@@ -65,11 +66,11 @@ class SupplyChainActorTypeSpec extends SpecBase with ScalaCheckPropertyChecks {
         "when phase 6" in {
           running(_.configure("feature-flags.phase-6-enabled" -> true)) {
             app =>
-              val config                                      = app.injector.instanceOf[FrontendAppConfig]
-              implicit val reads: Reads[SupplyChainActorType] = SupplyChainActorType.reads(config)
+              val config                               = app.injector.instanceOf[FrontendAppConfig]
+              implicit val reads: Reads[DocTypeExcise] = DocTypeExcise.reads(config)
               forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
                 (code, description) =>
-                  val supplyChainActorType = SupplyChainActorType(code, description)
+                  val docTypeExcise = DocTypeExcise(code, description)
                   Json
                     .parse(s"""
                          |{
@@ -77,38 +78,26 @@ class SupplyChainActorTypeSpec extends SpecBase with ScalaCheckPropertyChecks {
                          |  "value": "$description"
                          |}
                          |""".stripMargin)
-                    .as[SupplyChainActorType] mustEqual supplyChainActorType
+                    .as[DocTypeExcise] mustEqual docTypeExcise
               }
           }
         }
       }
+
       "when reading from mongo" in {
         forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
           (code, description) =>
-            val supplyChainActorType = SupplyChainActorType(code, description)
+            val docTypeExcise = DocTypeExcise(code, description)
             Json
               .parse(s"""
                    |{
-                   |  "role": "$code",
+                   |  "code": "$code",
                    |  "description": "$description"
                    |}
                    |""".stripMargin)
-              .as[SupplyChainActorType] mustEqual supplyChainActorType
+              .as[DocTypeExcise] mustEqual docTypeExcise
         }
       }
-    }
-
-    "must format as string" in {
-      forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-        (code, description) =>
-          val supplyChainActorType = SupplyChainActorType(code, description)
-          supplyChainActorType.toString mustEqual s"$description"
-      }
-    }
-
-    "when description contains raw HTML" in {
-      val supplyChainActorType = SupplyChainActorType("3", "one &amp; two")
-      supplyChainActorType.toString mustEqual "one & two"
     }
   }
 

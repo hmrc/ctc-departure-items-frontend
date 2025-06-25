@@ -19,9 +19,11 @@ package models.reference
 import org.scalacheck.Gen
 import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
+import config.FrontendAppConfig
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, Reads}
+import play.api.test.Helpers.running
 
 class TransportChargesMethodOfPaymentSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
 
@@ -31,7 +33,7 @@ class TransportChargesMethodOfPaymentSpec extends AnyFreeSpec with Matchers with
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (method, description) =>
           val methodOfPayment = TransportChargesMethodOfPayment(method, description)
-          Json.toJson(methodOfPayment) mustBe Json.parse(s"""
+          Json.toJson(methodOfPayment) mustEqual Json.parse(s"""
                |{
                |  "method": "$method",
                |  "description": "$description"
@@ -40,18 +42,61 @@ class TransportChargesMethodOfPaymentSpec extends AnyFreeSpec with Matchers with
       }
     }
 
-    "must deserialise" in {
-      forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-        (method, description) =>
-          val methodOfPayment = TransportChargesMethodOfPayment(method, description)
-          Json
-            .parse(s"""
-                 |{
-                 |  "method": "$method",
-                 |  "description": "$description"
-                 |}
-                 |""".stripMargin)
-            .as[TransportChargesMethodOfPayment] mustBe methodOfPayment
+    "must deserialise" - {
+      "when reading from reference data" - {
+        "when phase 5" in {
+          running(_.configure("feature-flags.phase-6-enabled" -> false)) {
+            app =>
+              val config                                                 = app.injector.instanceOf[FrontendAppConfig]
+              implicit val reads: Reads[TransportChargesMethodOfPayment] = TransportChargesMethodOfPayment.reads(config)
+              forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+                (method, description) =>
+                  val methodOfPayment = TransportChargesMethodOfPayment(method, description)
+                  Json
+                    .parse(s"""
+                         |{
+                         |  "method": "$method",
+                         |  "description": "$description"
+                         |}
+                         |""".stripMargin)
+                    .as[TransportChargesMethodOfPayment] mustBe methodOfPayment
+              }
+          }
+        }
+
+        "when phase 6" in {
+          running(_.configure("feature-flags.phase-6-enabled" -> true)) {
+            app =>
+              val config                                                 = app.injector.instanceOf[FrontendAppConfig]
+              implicit val reads: Reads[TransportChargesMethodOfPayment] = TransportChargesMethodOfPayment.reads(config)
+              forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+                (method, description) =>
+                  val methodOfPayment = TransportChargesMethodOfPayment(method, description)
+                  Json
+                    .parse(s"""
+                         |{
+                         |  "key": "$method",
+                         |  "value": "$description"
+                         |}
+                         |""".stripMargin)
+                    .as[TransportChargesMethodOfPayment] mustBe methodOfPayment
+              }
+          }
+        }
+      }
+      "when reading from mongo" in {
+        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+          (method, description) =>
+            val methodOfPayment = TransportChargesMethodOfPayment(method, description)
+            Json
+              .parse(s"""
+                   |{
+                   |  "method": "$method",
+                   |  "description": "$description"
+                   |}
+                   |""".stripMargin)
+              .as[TransportChargesMethodOfPayment] mustBe methodOfPayment
+        }
       }
     }
 
@@ -59,7 +104,7 @@ class TransportChargesMethodOfPaymentSpec extends AnyFreeSpec with Matchers with
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (method, description) =>
           val methodOfPayment = TransportChargesMethodOfPayment(method, description)
-          methodOfPayment.toString mustBe description
+          methodOfPayment.toString mustEqual description
       }
     }
   }

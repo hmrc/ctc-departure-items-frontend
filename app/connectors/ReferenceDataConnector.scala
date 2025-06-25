@@ -39,86 +39,100 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   private def get[T](url: URL)(implicit ec: ExecutionContext, hc: HeaderCarrier, reads: HttpReads[Responses[T]]): Future[Responses[T]] =
     http
       .get(url)
-      .setHeader(HeaderNames.Accept -> "application/vnd.hmrc.1.0+json")
+      .setHeader(HeaderNames.Accept -> {
+        val version = if (config.isPhase6Enabled) "2.0" else "1.0"
+        s"application/vnd.hmrc.$version+json"
+      })
       .execute[Responses[T]]
 
   private def getOne[T](url: URL)(implicit ec: ExecutionContext, hc: HeaderCarrier, reads: HttpReads[Responses[T]]): Future[Response[T]] =
     get[T](url).map(_.map(_.head))
 
   def getCountries()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[Country]] = {
-    val url = url"${config.referenceDataUrl}/lists/CountryCodesFullList"
+    implicit val reads: Reads[Country] = Country.reads(config)
+    val url                            = url"${config.referenceDataUrl}/lists/CountryCodesFullList"
     get[Country](url)
   }
 
   def getCountryCodesForAddress()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[Country]] = {
-    val url = url"${config.referenceDataUrl}/lists/CountryCodesForAddress"
+    implicit val reads: Reads[Country] = Country.reads(config)
+    val url                            = url"${config.referenceDataUrl}/lists/CountryCodesForAddress"
     get[Country](url)
   }
 
   def getCountryCodeCommonTransit(country: Country)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Response[Country]] = {
-    val queryParameters = Seq("data.code" -> country.code.code)
-    val url             = url"${config.referenceDataUrl}/lists/CountryCodesCommonTransit?$queryParameters"
+    val queryParameters                = Country.queryParams(country.code.code)(config)
+    implicit val reads: Reads[Country] = Country.reads(config)
+    val url                            = url"${config.referenceDataUrl}/lists/CountryCodesCommonTransit?$queryParameters"
     getOne[Country](url)
   }
 
   def getCountriesWithoutZipCountry(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Response[CountryCode]] = {
-    val queryParameters = Seq("data.code" -> code)
-    val url             = url"${config.referenceDataUrl}/lists/CountryWithoutZip?$queryParameters"
+    val queryParameters                    = CountryCode.queryParams(code)(config)
+    implicit val reads: Reads[CountryCode] = CountryCode.reads(config)
+    val url                                = url"${config.referenceDataUrl}/lists/CountryWithoutZip?$queryParameters"
     getOne[CountryCode](url)
   }
 
   def getPackageTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[PackageType]] = {
     val url                                = url"${config.referenceDataUrl}/lists/KindOfPackages"
-    implicit val reads: Reads[PackageType] = PackageType.reads(Other)
+    implicit val reads: Reads[PackageType] = PackageType.reads(Other)(config)
     get[PackageType](url)
   }
 
   def getPackageTypesBulk()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[PackageType]] = {
     val url                                = url"${config.referenceDataUrl}/lists/KindOfPackagesBulk"
-    implicit val reads: Reads[PackageType] = PackageType.reads(Bulk)
+    implicit val reads: Reads[PackageType] = PackageType.reads(Bulk)(config)
     get[PackageType](url)
   }
 
   def getPackageTypesUnpacked()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[PackageType]] = {
     val url                                = url"${config.referenceDataUrl}/lists/KindOfPackagesUnpacked"
-    implicit val reads: Reads[PackageType] = PackageType.reads(Unpacked)
+    implicit val reads: Reads[PackageType] = PackageType.reads(Unpacked)(config)
     get[PackageType](url)
   }
 
   def getAdditionalReferences()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[AdditionalReference]] = {
-    val url = url"${config.referenceDataUrl}/lists/AdditionalReference"
+    val url                                        = url"${config.referenceDataUrl}/lists/AdditionalReference"
+    implicit val reads: Reads[AdditionalReference] = AdditionalReference.reads(config)
     get[AdditionalReference](url)
   }
 
   def getDocumentTypeExcise(docType: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Response[DocTypeExcise]] = {
-    val queryParameters = Seq("data.code" -> docType)
-    val url             = url"${config.referenceDataUrl}/lists/DocumentTypeExcise?$queryParameters"
+    val queryParameters                      = DocTypeExcise.queryParams(docType)(config)
+    implicit val reads: Reads[DocTypeExcise] = DocTypeExcise.reads(config)
+    val url                                  = url"${config.referenceDataUrl}/lists/DocumentTypeExcise?$queryParameters"
     getOne[DocTypeExcise](url)
   }
 
   def getCUSCode(cusCode: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Response[CUSCode]] = {
-    val queryParameters = Seq("data.code" -> cusCode)
-    val url             = url"${config.referenceDataUrl}/lists/CUSCode?$queryParameters"
+    val queryParameters                = CUSCode.queryParams(cusCode)(config)
+    implicit val reads: Reads[CUSCode] = CUSCode.reads(config)
+    val url                            = url"${config.referenceDataUrl}/lists/CUSCode?$queryParameters"
     getOne[CUSCode](url)
   }
 
   def getAdditionalInformationTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[AdditionalInformation]] = {
-    val url = url"${config.referenceDataUrl}/lists/AdditionalInformation"
+    val url                                          = url"${config.referenceDataUrl}/lists/AdditionalInformation"
+    implicit val reads: Reads[AdditionalInformation] = AdditionalInformation.reads(config)
     get[AdditionalInformation](url)
   }
 
   def getTransportChargesMethodOfPaymentTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[TransportChargesMethodOfPayment]] = {
-    val url = url"${config.referenceDataUrl}/lists/TransportChargesMethodOfPayment"
+    val url                                                    = url"${config.referenceDataUrl}/lists/TransportChargesMethodOfPayment"
+    implicit val reads: Reads[TransportChargesMethodOfPayment] = TransportChargesMethodOfPayment.reads(config)
     get[TransportChargesMethodOfPayment](url)
   }
 
   def getDeclarationTypeItemLevel()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[DeclarationTypeItemLevel]] = {
-    val url = url"${config.referenceDataUrl}/lists/DeclarationTypeItemLevel"
+    val url                                             = url"${config.referenceDataUrl}/lists/DeclarationTypeItemLevel"
+    implicit val reads: Reads[DeclarationTypeItemLevel] = DeclarationTypeItemLevel.reads(config)
     get[DeclarationTypeItemLevel](url)
   }
 
   def getSupplyChainActorTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[SupplyChainActorType]] = {
-    val url = url"${config.referenceDataUrl}/lists/AdditionalSupplyChainActorRoleCode"
+    val url                                         = url"${config.referenceDataUrl}/lists/AdditionalSupplyChainActorRoleCode"
+    implicit val reads: Reads[SupplyChainActorType] = SupplyChainActorType.reads(config)
     get[SupplyChainActorType](url)
   }
 
@@ -126,7 +140,8 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     (_: String, url: String, response: HttpResponse) =>
       response.status match {
         case OK =>
-          (response.json \ "data").validate[List[A]] match {
+          val json = if (config.isPhase6Enabled) response.json else response.json \ "data"
+          json.validate[List[A]] match {
             case JsSuccess(Nil, _) =>
               Left(NoReferenceDataFoundException(url))
             case JsSuccess(head :: tail, _) =>

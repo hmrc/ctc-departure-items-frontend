@@ -18,9 +18,11 @@ package models.reference
 
 import base.SpecBase
 import org.scalacheck.Arbitrary.arbitrary
+import config.FrontendAppConfig
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, Reads}
+import play.api.test.Helpers.running
 import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
 class AdditionalReferenceSpec extends SpecBase with ScalaCheckPropertyChecks {
@@ -31,7 +33,7 @@ class AdditionalReferenceSpec extends SpecBase with ScalaCheckPropertyChecks {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (documentType, description) =>
           val additionalReference = AdditionalReference(documentType, description)
-          Json.toJson(additionalReference) mustBe Json.parse(s"""
+          Json.toJson(additionalReference) mustEqual Json.parse(s"""
               |{
               |  "documentType": "$documentType",
               |  "description": "$description"
@@ -40,18 +42,63 @@ class AdditionalReferenceSpec extends SpecBase with ScalaCheckPropertyChecks {
       }
     }
 
-    "must deserialise" in {
-      forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-        (documentType, description) =>
-          val additionalReference = AdditionalReference(documentType, description)
-          Json
-            .parse(s"""
-              |{
-              |  "documentType": "$documentType",
-              |  "description": "$description"
-              |}
-              |""".stripMargin)
-            .as[AdditionalReference] mustBe additionalReference
+    "must deserialise" - {
+      "when reading from reference data" - {
+        "when phase 5" in {
+          running(_.configure("feature-flags.phase-6-enabled" -> false)) {
+            app =>
+              val config                                     = app.injector.instanceOf[FrontendAppConfig]
+              implicit val reads: Reads[AdditionalReference] = AdditionalReference.reads(config)
+
+              forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+                (documentType, description) =>
+                  val additionalReference = AdditionalReference(documentType, description)
+                  Json
+                    .parse(s"""
+                         |{
+                         |  "documentType": "$documentType",
+                         |  "description": "$description"
+                         |}
+                         |""".stripMargin)
+                    .as[AdditionalReference] mustEqual additionalReference
+              }
+          }
+        }
+
+        "when phase 6" in {
+          running(_.configure("feature-flags.phase-6-enabled" -> true)) {
+            app =>
+              val config                                     = app.injector.instanceOf[FrontendAppConfig]
+              implicit val reads: Reads[AdditionalReference] = AdditionalReference.reads(config)
+
+              forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+                (documentType, description) =>
+                  val additionalReference = AdditionalReference(documentType, description)
+                  Json
+                    .parse(s"""
+                         |{
+                         |  "key": "$documentType",
+                         |  "value": "$description"
+                         |}
+                         |""".stripMargin)
+                    .as[AdditionalReference] mustEqual additionalReference
+              }
+          }
+        }
+      }
+      "when reading from mongo" in {
+        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+          (documentType, description) =>
+            val additionalReference = AdditionalReference(documentType, description)
+            Json
+              .parse(s"""
+                   |{
+                   |  "documentType": "$documentType",
+                   |  "description": "$description"
+                   |}
+                   |""".stripMargin)
+              .as[AdditionalReference] mustEqual additionalReference
+        }
       }
     }
 
@@ -59,7 +106,7 @@ class AdditionalReferenceSpec extends SpecBase with ScalaCheckPropertyChecks {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr, arbitrary[Boolean]) {
         (documentType, description, selected) =>
           val additionalReference = AdditionalReference(documentType, description)
-          additionalReference.toSelectItem(selected) mustBe SelectItem(Some(documentType), s"($documentType) $description", selected)
+          additionalReference.toSelectItem(selected) mustEqual SelectItem(Some(documentType), s"($documentType) $description", selected)
       }
     }
 
@@ -67,7 +114,7 @@ class AdditionalReferenceSpec extends SpecBase with ScalaCheckPropertyChecks {
       forAll(Gen.alphaNumStr) {
         description =>
           val additionalReference = AdditionalReference("documentType", description)
-          additionalReference.toString mustBe s"(documentType) $description"
+          additionalReference.toString mustEqual s"(documentType) $description"
       }
     }
   }

@@ -17,8 +17,8 @@
 package models.reference
 
 import base.SpecBase
-import generators.Generators
 import config.FrontendAppConfig
+import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -26,18 +26,17 @@ import play.api.libs.json.{Json, Reads}
 import play.api.test.Helpers.running
 import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
-class CountrySpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class CUSCodeSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  "Country" - {
+  "CUSCode" - {
 
     "must serialise" in {
-      forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-        (code, description) =>
-          val country = Country(CountryCode(code), description)
-          Json.toJson(country) mustEqual Json.parse(s"""
+      forAll(Gen.alphaNumStr) {
+        code =>
+          val cusCode = CUSCode(code)
+          Json.toJson(cusCode) mustEqual Json.parse(s"""
               |{
-              |  "code": "$code",
-              |  "description": "$description"
+              |  "code": "$code"
               |}
               |""".stripMargin)
       }
@@ -49,18 +48,17 @@ class CountrySpec extends SpecBase with ScalaCheckPropertyChecks with Generators
           running(_.configure("feature-flags.phase-6-enabled" -> false)) {
             app =>
               val config                         = app.injector.instanceOf[FrontendAppConfig]
-              implicit val reads: Reads[Country] = Country.reads(config)
-              forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-                (code, description) =>
-                  val country = Country(CountryCode(code), description)
+              implicit val reads: Reads[CUSCode] = CUSCode.reads(config)
+              forAll(Gen.alphaNumStr) {
+                code =>
+                  val cusCode = CUSCode(code)
                   Json
                     .parse(s"""
                          |{
-                         |  "code": "$code",
-                         |  "description": "$description"
+                         |  "code": "$code"
                          |}
                          |""".stripMargin)
-                    .as[Country] mustEqual country
+                    .as[CUSCode] mustEqual cusCode
               }
           }
         }
@@ -69,50 +67,48 @@ class CountrySpec extends SpecBase with ScalaCheckPropertyChecks with Generators
           running(_.configure("feature-flags.phase-6-enabled" -> true)) {
             app =>
               val config                         = app.injector.instanceOf[FrontendAppConfig]
-              implicit val reads: Reads[Country] = Country.reads(config)
-              forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-                (code, description) =>
-                  val country = Country(CountryCode(code), description)
+              implicit val reads: Reads[CUSCode] = CUSCode.reads(config)
+              forAll(Gen.alphaNumStr) {
+                code =>
+                  val cusCode = CUSCode(code)
                   Json
                     .parse(s"""
                          |{
-                         |  "key": "$code",
-                         |  "value": "$description"
+                         |  "key": "$code"
                          |}
                          |""".stripMargin)
-                    .as[Country] mustEqual country
+                    .as[CUSCode] mustEqual cusCode
               }
           }
         }
       }
 
       "when reading from mongo" in {
-        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-          (code, description) =>
-            val country = Country(CountryCode(code), description)
+        forAll(Gen.alphaNumStr) {
+          code =>
+            val cusCode = CUSCode(code)
             Json
               .parse(s"""
                    |{
-                   |  "code": "$code",
-                   |  "description": "$description"
+                   |  "code": "$code"
                    |}
                    |""".stripMargin)
-              .as[Country] mustEqual country
+              .as[CUSCode] mustEqual cusCode
         }
       }
     }
 
     "must convert to select item" in {
-      forAll(arbitrary[Country], arbitrary[Boolean]) {
-        (country, selected) =>
-          country.toSelectItem(selected) mustEqual SelectItem(Some(country.code.code), s"${country.description} - ${country.code.code}", selected)
+      forAll(arbitrary[CUSCode], arbitrary[Boolean]) {
+        (cusCode, selected) =>
+          cusCode.toSelectItem(selected) mustEqual SelectItem(Some(cusCode.code), cusCode.code, selected)
       }
     }
 
     "must format as string" in {
-      forAll(arbitrary[Country]) {
-        country =>
-          country.toString mustEqual s"${country.description} - ${country.code.code}"
+      forAll(arbitrary[CUSCode]) {
+        cusCode =>
+          cusCode.toString mustEqual cusCode.code
       }
     }
   }

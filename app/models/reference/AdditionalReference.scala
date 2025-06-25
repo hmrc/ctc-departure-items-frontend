@@ -17,8 +17,10 @@
 package models.reference
 
 import cats.Order
+import config.FrontendAppConfig
 import models.Selectable
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.functional.syntax.*
+import play.api.libs.json.{__, Json, OFormat, Reads}
 
 case class AdditionalReference(documentType: String, description: String) extends Selectable {
 
@@ -28,6 +30,17 @@ case class AdditionalReference(documentType: String, description: String) extend
 }
 
 object AdditionalReference {
+
+  def reads(config: FrontendAppConfig): Reads[AdditionalReference] =
+    if (config.isPhase6Enabled) {
+      (
+        (__ \ "key").read[String] and
+          (__ \ "value").read[String]
+      )(AdditionalReference.apply)
+    } else {
+      Json.reads[AdditionalReference]
+    }
+
   implicit val format: OFormat[AdditionalReference] = Json.format[AdditionalReference]
 
   implicit val order: Order[AdditionalReference] = (x: AdditionalReference, y: AdditionalReference) => (x, y).compareBy(_.description, _.documentType)

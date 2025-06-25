@@ -135,6 +135,13 @@ trait ModelGenerators {
       } yield Country(code, name)
     }
 
+  implicit lazy val arbitraryCUSCode: Arbitrary[CUSCode] =
+    Arbitrary {
+      for {
+        code <- nonEmptyString
+      } yield CUSCode(code)
+    }
+
   implicit lazy val arbitraryDocument: Arbitrary[Document] =
     Arbitrary {
       for {

@@ -14,29 +14,29 @@
  * limitations under the License.
  */
 
-package models.reference
+package models
 
 import base.SpecBase
-import org.scalacheck.Gen
 import config.FrontendAppConfig
+import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{Json, Reads}
 import play.api.test.Helpers.running
 
-class SupplyChainActorTypeSpec extends SpecBase with ScalaCheckPropertyChecks {
+class DeclarationTypeItemLevelSpec extends SpecBase with ScalaCheckPropertyChecks {
 
-  "SupplyChainActorType" - {
+  "DeclarationTypeItemLevel" - {
 
     "must serialise" in {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (code, description) =>
-          val supplyChainActorType = SupplyChainActorType(code, description)
-          Json.toJson(supplyChainActorType) mustEqual Json.parse(s"""
-                                                            |{
-                                                            |  "role": "$code",
-                                                            |  "description": "$description"
-                                                            |}
-                                                            |""".stripMargin)
+          val declarationTypeItemLevel = DeclarationTypeItemLevel(code, description)
+          Json.toJson(declarationTypeItemLevel) mustEqual Json.parse(s"""
+              |{
+              |  "code": "$code",
+              |  "description": "$description"
+              |}
+              |""".stripMargin)
       }
     }
 
@@ -45,19 +45,20 @@ class SupplyChainActorTypeSpec extends SpecBase with ScalaCheckPropertyChecks {
         "when phase 5" in {
           running(_.configure("feature-flags.phase-6-enabled" -> false)) {
             app =>
-              val config                                      = app.injector.instanceOf[FrontendAppConfig]
-              implicit val reads: Reads[SupplyChainActorType] = SupplyChainActorType.reads(config)
+              val config                                          = app.injector.instanceOf[FrontendAppConfig]
+              implicit val reads: Reads[DeclarationTypeItemLevel] = DeclarationTypeItemLevel.reads(config)
+
               forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
                 (code, description) =>
-                  val supplyChainActorType = SupplyChainActorType(code, description)
+                  val declarationTypeItemLevel = DeclarationTypeItemLevel(code, description)
                   Json
                     .parse(s"""
                          |{
-                         |  "role": "$code",
+                         |  "code": "$code",
                          |  "description": "$description"
                          |}
                          |""".stripMargin)
-                    .as[SupplyChainActorType] mustBe supplyChainActorType
+                    .as[DeclarationTypeItemLevel] mustEqual declarationTypeItemLevel
               }
           }
         }
@@ -65,11 +66,12 @@ class SupplyChainActorTypeSpec extends SpecBase with ScalaCheckPropertyChecks {
         "when phase 6" in {
           running(_.configure("feature-flags.phase-6-enabled" -> true)) {
             app =>
-              val config                                      = app.injector.instanceOf[FrontendAppConfig]
-              implicit val reads: Reads[SupplyChainActorType] = SupplyChainActorType.reads(config)
+              val config                                          = app.injector.instanceOf[FrontendAppConfig]
+              implicit val reads: Reads[DeclarationTypeItemLevel] = DeclarationTypeItemLevel.reads(config)
+
               forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
                 (code, description) =>
-                  val supplyChainActorType = SupplyChainActorType(code, description)
+                  val declarationTypeItemLevel = DeclarationTypeItemLevel(code, description)
                   Json
                     .parse(s"""
                          |{
@@ -77,7 +79,7 @@ class SupplyChainActorTypeSpec extends SpecBase with ScalaCheckPropertyChecks {
                          |  "value": "$description"
                          |}
                          |""".stripMargin)
-                    .as[SupplyChainActorType] mustEqual supplyChainActorType
+                    .as[DeclarationTypeItemLevel] mustEqual declarationTypeItemLevel
               }
           }
         }
@@ -85,30 +87,25 @@ class SupplyChainActorTypeSpec extends SpecBase with ScalaCheckPropertyChecks {
       "when reading from mongo" in {
         forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
           (code, description) =>
-            val supplyChainActorType = SupplyChainActorType(code, description)
+            val declarationTypeItemLevel = DeclarationTypeItemLevel(code, description)
             Json
               .parse(s"""
                    |{
-                   |  "role": "$code",
+                   |  "code": "$code",
                    |  "description": "$description"
                    |}
                    |""".stripMargin)
-              .as[SupplyChainActorType] mustEqual supplyChainActorType
+              .as[DeclarationTypeItemLevel] mustEqual declarationTypeItemLevel
         }
       }
     }
 
     "must format as string" in {
-      forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-        (code, description) =>
-          val supplyChainActorType = SupplyChainActorType(code, description)
-          supplyChainActorType.toString mustEqual s"$description"
+      forAll(Gen.alphaNumStr) {
+        description =>
+          val declarationTypeItemLevel = DeclarationTypeItemLevel("code", description)
+          declarationTypeItemLevel.toString mustEqual s"code - $description"
       }
-    }
-
-    "when description contains raw HTML" in {
-      val supplyChainActorType = SupplyChainActorType("3", "one &amp; two")
-      supplyChainActorType.toString mustEqual "one & two"
     }
   }
 
