@@ -18,7 +18,6 @@ package models
 
 import cats.Order
 import config.FrontendAppConfig
-import models.{DeclarationTypeItemLevel, DynamicEnumerableType, Radioable}
 import play.api.libs.functional.syntax.*
 import play.api.libs.json.{__, Format, Json, Reads}
 
