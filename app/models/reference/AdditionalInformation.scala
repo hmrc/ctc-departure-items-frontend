@@ -17,8 +17,10 @@
 package models.reference
 
 import cats.Order
+import config.FrontendAppConfig
 import models.Selectable
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.functional.syntax.*
+import play.api.libs.json.{__, Json, OFormat, Reads}
 
 case class AdditionalInformation(code: String, description: String) extends Selectable {
 
@@ -28,6 +30,17 @@ case class AdditionalInformation(code: String, description: String) extends Sele
 }
 
 object AdditionalInformation {
+
+  def reads(config: FrontendAppConfig): Reads[AdditionalInformation] =
+    if (config.isPhase6Enabled) {
+      (
+        (__ \ "key").read[String] and
+          (__ \ "value").read[String]
+      )(AdditionalInformation.apply)
+    } else {
+      Json.reads[AdditionalInformation]
+    }
+
   implicit val format: OFormat[AdditionalInformation] = Json.format[AdditionalInformation]
 
   implicit val order: Order[AdditionalInformation] = (x: AdditionalInformation, y: AdditionalInformation) => (x, y).compareBy(_.description, _.code)
