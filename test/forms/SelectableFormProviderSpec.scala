@@ -64,7 +64,7 @@ class SelectableFormProviderSpec extends StringFieldBehaviours with Generators {
     "bind a value which is in the list" in {
       val boundForm = form.bind(Map(fieldName -> country1.value))
       val field     = boundForm(fieldName)
-      field.errors must be(empty)
+      field.errors mustBe empty
     }
   }
 }

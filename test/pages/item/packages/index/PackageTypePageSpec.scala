@@ -104,8 +104,8 @@ class PackageTypePageSpec extends PageBehaviours {
 
                 val result = userAnswers.setValue(PackageTypePage(itemIndex, packageIndex), value)
 
-                result.get(NumberOfPackagesPage(itemIndex, packageIndex)) must be(defined)
-                result.get(ShippingMarkPage(itemIndex, packageIndex)) must be(defined)
+                result.get(NumberOfPackagesPage(itemIndex, packageIndex)) mustBe defined
+                result.get(ShippingMarkPage(itemIndex, packageIndex)) mustBe defined
             }
           }
 
@@ -119,7 +119,7 @@ class PackageTypePageSpec extends PageBehaviours {
 
                 val result = userAnswers.setValue(PackageTypePage(itemIndex, packageIndex), value)
 
-                result.get(ShippingMarkPage(itemIndex, packageIndex)) must be(defined)
+                result.get(ShippingMarkPage(itemIndex, packageIndex)) mustBe defined
             }
           }
 
@@ -132,7 +132,7 @@ class PackageTypePageSpec extends PageBehaviours {
 
                 val result = userAnswers.setValue(PackageTypePage(itemIndex, packageIndex), value)
 
-                result.get(ShippingMarkPage(itemIndex, packageIndex)) must be(defined)
+                result.get(ShippingMarkPage(itemIndex, packageIndex)) mustBe defined
             }
           }
         }

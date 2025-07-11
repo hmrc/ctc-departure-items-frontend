@@ -35,11 +35,11 @@ class AddAnotherAdditionalInformationViewModelSpec extends SpecBase with Generat
 
           val result = new AddAnotherAdditionalInformationViewModelProvider()(userAnswers, mode, itemIndex)
 
-          result.listItems.length mustBe 1
-          result.title mustBe "You have added 1 additional information"
-          result.heading mustBe "You have added 1 additional information"
-          result.legend mustBe "Do you want to add any more additional information?"
-          result.maxLimitLabel mustBe "You cannot add any more additional information. To add another, you need to remove one first."
+          result.listItems.length mustEqual 1
+          result.title mustEqual "You have added 1 additional information"
+          result.heading mustEqual "You have added 1 additional information"
+          result.legend mustEqual "Do you want to add any more additional information?"
+          result.maxLimitLabel mustEqual "You cannot add any more additional information. To add another, you need to remove one first."
       }
     }
 
@@ -54,11 +54,11 @@ class AddAnotherAdditionalInformationViewModelSpec extends SpecBase with Generat
           }
 
           val result = new AddAnotherAdditionalInformationViewModelProvider()(userAnswers, mode, itemIndex)
-          result.listItems.length mustBe additionalInformationList
-          result.title mustBe s"You have added ${formatter.format(additionalInformationList)} additional information"
-          result.heading mustBe s"You have added ${formatter.format(additionalInformationList)} additional information"
-          result.legend mustBe "Do you want to add any more additional information?"
-          result.maxLimitLabel mustBe "You cannot add any more additional information. To add another, you need to remove one first."
+          result.listItems.length mustEqual additionalInformationList
+          result.title mustEqual s"You have added ${formatter.format(additionalInformationList)} additional information"
+          result.heading mustEqual s"You have added ${formatter.format(additionalInformationList)} additional information"
+          result.legend mustEqual "Do you want to add any more additional information?"
+          result.maxLimitLabel mustEqual "You cannot add any more additional information. To add another, you need to remove one first."
       }
     }
   }

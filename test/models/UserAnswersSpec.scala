@@ -58,12 +58,12 @@ class UserAnswersSpec extends SpecBase with ScalaCheckPropertyChecks with Genera
 
       "read correctly" in {
         val result = json.as[UserAnswers]
-        result mustBe userAnswers
+        result mustEqual userAnswers
       }
 
       "write correctly" in {
         val result = Json.toJson(userAnswers)
-        result mustBe json
+        result mustEqual json
       }
 
     }
@@ -84,7 +84,7 @@ class UserAnswersSpec extends SpecBase with ScalaCheckPropertyChecks with Genera
 
               val expectedResult = userAnswers
 
-              result mustBe expectedResult
+              result mustEqual expectedResult
             }
           }
 
@@ -129,7 +129,7 @@ class UserAnswersSpec extends SpecBase with ScalaCheckPropertyChecks with Genera
                   |}
                   |""".stripMargin)
 
-              result.data mustBe expectedData
+              result.data mustEqual expectedData
             }
           }
         }
@@ -142,7 +142,7 @@ class UserAnswersSpec extends SpecBase with ScalaCheckPropertyChecks with Genera
 
             val expectedResult = userAnswers
 
-            result mustBe expectedResult
+            result mustEqual expectedResult
           }
         }
       }
@@ -165,7 +165,7 @@ class UserAnswersSpec extends SpecBase with ScalaCheckPropertyChecks with Genera
 
           val expectedResult = userAnswers
 
-          result mustBe expectedResult
+          result mustEqual expectedResult
         }
       }
     }

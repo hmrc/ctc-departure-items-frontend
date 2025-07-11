@@ -41,7 +41,7 @@ class SupplyChainActorsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
               val userAnswers = emptyUserAnswers
 
               val helper = new SupplyChainActorsAnswersHelper(userAnswers, mode, itemIndex)
-              helper.listItems mustBe Nil
+              helper.listItems mustEqual Nil
           }
         }
       }
@@ -58,7 +58,7 @@ class SupplyChainActorsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
                 .setValue(IdentificationNumberPage(itemIndex, Index(1)), actorId)
 
               val helper = new SupplyChainActorsAnswersHelper(userAnswers, mode, itemIndex)
-              helper.listItems mustBe Seq(
+              helper.listItems mustEqual Seq(
                 Right(
                   ListItem(
                     name = s"${actorRole.toString} - $actorId",
@@ -87,7 +87,7 @@ class SupplyChainActorsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
               .setValue(SupplyChainActorTypePage(itemIndex, Index(0)), actorRole)
 
             val helper = new SupplyChainActorsAnswersHelper(userAnswers, mode, itemIndex)
-            helper.listItems mustBe Seq(
+            helper.listItems mustEqual Seq(
               Left(
                 ListItem(
                   name = s"${actorRole.toString}",

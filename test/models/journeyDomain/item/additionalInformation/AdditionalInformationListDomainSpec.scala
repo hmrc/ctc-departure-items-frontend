@@ -37,8 +37,8 @@ class AdditionalInformationListDomainSpec extends SpecBase with Generators {
 
       val result = AdditionalInformationListDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
 
-      result.value.value.value.length mustBe numberOfAdditionalInformation
-      result.value.pages.last mustBe AddAnotherAdditionalInformationPage(itemIndex)
+      result.value.value.value.length mustEqual numberOfAdditionalInformation
+      result.value.pages.last mustEqual AddAnotherAdditionalInformationPage(itemIndex)
     }
   }
 }

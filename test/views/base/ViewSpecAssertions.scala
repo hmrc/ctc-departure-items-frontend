@@ -43,19 +43,19 @@ trait ViewSpecAssertions extends ViewSpecGetters {
   }
 
   def assertElementContainsText(element: Element, expectedText: String): Assertion =
-    element.text() mustBe expectedText
+    element.text() mustEqual expectedText
 
   def assertElementIncludesText(element: Element, expectedText: String): Assertion =
     element.text() must include(expectedText)
 
   def assertElementContainsHref(element: Element, expectedHref: String): Assertion =
-    getElementHref(element) mustBe expectedHref
+    getElementHref(element) mustEqual expectedHref
 
   def assertElementHasClass(element: Element, className: String): Assertion =
     assert(element.hasClass(className))
 
   def assertElementContainsId(element: Element, expectedId: String): Assertion =
-    element.id() mustBe expectedId
+    element.id() mustEqual expectedId
 
   def assertElementExists(elements: Elements, condition: Element => Boolean): Assertion =
     assert(elements.asScala.exists(condition))
@@ -68,12 +68,12 @@ trait ViewSpecAssertions extends ViewSpecGetters {
 
   def assertPageHasSignOutLink(doc: Document, expectedText: String, expectedHref: String): Assertion = {
     val link = doc.getElementsByClass("hmrc-sign-out-nav__link").first()
-    link.text() mustBe expectedText
-    link.attr("href") mustBe expectedHref
+    link.text() mustEqual expectedText
+    link.attr("href") mustEqual expectedHref
   }
 
   def assertPageHasNoSignOutLink(doc: Document): Assertion =
-    doc.getElementsByClass("hmrc-sign-out-nav__link").isEmpty mustBe true
+    doc.getElementsByClass("hmrc-sign-out-nav__link").isEmpty mustEqual true
 
   def assertRenderedByClass(doc: Document, className: String): Assertion =
     assert(!doc.getElementsByClass(className).isEmpty, "\n\nElement with class " + className + " was not rendered on the page.\n")

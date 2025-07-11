@@ -66,7 +66,7 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler {
 
         val result: UserAnswersResponse = await(connector.get(lrn))
 
-        result mustBe UserAnswersResponse.Answers(userAnswers)
+        result mustEqual UserAnswersResponse.Answers(userAnswers)
       }
 
       "return NoAnswers when no cached data found for provided LRN" in {
@@ -77,7 +77,7 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler {
 
         val result: UserAnswersResponse = await(connector.get(lrn))
 
-        result mustBe UserAnswersResponse.NoAnswers
+        result mustEqual UserAnswersResponse.NoAnswers
       }
 
       "return BadRequest when http status indicates" in {
@@ -88,7 +88,7 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler {
 
         val result: UserAnswersResponse = await(connector.get(lrn))
 
-        result mustBe UserAnswersResponse.BadRequest
+        result mustEqual UserAnswersResponse.BadRequest
       }
 
       "return failed future when response have an unexpected status" in {
@@ -115,7 +115,7 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler {
 
         val result: Boolean = await(connector.post(userAnswers))
 
-        result mustBe true
+        result mustEqual true
       }
 
       "return false for 4xx or 5xx response" in {
@@ -128,7 +128,7 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler {
 
             val result: Boolean = await(connector.post(userAnswers))
 
-            result mustBe false
+            result mustEqual false
         }
       }
     }
@@ -142,7 +142,7 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler {
 
         val result: LockCheck = await(connector.checkLock(userAnswers))
 
-        result mustBe LockCheck.Unlocked
+        result mustEqual LockCheck.Unlocked
       }
 
       "must return Locked when status is Locked (423)" in {
@@ -150,7 +150,7 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler {
 
         val result: LockCheck = await(connector.checkLock(userAnswers))
 
-        result mustBe LockCheck.Locked
+        result mustEqual LockCheck.Locked
       }
 
       "return LockCheckFailure for other 4xx/5xx responses" in {
@@ -161,7 +161,7 @@ class CacheConnectorSpec extends ItSpecBase with WireMockServerHandler {
 
             val result: LockCheck = await(connector.checkLock(userAnswers))
 
-            result mustBe LockCheck.LockCheckFailure
+            result mustEqual LockCheck.LockCheckFailure
         }
       }
     }

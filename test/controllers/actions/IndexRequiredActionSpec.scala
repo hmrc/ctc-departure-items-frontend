@@ -49,11 +49,11 @@ class IndexRequiredActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
     "must return Ok when index exists in user answers" in {
       val userAnswers = emptyUserAnswers.setValue(FooSection, Json.obj("foo" -> "bar"))
-      harness(userAnswers) mustBe Results.Ok
+      harness(userAnswers) mustEqual Results.Ok
     }
 
     "must redirect to add-another page when index does not exist in user answers" in {
-      harness(emptyUserAnswers) mustBe Results.SeeOther(addAnotherPage.url)
+      harness(emptyUserAnswers) mustEqual Results.SeeOther(addAnotherPage.url)
     }
   }
 

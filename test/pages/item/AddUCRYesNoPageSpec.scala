@@ -55,7 +55,7 @@ class AddUCRYesNoPageSpec extends PageBehaviours {
 
               val result = userAnswers.setValue(AddUCRYesNoPage(itemIndex), true)
 
-              result.get(UniqueConsignmentReferencePage(itemIndex)) must be(defined)
+              result.get(UniqueConsignmentReferencePage(itemIndex)) mustBe defined
           }
         }
       }

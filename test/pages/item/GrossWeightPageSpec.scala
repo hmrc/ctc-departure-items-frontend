@@ -61,7 +61,7 @@ class GrossWeightPageSpec extends PageBehaviours {
 
                   val result = userAnswers.setValue(GrossWeightPage(itemIndex), value)
 
-                  result.get(NetWeightPage(itemIndex)) must be(defined)
+                  result.get(NetWeightPage(itemIndex)) mustBe defined
               }
 
           }

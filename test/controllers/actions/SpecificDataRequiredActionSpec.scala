@@ -102,7 +102,7 @@ class SpecificDataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChe
                 val futureResult = action.callRefine(request(userAnswers))
 
                 whenReady(futureResult) {
-                  _.value.arg mustBe str
+                  _.value.arg mustEqual str
                 }
             }
           }
@@ -125,7 +125,7 @@ class SpecificDataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChe
                 val futureResult = action.callRefine(request(userAnswers))
 
                 whenReady(futureResult) {
-                  _.value.arg mustBe foo
+                  _.value.arg mustEqual foo
                 }
             }
           }
@@ -143,7 +143,7 @@ class SpecificDataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChe
                 val futureResult = action.callRefine(request(userAnswers))
 
                 whenReady(futureResult) {
-                  _.value.arg mustBe bar
+                  _.value.arg mustEqual bar
                 }
             }
           }
@@ -204,8 +204,8 @@ class SpecificDataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChe
 
               whenReady(futureResult) {
                 r =>
-                  r.value.arg._1 mustBe str1
-                  r.value.arg._2 mustBe str2
+                  r.value.arg._1 mustEqual str1
+                  r.value.arg._2 mustEqual str2
               }
           }
         }
@@ -253,9 +253,9 @@ class SpecificDataRequiredActionSpec extends SpecBase with ScalaCheckPropertyChe
 
               whenReady(futureResult) {
                 r =>
-                  r.value.arg._1 mustBe str1
-                  r.value.arg._2 mustBe str2
-                  r.value.arg._3 mustBe str3
+                  r.value.arg._1 mustEqual str1
+                  r.value.arg._2 mustEqual str2
+                  r.value.arg._3 mustEqual str3
               }
           }
         }

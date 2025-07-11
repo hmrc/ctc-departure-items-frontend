@@ -35,8 +35,8 @@ class DangerousGoodsDomainSpec extends SpecBase {
 
         val result = DangerousGoodsDomain.userAnswersReader(itemIndex, dangerousGoodsIndex).apply(Nil).run(userAnswers)
 
-        result.value.value mustBe expectedResult
-        result.value.pages mustBe Seq(
+        result.value.value mustEqual expectedResult
+        result.value.pages mustEqual Seq(
           UNNumberPage(itemIndex, dangerousGoodsIndex)
         )
       }
@@ -46,8 +46,8 @@ class DangerousGoodsDomainSpec extends SpecBase {
       "when UNNumber page is unanswered" in {
         val result = DangerousGoodsDomain.userAnswersReader(itemIndex, dangerousGoodsIndex).apply(Nil).run(emptyUserAnswers)
 
-        result.left.value.page mustBe UNNumberPage(itemIndex, dangerousGoodsIndex)
-        result.left.value.pages mustBe Seq(
+        result.left.value.page mustEqual UNNumberPage(itemIndex, dangerousGoodsIndex)
+        result.left.value.pages mustEqual Seq(
           UNNumberPage(itemIndex, dangerousGoodsIndex)
         )
       }

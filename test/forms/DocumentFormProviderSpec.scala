@@ -65,7 +65,7 @@ class DocumentFormProviderSpec extends SpecBase with StringFieldBehaviours with 
     "bind a value which is in the list" in {
       val boundForm = form.bind(Map(fieldName -> selectable1.value))
       val field     = boundForm(fieldName)
-      field.errors must be(empty)
+      field.errors mustBe empty
     }
 
     "not bind if value takes me over the max limit" - {
@@ -112,7 +112,7 @@ class DocumentFormProviderSpec extends SpecBase with StringFieldBehaviours with 
       val form      = new DocumentFormProvider()(prefix, documents, itemLevelDocuments, arg)
       val boundForm = form.bind(Map(fieldName -> transportDocument.toString))
       val field     = boundForm(fieldName)
-      field.errors must be(empty)
+      field.errors mustBe empty
     }
   }
 }

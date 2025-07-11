@@ -46,7 +46,7 @@ class LockActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
       val lockActionProvider = new LockActionProviderImpl(mockLockService)
 
-      harness(lockActionProvider) mustBe Results.Ok
+      harness(lockActionProvider) mustEqual Results.Ok
     }
 
     "must redirect to lock page when lock is not open" in {
@@ -55,7 +55,7 @@ class LockActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
       val lockActionProvider = new LockActionProviderImpl(mockLockService)
 
-      harness(lockActionProvider) mustBe Results.SeeOther(frontendAppConfig.lockedUrl)
+      harness(lockActionProvider) mustEqual Results.SeeOther(frontendAppConfig.lockedUrl)
     }
 
     "must redirect to technical difficulties when lock check fails" in {
@@ -64,7 +64,7 @@ class LockActionSpec extends SpecBase with AppWithDefaultMockFixtures {
 
       val lockActionProvider = new LockActionProviderImpl(mockLockService)
 
-      harness(lockActionProvider) mustBe Results.SeeOther(frontendAppConfig.technicalDifficultiesUrl)
+      harness(lockActionProvider) mustEqual Results.SeeOther(frontendAppConfig.technicalDifficultiesUrl)
     }
   }
 

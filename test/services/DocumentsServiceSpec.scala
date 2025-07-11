@@ -104,7 +104,7 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
             val result = service.getDocuments(userAnswers, itemIndex, None)
 
-            result mustBe SelectableList(
+            result mustEqual SelectableList(
               Seq(
                 Document(attachToAllItems = false, Previous, "Code 2", None, "Ref no. 2", UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a"))
               )
@@ -151,7 +151,7 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
             val result = service.getDocuments(userAnswers, itemIndex, None)
 
-            result mustBe SelectableList(
+            result mustEqual SelectableList(
               Seq(
                 Document(
                   attachToAllItems = false,
@@ -171,7 +171,7 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
           "when empty list of documents" in {
             val result = service.getDocuments(emptyUserAnswers, itemIndex, None)
 
-            result mustBe SelectableList(Nil)
+            result mustEqual SelectableList(Nil)
           }
 
           "when data is in an invalid shape" in {
@@ -194,7 +194,7 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
             val result = service.getDocuments(userAnswers, itemIndex, None)
 
-            result mustBe SelectableList(Nil)
+            result mustEqual SelectableList(Nil)
           }
         }
       }
@@ -254,7 +254,7 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
               val result = service.getDocuments(userAnswers, itemIndex, Some(documentIndex))
 
-              result mustBe SelectableList(
+              result mustEqual SelectableList(
                 Seq(
                   Document(
                     attachToAllItems = false,
@@ -320,7 +320,7 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
               val result = service.getDocuments(userAnswers, itemIndex, Some(Index(1)))
 
-              result mustBe SelectableList(
+              result mustEqual SelectableList(
                 Seq(
                   Document(attachToAllItems = false, Previous, "Code 2", None, "Ref no. 2", UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a"))
                 )
@@ -368,7 +368,7 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
             val result = service.getDocuments(userAnswers, itemIndex, Some(documentIndex))
 
-            result mustBe SelectableList(
+            result mustEqual SelectableList(
               Seq(
                 Document(
                   attachToAllItems = false,
@@ -388,7 +388,7 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
           "when empty list of documents" in {
             val result = service.getDocuments(emptyUserAnswers, itemIndex, Some(documentIndex))
 
-            result mustBe SelectableList(Nil)
+            result mustEqual SelectableList(Nil)
           }
 
           "when data is in an invalid shape" in {
@@ -410,7 +410,7 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
             val result = service.getDocuments(userAnswers, itemIndex, Some(documentIndex))
 
-            result mustBe SelectableList(Nil)
+            result mustEqual SelectableList(Nil)
           }
         }
       }
@@ -470,7 +470,7 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
           val result = service.getConsignmentLevelDocuments(userAnswers)
 
-          result mustBe Seq(
+          result mustEqual Seq(
             Document(attachToAllItems = true, Previous, "Code 3", None, "Ref no. 3", UUID.fromString("cc09f64b-e519-4b21-9961-243ba7cad1b7"))
           )
 
@@ -539,7 +539,7 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
           val result1 = service.getDocument(userAnswers, itemIndex, Index(0))
           val result2 = service.getDocument(userAnswers, itemIndex, Index(1))
 
-          result1.value mustBe Document(
+          result1.value mustEqual Document(
             attachToAllItems = true,
             `type` = Previous,
             code = "Code 1",
@@ -547,7 +547,7 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
             referenceNumber = "Ref no. 1",
             uuid = UUID.fromString("1794d93b-17d5-44fe-a18d-aaa2059d06fe")
           )
-          result2.value mustBe Document(
+          result2.value mustEqual Document(
             attachToAllItems = true,
             `type` = Previous,
             code = "Code 2",
@@ -562,7 +562,7 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
         "when UUID not found" in {
           val result = service.getDocument(userAnswers, itemIndex, Index(2))
 
-          result mustBe None
+          result must not be defined
         }
       }
     }
@@ -606,7 +606,7 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
             val result = service.getItemLevelDocuments(userAnswers, Index(0), Some(Index(0)))
 
-            result mustBe ItemLevelDocuments(0, 0, 0)
+            result mustEqual ItemLevelDocuments(0, 0, 0)
           }
 
           "when supporting document" in {
@@ -642,7 +642,7 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
             val result = service.getItemLevelDocuments(userAnswers, Index(0), Some(Index(0)))
 
-            result mustBe ItemLevelDocuments(0, 0, 0)
+            result mustEqual ItemLevelDocuments(0, 0, 0)
           }
 
           "when transport document" in {
@@ -678,7 +678,7 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
             val result = service.getItemLevelDocuments(userAnswers, Index(0), Some(Index(0)))
 
-            result mustBe ItemLevelDocuments(0, 0, 0)
+            result mustEqual ItemLevelDocuments(0, 0, 0)
           }
         }
 
@@ -717,7 +717,7 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
             val result = service.getItemLevelDocuments(userAnswers, Index(0), None)
 
-            result mustBe ItemLevelDocuments(1, 0, 0)
+            result mustEqual ItemLevelDocuments(1, 0, 0)
           }
 
           "when supporting document" in {
@@ -753,7 +753,7 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
             val result = service.getItemLevelDocuments(userAnswers, Index(0), None)
 
-            result mustBe ItemLevelDocuments(0, 1, 0)
+            result mustEqual ItemLevelDocuments(0, 1, 0)
           }
 
           "when transport document" in {
@@ -789,7 +789,7 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
             val result = service.getItemLevelDocuments(userAnswers, Index(0), None)
 
-            result mustBe ItemLevelDocuments(0, 0, 1)
+            result mustEqual ItemLevelDocuments(0, 0, 1)
           }
         }
       }
@@ -1005,7 +1005,7 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
             val result = service.getPreviousDocuments(userAnswers, itemIndex, documentIndex)
 
-            result mustBe SelectableList(
+            result mustEqual SelectableList(
               Seq(
                 Document(
                   attachToAllItems = false,
@@ -1071,7 +1071,7 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
             val result = service.getPreviousDocuments(userAnswers, itemIndex, Index(1))
 
-            result mustBe SelectableList(
+            result mustEqual SelectableList(
               Seq(
                 Document(attachToAllItems = false, Previous, "Code 2", None, "Ref no. 2", UUID.fromString("a573bfd3-6470-40c4-a290-ea2d8d43c02a"))
               )
@@ -1119,7 +1119,7 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
           val result = service.getPreviousDocuments(userAnswers, itemIndex, documentIndex)
 
-          result mustBe SelectableList(
+          result mustEqual SelectableList(
             Seq(
               Document(
                 attachToAllItems = false,
@@ -1181,7 +1181,7 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
           val result = service.getPreviousDocuments(userAnswers, itemIndex, documentIndex)
 
-          result mustBe SelectableList(
+          result mustEqual SelectableList(
             Seq(
               Document(
                 attachToAllItems = false,
@@ -1200,7 +1200,7 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
         "when empty list of documents" in {
           val result = service.getPreviousDocuments(emptyUserAnswers, itemIndex, documentIndex)
 
-          result mustBe SelectableList(Nil)
+          result mustEqual SelectableList(Nil)
         }
 
         "when data is in an invalid shape" in {
@@ -1222,7 +1222,7 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
           val result = service.getPreviousDocuments(userAnswers, itemIndex, documentIndex)
 
-          result mustBe SelectableList(Nil)
+          result mustEqual SelectableList(Nil)
         }
       }
     }

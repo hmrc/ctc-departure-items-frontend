@@ -66,7 +66,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
 
       val result = json.as[Document](Document.reads)
 
-      result mustBe expectedResult
+      result mustEqual expectedResult
     }
 
     "when support document" in {
@@ -102,7 +102,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
 
       val result = json.as[Document](Document.reads)
 
-      result mustBe expectedResult
+      result mustEqual expectedResult
     }
 
     "when previous document" in {
@@ -151,7 +151,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
 
       val result = json.as[Document](Document.reads)
 
-      result mustBe expectedResult
+      result mustEqual expectedResult
     }
 
     "when mandatory previous document" in {
@@ -188,7 +188,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
 
       val result = json.as[Document](Document.reads)
 
-      result mustBe expectedResult
+      result mustEqual expectedResult
     }
   }
 
@@ -205,7 +205,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
             uuid = uuid
           )
 
-          document.toString mustBe s"${`type`.display} - ($code) $description - $referenceNumber"
+          document.toString mustEqual s"${`type`.display} - ($code) $description - $referenceNumber"
       }
     }
 
@@ -221,7 +221,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
             uuid = uuid
           )
 
-          document.toString mustBe s"${`type`.display} - $code - $referenceNumber"
+          document.toString mustEqual s"${`type`.display} - $code - $referenceNumber"
       }
     }
   }
@@ -231,7 +231,7 @@ class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generator
       (`type`, code, description, referenceNumber, uuid, selected) =>
         val attachToAllItems = arbitrary[Boolean].sample.value
         val document         = Document(attachToAllItems, `type`, code, description, referenceNumber, uuid)
-        document.toSelectItem(selected) mustBe SelectItem(Some(document.toString), document.toString, selected)
+        document.toSelectItem(selected) mustEqual SelectItem(Some(document.toString), document.toString, selected)
     }
   }
 }

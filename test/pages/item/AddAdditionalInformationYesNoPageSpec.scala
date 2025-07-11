@@ -49,7 +49,7 @@ class AddAdditionalInformationYesNoPageSpec extends PageBehaviours {
 
           val result = userAnswers.setValue(AddAdditionalInformationYesNoPage(itemIndex), true)
 
-          result.get(AdditionalInformationListSection(itemIndex)) must be(defined)
+          result.get(AdditionalInformationListSection(itemIndex)) mustBe defined
         }
       }
     }

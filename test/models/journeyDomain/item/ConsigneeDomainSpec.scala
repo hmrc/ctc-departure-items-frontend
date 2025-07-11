@@ -42,8 +42,8 @@ class ConsigneeDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
             val result = ConsigneeDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
 
-            result.value.value mustBe expectedResult
-            result.value.pages mustBe Seq(
+            result.value.value mustEqual expectedResult
+            result.value.pages mustEqual Seq(
               AddConsigneeEoriNumberYesNoPage(itemIndex),
               IdentificationNumberPage(itemIndex)
             )
@@ -67,8 +67,8 @@ class ConsigneeDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
             val result = ConsigneeDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
 
-            result.value.value mustBe expectedResult
-            result.value.pages mustBe Seq(
+            result.value.value mustEqual expectedResult
+            result.value.pages mustEqual Seq(
               AddConsigneeEoriNumberYesNoPage(itemIndex),
               NamePage(itemIndex),
               CountryPage(itemIndex),
@@ -82,8 +82,8 @@ class ConsigneeDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
       "when add EORI/TIN yes/no unanswered" in {
         val result = ConsigneeDomain.userAnswersReader(itemIndex).apply(Nil).run(emptyUserAnswers)
 
-        result.left.value.page mustBe AddConsigneeEoriNumberYesNoPage(itemIndex)
-        result.left.value.pages mustBe Seq(
+        result.left.value.page mustEqual AddConsigneeEoriNumberYesNoPage(itemIndex)
+        result.left.value.pages mustEqual Seq(
           AddConsigneeEoriNumberYesNoPage(itemIndex)
         )
       }
@@ -94,8 +94,8 @@ class ConsigneeDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
         val result = ConsigneeDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
 
-        result.left.value.page mustBe IdentificationNumberPage(itemIndex)
-        result.left.value.pages mustBe Seq(
+        result.left.value.page mustEqual IdentificationNumberPage(itemIndex)
+        result.left.value.pages mustEqual Seq(
           AddConsigneeEoriNumberYesNoPage(itemIndex),
           IdentificationNumberPage(itemIndex)
         )
@@ -107,8 +107,8 @@ class ConsigneeDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
         val result = ConsigneeDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
 
-        result.left.value.page mustBe NamePage(itemIndex)
-        result.left.value.pages mustBe Seq(
+        result.left.value.page mustEqual NamePage(itemIndex)
+        result.left.value.pages mustEqual Seq(
           AddConsigneeEoriNumberYesNoPage(itemIndex),
           NamePage(itemIndex)
         )
@@ -121,8 +121,8 @@ class ConsigneeDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
         val result = ConsigneeDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
 
-        result.left.value.page mustBe CountryPage(itemIndex)
-        result.left.value.pages mustBe Seq(
+        result.left.value.page mustEqual CountryPage(itemIndex)
+        result.left.value.pages mustEqual Seq(
           AddConsigneeEoriNumberYesNoPage(itemIndex),
           NamePage(itemIndex),
           CountryPage(itemIndex)
@@ -137,8 +137,8 @@ class ConsigneeDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
         val result = ConsigneeDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
 
-        result.left.value.page mustBe AddressPage(itemIndex)
-        result.left.value.pages mustBe Seq(
+        result.left.value.page mustEqual AddressPage(itemIndex)
+        result.left.value.pages mustEqual Seq(
           AddConsigneeEoriNumberYesNoPage(itemIndex),
           NamePage(itemIndex),
           CountryPage(itemIndex),

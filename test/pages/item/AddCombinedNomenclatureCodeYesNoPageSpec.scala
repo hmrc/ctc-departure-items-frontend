@@ -55,7 +55,7 @@ class AddCombinedNomenclatureCodeYesNoPageSpec extends PageBehaviours {
 
               val result = userAnswers.setValue(AddCombinedNomenclatureCodeYesNoPage(itemIndex), true)
 
-              result.get(CombinedNomenclatureCodePage(itemIndex)) must be(defined)
+              result.get(CombinedNomenclatureCodePage(itemIndex)) mustBe defined
           }
         }
       }

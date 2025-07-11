@@ -59,7 +59,7 @@ class TransportChargesMethodOfPaymentSpec extends AnyFreeSpec with Matchers with
                          |  "description": "$description"
                          |}
                          |""".stripMargin)
-                    .as[TransportChargesMethodOfPayment] mustBe methodOfPayment
+                    .as[TransportChargesMethodOfPayment] mustEqual methodOfPayment
               }
           }
         }
@@ -79,7 +79,7 @@ class TransportChargesMethodOfPaymentSpec extends AnyFreeSpec with Matchers with
                          |  "value": "$description"
                          |}
                          |""".stripMargin)
-                    .as[TransportChargesMethodOfPayment] mustBe methodOfPayment
+                    .as[TransportChargesMethodOfPayment] mustEqual methodOfPayment
               }
           }
         }
@@ -95,7 +95,7 @@ class TransportChargesMethodOfPaymentSpec extends AnyFreeSpec with Matchers with
                    |  "description": "$description"
                    |}
                    |""".stripMargin)
-              .as[TransportChargesMethodOfPayment] mustBe methodOfPayment
+              .as[TransportChargesMethodOfPayment] mustEqual methodOfPayment
         }
       }
     }

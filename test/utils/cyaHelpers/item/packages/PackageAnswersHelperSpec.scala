@@ -40,7 +40,7 @@ class PackageAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks wi
               val userAnswers = emptyUserAnswers
 
               val helper = new PackageAnswersHelper(userAnswers, mode, itemIndex)(messages, frontendAppConfig)
-              helper.listItems mustBe Nil
+              helper.listItems mustEqual Nil
           }
         }
       }
@@ -58,7 +58,7 @@ class PackageAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks wi
                 .setValue(ShippingMarkPage(itemIndex, Index(1)), nonEmptyString.sample.value)
 
               val helper = new PackageAnswersHelper(userAnswers, mode, itemIndex)(messages, frontendAppConfig)
-              helper.listItems mustBe Seq(
+              helper.listItems mustEqual Seq(
                 Right(
                   ListItem(
                     name = s"1 * ${packageType.toString}",
@@ -93,7 +93,7 @@ class PackageAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks wi
               val quantityString = String.format("%,d", quantity)
 
               val helper = new PackageAnswersHelper(userAnswers, mode, itemIndex)(messages, frontendAppConfig)
-              helper.listItems mustBe Seq(
+              helper.listItems mustEqual Seq(
                 Right(
                   ListItem(
                     name = s"$quantityString * ${packageType.toString}",

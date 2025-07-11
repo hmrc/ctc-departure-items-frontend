@@ -31,11 +31,11 @@ class AddAnotherItemViewModelSpec extends SpecBase with Generators with ScalaChe
       val userAnswers = arbitraryItemAnswers(emptyUserAnswers, index).sample.value
 
       val result = new AddAnotherItemViewModelProvider()(userAnswers)
-      result.listItems.length mustBe 1
-      result.title mustBe "You have added 1 item"
-      result.heading mustBe "You have added 1 item"
-      result.legend mustBe "Do you want to add another item?"
-      result.maxLimitLabel mustBe "You cannot add any more items. To add another, you need to remove one first."
+      result.listItems.length mustEqual 1
+      result.title mustEqual "You have added 1 item"
+      result.heading mustEqual "You have added 1 item"
+      result.legend mustEqual "Do you want to add another item?"
+      result.maxLimitLabel mustEqual "You cannot add any more items. To add another, you need to remove one first."
 
     }
 
@@ -50,11 +50,11 @@ class AddAnotherItemViewModelSpec extends SpecBase with Generators with ScalaChe
           }
 
           val result = new AddAnotherItemViewModelProvider()(userAnswers)
-          result.listItems.length mustBe numberOfItems
-          result.title mustBe s"You have added ${formatter.format(numberOfItems)} items"
-          result.heading mustBe s"You have added ${formatter.format(numberOfItems)} items"
-          result.legend mustBe "Do you want to add another item?"
-          result.maxLimitLabel mustBe "You cannot add any more items. To add another, you need to remove one first."
+          result.listItems.length mustEqual numberOfItems
+          result.title mustEqual s"You have added ${formatter.format(numberOfItems)} items"
+          result.heading mustEqual s"You have added ${formatter.format(numberOfItems)} items"
+          result.legend mustEqual "Do you want to add another item?"
+          result.maxLimitLabel mustEqual "You cannot add any more items. To add another, you need to remove one first."
       }
     }
   }

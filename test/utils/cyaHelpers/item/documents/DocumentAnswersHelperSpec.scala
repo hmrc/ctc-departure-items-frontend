@@ -47,7 +47,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
                 .thenReturn(Nil)
 
               val helper = buildHelper(emptyUserAnswers, mode, itemIndex)
-              helper.consignmentLevelListItems mustBe Nil
+              helper.consignmentLevelListItems mustEqual Nil
           }
         }
       }
@@ -59,7 +59,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               .thenReturn(Seq(document1, document2))
 
             val helper = buildHelper(emptyUserAnswers, mode, itemIndex)
-            helper.consignmentLevelListItems mustBe Seq(
+            helper.consignmentLevelListItems mustEqual Seq(
               ListItem(
                 name = document1.toString,
                 changeUrl = None,
@@ -84,7 +84,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
               val userAnswers = emptyUserAnswers
 
               val helper = buildHelper(userAnswers, mode, itemIndex)
-              helper.listItems mustBe Nil
+              helper.listItems mustEqual Nil
           }
         }
       }
@@ -104,7 +104,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
                 .setValue(DocumentPage(itemIndex, Index(0)), document.uuid)
 
               val helper = buildHelper(userAnswers, mode, itemIndex)
-              helper.listItems mustBe Seq(
+              helper.listItems mustEqual Seq(
                 Right(
                   ListItem(
                     name = document.toString,
@@ -130,7 +130,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
                 .setValue(DocumentPage(itemIndex, Index(0)), document.uuid)
 
               val helper = buildHelper(userAnswers, mode, itemIndex)
-              helper.listItems mustBe Seq(
+              helper.listItems mustEqual Seq(
                 Right(
                   ListItem(
                     name = document.toString,
@@ -155,7 +155,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
                 .setValue(DocumentPage(itemIndex, Index(0)), document.uuid)
 
               val helper = buildHelper(userAnswers, mode, itemIndex)
-              helper.listItems mustBe Seq(
+              helper.listItems mustEqual Seq(
                 Right(
                   ListItem(
                     name = document.toString,
@@ -186,7 +186,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
                 .setValue(DocumentPage(itemIndex, Index(1)), document2.uuid)
 
               val helper = buildHelper(userAnswers, mode, itemIndex)
-              helper.listItems mustBe Seq(
+              helper.listItems mustEqual Seq(
                 Right(
                   ListItem(
                     name = document1.toString,
@@ -222,7 +222,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
                 .setValue(DocumentPage(itemIndex, Index(1)), document2.uuid)
 
               val helper = buildHelper(userAnswers, mode, itemIndex)
-              helper.listItems mustBe Seq(
+              helper.listItems mustEqual Seq(
                 Right(
                   ListItem(
                     name = document1.toString,
@@ -253,7 +253,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
                 .setValue(DocumentPage(itemIndex, Index(1)), document2.uuid)
 
               val helper = buildHelper(userAnswers, mode, itemIndex)
-              helper.listItems mustBe Seq(
+              helper.listItems mustEqual Seq(
                 Right(
                   ListItem(
                     name = document1.toString,
@@ -288,7 +288,7 @@ class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks w
                 .setValue(DocumentPage(itemIndex, Index(1)), document2.uuid)
 
               val helper = buildHelper(userAnswers, mode, itemIndex)
-              helper.listItems mustBe Seq(
+              helper.listItems mustEqual Seq(
                 Right(
                   ListItem(
                     name = document1.toString,

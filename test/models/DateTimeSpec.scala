@@ -56,7 +56,7 @@ class DateTimeSpec extends AnyFreeSpec with Matchers with OptionValues with Gene
 
     "must fail to deserialise invalid values" in {
 
-      JsString("invalidString").validate[DateTime].isError mustBe true
+      JsString("invalidString").validate[DateTime].isError mustEqual true
 
     }
   }

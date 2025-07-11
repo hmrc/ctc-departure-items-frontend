@@ -36,7 +36,7 @@ trait DynamicAddressViewBehaviours extends QuestionViewBehaviours[DynamicAddress
 
           s"must contain a label for the field '$field'" in {
             val labels = doc.getElementsByAttributeValue("for", field)
-            labels.size mustBe 1
+            labels.size mustEqual 1
 
             (field, isPostalCodeRequired) match {
               case ("postalCode", false) =>
@@ -56,8 +56,8 @@ trait DynamicAddressViewBehaviours extends QuestionViewBehaviours[DynamicAddress
 
           s"must show an error in the label for field '$field'" in {
             val formGroupError = getElementByClass(docWithError(field), "govuk-form-group--error")
-            formGroupError.getElementsByClass("govuk-label").first().attr("for") mustBe field
-            formGroupError.getElementsByClass("govuk-error-message").first().id() mustBe s"$field-error"
+            formGroupError.getElementsByClass("govuk-label").first().attr("for") mustEqual field
+            formGroupError.getElementsByClass("govuk-error-message").first().id() mustEqual s"$field-error"
           }
         }
     }

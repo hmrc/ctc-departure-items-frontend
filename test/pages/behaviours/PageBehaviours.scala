@@ -47,7 +47,7 @@ trait PageBehaviours extends SpecBase with ScalaCheckPropertyChecks with Generat
 
             forAll(gen) {
               case (page, userAnswers) =>
-                userAnswers.get(page) must be(empty)
+                userAnswers.get(page) mustBe empty
             }
           }
         }
@@ -109,7 +109,7 @@ trait PageBehaviours extends SpecBase with ScalaCheckPropertyChecks with Generat
         forAll(gen) {
           case (page, userAnswers) =>
             val updatedAnswers = userAnswers.removeValue(page)
-            updatedAnswers.get(page) must be(empty)
+            updatedAnswers.get(page) mustBe empty
         }
       }
   }

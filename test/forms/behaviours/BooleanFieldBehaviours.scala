@@ -24,13 +24,13 @@ trait BooleanFieldBehaviours extends FieldBehaviours {
 
     "bind true" in {
       val result = form.bind(Map(fieldName -> "true"))
-      result.value.value mustBe true
+      result.value.value mustEqual true
       result.errors mustBe empty
     }
 
     "bind false" in {
       val result = form.bind(Map(fieldName -> "false"))
-      result.value.value mustBe false
+      result.value.value mustEqual false
       result.errors mustBe empty
     }
 
@@ -39,7 +39,7 @@ trait BooleanFieldBehaviours extends FieldBehaviours {
       forAll(nonBooleans -> "nonBoolean") {
         nonBoolean =>
           val result = form.bind(Map(fieldName -> nonBoolean)).apply(fieldName)
-          result.errors mustBe Seq(invalidError)
+          result.errors mustEqual Seq(invalidError)
       }
     }
   }

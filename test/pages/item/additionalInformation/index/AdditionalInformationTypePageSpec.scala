@@ -58,7 +58,7 @@ class AdditionalInformationTypePageSpec extends PageBehaviours {
 
             val result = userAnswers.setValue(AdditionalInformationTypePage(itemIndex, additionalInformationIndex), value)
 
-            result.get(AdditionalInformationPage(itemIndex, additionalInformationIndex)) must be(defined)
+            result.get(AdditionalInformationPage(itemIndex, additionalInformationIndex)) mustBe defined
         }
       }
     }

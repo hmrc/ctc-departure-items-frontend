@@ -53,7 +53,7 @@ class TransportEquipmentSpec extends SpecBase with ScalaCheckPropertyChecks with
 
     val result = json.as[TransportEquipment](TransportEquipment.equipmentReads(0))
 
-    result mustBe expectedResult
+    result mustEqual expectedResult
   }
 
   "must format as string" - {
@@ -67,8 +67,8 @@ class TransportEquipmentSpec extends SpecBase with ScalaCheckPropertyChecks with
             uuid = UUID.fromString(uuid)
           )
 
-          equipment.asString mustBe s"($numberString) Transport equipment - $containerId"
-          equipment.toString mustBe s"$number - $containerId"
+          equipment.asString mustEqual s"($numberString) Transport equipment - $containerId"
+          equipment.toString mustEqual s"$number - $containerId"
       }
     }
 
@@ -82,8 +82,8 @@ class TransportEquipmentSpec extends SpecBase with ScalaCheckPropertyChecks with
             uuid = UUID.fromString(uuid)
           )
 
-          equipment.asString mustBe s"($numberString) Transport equipment"
-          equipment.toString mustBe s"$number"
+          equipment.asString mustEqual s"($numberString) Transport equipment"
+          equipment.toString mustEqual s"$number"
       }
     }
   }
@@ -92,7 +92,7 @@ class TransportEquipmentSpec extends SpecBase with ScalaCheckPropertyChecks with
     forAll(positiveIntsMinMax(1: Int, 9999: Int), Gen.option(nonEmptyString), arbitrary[Boolean], arbitrary[UUID]) {
       (number, containerId, selected, uuid) =>
         val equipment = TransportEquipment(number, containerId, uuid)
-        equipment.toSelectItem(selected) mustBe SelectItem(Some(equipment.value), equipment.asString, selected)
+        equipment.toSelectItem(selected) mustEqual SelectItem(Some(equipment.value), equipment.asString, selected)
     }
   }
 }

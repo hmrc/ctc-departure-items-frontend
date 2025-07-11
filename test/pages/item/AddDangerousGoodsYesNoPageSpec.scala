@@ -49,7 +49,7 @@ class AddDangerousGoodsYesNoPageSpec extends PageBehaviours {
 
           val result = userAnswers.setValue(AddDangerousGoodsYesNoPage(itemIndex), true)
 
-          result.get(DangerousGoodsListSection(itemIndex)) must be(defined)
+          result.get(DangerousGoodsListSection(itemIndex)) mustBe defined
         }
       }
     }

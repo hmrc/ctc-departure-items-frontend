@@ -37,8 +37,8 @@ class AdditionalReferencesDomainSpec extends SpecBase with Generators {
 
       val result = AdditionalReferencesDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
 
-      result.value.value.value.length mustBe numberOfAdditionalReferences
-      result.value.pages.last mustBe AddAnotherAdditionalReferencePage(itemIndex)
+      result.value.value.value.length mustEqual numberOfAdditionalReferences
+      result.value.pages.last mustEqual AddAnotherAdditionalReferencePage(itemIndex)
     }
   }
 }

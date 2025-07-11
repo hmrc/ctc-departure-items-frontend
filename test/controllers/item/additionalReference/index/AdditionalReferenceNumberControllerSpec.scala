@@ -129,7 +129,7 @@ class AdditionalReferenceNumberControllerSpec extends SpecBase with AppWithDefau
       // ensures that additional references are still 'complete' if one without a reference number is removed
       val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-      userAnswersCaptor.getValue.get(AddAdditionalReferenceNumberYesNoPage(itemIndex, additionalReferenceIndex)).value mustBe true
+      userAnswersCaptor.getValue.get(AddAdditionalReferenceNumberYesNoPage(itemIndex, additionalReferenceIndex)).value mustEqual true
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

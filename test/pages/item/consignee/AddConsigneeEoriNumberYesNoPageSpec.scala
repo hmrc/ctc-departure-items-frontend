@@ -52,7 +52,7 @@ class AddConsigneeEoriNumberYesNoPageSpec extends PageBehaviours {
 
           val result = userAnswers.setValue(AddConsigneeEoriNumberYesNoPage(itemIndex), true)
 
-          result.get(IdentificationNumberPage(itemIndex)) must be(defined)
+          result.get(IdentificationNumberPage(itemIndex)) mustBe defined
         }
       }
     }

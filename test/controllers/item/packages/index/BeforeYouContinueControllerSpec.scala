@@ -72,7 +72,7 @@ class BeforeYouContinueControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-      userAnswersCaptor.getValue.get(BeforeYouContinuePage(itemIndex, packageIndex)).value mustBe true
+      userAnswersCaptor.getValue.get(BeforeYouContinuePage(itemIndex, packageIndex)).value mustEqual true
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
