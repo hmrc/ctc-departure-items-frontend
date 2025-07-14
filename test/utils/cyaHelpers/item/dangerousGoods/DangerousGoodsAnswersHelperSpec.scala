@@ -39,7 +39,7 @@ class DangerousGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
               val userAnswers = emptyUserAnswers
 
               val helper = new DangerousGoodsAnswersHelper(userAnswers, mode, itemIndex)
-              helper.listItems mustBe Nil
+              helper.listItems mustEqual Nil
           }
         }
       }
@@ -52,7 +52,7 @@ class DangerousGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
               .setValue(UNNumberPage(itemIndex, Index(1)), uNNumber)
 
             val helper = new DangerousGoodsAnswersHelper(userAnswers, mode, itemIndex)
-            helper.listItems mustBe Seq(
+            helper.listItems mustEqual Seq(
               Right(
                 ListItem(
                   name = uNNumber,

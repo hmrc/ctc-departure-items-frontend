@@ -85,7 +85,7 @@ class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach with Generat
 
               val result = service.doesCountryRequireZip(country).futureValue
 
-              result mustBe true
+              result mustEqual true
           }
         }
       }
@@ -99,7 +99,7 @@ class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach with Generat
 
               val result = service.doesCountryRequireZip(country).futureValue
 
-              result mustBe false
+              result mustEqual false
           }
         }
       }
@@ -113,7 +113,7 @@ class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach with Generat
 
           val result = service.isCountryInCL009(country1).futureValue
 
-          result mustBe true
+          result mustEqual true
         }
       }
 
@@ -124,7 +124,7 @@ class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach with Generat
 
           val result = service.isCountryInCL009(country1).futureValue
 
-          result mustBe false
+          result mustEqual false
         }
       }
 

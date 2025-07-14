@@ -37,8 +37,8 @@ class SupplyChainActorsDomainSpec extends SpecBase with Generators {
 
       val result = SupplyChainActorsDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
 
-      result.value.value.SupplyChainActorsDomain.length mustBe numberOfSupplyChainActors
-      result.value.pages.last mustBe AddAnotherSupplyChainActorPage(itemIndex)
+      result.value.value.SupplyChainActorsDomain.length mustEqual numberOfSupplyChainActors
+      result.value.pages.last mustEqual AddAnotherSupplyChainActorPage(itemIndex)
     }
   }
 }

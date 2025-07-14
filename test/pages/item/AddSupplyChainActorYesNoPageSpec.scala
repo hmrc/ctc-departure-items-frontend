@@ -51,7 +51,7 @@ class AddSupplyChainActorYesNoPageSpec extends PageBehaviours {
 
           val result = userAnswers.setValue(AddSupplyChainActorYesNoPage(itemIndex), true)
 
-          result.get(SupplyChainActorsSection(itemIndex)) must be(defined)
+          result.get(SupplyChainActorsSection(itemIndex)) mustBe defined
         }
       }
     }

@@ -36,8 +36,8 @@ class DocumentsDomainSpec extends SpecBase with Generators {
 
         val result = DocumentsDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
 
-        result.value.value.value.length mustBe 0
-        result.value.pages mustBe Seq(
+        result.value.value.value.length mustEqual 0
+        result.value.pages mustEqual Seq(
           AddAnotherDocumentPage(itemIndex)
         )
       }
@@ -54,8 +54,8 @@ class DocumentsDomainSpec extends SpecBase with Generators {
 
         val result = DocumentsDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
 
-        result.value.value.value.length mustBe numberOfDocuments
-        result.value.pages.last mustBe AddAnotherDocumentPage(itemIndex)
+        result.value.value.value.length mustEqual numberOfDocuments
+        result.value.pages.last mustEqual AddAnotherDocumentPage(itemIndex)
       }
 
       "when no value set for AddAnotherDocumentPage" in {
@@ -68,8 +68,8 @@ class DocumentsDomainSpec extends SpecBase with Generators {
 
         val result = DocumentsDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
 
-        result.value.value.value.length mustBe numberOfDocuments
-        result.value.pages.last mustBe AddAnotherDocumentPage(itemIndex)
+        result.value.value.value.length mustEqual numberOfDocuments
+        result.value.pages.last mustEqual AddAnotherDocumentPage(itemIndex)
       }
     }
 
@@ -86,8 +86,8 @@ class DocumentsDomainSpec extends SpecBase with Generators {
 
         val result = DocumentsDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
 
-        result.left.value.page mustBe AddAnotherDocumentPage(itemIndex)
-        result.left.value.pages.last mustBe AddAnotherDocumentPage(itemIndex)
+        result.left.value.page mustEqual AddAnotherDocumentPage(itemIndex)
+        result.left.value.pages.last mustEqual AddAnotherDocumentPage(itemIndex)
       }
     }
   }

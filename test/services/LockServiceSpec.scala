@@ -56,7 +56,7 @@ class LockServiceSpec extends SpecBase with AppWithDefaultMockFixtures with Scal
             val userAnswers = emptyUserAnswers
             when(mockConnector.checkLock(any())(any())).thenReturn(Future.successful(response))
             val result = service.checkLock(userAnswers)
-            result.futureValue mustBe response
+            result.futureValue mustEqual response
             verify(mockConnector).checkLock(eqTo(userAnswers))(any())
         }
       }

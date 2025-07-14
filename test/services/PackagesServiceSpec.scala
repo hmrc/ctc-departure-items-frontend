@@ -52,7 +52,7 @@ class PackagesServiceSpec extends SpecBase {
 
         val result = service.getPackageTypes().futureValue
 
-        result mustBe SelectableList(Seq(other, unpacked, bulk))
+        result mustEqual SelectableList(Seq(other, unpacked, bulk))
       }
 
       "must ensure Other packing type not given preference when there are duplicates" in {
@@ -73,7 +73,7 @@ class PackagesServiceSpec extends SpecBase {
 
         val result = service.getPackageTypes().futureValue
 
-        result mustBe SelectableList(Seq(other1, unpacked, bulk))
+        result mustEqual SelectableList(Seq(other1, unpacked, bulk))
       }
     }
   }

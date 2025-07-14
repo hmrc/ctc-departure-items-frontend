@@ -40,7 +40,7 @@ class AdditionalReferenceAnswersHelperSpec extends SpecBase with ScalaCheckPrope
               val userAnswers = emptyUserAnswers
 
               val helper = new AdditionalReferenceAnswersHelper(userAnswers, mode, itemIndex)
-              helper.listItems mustBe Nil
+              helper.listItems mustEqual Nil
           }
         }
       }
@@ -59,7 +59,7 @@ class AdditionalReferenceAnswersHelperSpec extends SpecBase with ScalaCheckPrope
               .setValue(AddAdditionalReferenceNumberYesNoPage(itemIndex, Index(1)), false)
 
             val helper = new AdditionalReferenceAnswersHelper(userAnswers, mode, itemIndex)
-            helper.listItems mustBe Seq(
+            helper.listItems mustEqual Seq(
               Right(
                 ListItem(
                   name = s"${c651OrC658Document.toString} - $additionalReferenceNumber",

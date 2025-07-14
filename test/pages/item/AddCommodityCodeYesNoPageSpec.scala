@@ -60,9 +60,9 @@ class AddCommodityCodeYesNoPageSpec extends PageBehaviours {
 
               val result = userAnswers.setValue(AddCommodityCodeYesNoPage(itemIndex), true)
 
-              result.get(CommodityCodePage(itemIndex)) must be(defined)
-              result.get(AddCombinedNomenclatureCodeYesNoPage(itemIndex)) must be(defined)
-              result.get(CombinedNomenclatureCodePage(itemIndex)) must be(defined)
+              result.get(CommodityCodePage(itemIndex)) mustBe defined
+              result.get(AddCombinedNomenclatureCodeYesNoPage(itemIndex)) mustBe defined
+              result.get(CombinedNomenclatureCodePage(itemIndex)) mustBe defined
           }
         }
       }

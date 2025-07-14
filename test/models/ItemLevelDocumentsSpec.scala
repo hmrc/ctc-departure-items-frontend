@@ -49,7 +49,7 @@ class ItemLevelDocumentsSpec extends SpecBase with AppWithDefaultMockFixtures wi
                 support = 0,
                 transport = 0
               )
-              ild.canAdd(DocumentType.Previous)(frontendAppConfig) mustBe false
+              ild.canAdd(DocumentType.Previous)(frontendAppConfig) mustEqual false
           }
         }
 
@@ -61,7 +61,7 @@ class ItemLevelDocumentsSpec extends SpecBase with AppWithDefaultMockFixtures wi
                 support = support,
                 transport = 0
               )
-              ild.canAdd(DocumentType.Support)(frontendAppConfig) mustBe false
+              ild.canAdd(DocumentType.Support)(frontendAppConfig) mustEqual false
           }
         }
 
@@ -73,7 +73,7 @@ class ItemLevelDocumentsSpec extends SpecBase with AppWithDefaultMockFixtures wi
                 support = 0,
                 transport = transport
               )
-              ild.canAdd(DocumentType.Transport)(frontendAppConfig) mustBe false
+              ild.canAdd(DocumentType.Transport)(frontendAppConfig) mustEqual false
           }
         }
       }
@@ -89,7 +89,7 @@ class ItemLevelDocumentsSpec extends SpecBase with AppWithDefaultMockFixtures wi
                 support = 0,
                 transport = 0
               )
-              ild.canAdd(DocumentType.Previous)(frontendAppConfig) mustBe true
+              ild.canAdd(DocumentType.Previous)(frontendAppConfig) mustEqual true
           }
         }
 
@@ -101,7 +101,7 @@ class ItemLevelDocumentsSpec extends SpecBase with AppWithDefaultMockFixtures wi
                 support = support,
                 transport = 0
               )
-              ild.canAdd(DocumentType.Support)(frontendAppConfig) mustBe true
+              ild.canAdd(DocumentType.Support)(frontendAppConfig) mustEqual true
           }
         }
 
@@ -113,7 +113,7 @@ class ItemLevelDocumentsSpec extends SpecBase with AppWithDefaultMockFixtures wi
                 support = 0,
                 transport = transport
               )
-              ild.canAdd(DocumentType.Transport)(frontendAppConfig) mustBe true
+              ild.canAdd(DocumentType.Transport)(frontendAppConfig) mustEqual true
           }
         }
       }

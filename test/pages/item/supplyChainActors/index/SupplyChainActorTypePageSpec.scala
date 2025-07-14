@@ -62,7 +62,7 @@ class SupplyChainActorTypePageSpec extends PageBehaviours {
 
               val result = userAnswers.setValue(SupplyChainActorTypePage(itemIndex, actorIndex), value)
 
-              result.get(IdentificationNumberPage(itemIndex, actorIndex)) must be(defined)
+              result.get(IdentificationNumberPage(itemIndex, actorIndex)) mustBe defined
           }
         }
       }

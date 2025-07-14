@@ -48,7 +48,7 @@ class CUSCodeServiceSpec extends SpecBase with BeforeAndAfterEach {
       when(mockRefDataConnector.getCUSCode(anyString())(any(), any()))
         .thenReturn(Future.successful(Right(cusCodeItem)))
 
-      service.doesCUSCodeExist(cusCode).futureValue mustBe true
+      service.doesCUSCodeExist(cusCode).futureValue mustEqual true
       verify(mockRefDataConnector).getCUSCode(ArgumentMatchers.eq(cusCode))(any(), any())
     }
 
@@ -59,7 +59,7 @@ class CUSCodeServiceSpec extends SpecBase with BeforeAndAfterEach {
       when(mockRefDataConnector.getCUSCode(anyString())(any(), any()))
         .thenReturn(Future.successful(Left(new NoReferenceDataFoundException(""))))
 
-      service.doesCUSCodeExist(cusCode).futureValue mustBe false
+      service.doesCUSCodeExist(cusCode).futureValue mustEqual false
       verify(mockRefDataConnector).getCUSCode(ArgumentMatchers.eq(cusCode))(any(), any())
     }
   }

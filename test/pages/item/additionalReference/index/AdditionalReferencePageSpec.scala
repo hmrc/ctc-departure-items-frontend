@@ -61,8 +61,8 @@ class AdditionalReferencePageSpec extends PageBehaviours {
 
             val result = userAnswers.setValue(AdditionalReferencePage(itemIndex, additionalReferenceIndex), value)
 
-            result.get(AddAdditionalReferenceNumberYesNoPage(itemIndex, additionalReferenceIndex)) must be(defined)
-            result.get(AdditionalReferenceNumberPage(itemIndex, additionalReferenceIndex)) must be(defined)
+            result.get(AddAdditionalReferenceNumberYesNoPage(itemIndex, additionalReferenceIndex)) mustBe defined
+            result.get(AdditionalReferenceNumberPage(itemIndex, additionalReferenceIndex)) mustBe defined
         }
       }
     }

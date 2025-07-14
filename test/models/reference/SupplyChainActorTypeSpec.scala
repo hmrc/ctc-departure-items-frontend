@@ -57,7 +57,7 @@ class SupplyChainActorTypeSpec extends SpecBase with ScalaCheckPropertyChecks {
                          |  "description": "$description"
                          |}
                          |""".stripMargin)
-                    .as[SupplyChainActorType] mustBe supplyChainActorType
+                    .as[SupplyChainActorType] mustEqual supplyChainActorType
               }
           }
         }

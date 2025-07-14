@@ -55,7 +55,7 @@ class AddCUSCodeYesNoPageSpec extends PageBehaviours {
 
               val result = userAnswers.setValue(AddCUSCodeYesNoPage(itemIndex), true)
 
-              result.get(CustomsUnionAndStatisticsCodePage(itemIndex)) must be(defined)
+              result.get(CustomsUnionAndStatisticsCodePage(itemIndex)) mustBe defined
           }
         }
       }

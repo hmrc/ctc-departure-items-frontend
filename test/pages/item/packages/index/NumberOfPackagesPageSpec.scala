@@ -48,7 +48,7 @@ class NumberOfPackagesPageSpec extends PageBehaviours {
 
           val result = userAnswers.setValue(NumberOfPackagesPage(itemIndex, packageIndex), 0)
 
-          result.get(BeforeYouContinuePage(itemIndex, packageIndex)) must be(defined)
+          result.get(BeforeYouContinuePage(itemIndex, packageIndex)) mustBe defined
         }
       }
     }

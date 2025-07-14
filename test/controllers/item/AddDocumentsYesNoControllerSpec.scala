@@ -87,7 +87,7 @@ class AddDocumentsYesNoControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-      userAnswersCaptor.getValue.get(InferredAddDocumentsYesNoPage(itemIndex)).value mustBe true
+      userAnswersCaptor.getValue.get(InferredAddDocumentsYesNoPage(itemIndex)).value mustEqual true
     }
 
     "must return OK and the correct view for a GET" in {

@@ -29,12 +29,12 @@ trait CharacterCountViewBehaviours extends QuestionViewBehaviours[String] {
 
         "must bind a data module" in {
           val module = getElementByClass(doc, "govuk-character-count").attr("data-module")
-          module mustBe "govuk-character-count"
+          module mustEqual "govuk-character-count"
         }
 
         s"must set a max length of $maxLength" in {
           val module = getElementByClass(doc, "govuk-character-count").attr("data-maxlength")
-          module mustBe maxLength.toString
+          module mustEqual maxLength.toString
         }
 
         behave like pageWithoutErrorSummary()

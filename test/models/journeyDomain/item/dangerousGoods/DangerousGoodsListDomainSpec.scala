@@ -43,8 +43,8 @@ class DangerousGoodsListDomainSpec extends SpecBase {
 
         val result = DangerousGoodsListDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
 
-        result.value.value mustBe expectedResult
-        result.value.pages.last mustBe AddAnotherDangerousGoodsPage(itemIndex)
+        result.value.value mustEqual expectedResult
+        result.value.pages.last mustEqual AddAnotherDangerousGoodsPage(itemIndex)
       }
     }
 
@@ -52,8 +52,8 @@ class DangerousGoodsListDomainSpec extends SpecBase {
       "when there aren't any dangerous goods added" in {
         val result = DangerousGoodsListDomain.userAnswersReader(itemIndex).apply(Nil).run(emptyUserAnswers)
 
-        result.left.value.page mustBe UNNumberPage(itemIndex, Index(0))
-        result.left.value.pages mustBe Seq(
+        result.left.value.page mustEqual UNNumberPage(itemIndex, Index(0))
+        result.left.value.pages mustEqual Seq(
           UNNumberPage(itemIndex, Index(0))
         )
       }

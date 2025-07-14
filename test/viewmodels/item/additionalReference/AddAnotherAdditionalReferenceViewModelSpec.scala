@@ -35,11 +35,11 @@ class AddAnotherAdditionalReferenceViewModelSpec extends SpecBase with Generator
 
           val result = new AddAnotherAdditionalReferenceViewModelProvider()(userAnswers, mode, itemIndex)
 
-          result.listItems.length mustBe 1
-          result.title mustBe "You have added 1 additional reference"
-          result.heading mustBe "You have added 1 additional reference"
-          result.legend mustBe "Do you want to add another additional reference?"
-          result.maxLimitLabel mustBe "You cannot add any more additional references. To add another, you need to remove one first."
+          result.listItems.length mustEqual 1
+          result.title mustEqual "You have added 1 additional reference"
+          result.heading mustEqual "You have added 1 additional reference"
+          result.legend mustEqual "Do you want to add another additional reference?"
+          result.maxLimitLabel mustEqual "You cannot add any more additional references. To add another, you need to remove one first."
       }
     }
 
@@ -54,11 +54,11 @@ class AddAnotherAdditionalReferenceViewModelSpec extends SpecBase with Generator
           }
 
           val result = new AddAnotherAdditionalReferenceViewModelProvider()(userAnswers, mode, itemIndex)
-          result.listItems.length mustBe additionalReferences
-          result.title mustBe s"You have added ${formatter.format(additionalReferences)} additional references"
-          result.heading mustBe s"You have added ${formatter.format(additionalReferences)} additional references"
-          result.legend mustBe "Do you want to add another additional reference?"
-          result.maxLimitLabel mustBe "You cannot add any more additional references. To add another, you need to remove one first."
+          result.listItems.length mustEqual additionalReferences
+          result.title mustEqual s"You have added ${formatter.format(additionalReferences)} additional references"
+          result.heading mustEqual s"You have added ${formatter.format(additionalReferences)} additional references"
+          result.legend mustEqual "Do you want to add another additional reference?"
+          result.maxLimitLabel mustEqual "You cannot add any more additional references. To add another, you need to remove one first."
       }
     }
   }

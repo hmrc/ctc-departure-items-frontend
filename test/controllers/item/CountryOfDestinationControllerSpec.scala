@@ -101,7 +101,7 @@ class CountryOfDestinationControllerSpec extends SpecBase with AppWithDefaultMoc
         val userAnswers = emptyUserAnswers
           .setValue(ConsignmentAdditionalInformationTypePage(Index(0)), "30600")
 
-        userAnswers.get(ConsignmentAdditionalInformationListSection) must be(defined)
+        userAnswers.get(ConsignmentAdditionalInformationListSection) mustBe defined
 
         when(mockCountriesService.getCountries()(any())).thenReturn(Future.successful(countryList))
         when(mockCountriesService.isCountryInCL009(any())(any())).thenReturn(Future.successful(true))
@@ -123,14 +123,14 @@ class CountryOfDestinationControllerSpec extends SpecBase with AppWithDefaultMoc
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
         userAnswersCaptor.getValue.get(ConsignmentAdditionalInformationSection(Index(0))) must not be defined
-        userAnswersCaptor.getValue.get(CountryOfDestinationInCL009Page(Index(0))).value mustBe true
+        userAnswersCaptor.getValue.get(CountryOfDestinationInCL009Page(Index(0))).value mustEqual true
       }
 
       "and value is not in CL009" in {
         val userAnswers = emptyUserAnswers
           .setValue(ConsignmentAdditionalInformationTypePage(Index(0)), "30600")
 
-        userAnswers.get(ConsignmentAdditionalInformationListSection) must be(defined)
+        userAnswers.get(ConsignmentAdditionalInformationListSection) mustBe defined
 
         when(mockCountriesService.getCountries()(any())).thenReturn(Future.successful(countryList))
         when(mockCountriesService.isCountryInCL009(any())(any())).thenReturn(Future.successful(false))
@@ -151,8 +151,8 @@ class CountryOfDestinationControllerSpec extends SpecBase with AppWithDefaultMoc
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-        userAnswersCaptor.getValue.get(ConsignmentAdditionalInformationSection(Index(0))) must be(defined)
-        userAnswersCaptor.getValue.get(CountryOfDestinationInCL009Page(Index(0))).value mustBe false
+        userAnswersCaptor.getValue.get(ConsignmentAdditionalInformationSection(Index(0))) mustBe defined
+        userAnswersCaptor.getValue.get(CountryOfDestinationInCL009Page(Index(0))).value mustEqual false
       }
     }
 

@@ -67,7 +67,7 @@ class AdditionalReferenceNumberViewModelSpec extends SpecBase with ScalaCheckPro
 
                 val result = new AdditionalReferenceNumberViewModelProvider().apply(userAnswers, itemIndex, Index(2), additionalReference)
 
-                result.otherAdditionalReferenceNumbers mustBe Seq(additionalReferenceNumber)
+                result.otherAdditionalReferenceNumbers mustEqual Seq(additionalReferenceNumber)
             }
         }
       }
@@ -82,7 +82,7 @@ class AdditionalReferenceNumberViewModelSpec extends SpecBase with ScalaCheckPro
 
             val result = new AdditionalReferenceNumberViewModelProvider().apply(userAnswers, itemIndex, Index(1), additionalReference)
 
-            result.isReferenceNumberRequired mustBe true
+            result.isReferenceNumberRequired mustEqual true
         }
       }
 
@@ -98,7 +98,7 @@ class AdditionalReferenceNumberViewModelSpec extends SpecBase with ScalaCheckPro
 
             val result = new AdditionalReferenceNumberViewModelProvider().apply(userAnswers, itemIndex, Index(1), additionalReference)
 
-            result.isReferenceNumberRequired mustBe false
+            result.isReferenceNumberRequired mustEqual false
         }
       }
     }

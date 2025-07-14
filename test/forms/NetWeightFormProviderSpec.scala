@@ -67,13 +67,13 @@ class NetWeightFormProviderSpec extends BigDecimalFieldBehaviours with SpecBase 
   "must bind a value equal to the gross weight" in {
     val value  = grossWeight
     val result = form.bind(Map(fieldName -> value.toString)).apply(fieldName)
-    result.value.value mustBe value.toString
+    result.value.value mustEqual value.toString
   }
 
   "must bind a value less than the gross weight" in {
     val value  = grossWeight - 1
     val result = form.bind(Map(fieldName -> value.toString)).apply(fieldName)
-    result.value.value mustBe value.toString
+    result.value.value mustEqual value.toString
   }
 
   "must bind value greater than 0 when gross weight is 0" in {
@@ -81,6 +81,6 @@ class NetWeightFormProviderSpec extends BigDecimalFieldBehaviours with SpecBase 
     val value       = grossWeight + 1
     val form        = app.injector.instanceOf[NetWeightFormProvider].apply(prefix, isZeroAllowed = true, grossWeight)
     val result      = form.bind(Map(fieldName -> value.toString)).apply(fieldName)
-    result.value.value mustBe value.toString
+    result.value.value mustEqual value.toString
   }
 }

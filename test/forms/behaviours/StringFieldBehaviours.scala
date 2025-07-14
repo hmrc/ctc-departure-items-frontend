@@ -94,7 +94,7 @@ trait StringFieldBehaviours extends FieldBehaviours {
       forAll(nonEmptyString.retryUntil(!values.contains(_))) {
         value =>
           val result = form.bind(Map(fieldName -> value)).apply(fieldName)
-          result.value.value mustBe value
+          result.value.value mustEqual value
       }
     }
 

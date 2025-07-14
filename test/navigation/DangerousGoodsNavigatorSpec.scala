@@ -37,7 +37,7 @@ class DangerousGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
             answers =>
               navigator
                 .nextPage(answers, None)
-                .mustBe(controllers.item.dangerousGoods.routes.AddAnotherDangerousGoodsController.onPageLoad(answers.lrn, mode, itemIndex))
+                .mustEqual(controllers.item.dangerousGoods.routes.AddAnotherDangerousGoodsController.onPageLoad(answers.lrn, mode, itemIndex))
           }
         }
       }
@@ -55,7 +55,7 @@ class DangerousGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
             answers =>
               navigator
                 .nextPage(answers, None)
-                .mustBe(controllers.item.routes.CheckYourAnswersController.onPageLoad(answers.lrn, itemIndex))
+                .mustEqual(controllers.item.routes.CheckYourAnswersController.onPageLoad(answers.lrn, itemIndex))
           }
         }
       }

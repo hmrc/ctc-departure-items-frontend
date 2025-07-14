@@ -49,8 +49,8 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
 
               val result = PackageDomain.userAnswersReader(itemIndex, packageIndex).apply(Nil).run(userAnswers)
 
-              result.value.value mustBe expectedResult
-              result.value.pages mustBe Seq(
+              result.value.value mustEqual expectedResult
+              result.value.pages mustEqual Seq(
                 PackageTypePage(itemIndex, packageIndex),
                 NumberOfPackagesPage(itemIndex, packageIndex),
                 AddShippingMarkYesNoPage(itemIndex, packageIndex),
@@ -75,8 +75,8 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
 
               val result = PackageDomain.userAnswersReader(itemIndex, packageIndex).apply(Nil).run(userAnswers)
 
-              result.value.value mustBe expectedResult
-              result.value.pages mustBe Seq(
+              result.value.value mustEqual expectedResult
+              result.value.pages mustEqual Seq(
                 PackageTypePage(itemIndex, packageIndex),
                 AddShippingMarkYesNoPage(itemIndex, packageIndex),
                 ShippingMarkPage(itemIndex, packageIndex)
@@ -100,8 +100,8 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
 
               val result = PackageDomain.userAnswersReader(itemIndex, packageIndex).apply(Nil).run(userAnswers)
 
-              result.value.value mustBe expectedResult
-              result.value.pages mustBe Seq(
+              result.value.value mustEqual expectedResult
+              result.value.pages mustEqual Seq(
                 PackageTypePage(itemIndex, packageIndex),
                 NumberOfPackagesPage(itemIndex, packageIndex),
                 ShippingMarkPage(itemIndex, packageIndex)
@@ -128,8 +128,8 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
 
               val result = PackageDomain.userAnswersReader(itemIndex, packageIndex).apply(Nil).run(userAnswers)
 
-              result.value.value mustBe expectedResult
-              result.value.pages mustBe Seq(
+              result.value.value mustEqual expectedResult
+              result.value.pages mustEqual Seq(
                 PackageTypePage(itemIndex, packageIndex),
                 NumberOfPackagesPage(itemIndex, packageIndex),
                 AddShippingMarkYesNoPage(itemIndex, packageIndex),
@@ -154,8 +154,8 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
 
               val result = PackageDomain.userAnswersReader(itemIndex, packageIndex).apply(Nil).run(userAnswers)
 
-              result.value.value mustBe expectedResult
-              result.value.pages mustBe Seq(
+              result.value.value mustEqual expectedResult
+              result.value.pages mustEqual Seq(
                 PackageTypePage(itemIndex, packageIndex),
                 AddShippingMarkYesNoPage(itemIndex, packageIndex),
                 ShippingMarkPage(itemIndex, packageIndex)
@@ -179,8 +179,8 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
 
               val result = PackageDomain.userAnswersReader(itemIndex, packageIndex).apply(Nil).run(userAnswers)
 
-              result.value.value mustBe expectedResult
-              result.value.pages mustBe Seq(
+              result.value.value mustEqual expectedResult
+              result.value.pages mustEqual Seq(
                 PackageTypePage(itemIndex, packageIndex),
                 NumberOfPackagesPage(itemIndex, packageIndex),
                 ShippingMarkPage(itemIndex, packageIndex)
@@ -196,8 +196,8 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
         "when package type is not answered" in {
           val result = PackageDomain.userAnswersReader(itemIndex, packageIndex).apply(Nil).run(emptyUserAnswers)
 
-          result.left.value.page mustBe PackageTypePage(itemIndex, packageIndex)
-          result.left.value.pages mustBe Seq(
+          result.left.value.page mustEqual PackageTypePage(itemIndex, packageIndex)
+          result.left.value.pages mustEqual Seq(
             PackageTypePage(itemIndex, packageIndex)
           )
         }
@@ -211,8 +211,8 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
 
                 val result = PackageDomain.userAnswersReader(itemIndex, packageIndex).apply(Nil).run(userAnswers)
 
-                result.left.value.page mustBe NumberOfPackagesPage(itemIndex, packageIndex)
-                result.left.value.pages mustBe Seq(
+                result.left.value.page mustEqual NumberOfPackagesPage(itemIndex, packageIndex)
+                result.left.value.pages mustEqual Seq(
                   PackageTypePage(itemIndex, packageIndex),
                   NumberOfPackagesPage(itemIndex, packageIndex)
                 )
@@ -228,8 +228,8 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
 
                 val result = PackageDomain.userAnswersReader(itemIndex, packageIndex).apply(Nil).run(userAnswers)
 
-                result.left.value.page mustBe AddShippingMarkYesNoPage(itemIndex, packageIndex)
-                result.left.value.pages mustBe Seq(
+                result.left.value.page mustEqual AddShippingMarkYesNoPage(itemIndex, packageIndex)
+                result.left.value.pages mustEqual Seq(
                   PackageTypePage(itemIndex, packageIndex),
                   NumberOfPackagesPage(itemIndex, packageIndex),
                   AddShippingMarkYesNoPage(itemIndex, packageIndex)
@@ -247,8 +247,8 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
 
                 val result = PackageDomain.userAnswersReader(itemIndex, packageIndex).apply(Nil).run(userAnswers)
 
-                result.left.value.page mustBe ShippingMarkPage(itemIndex, packageIndex)
-                result.left.value.pages mustBe Seq(
+                result.left.value.page mustEqual ShippingMarkPage(itemIndex, packageIndex)
+                result.left.value.pages mustEqual Seq(
                   PackageTypePage(itemIndex, packageIndex),
                   NumberOfPackagesPage(itemIndex, packageIndex),
                   AddShippingMarkYesNoPage(itemIndex, packageIndex),
@@ -268,8 +268,8 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
 
                 val result = PackageDomain.userAnswersReader(itemIndex, packageIndex).apply(Nil).run(userAnswers)
 
-                result.left.value.page mustBe AddShippingMarkYesNoPage(itemIndex, packageIndex)
-                result.left.value.pages mustBe Seq(
+                result.left.value.page mustEqual AddShippingMarkYesNoPage(itemIndex, packageIndex)
+                result.left.value.pages mustEqual Seq(
                   PackageTypePage(itemIndex, packageIndex),
                   AddShippingMarkYesNoPage(itemIndex, packageIndex)
                 )
@@ -285,8 +285,8 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
 
                 val result = PackageDomain.userAnswersReader(itemIndex, packageIndex).apply(Nil).run(userAnswers)
 
-                result.left.value.page mustBe ShippingMarkPage(itemIndex, packageIndex)
-                result.left.value.pages mustBe Seq(
+                result.left.value.page mustEqual ShippingMarkPage(itemIndex, packageIndex)
+                result.left.value.pages mustEqual Seq(
                   PackageTypePage(itemIndex, packageIndex),
                   AddShippingMarkYesNoPage(itemIndex, packageIndex),
                   ShippingMarkPage(itemIndex, packageIndex)
@@ -305,8 +305,8 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
 
                 val result = PackageDomain.userAnswersReader(itemIndex, packageIndex).apply(Nil).run(userAnswers)
 
-                result.left.value.page mustBe NumberOfPackagesPage(itemIndex, packageIndex)
-                result.left.value.pages mustBe Seq(
+                result.left.value.page mustEqual NumberOfPackagesPage(itemIndex, packageIndex)
+                result.left.value.pages mustEqual Seq(
                   PackageTypePage(itemIndex, packageIndex),
                   NumberOfPackagesPage(itemIndex, packageIndex)
                 )
@@ -322,8 +322,8 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
 
                 val result = PackageDomain.userAnswersReader(itemIndex, packageIndex).apply(Nil).run(userAnswers)
 
-                result.left.value.page mustBe ShippingMarkPage(itemIndex, packageIndex)
-                result.left.value.pages mustBe Seq(
+                result.left.value.page mustEqual ShippingMarkPage(itemIndex, packageIndex)
+                result.left.value.pages mustEqual Seq(
                   PackageTypePage(itemIndex, packageIndex),
                   NumberOfPackagesPage(itemIndex, packageIndex),
                   ShippingMarkPage(itemIndex, packageIndex)
@@ -337,8 +337,8 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
         "when package type is not answered" in {
           val result = PackageDomain.userAnswersReader(itemIndex, packageIndex).apply(Nil).run(emptyUserAnswers)
 
-          result.left.value.page mustBe PackageTypePage(itemIndex, packageIndex)
-          result.left.value.pages mustBe Seq(
+          result.left.value.page mustEqual PackageTypePage(itemIndex, packageIndex)
+          result.left.value.pages mustEqual Seq(
             PackageTypePage(itemIndex, packageIndex)
           )
         }
@@ -352,8 +352,8 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
 
                 val result = PackageDomain.userAnswersReader(itemIndex, packageIndex).apply(Nil).run(userAnswers)
 
-                result.left.value.page mustBe NumberOfPackagesPage(itemIndex, packageIndex)
-                result.left.value.pages mustBe Seq(
+                result.left.value.page mustEqual NumberOfPackagesPage(itemIndex, packageIndex)
+                result.left.value.pages mustEqual Seq(
                   PackageTypePage(itemIndex, packageIndex),
                   NumberOfPackagesPage(itemIndex, packageIndex)
                 )
@@ -369,8 +369,8 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
 
                 val result = PackageDomain.userAnswersReader(itemIndex, packageIndex).apply(Nil).run(userAnswers)
 
-                result.left.value.page mustBe BeforeYouContinuePage(itemIndex, packageIndex)
-                result.left.value.pages mustBe Seq(
+                result.left.value.page mustEqual BeforeYouContinuePage(itemIndex, packageIndex)
+                result.left.value.pages mustEqual Seq(
                   PackageTypePage(itemIndex, packageIndex),
                   NumberOfPackagesPage(itemIndex, packageIndex),
                   BeforeYouContinuePage(itemIndex, packageIndex)
@@ -387,8 +387,8 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
 
                 val result = PackageDomain.userAnswersReader(itemIndex, packageIndex).apply(Nil).run(userAnswers)
 
-                result.left.value.page mustBe AddShippingMarkYesNoPage(itemIndex, packageIndex)
-                result.left.value.pages mustBe Seq(
+                result.left.value.page mustEqual AddShippingMarkYesNoPage(itemIndex, packageIndex)
+                result.left.value.pages mustEqual Seq(
                   PackageTypePage(itemIndex, packageIndex),
                   NumberOfPackagesPage(itemIndex, packageIndex),
                   AddShippingMarkYesNoPage(itemIndex, packageIndex)
@@ -406,8 +406,8 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
 
                 val result = PackageDomain.userAnswersReader(itemIndex, packageIndex).apply(Nil).run(userAnswers)
 
-                result.left.value.page mustBe ShippingMarkPage(itemIndex, packageIndex)
-                result.left.value.pages mustBe Seq(
+                result.left.value.page mustEqual ShippingMarkPage(itemIndex, packageIndex)
+                result.left.value.pages mustEqual Seq(
                   PackageTypePage(itemIndex, packageIndex),
                   NumberOfPackagesPage(itemIndex, packageIndex),
                   AddShippingMarkYesNoPage(itemIndex, packageIndex),
@@ -427,8 +427,8 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
 
                 val result = PackageDomain.userAnswersReader(itemIndex, packageIndex).apply(Nil).run(userAnswers)
 
-                result.left.value.page mustBe AddShippingMarkYesNoPage(itemIndex, packageIndex)
-                result.left.value.pages mustBe Seq(
+                result.left.value.page mustEqual AddShippingMarkYesNoPage(itemIndex, packageIndex)
+                result.left.value.pages mustEqual Seq(
                   PackageTypePage(itemIndex, packageIndex),
                   AddShippingMarkYesNoPage(itemIndex, packageIndex)
                 )
@@ -444,8 +444,8 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
 
                 val result = PackageDomain.userAnswersReader(itemIndex, packageIndex).apply(Nil).run(userAnswers)
 
-                result.left.value.page mustBe ShippingMarkPage(itemIndex, packageIndex)
-                result.left.value.pages mustBe Seq(
+                result.left.value.page mustEqual ShippingMarkPage(itemIndex, packageIndex)
+                result.left.value.pages mustEqual Seq(
                   PackageTypePage(itemIndex, packageIndex),
                   AddShippingMarkYesNoPage(itemIndex, packageIndex),
                   ShippingMarkPage(itemIndex, packageIndex)
@@ -464,8 +464,8 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
 
                 val result = PackageDomain.userAnswersReader(itemIndex, packageIndex).apply(Nil).run(userAnswers)
 
-                result.left.value.page mustBe NumberOfPackagesPage(itemIndex, packageIndex)
-                result.left.value.pages mustBe Seq(
+                result.left.value.page mustEqual NumberOfPackagesPage(itemIndex, packageIndex)
+                result.left.value.pages mustEqual Seq(
                   PackageTypePage(itemIndex, packageIndex),
                   NumberOfPackagesPage(itemIndex, packageIndex)
                 )
@@ -481,8 +481,8 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
 
                 val result = PackageDomain.userAnswersReader(itemIndex, packageIndex).apply(Nil).run(userAnswers)
 
-                result.left.value.page mustBe BeforeYouContinuePage(itemIndex, packageIndex)
-                result.left.value.pages mustBe Seq(
+                result.left.value.page mustEqual BeforeYouContinuePage(itemIndex, packageIndex)
+                result.left.value.pages mustEqual Seq(
                   PackageTypePage(itemIndex, packageIndex),
                   NumberOfPackagesPage(itemIndex, packageIndex),
                   BeforeYouContinuePage(itemIndex, packageIndex)
@@ -499,8 +499,8 @@ class PackageDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
 
                 val result = PackageDomain.userAnswersReader(itemIndex, packageIndex).apply(Nil).run(userAnswers)
 
-                result.left.value.page mustBe ShippingMarkPage(itemIndex, packageIndex)
-                result.left.value.pages mustBe Seq(
+                result.left.value.page mustEqual ShippingMarkPage(itemIndex, packageIndex)
+                result.left.value.pages mustEqual Seq(
                   PackageTypePage(itemIndex, packageIndex),
                   NumberOfPackagesPage(itemIndex, packageIndex),
                   ShippingMarkPage(itemIndex, packageIndex)

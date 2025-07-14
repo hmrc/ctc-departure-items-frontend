@@ -43,7 +43,7 @@ class DeclarationTypeSpec extends AnyFreeSpec with Matchers with ScalaCheckPrope
                  |  "description": "$description"
                  |}
                  |""".stripMargin)
-            .as[DeclarationTypeItemLevel] mustBe declarationType
+            .as[DeclarationTypeItemLevel] mustEqual declarationType
       }
     }
 
@@ -61,7 +61,7 @@ class DeclarationTypeSpec extends AnyFreeSpec with Matchers with ScalaCheckPrope
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (code, description) =>
           val declarationType = DeclarationTypeItemLevel(code, description)
-          Json.toJson(declarationType) mustBe Json.parse(s"""
+          Json.toJson(declarationType) mustEqual Json.parse(s"""
                |{
                |  "code": "$code",
                |  "description": "$description"

@@ -66,7 +66,7 @@ class TransportEquipmentsServiceSpec extends SpecBase {
 
         val result = service.getTransportEquipments(userAnswers)
 
-        result mustBe SelectableList(
+        result mustEqual SelectableList(
           Seq(
             TransportEquipment(1, Some("98777"), UUID.fromString(uuid1)),
             TransportEquipment(2, None, UUID.fromString(uuid2))
@@ -123,12 +123,12 @@ class TransportEquipmentsServiceSpec extends SpecBase {
             val result1 = service.getTransportEquipment(userAnswers, Index(0))
             val result2 = service.getTransportEquipment(userAnswers, Index(1))
 
-            result1.value mustBe TransportEquipment(
+            result1.value mustEqual TransportEquipment(
               number = 1,
               containerId = Some("98777"),
               uuid = UUID.fromString(uuid1)
             )
-            result2.value mustBe TransportEquipment(
+            result2.value mustEqual TransportEquipment(
               number = 2,
               containerId = None,
               uuid = UUID.fromString(uuid2)
@@ -140,7 +140,7 @@ class TransportEquipmentsServiceSpec extends SpecBase {
           "when Index not found" in {
             val result = service.getTransportEquipment(userAnswers, Index(2))
 
-            result mustBe None
+            result must not be defined
           }
         }
       }
@@ -162,7 +162,7 @@ class TransportEquipmentsServiceSpec extends SpecBase {
 
         val result = service.getTransportEquipment(userAnswers, Index(0))
 
-        result mustBe None
+        result must not be defined
       }
     }
   }

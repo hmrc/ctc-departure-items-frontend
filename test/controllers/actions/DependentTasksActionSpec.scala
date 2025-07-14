@@ -49,32 +49,32 @@ class DependentTasksActionSpec extends SpecBase with ScalaCheckPropertyChecks wi
       val tasks       = Map(dependentTasks.map(_ -> TaskStatus.Completed)*)
       val userAnswers = emptyUserAnswers.copy(tasks = tasks)
       val result      = harness(userAnswers)
-      status(result) mustBe OK
-      redirectLocation(result) mustBe None
+      status(result) mustEqual OK
+      redirectLocation(result) must not be defined
     }
 
     "return None if dependent sections are in error state" in {
       val tasks       = Map(dependentTasks.map(_ -> TaskStatus.Error)*)
       val userAnswers = emptyUserAnswers.copy(tasks = tasks)
       val result      = harness(userAnswers)
-      status(result) mustBe OK
-      redirectLocation(result) mustBe None
+      status(result) mustEqual OK
+      redirectLocation(result) must not be defined
     }
 
     "return None if dependent sections are in unavailable state" in {
       val tasks       = Map(dependentTasks.map(_ -> TaskStatus.Unavailable)*)
       val userAnswers = emptyUserAnswers.copy(tasks = tasks)
       val result      = harness(userAnswers)
-      status(result) mustBe OK
-      redirectLocation(result) mustBe None
+      status(result) mustEqual OK
+      redirectLocation(result) must not be defined
     }
 
     "return None if dependent sections are in amend state" in {
       val tasks       = Map(dependentTasks.map(_ -> TaskStatus.Amended)*)
       val userAnswers = emptyUserAnswers.copy(tasks = tasks)
       val result      = harness(userAnswers)
-      status(result) mustBe OK
-      redirectLocation(result) mustBe None
+      status(result) mustEqual OK
+      redirectLocation(result) must not be defined
     }
 
     "return to task list" - {
@@ -84,8 +84,8 @@ class DependentTasksActionSpec extends SpecBase with ScalaCheckPropertyChecks wi
             val tasks       = Map(dependentTasks.map(_ -> taskStatus)*)
             val userAnswers = emptyUserAnswers.copy(tasks = tasks)
             val result      = harness(userAnswers)
-            status(result) mustBe SEE_OTHER
-            redirectLocation(result).value mustBe frontendAppConfig.taskListUrl(userAnswers.lrn)
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustEqual frontendAppConfig.taskListUrl(userAnswers.lrn)
         }
       }
 
@@ -96,8 +96,8 @@ class DependentTasksActionSpec extends SpecBase with ScalaCheckPropertyChecks wi
               .updated(dependentTask, taskStatus)
             val userAnswers = emptyUserAnswers.copy(tasks = tasks)
             val result      = harness(userAnswers)
-            status(result) mustBe SEE_OTHER
-            redirectLocation(result).value mustBe frontendAppConfig.taskListUrl(userAnswers.lrn)
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustEqual frontendAppConfig.taskListUrl(userAnswers.lrn)
         }
       }
     }

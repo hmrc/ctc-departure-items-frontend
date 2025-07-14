@@ -53,7 +53,7 @@ class AddDocumentsYesNoPageSpec extends PageBehaviours {
           val result = userAnswers.setValue(AddDocumentsYesNoPage(itemIndex), true)
 
           result.get(InferredAddDocumentsYesNoPage(itemIndex)) must not be defined
-          result.get(DocumentsSection(itemIndex)) must be(defined)
+          result.get(DocumentsSection(itemIndex)) mustBe defined
         }
       }
     }
@@ -93,7 +93,7 @@ class InferredAddDocumentsYesNoPageSpec extends PageBehaviours {
           val result = userAnswers.setValue(InferredAddDocumentsYesNoPage(itemIndex), true)
 
           result.get(AddDocumentsYesNoPage(itemIndex)) must not be defined
-          result.get(DocumentsSection(itemIndex)) must be(defined)
+          result.get(DocumentsSection(itemIndex)) mustBe defined
         }
       }
     }

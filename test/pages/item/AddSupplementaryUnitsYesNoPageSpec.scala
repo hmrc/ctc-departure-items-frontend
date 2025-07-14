@@ -55,7 +55,7 @@ class AddSupplementaryUnitsYesNoPageSpec extends PageBehaviours {
 
               val result = userAnswers.setValue(AddSupplementaryUnitsYesNoPage(itemIndex), true)
 
-              result.get(SupplementaryUnitsPage(itemIndex)) must be(defined)
+              result.get(SupplementaryUnitsPage(itemIndex)) mustBe defined
           }
         }
       }

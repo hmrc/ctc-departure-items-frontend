@@ -1638,7 +1638,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
             )
         )
 
-        result.futureValue.left.value mustBe a[Exception]
+        result.futureValue.left.value mustBe an[Exception]
     }
   }
 }

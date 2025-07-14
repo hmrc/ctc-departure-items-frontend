@@ -35,11 +35,11 @@ class AddAnotherDangerousGoodsViewModelSpec extends SpecBase with Generators wit
 
           val result = new AddAnotherDangerousGoodsViewModelProvider()(userAnswers, mode, itemIndex)
 
-          result.listItems.length mustBe 1
-          result.title mustBe "You have added 1 UN number for dangerous goods"
-          result.heading mustBe "You have added 1 UN number for dangerous goods"
-          result.legend mustBe "Do you want to add another UN number?"
-          result.maxLimitLabel mustBe "You cannot add any more UN numbers for dangerous goods. To add another, you need to remove one first."
+          result.listItems.length mustEqual 1
+          result.title mustEqual "You have added 1 UN number for dangerous goods"
+          result.heading mustEqual "You have added 1 UN number for dangerous goods"
+          result.legend mustEqual "Do you want to add another UN number?"
+          result.maxLimitLabel mustEqual "You cannot add any more UN numbers for dangerous goods. To add another, you need to remove one first."
       }
     }
 
@@ -54,11 +54,11 @@ class AddAnotherDangerousGoodsViewModelSpec extends SpecBase with Generators wit
           }
 
           val result = new AddAnotherDangerousGoodsViewModelProvider()(userAnswers, mode, itemIndex)
-          result.listItems.length mustBe dangerousGoods
-          result.title mustBe s"You have added ${formatter.format(dangerousGoods)} UN numbers for dangerous goods"
-          result.heading mustBe s"You have added ${formatter.format(dangerousGoods)} UN numbers for dangerous goods"
-          result.legend mustBe "Do you want to add another UN number?"
-          result.maxLimitLabel mustBe "You cannot add any more UN numbers for dangerous goods. To add another, you need to remove one first."
+          result.listItems.length mustEqual dangerousGoods
+          result.title mustEqual s"You have added ${formatter.format(dangerousGoods)} UN numbers for dangerous goods"
+          result.heading mustEqual s"You have added ${formatter.format(dangerousGoods)} UN numbers for dangerous goods"
+          result.legend mustEqual "Do you want to add another UN number?"
+          result.maxLimitLabel mustEqual "You cannot add any more UN numbers for dangerous goods. To add another, you need to remove one first."
       }
     }
   }

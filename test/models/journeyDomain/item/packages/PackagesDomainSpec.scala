@@ -37,8 +37,8 @@ class PackagesDomainSpec extends SpecBase with Generators {
 
       val result = PackagesDomain.userAnswersReader(itemIndex).apply(Nil).run(userAnswers)
 
-      result.value.value.value.length mustBe numberOfPackages
-      result.value.pages.last mustBe AddAnotherPackagePage(itemIndex)
+      result.value.value.value.length mustEqual numberOfPackages
+      result.value.pages.last mustEqual AddAnotherPackagePage(itemIndex)
     }
   }
 }

@@ -65,7 +65,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when DescriptionPage is undefined" in {
           val helper = buildHelper(emptyUserAnswers, itemIndex)
           val result = helper.itemDescription
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -78,16 +78,16 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               val helper = buildHelper(answers, itemIndex)
               val result = helper.itemDescription.get
 
-              result.key.value mustBe "Description"
-              result.value.value mustBe description
+              result.key.value mustEqual "Description"
+              result.value.value mustEqual description
 
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe DescriptionController.onPageLoad(answers.lrn, mode, itemIndex).url
-              action.visuallyHiddenText.get mustBe "description for item 1"
-              action.id mustBe "change-description"
+              action.content.value mustEqual "Change"
+              action.href mustEqual DescriptionController.onPageLoad(answers.lrn, mode, itemIndex).url
+              action.visuallyHiddenText.get mustEqual "description for item 1"
+              action.id mustEqual "change-description"
           }
         }
       }
@@ -102,7 +102,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
           when(mockTransportEquipmentsService.getTransportEquipment(any(), any())).thenReturn(None)
           val helper = buildHelper(emptyUserAnswers, itemIndex)
           val result = helper.transportEquipment
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -116,15 +116,15 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               val helper = buildHelper(answers, itemIndex)
               val result = helper.transportEquipment.get
 
-              result.key.value mustBe "Transport equipment"
-              result.value.value mustBe transportEquipment.toString
+              result.key.value mustEqual "Transport equipment"
+              result.value.value mustEqual transportEquipment.toString
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe TransportEquipmentController.onPageLoad(answers.lrn, mode, itemIndex).url
-              action.visuallyHiddenText.get mustBe "transport equipment for item 1"
-              action.id mustBe "change-transport-equipment"
+              action.content.value mustEqual "Change"
+              action.href mustEqual TransportEquipmentController.onPageLoad(answers.lrn, mode, itemIndex).url
+              action.visuallyHiddenText.get mustEqual "transport equipment for item 1"
+              action.id mustEqual "change-transport-equipment"
           }
         }
       }
@@ -135,7 +135,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when DeclarationTypePage is undefined" in {
           val helper = buildHelper(emptyUserAnswers, itemIndex)
           val result = helper.declarationType
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -149,16 +149,16 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               val helper = buildHelper(answers, itemIndex)
               val result = helper.declarationType.get
 
-              result.key.value mustBe "Declaration type"
+              result.key.value mustEqual "Declaration type"
               val key = s"item.declarationType.${declarationType.code}"
-              messages.isDefinedAt(key) mustBe true
+              messages.isDefinedAt(key) mustEqual true
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe DeclarationTypeController.onPageLoad(answers.lrn, mode, itemIndex).url
-              action.visuallyHiddenText.get mustBe "declaration type for item 1"
-              action.id mustBe "change-declaration-type"
+              action.content.value mustEqual "Change"
+              action.href mustEqual DeclarationTypeController.onPageLoad(answers.lrn, mode, itemIndex).url
+              action.visuallyHiddenText.get mustEqual "declaration type for item 1"
+              action.id mustEqual "change-declaration-type"
           }
         }
       }
@@ -169,7 +169,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when CountryOfDispatchPage is undefined" in {
           val helper = buildHelper(emptyUserAnswers, itemIndex)
           val result = helper.countryOfDispatch
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -181,16 +181,16 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               val helper  = buildHelper(answers, itemIndex)
               val result  = helper.countryOfDispatch.get
 
-              result.key.value mustBe "Country of dispatch"
-              result.value.value mustBe country.toString
+              result.key.value mustEqual "Country of dispatch"
+              result.value.value mustEqual country.toString
 
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe CountryOfDispatchController.onPageLoad(answers.lrn, mode, itemIndex).url
-              action.visuallyHiddenText.get mustBe "country of dispatch for item 1"
-              action.id mustBe "change-country-of-dispatch"
+              action.content.value mustEqual "Change"
+              action.href mustEqual CountryOfDispatchController.onPageLoad(answers.lrn, mode, itemIndex).url
+              action.visuallyHiddenText.get mustEqual "country of dispatch for item 1"
+              action.id mustEqual "change-country-of-dispatch"
           }
         }
       }
@@ -201,7 +201,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when CountryOfDestinationPage is undefined" in {
           val helper = buildHelper(emptyUserAnswers, itemIndex)
           val result = helper.countryOfDestination
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -213,16 +213,16 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               val helper  = buildHelper(answers, itemIndex)
               val result  = helper.countryOfDestination.get
 
-              result.key.value mustBe "Country of destination"
-              result.value.value mustBe country.toString
+              result.key.value mustEqual "Country of destination"
+              result.value.value mustEqual country.toString
 
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe CountryOfDestinationController.onPageLoad(answers.lrn, mode, itemIndex).url
-              action.visuallyHiddenText.get mustBe "country of destination for item 1"
-              action.id mustBe "change-country-of-destination"
+              action.content.value mustEqual "Change"
+              action.href mustEqual CountryOfDestinationController.onPageLoad(answers.lrn, mode, itemIndex).url
+              action.visuallyHiddenText.get mustEqual "country of destination for item 1"
+              action.id mustEqual "change-country-of-destination"
           }
         }
       }
@@ -233,7 +233,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when AddUCRYesNoPage is undefined" in {
           val helper = buildHelper(emptyUserAnswers, itemIndex)
           val result = helper.ucrYesNo
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -244,16 +244,16 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
           val helper = buildHelper(answers, itemIndex)
           val result = helper.ucrYesNo.get
 
-          result.key.value mustBe "Do you want to add a Unique Consignment Reference (UCR)?"
-          result.value.value mustBe "Yes"
+          result.key.value mustEqual "Do you want to add a Unique Consignment Reference (UCR)?"
+          result.value.value mustEqual "Yes"
 
           val actions = result.actions.get.items
-          actions.size mustBe 1
+          actions.size mustEqual 1
           val action = actions.head
-          action.content.value mustBe "Change"
-          action.href mustBe AddUCRYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
-          action.visuallyHiddenText.get mustBe "if you want to add a Unique Consignment Reference (UCR) for item 1"
-          action.id mustBe "change-add-ucr"
+          action.content.value mustEqual "Change"
+          action.href mustEqual AddUCRYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
+          action.visuallyHiddenText.get mustEqual "if you want to add a Unique Consignment Reference (UCR) for item 1"
+          action.id mustEqual "change-add-ucr"
         }
       }
     }
@@ -263,7 +263,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when UniqueConsignmentReferencePage is undefined" in {
           val helper = buildHelper(emptyUserAnswers, itemIndex)
           val result = helper.uniqueConsignmentReference
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -276,16 +276,16 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               val helper = buildHelper(answers, itemIndex)
               val result = helper.uniqueConsignmentReference.get
 
-              result.key.value mustBe "Unique Consignment Reference (UCR)"
-              result.value.value mustBe ucr
+              result.key.value mustEqual "Unique Consignment Reference (UCR)"
+              result.value.value mustEqual ucr
 
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe UniqueConsignmentReferenceController.onPageLoad(answers.lrn, mode, itemIndex).url
-              action.visuallyHiddenText.get mustBe "Unique Consignment Reference (UCR) for item 1"
-              action.id mustBe "change-ucr"
+              action.content.value mustEqual "Change"
+              action.href mustEqual UniqueConsignmentReferenceController.onPageLoad(answers.lrn, mode, itemIndex).url
+              action.visuallyHiddenText.get mustEqual "Unique Consignment Reference (UCR) for item 1"
+              action.id mustEqual "change-ucr"
           }
         }
       }
@@ -296,7 +296,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when AddCUSCodeYesNoPage is undefined" in {
           val helper = buildHelper(emptyUserAnswers, itemIndex)
           val result = helper.cusCodeYesNo
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -307,16 +307,16 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
           val helper = buildHelper(answers, itemIndex)
           val result = helper.cusCodeYesNo.get
 
-          result.key.value mustBe "Do you want to declare a Customs Union and Statistics (CUS) code?"
-          result.value.value mustBe "Yes"
+          result.key.value mustEqual "Do you want to declare a Customs Union and Statistics (CUS) code?"
+          result.value.value mustEqual "Yes"
 
           val actions = result.actions.get.items
-          actions.size mustBe 1
+          actions.size mustEqual 1
           val action = actions.head
-          action.content.value mustBe "Change"
-          action.href mustBe AddCUSCodeYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
-          action.visuallyHiddenText.get mustBe "if you want to declare a Customs Union and Statistics (CUS) code for item 1"
-          action.id mustBe "change-add-cus-code"
+          action.content.value mustEqual "Change"
+          action.href mustEqual AddCUSCodeYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
+          action.visuallyHiddenText.get mustEqual "if you want to declare a Customs Union and Statistics (CUS) code for item 1"
+          action.id mustEqual "change-add-cus-code"
         }
       }
     }
@@ -326,7 +326,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when CustomsUnionAndStatisticsCodePage is undefined" in {
           val helper = buildHelper(emptyUserAnswers, itemIndex)
           val result = helper.customsUnionAndStatisticsCode
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -339,16 +339,16 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               val helper = buildHelper(answers, itemIndex)
               val result = helper.customsUnionAndStatisticsCode.get
 
-              result.key.value mustBe "Customs Union and Statistics (CUS) code"
-              result.value.value mustBe cusCode
+              result.key.value mustEqual "Customs Union and Statistics (CUS) code"
+              result.value.value mustEqual cusCode
 
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe CustomsUnionAndStatisticsCodeController.onPageLoad(answers.lrn, mode, itemIndex).url
-              action.visuallyHiddenText.get mustBe "Customs Union and Statistics (CUS) code for item 1"
-              action.id mustBe "change-cus-code"
+              action.content.value mustEqual "Change"
+              action.href mustEqual CustomsUnionAndStatisticsCodeController.onPageLoad(answers.lrn, mode, itemIndex).url
+              action.visuallyHiddenText.get mustEqual "Customs Union and Statistics (CUS) code for item 1"
+              action.id mustEqual "change-cus-code"
           }
         }
       }
@@ -359,7 +359,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when AddCommodityCodeYesNoPage is undefined" in {
           val helper = buildHelper(emptyUserAnswers, itemIndex)
           val result = helper.commodityCodeYesNo
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -373,16 +373,16 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
           val helper = buildHelper(answers, itemIndex)
           val result = helper.commodityCodeYesNo.get
 
-          result.key.value mustBe "Do you want to add a commodity code?"
-          result.value.value mustBe "Yes"
+          result.key.value mustEqual "Do you want to add a commodity code?"
+          result.value.value mustEqual "Yes"
 
           val actions = result.actions.get.items
-          actions.size mustBe 1
+          actions.size mustEqual 1
           val action = actions.head
-          action.content.value mustBe "Change"
-          action.href mustBe AddCommodityCodeYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
-          action.visuallyHiddenText.get mustBe "if you want to add a commodity code for item 1"
-          action.id mustBe "change-add-commodity-code"
+          action.content.value mustEqual "Change"
+          action.href mustEqual AddCommodityCodeYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
+          action.visuallyHiddenText.get mustEqual "if you want to add a commodity code for item 1"
+          action.id mustEqual "change-add-commodity-code"
         }
 
         "when AddCommodityCodeYesNoPage is defined without action" in {
@@ -393,11 +393,11 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
           val helper = buildHelper(answers, itemIndex)
           val result = helper.commodityCodeYesNo.get
 
-          result.key.value mustBe "Do you want to add a commodity code?"
-          result.value.value mustBe "Yes"
+          result.key.value mustEqual "Do you want to add a commodity code?"
+          result.value.value mustEqual "Yes"
 
           val actions = result.actions
-          actions.isDefined mustBe false
+          actions.isDefined mustEqual false
         }
       }
     }
@@ -407,7 +407,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when CommodityCodePage is undefined" in {
           val helper = buildHelper(emptyUserAnswers, itemIndex)
           val result = helper.commodityCode
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -422,16 +422,16 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               val helper = buildHelper(answers, itemIndex)
               val result = helper.commodityCode.get
 
-              result.key.value mustBe "Commodity code"
-              result.value.value mustBe commodityCode
+              result.key.value mustEqual "Commodity code"
+              result.value.value mustEqual commodityCode
 
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe CommodityCodeController.onPageLoad(answers.lrn, mode, itemIndex).url
-              action.visuallyHiddenText.get mustBe "commodity code for item 1"
-              action.id mustBe "change-commodity-code"
+              action.content.value mustEqual "Change"
+              action.href mustEqual CommodityCodeController.onPageLoad(answers.lrn, mode, itemIndex).url
+              action.visuallyHiddenText.get mustEqual "commodity code for item 1"
+              action.id mustEqual "change-commodity-code"
           }
         }
 
@@ -445,11 +445,11 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               val helper = buildHelper(answers, itemIndex)
               val result = helper.commodityCode.get
 
-              result.key.value mustBe "Commodity code"
-              result.value.value mustBe commodityCode
+              result.key.value mustEqual "Commodity code"
+              result.value.value mustEqual commodityCode
 
               val actions = result.actions
-              actions.isDefined mustBe false
+              actions.isDefined mustEqual false
           }
         }
       }
@@ -460,7 +460,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when AddCombinedNomenclatureCodeYesNoPage is undefined" in {
           val helper = buildHelper(emptyUserAnswers, itemIndex)
           val result = helper.combinedNomenclatureCodeYesNo
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -471,16 +471,16 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
           val helper = buildHelper(answers, itemIndex)
           val result = helper.combinedNomenclatureCodeYesNo.get
 
-          result.key.value mustBe "Do you want to add a combined nomenclature code?"
-          result.value.value mustBe "Yes"
+          result.key.value mustEqual "Do you want to add a combined nomenclature code?"
+          result.value.value mustEqual "Yes"
 
           val actions = result.actions.get.items
-          actions.size mustBe 1
+          actions.size mustEqual 1
           val action = actions.head
-          action.content.value mustBe "Change"
-          action.href mustBe AddCombinedNomenclatureCodeYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
-          action.visuallyHiddenText.get mustBe "if you want to add a combined nomenclature code for item 1"
-          action.id mustBe "change-add-combined-nomenclature-code"
+          action.content.value mustEqual "Change"
+          action.href mustEqual AddCombinedNomenclatureCodeYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
+          action.visuallyHiddenText.get mustEqual "if you want to add a combined nomenclature code for item 1"
+          action.id mustEqual "change-add-combined-nomenclature-code"
         }
       }
     }
@@ -490,7 +490,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when CombinedNomenclatureCodePage is undefined" in {
           val helper = buildHelper(emptyUserAnswers, itemIndex)
           val result = helper.combinedNomenclatureCode
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -503,16 +503,16 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               val helper = buildHelper(answers, itemIndex)
               val result = helper.combinedNomenclatureCode.get
 
-              result.key.value mustBe "Combined nomenclature code"
-              result.value.value mustBe combinedNomenclatureCode
+              result.key.value mustEqual "Combined nomenclature code"
+              result.value.value mustEqual combinedNomenclatureCode
 
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe CombinedNomenclatureCodeController.onPageLoad(answers.lrn, mode, itemIndex).url
-              action.visuallyHiddenText.get mustBe "combined nomenclature code for item 1"
-              action.id mustBe "change-combined-nomenclature-code"
+              action.content.value mustEqual "Change"
+              action.href mustEqual CombinedNomenclatureCodeController.onPageLoad(answers.lrn, mode, itemIndex).url
+              action.visuallyHiddenText.get mustEqual "combined nomenclature code for item 1"
+              action.id mustEqual "change-combined-nomenclature-code"
           }
         }
       }
@@ -523,7 +523,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when AddDangerousGoodsYesNoPage is undefined" in {
           val helper = buildHelper(emptyUserAnswers, itemIndex)
           val result = helper.dangerousGoodsYesNo
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -534,16 +534,16 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
           val helper = buildHelper(answers, itemIndex)
           val result = helper.dangerousGoodsYesNo.get
 
-          result.key.value mustBe "Does the item contain any dangerous goods?"
-          result.value.value mustBe "Yes"
+          result.key.value mustEqual "Does the item contain any dangerous goods?"
+          result.value.value mustEqual "Yes"
 
           val actions = result.actions.get.items
-          actions.size mustBe 1
+          actions.size mustEqual 1
           val action = actions.head
-          action.content.value mustBe "Change"
-          action.href mustBe AddDangerousGoodsYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
-          action.visuallyHiddenText.get mustBe "if the item 1 contains any dangerous goods"
-          action.id mustBe "change-add-dangerous-goods"
+          action.content.value mustEqual "Change"
+          action.href mustEqual AddDangerousGoodsYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
+          action.visuallyHiddenText.get mustEqual "if the item 1 contains any dangerous goods"
+          action.id mustEqual "change-add-dangerous-goods"
         }
       }
     }
@@ -553,7 +553,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when dangerousGoods is undefined" in {
           val helper = buildHelper(emptyUserAnswers, itemIndex)
           val result = helper.dangerousGoods(dangerousGoodsIndex)
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -565,15 +565,15 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               val helper      = buildHelper(userAnswers, itemIndex)
               val result      = helper.dangerousGoods(dangerousGoodsIndex).get
 
-              result.key.value mustBe "UN number 1"
-              result.value.value mustBe unNumber
+              result.key.value mustEqual "UN number 1"
+              result.value.value mustEqual unNumber
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe UNNumberController.onPageLoad(userAnswers.lrn, mode, itemIndex, dangerousGoodsIndex).url
-              action.visuallyHiddenText.get mustBe s"UN number 1"
-              action.id mustBe "change-dangerous-goods-1"
+              action.content.value mustEqual "Change"
+              action.href mustEqual UNNumberController.onPageLoad(userAnswers.lrn, mode, itemIndex, dangerousGoodsIndex).url
+              action.visuallyHiddenText.get mustEqual s"UN number 1"
+              action.id mustEqual "change-dangerous-goods-1"
           }
         }
       }
@@ -584,7 +584,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when dangerous goods array is empty" in {
           val helper = buildHelper(emptyUserAnswers, itemIndex)
           val result = helper.addOrRemoveDangerousGoods
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -594,9 +594,9 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
           val helper  = buildHelper(answers, itemIndex)
           val result  = helper.addOrRemoveDangerousGoods.get
 
-          result.id mustBe "add-or-remove-dangerous-goods"
-          result.text mustBe "Add or remove dangerous goods"
-          result.href mustBe controllers.item.dangerousGoods.routes.AddAnotherDangerousGoodsController.onPageLoad(answers.lrn, mode, itemIndex).url
+          result.id mustEqual "add-or-remove-dangerous-goods"
+          result.text mustEqual "Add or remove dangerous goods"
+          result.href mustEqual controllers.item.dangerousGoods.routes.AddAnotherDangerousGoodsController.onPageLoad(answers.lrn, mode, itemIndex).url
 
         }
       }
@@ -607,7 +607,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when GrossWeightPage is undefined" in {
           val helper = buildHelper(emptyUserAnswers, itemIndex)
           val result = helper.grossWeight
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -620,16 +620,16 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               val helper = buildHelper(answers, itemIndex)
               val result = helper.grossWeight.get
 
-              result.key.value mustBe "Gross weight"
-              result.value.value mustBe s"${grossWeight}kg"
+              result.key.value mustEqual "Gross weight"
+              result.value.value mustEqual s"${grossWeight}kg"
 
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe GrossWeightController.onPageLoad(answers.lrn, mode, itemIndex).url
-              action.visuallyHiddenText.get mustBe s"gross weight of item 1"
-              action.id mustBe "change-gross-weight"
+              action.content.value mustEqual "Change"
+              action.href mustEqual GrossWeightController.onPageLoad(answers.lrn, mode, itemIndex).url
+              action.visuallyHiddenText.get mustEqual s"gross weight of item 1"
+              action.id mustEqual "change-gross-weight"
           }
         }
       }
@@ -640,7 +640,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when AddItemNetWeightYesNoPage is undefined" in {
           val helper = buildHelper(emptyUserAnswers, itemIndex)
           val result = helper.itemNetWeightYesNo
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -651,16 +651,16 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
           val helper = buildHelper(answers, itemIndex)
           val result = helper.itemNetWeightYesNo.get
 
-          result.key.value mustBe "Do you want to add the item’s net weight?"
-          result.value.value mustBe "Yes"
+          result.key.value mustEqual "Do you want to add the item’s net weight?"
+          result.value.value mustEqual "Yes"
 
           val actions = result.actions.get.items
-          actions.size mustBe 1
+          actions.size mustEqual 1
           val action = actions.head
-          action.content.value mustBe "Change"
-          action.href mustBe AddItemNetWeightYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
-          action.visuallyHiddenText.get mustBe "if you want to add the net weight of item 1"
-          action.id mustBe "change-add-item-net-weight"
+          action.content.value mustEqual "Change"
+          action.href mustEqual AddItemNetWeightYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
+          action.visuallyHiddenText.get mustEqual "if you want to add the net weight of item 1"
+          action.id mustEqual "change-add-item-net-weight"
         }
       }
     }
@@ -670,7 +670,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when NetWeightPage is undefined" in {
           val helper = buildHelper(emptyUserAnswers, itemIndex)
           val result = helper.netWeight
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -683,16 +683,16 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               val helper = buildHelper(answers, itemIndex)
               val result = helper.netWeight.get
 
-              result.key.value mustBe "Net weight"
-              result.value.value mustBe s"${netWeight}kg"
+              result.key.value mustEqual "Net weight"
+              result.value.value mustEqual s"${netWeight}kg"
 
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe NetWeightController.onPageLoad(answers.lrn, mode, itemIndex).url
-              action.visuallyHiddenText.get mustBe s"net weight of item 1"
-              action.id mustBe "change-net-weight"
+              action.content.value mustEqual "Change"
+              action.href mustEqual NetWeightController.onPageLoad(answers.lrn, mode, itemIndex).url
+              action.visuallyHiddenText.get mustEqual s"net weight of item 1"
+              action.id mustEqual "change-net-weight"
           }
         }
       }
@@ -703,7 +703,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when AddSupplementaryUnitsYesNoPage is undefined" in {
           val helper = buildHelper(emptyUserAnswers, itemIndex)
           val result = helper.supplementaryUnitsYesNo
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -714,16 +714,16 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
           val helper = buildHelper(answers, itemIndex)
           val result = helper.supplementaryUnitsYesNo.get
 
-          result.key.value mustBe "Do you want to add supplementary units?"
-          result.value.value mustBe "Yes"
+          result.key.value mustEqual "Do you want to add supplementary units?"
+          result.value.value mustEqual "Yes"
 
           val actions = result.actions.get.items
-          actions.size mustBe 1
+          actions.size mustEqual 1
           val action = actions.head
-          action.content.value mustBe "Change"
-          action.href mustBe AddSupplementaryUnitsYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
-          action.visuallyHiddenText.get mustBe "if you want to add supplementary units for item 1"
-          action.id mustBe "change-add-supplementary-units"
+          action.content.value mustEqual "Change"
+          action.href mustEqual AddSupplementaryUnitsYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
+          action.visuallyHiddenText.get mustEqual "if you want to add supplementary units for item 1"
+          action.id mustEqual "change-add-supplementary-units"
         }
       }
     }
@@ -733,7 +733,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when SupplementaryUnitsPage is undefined" in {
           val helper = buildHelper(emptyUserAnswers, itemIndex)
           val result = helper.supplementaryUnits
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -747,16 +747,16 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               val helper = buildHelper(answers, itemIndex)
               val result = helper.supplementaryUnits.get
 
-              result.key.value mustBe "Number of supplementary units"
-              result.value.value mustBe units.toString()
+              result.key.value mustEqual "Number of supplementary units"
+              result.value.value mustEqual units.toString()
 
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe SupplementaryUnitsController.onPageLoad(answers.lrn, mode, itemIndex).url
-              action.visuallyHiddenText.get mustBe s"number of supplementary units for item 1"
-              action.id mustBe "change-supplementary-units"
+              action.content.value mustEqual "Change"
+              action.href mustEqual SupplementaryUnitsController.onPageLoad(answers.lrn, mode, itemIndex).url
+              action.visuallyHiddenText.get mustEqual s"number of supplementary units for item 1"
+              action.id mustEqual "change-supplementary-units"
           }
         }
       }
@@ -767,7 +767,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when package is undefined" in {
           val helper = buildHelper(emptyUserAnswers, itemIndex)
           val result = helper.`package`(packageIndex)
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -785,15 +785,15 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               val helper = buildHelper(userAnswers, itemIndex)
               val result = helper.`package`(packageIndex).get
 
-              result.key.value mustBe "Package 1"
-              result.value.value mustBe s"1 * ${packageType.toString}"
+              result.key.value mustEqual "Package 1"
+              result.value.value mustEqual s"1 * ${packageType.toString}"
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe PackageTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, packageIndex).url
-              action.visuallyHiddenText.get mustBe s"package 1"
-              action.id mustBe "change-package-1"
+              action.content.value mustEqual "Change"
+              action.href mustEqual PackageTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, packageIndex).url
+              action.visuallyHiddenText.get mustEqual s"package 1"
+              action.id mustEqual "change-package-1"
           }
         }
 
@@ -811,16 +811,16 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               val helper = buildHelper(userAnswers, itemIndex)
               val result = helper.`package`(packageIndex).get
 
-              result.key.value mustBe "Package 1"
+              result.key.value mustEqual "Package 1"
               val quantityString = String.format("%,d", quantity)
-              result.value.value mustBe s"$quantityString * ${packageType.toString}"
+              result.value.value mustEqual s"$quantityString * ${packageType.toString}"
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe PackageTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, packageIndex).url
-              action.visuallyHiddenText.get mustBe "package 1"
-              action.id mustBe "change-package-1"
+              action.content.value mustEqual "Change"
+              action.href mustEqual PackageTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, packageIndex).url
+              action.visuallyHiddenText.get mustEqual "package 1"
+              action.id mustEqual "change-package-1"
           }
         }
       }
@@ -831,7 +831,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when packages array is empty" in {
           val helper = buildHelper(emptyUserAnswers, itemIndex)
           val result = helper.addOrRemovePackages
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -841,9 +841,9 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
           val helper  = buildHelper(answers, itemIndex)
           val result  = helper.addOrRemovePackages.get
 
-          result.id mustBe "add-or-remove-packages"
-          result.text mustBe "Add or remove packages"
-          result.href mustBe controllers.item.packages.routes.AddAnotherPackageController.onPageLoad(answers.lrn, mode, itemIndex).url
+          result.id mustEqual "add-or-remove-packages"
+          result.text mustEqual "Add or remove packages"
+          result.href mustEqual controllers.item.packages.routes.AddAnotherPackageController.onPageLoad(answers.lrn, mode, itemIndex).url
         }
       }
     }
@@ -853,7 +853,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when AddSupplyChainActorYesNoPage is undefined" in {
           val helper = buildHelper(emptyUserAnswers, itemIndex)
           val result = helper.supplyChainActorYesNo
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -864,16 +864,16 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
           val helper = buildHelper(answers, itemIndex)
           val result = helper.supplyChainActorYesNo.get
 
-          result.key.value mustBe "Do you want to add a supply chain actor for this item?"
-          result.value.value mustBe "Yes"
+          result.key.value mustEqual "Do you want to add a supply chain actor for this item?"
+          result.value.value mustEqual "Yes"
 
           val actions = result.actions.get.items
-          actions.size mustBe 1
+          actions.size mustEqual 1
           val action = actions.head
-          action.content.value mustBe "Change"
-          action.href mustBe AddSupplyChainActorYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
-          action.visuallyHiddenText.get mustBe s"if you want to add a supply chain actor for item ${itemIndex.display}"
-          action.id mustBe "change-add-supply-chain-actors"
+          action.content.value mustEqual "Change"
+          action.href mustEqual AddSupplyChainActorYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
+          action.visuallyHiddenText.get mustEqual s"if you want to add a supply chain actor for item ${itemIndex.display}"
+          action.id mustEqual "change-add-supply-chain-actors"
         }
       }
     }
@@ -883,7 +883,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when supplyChainActor is undefined" in {
           val helper = buildHelper(emptyUserAnswers, itemIndex)
           val result = helper.supplyChainActor(actorIndex)
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -897,15 +897,15 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               val helper = buildHelper(userAnswers, itemIndex)
               val result = helper.supplyChainActor(actorIndex).get
 
-              result.key.value mustBe "Supply chain actor 1"
-              result.value.value mustBe s"${actorType.toString} - $identificationNumber"
+              result.key.value mustEqual "Supply chain actor 1"
+              result.value.value mustEqual s"${actorType.toString} - $identificationNumber"
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe SupplyChainActorTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, actorIndex).url
-              action.visuallyHiddenText.get mustBe s"supply chain actor 1"
-              action.id mustBe "change-supply-chain-actor-1"
+              action.content.value mustEqual "Change"
+              action.href mustEqual SupplyChainActorTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, actorIndex).url
+              action.visuallyHiddenText.get mustEqual s"supply chain actor 1"
+              action.id mustEqual "change-supply-chain-actor-1"
           }
         }
       }
@@ -916,7 +916,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when supply chain actors array is empty" in {
           val helper = buildHelper(emptyUserAnswers, itemIndex)
           val result = helper.addOrRemoveSupplyChainActors
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -926,9 +926,9 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
           val helper  = buildHelper(answers, itemIndex)
           val result  = helper.addOrRemoveSupplyChainActors.get
 
-          result.id mustBe "add-or-remove-supply-chain-actors"
-          result.text mustBe "Add or remove supply chain actors"
-          result.href mustBe controllers.item.supplyChainActors.routes.AddAnotherSupplyChainActorController
+          result.id mustEqual "add-or-remove-supply-chain-actors"
+          result.text mustEqual "Add or remove supply chain actors"
+          result.href mustEqual controllers.item.supplyChainActors.routes.AddAnotherSupplyChainActorController
             .onPageLoad(answers.lrn, mode, itemIndex)
             .url
 
@@ -941,7 +941,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when AddDocumentsYesNoPage is undefined" in {
           val helper = buildHelper(emptyUserAnswers, itemIndex)
           val result = helper.documentsYesNo
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -952,16 +952,16 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
           val helper = buildHelper(answers, itemIndex)
           val result = helper.documentsYesNo.get
 
-          result.key.value mustBe "Do you want to add any documents for this item?"
-          result.value.value mustBe "Yes"
+          result.key.value mustEqual "Do you want to add any documents for this item?"
+          result.value.value mustEqual "Yes"
 
           val actions = result.actions.get.items
-          actions.size mustBe 1
+          actions.size mustEqual 1
           val action = actions.head
-          action.content.value mustBe "Change"
-          action.href mustBe AddDocumentsYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
-          action.visuallyHiddenText.get mustBe "if you want to add any documents for item 1"
-          action.id mustBe "change-add-documents"
+          action.content.value mustEqual "Change"
+          action.href mustEqual AddDocumentsYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
+          action.visuallyHiddenText.get mustEqual "if you want to add any documents for item 1"
+          action.id mustEqual "change-add-documents"
         }
       }
     }
@@ -975,7 +975,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
           when(mockDocumentsService.getConsignmentLevelDocuments(any())).thenReturn(Nil)
           val helper = buildHelper(emptyUserAnswers, itemIndex)
           val result = helper.consignmentDocuments
-          result mustBe Nil
+          result mustEqual Nil
         }
       }
 
@@ -989,8 +989,8 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               val helper                 = buildHelper(userAnswers, itemIndex)
               val result: SummaryListRow = helper.consignmentDocuments.head
 
-              result.key.value mustBe "Consignment Document 1"
-              result.value.value mustBe document.toString
+              result.key.value mustEqual "Consignment Document 1"
+              result.value.value mustEqual document.toString
           }
         }
       }
@@ -1006,7 +1006,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
           when(mockDocumentsService.getDocument(any(), any(), any())).thenReturn(None)
           val helper = buildHelper(emptyUserAnswers, itemIndex)
           val result = helper.document(documentIndex)
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -1020,15 +1020,15 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               val helper = buildHelper(userAnswers, itemIndex)
               val result = helper.document(documentIndex).get
 
-              result.key.value mustBe "Document 1"
-              result.value.value mustBe document.toString
+              result.key.value mustEqual "Document 1"
+              result.value.value mustEqual document.toString
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe DocumentController.onPageLoad(userAnswers.lrn, mode, itemIndex, documentIndex).url
-              action.visuallyHiddenText.get mustBe "document 1"
-              action.id mustBe "change-document-1"
+              action.content.value mustEqual "Change"
+              action.href mustEqual DocumentController.onPageLoad(userAnswers.lrn, mode, itemIndex, documentIndex).url
+              action.visuallyHiddenText.get mustEqual "document 1"
+              action.id mustEqual "change-document-1"
           }
         }
       }
@@ -1039,7 +1039,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when documents array is empty" in {
           val helper = buildHelper(emptyUserAnswers, itemIndex)
           val result = helper.addOrRemoveDocuments
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -1049,9 +1049,9 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
           val helper  = buildHelper(answers, itemIndex)
           val result  = helper.addOrRemoveDocuments.get
 
-          result.id mustBe "add-or-remove-documents"
-          result.text mustBe "Add or remove documents"
-          result.href mustBe controllers.item.documents.routes.AddAnotherDocumentController.onPageLoad(answers.lrn, mode, itemIndex).url
+          result.id mustEqual "add-or-remove-documents"
+          result.text mustEqual "Add or remove documents"
+          result.href mustEqual controllers.item.documents.routes.AddAnotherDocumentController.onPageLoad(answers.lrn, mode, itemIndex).url
         }
       }
     }
@@ -1061,7 +1061,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when AddAdditionalReferenceYesNo is undefined" in {
           val helper = buildHelper(emptyUserAnswers, itemIndex)
           val result = helper.additionalReferenceYesNo
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -1072,16 +1072,16 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
           val helper = buildHelper(answers, itemIndex)
           val result = helper.additionalReferenceYesNo.get
 
-          result.key.value mustBe "Do you want to add an additional reference for this item?"
-          result.value.value mustBe "Yes"
+          result.key.value mustEqual "Do you want to add an additional reference for this item?"
+          result.value.value mustEqual "Yes"
 
           val actions = result.actions.get.items
-          actions.size mustBe 1
+          actions.size mustEqual 1
           val action = actions.head
-          action.content.value mustBe "Change"
-          action.href mustBe AddAdditionalReferenceYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
-          action.visuallyHiddenText.get mustBe "if you want to add an additional reference for item 1"
-          action.id mustBe "change-add-additional-reference"
+          action.content.value mustEqual "Change"
+          action.href mustEqual AddAdditionalReferenceYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
+          action.visuallyHiddenText.get mustEqual "if you want to add an additional reference for item 1"
+          action.id mustEqual "change-add-additional-reference"
         }
       }
     }
@@ -1091,7 +1091,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when additionalReference is undefined" in {
           val helper = buildHelper(emptyUserAnswers, itemIndex)
           val result = helper.additionalReference(additionalReferenceIndex)
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -1106,15 +1106,15 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               val helper = buildHelper(userAnswers, itemIndex)
               val result = helper.additionalReference(additionalReferenceIndex).get
 
-              result.key.value mustBe "Additional reference 1"
-              result.value.value mustBe s"$additionalReference - $additionalReferenceNumber"
+              result.key.value mustEqual "Additional reference 1"
+              result.value.value mustEqual s"$additionalReference - $additionalReferenceNumber"
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe AdditionalReferenceController.onPageLoad(userAnswers.lrn, mode, itemIndex, additionalReferenceIndex).url
-              action.visuallyHiddenText.get mustBe s"additional reference 1"
-              action.id mustBe "change-additional-reference-1"
+              action.content.value mustEqual "Change"
+              action.href mustEqual AdditionalReferenceController.onPageLoad(userAnswers.lrn, mode, itemIndex, additionalReferenceIndex).url
+              action.visuallyHiddenText.get mustEqual s"additional reference 1"
+              action.id mustEqual "change-additional-reference-1"
           }
         }
       }
@@ -1125,7 +1125,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when additional references array is empty" in {
           val helper = buildHelper(emptyUserAnswers, itemIndex)
           val result = helper.addOrRemoveAdditionalReferences
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -1135,9 +1135,9 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
           val helper  = buildHelper(answers, itemIndex)
           val result  = helper.addOrRemoveAdditionalReferences.get
 
-          result.id mustBe "add-or-remove-additional-references"
-          result.text mustBe "Add or remove additional references"
-          result.href mustBe controllers.item.additionalReference.routes.AddAnotherAdditionalReferenceController
+          result.id mustEqual "add-or-remove-additional-references"
+          result.text mustEqual "Add or remove additional references"
+          result.href mustEqual controllers.item.additionalReference.routes.AddAnotherAdditionalReferenceController
             .onPageLoad(answers.lrn, mode, itemIndex)
             .url
 
@@ -1150,7 +1150,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when AddAdditionalInformationYesNo is undefined" in {
           val helper = buildHelper(emptyUserAnswers, itemIndex)
           val result = helper.additionalInformationYesNo
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -1162,16 +1162,16 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
           val helper = buildHelper(answers, itemIndex)
           val result = helper.additionalInformationYesNo.get
 
-          result.key.value mustBe "Do you want to add any additional information for this item?"
-          result.value.value mustBe "Yes"
+          result.key.value mustEqual "Do you want to add any additional information for this item?"
+          result.value.value mustEqual "Yes"
 
           val actions = result.actions.get.items
-          actions.size mustBe 1
+          actions.size mustEqual 1
           val action = actions.head
-          action.content.value mustBe "Change"
-          action.href mustBe AddAdditionalInformationYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
-          action.visuallyHiddenText.get mustBe "if you want to add any additional information for item 1"
-          action.id mustBe "change-add-additional-information"
+          action.content.value mustEqual "Change"
+          action.href mustEqual AddAdditionalInformationYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
+          action.visuallyHiddenText.get mustEqual "if you want to add any additional information for item 1"
+          action.id mustEqual "change-add-additional-information"
         }
       }
     }
@@ -1181,7 +1181,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when additionalInformation is undefined" in {
           val helper = buildHelper(emptyUserAnswers, itemIndex)
           val result = helper.additionalInformation(additionalInformationIndex)
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -1195,15 +1195,15 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               val helper = buildHelper(userAnswers, itemIndex)
               val result = helper.additionalInformation(additionalInformationIndex).get
 
-              result.key.value mustBe "Additional information 1"
-              result.value.value mustBe s"$additionalInformationType - $additionalInformation"
+              result.key.value mustEqual "Additional information 1"
+              result.value.value mustEqual s"$additionalInformationType - $additionalInformation"
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe AdditionalInformationTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, additionalInformationIndex).url
-              action.visuallyHiddenText.get mustBe "additional information 1"
-              action.id mustBe "change-additional-information-1"
+              action.content.value mustEqual "Change"
+              action.href mustEqual AdditionalInformationTypeController.onPageLoad(userAnswers.lrn, mode, itemIndex, additionalInformationIndex).url
+              action.visuallyHiddenText.get mustEqual "additional information 1"
+              action.id mustEqual "change-additional-information-1"
           }
         }
       }
@@ -1214,7 +1214,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when additional information array is empty" in {
           val helper = buildHelper(emptyUserAnswers, itemIndex)
           val result = helper.addOrRemoveAdditionalInformation
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -1224,9 +1224,9 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
           val helper  = buildHelper(answers, itemIndex)
           val result  = helper.addOrRemoveAdditionalInformation.get
 
-          result.id mustBe "add-or-remove-additional-information"
-          result.text mustBe "Add or remove additional information"
-          result.href mustBe controllers.item.additionalInformation.routes.AddAnotherAdditionalInformationController
+          result.id mustEqual "add-or-remove-additional-information"
+          result.text mustEqual "Add or remove additional information"
+          result.href mustEqual controllers.item.additionalInformation.routes.AddAnotherAdditionalInformationController
             .onPageLoad(answers.lrn, mode, itemIndex)
             .url
         }
@@ -1238,7 +1238,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when consigneeAddEoriNumberYesNo is undefined" in {
           val helper = buildHelper(emptyUserAnswers, itemIndex)
           val result = helper.consigneeAddEoriNumberYesNo
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -1249,16 +1249,16 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
           val helper = buildHelper(answers, itemIndex)
           val result = helper.consigneeAddEoriNumberYesNo.get
 
-          result.key.value mustBe "Do you know the consignee’s EORI number or Trader Identification Number (TIN) for this item?"
-          result.value.value mustBe "Yes"
+          result.key.value mustEqual "Do you know the consignee’s EORI number or Trader Identification Number (TIN) for this item?"
+          result.value.value mustEqual "Yes"
 
           val actions = result.actions.get.items
-          actions.size mustBe 1
+          actions.size mustEqual 1
           val action = actions.head
-          action.content.value mustBe "Change"
-          action.href mustBe AddConsigneeEoriNumberYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
-          action.visuallyHiddenText.get mustBe s"if you know the consignee’s EORI number or Trader Identification Number (TIN) for item ${itemIndex.display}"
-          action.id mustBe "change-has-consignee-eori"
+          action.content.value mustEqual "Change"
+          action.href mustEqual AddConsigneeEoriNumberYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
+          action.visuallyHiddenText.get mustEqual s"if you know the consignee’s EORI number or Trader Identification Number (TIN) for item ${itemIndex.display}"
+          action.id mustEqual "change-has-consignee-eori"
         }
       }
 
@@ -1270,7 +1270,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when consigneeIdentificationNumber is undefined" in {
           val helper = buildHelper(emptyUserAnswers, itemIndex)
           val result = helper.consigneeIdentificationNumber
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -1281,16 +1281,16 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
           val helper = buildHelper(answers, itemIndex)
           val result = helper.consigneeIdentificationNumber.get
 
-          result.key.value mustBe "EORI number or Trader Identification Number (TIN)"
-          result.value.value mustBe "AB123"
+          result.key.value mustEqual "EORI number or Trader Identification Number (TIN)"
+          result.value.value mustEqual "AB123"
 
           val actions = result.actions.get.items
-          actions.size mustBe 1
+          actions.size mustEqual 1
           val action = actions.head
-          action.content.value mustBe "Change"
-          action.href mustBe IdentificationNumberController.onPageLoad(answers.lrn, mode, itemIndex).url
-          action.visuallyHiddenText.get mustBe s"consignee’s EORI number or Trader Identification Number (TIN) for item ${itemIndex.display}"
-          action.id mustBe "change-consignee-identification-number"
+          action.content.value mustEqual "Change"
+          action.href mustEqual IdentificationNumberController.onPageLoad(answers.lrn, mode, itemIndex).url
+          action.visuallyHiddenText.get mustEqual s"consignee’s EORI number or Trader Identification Number (TIN) for item ${itemIndex.display}"
+          action.id mustEqual "change-consignee-identification-number"
         }
       }
 
@@ -1302,7 +1302,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when consigneeName is undefined" in {
           val helper = buildHelper(emptyUserAnswers, itemIndex)
           val result = helper.consigneeName
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -1313,16 +1313,16 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
           val helper = buildHelper(answers, itemIndex)
           val result = helper.consigneeName.get
 
-          result.key.value mustBe "Name"
-          result.value.value mustBe "John Doe"
+          result.key.value mustEqual "Name"
+          result.value.value mustEqual "John Doe"
 
           val actions = result.actions.get.items
-          actions.size mustBe 1
+          actions.size mustEqual 1
           val action = actions.head
-          action.content.value mustBe "Change"
-          action.href mustBe NameController.onPageLoad(answers.lrn, mode, itemIndex).url
-          action.visuallyHiddenText.get mustBe s"consignee’s name for item ${itemIndex.display}"
-          action.id mustBe "change-consignee-name"
+          action.content.value mustEqual "Change"
+          action.href mustEqual NameController.onPageLoad(answers.lrn, mode, itemIndex).url
+          action.visuallyHiddenText.get mustEqual s"consignee’s name for item ${itemIndex.display}"
+          action.id mustEqual "change-consignee-name"
         }
       }
 
@@ -1334,7 +1334,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when consigneeCountry is undefined" in {
           val helper = buildHelper(emptyUserAnswers, itemIndex)
           val result = helper.consigneeCountry
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -1346,16 +1346,16 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
           val helper = buildHelper(answers, itemIndex)
           val result = helper.consigneeCountry.get
 
-          result.key.value mustBe "Country"
-          result.value.value mustBe country.toString
+          result.key.value mustEqual "Country"
+          result.value.value mustEqual country.toString
 
           val actions = result.actions.get.items
-          actions.size mustBe 1
+          actions.size mustEqual 1
           val action = actions.head
-          action.content.value mustBe "Change"
-          action.href mustBe CountryController.onPageLoad(answers.lrn, mode, itemIndex).url
-          action.visuallyHiddenText.get mustBe s"consignee’s country for item ${itemIndex.display}"
-          action.id mustBe "change-consignee-country"
+          action.content.value mustEqual "Change"
+          action.href mustEqual CountryController.onPageLoad(answers.lrn, mode, itemIndex).url
+          action.visuallyHiddenText.get mustEqual s"consignee’s country for item ${itemIndex.display}"
+          action.id mustEqual "change-consignee-country"
         }
       }
 
@@ -1367,7 +1367,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when consigneeAddress is undefined" in {
           val helper = buildHelper(emptyUserAnswers, itemIndex)
           val result = helper.consigneeAddress
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -1379,16 +1379,16 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
           val helper = buildHelper(answers, itemIndex)
           val result = helper.consigneeAddress.get
 
-          result.key.value mustBe "Consignee’s address"
-          result.value.value mustBe "Number and street 1<br>City 2<br>AB1 1AB"
+          result.key.value mustEqual "Consignee’s address"
+          result.value.value mustEqual "Number and street 1<br>City 2<br>AB1 1AB"
 
           val actions = result.actions.get.items
-          actions.size mustBe 1
+          actions.size mustEqual 1
           val action = actions.head
-          action.content.value mustBe "Change"
-          action.href mustBe AddressController.onPageLoad(answers.lrn, mode, itemIndex).url
-          action.visuallyHiddenText.get mustBe s"consignee’s address for item ${itemIndex.display}"
-          action.id mustBe "change-consignee-address"
+          action.content.value mustEqual "Change"
+          action.href mustEqual AddressController.onPageLoad(answers.lrn, mode, itemIndex).url
+          action.visuallyHiddenText.get mustEqual s"consignee’s address for item ${itemIndex.display}"
+          action.id mustEqual "change-consignee-address"
         }
       }
     }
@@ -1398,7 +1398,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when addTransportChargesYesNo is undefined" in {
           val helper = buildHelper(emptyUserAnswers, itemIndex)
           val result = helper.addTransportChargesYesNo
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -1409,16 +1409,16 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
           val helper = buildHelper(answers, itemIndex)
           val result = helper.addTransportChargesYesNo.get
 
-          result.key.value mustBe "Do you want to add a method of payment for this item’s transport charges?"
-          result.value.value mustBe "Yes"
+          result.key.value mustEqual "Do you want to add a method of payment for this item’s transport charges?"
+          result.value.value mustEqual "Yes"
 
           val actions = result.actions.get.items
-          actions.size mustBe 1
+          actions.size mustEqual 1
           val action = actions.head
-          action.content.value mustBe "Change"
-          action.href mustBe AddTransportChargesYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
-          action.visuallyHiddenText.get mustBe s"if you want to add a method of payment for this item’s transport charges"
-          action.id mustBe "change-add-payment-method"
+          action.content.value mustEqual "Change"
+          action.href mustEqual AddTransportChargesYesNoController.onPageLoad(answers.lrn, mode, itemIndex).url
+          action.visuallyHiddenText.get mustEqual s"if you want to add a method of payment for this item’s transport charges"
+          action.id mustEqual "change-add-payment-method"
         }
       }
 
@@ -1429,7 +1429,7 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
         "when transportCharges is undefined" in {
           val helper = buildHelper(emptyUserAnswers, itemIndex)
           val result = helper.transportCharges
-          result mustBe None
+          result must not be defined
         }
       }
 
@@ -1442,16 +1442,16 @@ class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with 
               val helper = buildHelper(answers, itemIndex)
               val result = helper.transportCharges.get
 
-              result.key.value mustBe "Payment method"
-              result.value.value mustBe paymentMethod.toString
+              result.key.value mustEqual "Payment method"
+              result.value.value mustEqual paymentMethod.toString
 
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe TransportChargesMethodOfPaymentController.onPageLoad(answers.lrn, mode, itemIndex).url
-              action.visuallyHiddenText.get mustBe s"payment method for this item’s transport charges"
-              action.id mustBe "change-payment-method"
+              action.content.value mustEqual "Change"
+              action.href mustEqual TransportChargesMethodOfPaymentController.onPageLoad(answers.lrn, mode, itemIndex).url
+              action.visuallyHiddenText.get mustEqual s"payment method for this item’s transport charges"
+              action.id mustEqual "change-payment-method"
           }
         }
       }

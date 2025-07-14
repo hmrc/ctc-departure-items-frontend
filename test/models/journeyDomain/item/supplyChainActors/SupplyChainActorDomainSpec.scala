@@ -45,8 +45,8 @@ class SupplyChainActorDomainSpec extends SpecBase with Generators {
 
         val result = SupplyChainActorDomain.userAnswersReader(itemIndex, actorIndex).apply(Nil).run(userAnswers)
 
-        result.value.value mustBe expectedResult
-        result.value.pages mustBe Seq(
+        result.value.value mustEqual expectedResult
+        result.value.pages mustEqual Seq(
           SupplyChainActorTypePage(itemIndex, actorIndex),
           IdentificationNumberPage(itemIndex, actorIndex)
         )
@@ -57,8 +57,8 @@ class SupplyChainActorDomainSpec extends SpecBase with Generators {
       "when no supply chain actor type" in {
         val result = SupplyChainActorDomain.userAnswersReader(itemIndex, actorIndex).apply(Nil).run(emptyUserAnswers)
 
-        result.left.value.page mustBe SupplyChainActorTypePage(itemIndex, Index(0))
-        result.left.value.pages mustBe Seq(
+        result.left.value.page mustEqual SupplyChainActorTypePage(itemIndex, Index(0))
+        result.left.value.pages mustEqual Seq(
           SupplyChainActorTypePage(itemIndex, actorIndex)
         )
       }
@@ -69,8 +69,8 @@ class SupplyChainActorDomainSpec extends SpecBase with Generators {
 
         val result = SupplyChainActorDomain.userAnswersReader(itemIndex, actorIndex).apply(Nil).run(userAnswers)
 
-        result.left.value.page mustBe IdentificationNumberPage(itemIndex, Index(0))
-        result.left.value.pages mustBe Seq(
+        result.left.value.page mustEqual IdentificationNumberPage(itemIndex, Index(0))
+        result.left.value.pages mustEqual Seq(
           SupplyChainActorTypePage(itemIndex, actorIndex),
           IdentificationNumberPage(itemIndex, actorIndex)
         )

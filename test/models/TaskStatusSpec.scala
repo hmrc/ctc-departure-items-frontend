@@ -24,54 +24,54 @@ class TaskStatusSpec extends SpecBase {
   "must serialise to json" - {
     "when completed" in {
       val result = Json.toJson[TaskStatus](TaskStatus.Completed)
-      result mustBe JsString("completed")
+      result mustEqual JsString("completed")
     }
 
     "when in progress" in {
       val result = Json.toJson[TaskStatus](TaskStatus.InProgress)
-      result mustBe JsString("in-progress")
+      result mustEqual JsString("in-progress")
     }
 
     "when not started" in {
       val result = Json.toJson[TaskStatus](TaskStatus.NotStarted)
-      result mustBe JsString("not-started")
+      result mustEqual JsString("not-started")
     }
 
     "when cannot start yet" in {
       val result = Json.toJson[TaskStatus](TaskStatus.CannotStartYet)
-      result mustBe JsString("cannot-start-yet")
+      result mustEqual JsString("cannot-start-yet")
     }
 
     "when error" in {
       val result = Json.toJson[TaskStatus](TaskStatus.Error)
-      result mustBe JsString("error")
+      result mustEqual JsString("error")
     }
   }
 
   "must deserialise from json" - {
     "when completed" in {
       val result = JsString("completed").as[TaskStatus]
-      result mustBe TaskStatus.Completed
+      result mustEqual TaskStatus.Completed
     }
 
     "when in progress" in {
       val result = JsString("in-progress").as[TaskStatus]
-      result mustBe TaskStatus.InProgress
+      result mustEqual TaskStatus.InProgress
     }
 
     "when not started" in {
       val result = JsString("not-started").as[TaskStatus]
-      result mustBe TaskStatus.NotStarted
+      result mustEqual TaskStatus.NotStarted
     }
 
     "when cannot start yet" in {
       val result = JsString("cannot-start-yet").as[TaskStatus]
-      result mustBe TaskStatus.CannotStartYet
+      result mustEqual TaskStatus.CannotStartYet
     }
 
     "when error" in {
       val result = JsString("error").as[TaskStatus]
-      result mustBe TaskStatus.Error
+      result mustEqual TaskStatus.Error
     }
 
     "when something else" in {

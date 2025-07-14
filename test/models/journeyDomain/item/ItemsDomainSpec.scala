@@ -38,8 +38,8 @@ class ItemsDomainSpec extends SpecBase with Generators {
 
       val result = ItemsDomain.userAnswersReader.run(userAnswers)
 
-      result.value.value.item.length mustBe numberOfItems
-      result.value.pages.last mustBe AddAnotherItemPage
+      result.value.value.item.length mustEqual numberOfItems
+      result.value.pages.last mustEqual AddAnotherItemPage
     }
   }
 }

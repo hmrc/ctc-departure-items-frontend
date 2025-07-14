@@ -35,7 +35,7 @@ class ItemsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with
           val userAnswers = emptyUserAnswers
 
           val helper = new ItemsAnswersHelper(userAnswers)
-          helper.listItems mustBe Nil
+          helper.listItems mustEqual Nil
 
         }
       }
@@ -51,7 +51,7 @@ class ItemsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with
         forAll(arbitraryItemsAnswers(initialAnswers)) {
           userAnswers =>
             val helper = new ItemsAnswersHelper(userAnswers)
-            helper.listItems mustBe Seq(
+            helper.listItems mustEqual Seq(
               Right(
                 ListItem(
                   name = s"Item 1 - $description1",

@@ -67,7 +67,7 @@ class UpdateTaskControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-        userAnswersCaptor.getValue.tasks.get(task).value mustBe TaskStatus.CannotStartYet
+        userAnswersCaptor.getValue.tasks.get(task).value mustEqual TaskStatus.CannotStartYet
       }
 
       "when task status is NotStarted" in {
@@ -83,7 +83,7 @@ class UpdateTaskControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-        userAnswersCaptor.getValue.tasks.get(task).value mustBe TaskStatus.NotStarted
+        userAnswersCaptor.getValue.tasks.get(task).value mustEqual TaskStatus.NotStarted
       }
 
       "when task status is InProgress" in {
@@ -99,7 +99,7 @@ class UpdateTaskControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-        userAnswersCaptor.getValue.tasks.get(task).value mustBe TaskStatus.InProgress
+        userAnswersCaptor.getValue.tasks.get(task).value mustEqual TaskStatus.InProgress
       }
 
       "when task status is Completed" in {
@@ -115,7 +115,7 @@ class UpdateTaskControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-        userAnswersCaptor.getValue.tasks.get(task).value mustBe TaskStatus.InProgress
+        userAnswersCaptor.getValue.tasks.get(task).value mustEqual TaskStatus.InProgress
       }
 
       "when task status is Amended" in {
@@ -131,7 +131,7 @@ class UpdateTaskControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-        userAnswersCaptor.getValue.tasks.get(task).value mustBe TaskStatus.InProgress
+        userAnswersCaptor.getValue.tasks.get(task).value mustEqual TaskStatus.InProgress
       }
     }
   }

@@ -55,7 +55,7 @@ class AddItemNetWeightYesNoPageSpec extends PageBehaviours {
 
               val result = userAnswers.setValue(AddItemNetWeightYesNoPage(itemIndex), true)
 
-              result.get(NetWeightPage(itemIndex)) must be(defined)
+              result.get(NetWeightPage(itemIndex)) mustBe defined
           }
         }
       }

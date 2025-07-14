@@ -37,7 +37,7 @@ class AdditionalReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyC
             answers =>
               navigator
                 .nextPage(answers, None)
-                .mustBe(controllers.item.additionalReference.routes.AddAnotherAdditionalReferenceController.onPageLoad(answers.lrn, mode, itemIndex))
+                .mustEqual(controllers.item.additionalReference.routes.AddAnotherAdditionalReferenceController.onPageLoad(answers.lrn, mode, itemIndex))
           }
         }
       }
@@ -55,7 +55,7 @@ class AdditionalReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyC
             answers =>
               navigator
                 .nextPage(answers, None)
-                .mustBe(controllers.item.routes.CheckYourAnswersController.onPageLoad(answers.lrn, itemIndex))
+                .mustEqual(controllers.item.routes.CheckYourAnswersController.onPageLoad(answers.lrn, itemIndex))
           }
         }
       }

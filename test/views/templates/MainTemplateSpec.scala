@@ -53,7 +53,7 @@ class MainTemplateSpec extends SpecBase with ViewSpecAssertions with ScalaCheckP
           val doc = Jsoup.parse(view.toString())
 
           val link = getElementBySelector(doc, ".govuk-phase-banner__text > .govuk-link")
-          getElementHref(link) mustBe s"http://localhost:9250/contact/beta-feedback?service=CTCTraders&referrerUrl=$path"
+          getElementHref(link) mustEqual s"http://localhost:9250/contact/beta-feedback?service=CTCTraders&referrerUrl=$path"
       }
     }
 
@@ -69,8 +69,8 @@ class MainTemplateSpec extends SpecBase with ViewSpecAssertions with ScalaCheckP
           val doc = Jsoup.parse(view.toString())
 
           val link = getElementBySelector(doc, ".hmrc-report-technical-issue")
-          getElementHref(link) mustBe s"http://localhost:9250/contact/report-technical-problem?service=CTCTraders&referrerUrl=$path"
-          link.text() mustBe "Is this page not working properly? (opens in new tab)"
+          getElementHref(link) mustEqual s"http://localhost:9250/contact/report-technical-problem?service=CTCTraders&referrerUrl=$path"
+          link.text() mustEqual "Is this page not working properly? (opens in new tab)"
       }
     }
 
@@ -138,7 +138,7 @@ class MainTemplateSpec extends SpecBase with ViewSpecAssertions with ScalaCheckP
           val doc = Jsoup.parse(view.toString())
 
           val link = getElementBySelector(doc, ".govuk-phase-banner__text > .govuk-link")
-          getElementHref(link) mustBe config.feedbackForm
+          getElementHref(link) mustEqual config.feedbackForm
       }
     }
 
@@ -155,7 +155,7 @@ class MainTemplateSpec extends SpecBase with ViewSpecAssertions with ScalaCheckP
 
           val link = getElementBySelector(doc, ".hmrc-report-technical-issue")
           getElementHref(link) must startWith(s"mailto:${config.feedbackEmail}")
-          link.text() mustBe s"If you have any questions or issues, email us at ${config.feedbackEmail}"
+          link.text() mustEqual s"If you have any questions or issues, email us at ${config.feedbackEmail}"
       }
     }
 

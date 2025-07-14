@@ -35,11 +35,11 @@ class AddAnotherSupplyChainActorViewModelSpec extends SpecBase with Generators w
 
           val result = new AddAnotherSupplyChainActorViewModelProvider()(userAnswers, mode, itemIndex)
 
-          result.listItems.length mustBe 1
-          result.title mustBe "You have added 1 supply chain actor for this item"
-          result.heading mustBe "You have added 1 supply chain actor for this item"
-          result.legend mustBe "Do you want to add another supply chain actor for this item?"
-          result.maxLimitLabel mustBe "You cannot add any more supply chain actors. To add another, you need to remove one first."
+          result.listItems.length mustEqual 1
+          result.title mustEqual "You have added 1 supply chain actor for this item"
+          result.heading mustEqual "You have added 1 supply chain actor for this item"
+          result.legend mustEqual "Do you want to add another supply chain actor for this item?"
+          result.maxLimitLabel mustEqual "You cannot add any more supply chain actors. To add another, you need to remove one first."
       }
     }
 
@@ -54,11 +54,11 @@ class AddAnotherSupplyChainActorViewModelSpec extends SpecBase with Generators w
           }
 
           val result = new AddAnotherSupplyChainActorViewModelProvider()(userAnswers, mode, itemIndex)
-          result.listItems.length mustBe supplyChainActors
-          result.title mustBe s"You have added ${formatter.format(supplyChainActors)} supply chain actors for this item"
-          result.heading mustBe s"You have added ${formatter.format(supplyChainActors)} supply chain actors for this item"
-          result.legend mustBe "Do you want to add another supply chain actor for this item?"
-          result.maxLimitLabel mustBe "You cannot add any more supply chain actors. To add another, you need to remove one first."
+          result.listItems.length mustEqual supplyChainActors
+          result.title mustEqual s"You have added ${formatter.format(supplyChainActors)} supply chain actors for this item"
+          result.heading mustEqual s"You have added ${formatter.format(supplyChainActors)} supply chain actors for this item"
+          result.legend mustEqual "Do you want to add another supply chain actor for this item?"
+          result.maxLimitLabel mustEqual "You cannot add any more supply chain actors. To add another, you need to remove one first."
       }
     }
   }

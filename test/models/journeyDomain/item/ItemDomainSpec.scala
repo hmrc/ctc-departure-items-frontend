@@ -55,8 +55,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         "when item description page is unanswered" in {
           val result = ItemDomain.userAnswersReader(itemIndex).apply(Nil).run(emptyUserAnswers)
 
-          result.left.value.page mustBe DescriptionPage(itemIndex)
-          result.left.value.pages mustBe Seq(
+          result.left.value.page mustEqual DescriptionPage(itemIndex)
+          result.left.value.pages mustEqual Seq(
             DescriptionPage(itemIndex)
           )
         }
@@ -93,8 +93,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               val result = ItemDomain.transportEquipmentReader(itemIndex).apply(Nil).run(userAnswers)
 
-              result.value.value mustBe expectedResult
-              result.value.pages mustBe Seq(
+              result.value.value mustEqual expectedResult
+              result.value.pages mustEqual Seq(
                 TransportEquipmentPage(itemIndex)
               )
           }
@@ -105,8 +105,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           val result = ItemDomain.transportEquipmentReader(itemIndex).apply(Nil).run(emptyUserAnswers)
 
-          result.value.value mustBe expectedResult
-          result.value.pages mustBe Nil
+          result.value.value mustEqual expectedResult
+          result.value.pages mustEqual Nil
         }
       }
 
@@ -118,8 +118,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
             val result = ItemDomain.transportEquipmentReader(itemIndex).apply(Nil).run(userAnswers)
 
-            result.left.value.page mustBe TransportEquipmentPage(itemIndex)
-            result.left.value.pages mustBe Seq(
+            result.left.value.page mustEqual TransportEquipmentPage(itemIndex)
+            result.left.value.pages mustEqual Seq(
               TransportEquipmentPage(itemIndex)
             )
           }
@@ -139,7 +139,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               val result = ItemDomain.declarationTypeReader(itemIndex).apply(Nil).run(userAnswers)
 
-              result.value.value mustBe expectedResult
+              result.value.value mustEqual expectedResult
           }
         }
 
@@ -154,8 +154,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               val result = ItemDomain.declarationTypeReader(itemIndex).apply(Nil).run(userAnswers)
 
-              result.value.value mustBe expectedResult
-              result.value.pages mustBe Seq(
+              result.value.value mustEqual expectedResult
+              result.value.pages mustEqual Seq(
                 DeclarationTypePage(itemIndex)
               )
           }
@@ -170,8 +170,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
             val result = ItemDomain.declarationTypeReader(itemIndex).apply(Nil).run(userAnswers)
 
-            result.left.value.page mustBe DeclarationTypePage(itemIndex)
-            result.left.value.pages mustBe Seq(
+            result.left.value.page mustEqual DeclarationTypePage(itemIndex)
+            result.left.value.pages mustEqual Seq(
               DeclarationTypePage(itemIndex)
             )
           }
@@ -191,8 +191,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                 val result = ItemDomain.countryOfDispatchReader(itemIndex).apply(Nil).run(userAnswers)
 
-                result.value.value mustBe expectedResult
-                result.value.pages mustBe Nil
+                result.value.value mustEqual expectedResult
+                result.value.pages mustEqual Nil
             }
         }
       }
@@ -210,8 +210,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                 val result = ItemDomain.countryOfDispatchReader(itemIndex).apply(Nil).run(userAnswers)
 
-                result.value.value mustBe expectedResult
-                result.value.pages mustBe Seq(
+                result.value.value mustEqual expectedResult
+                result.value.pages mustEqual Seq(
                   CountryOfDispatchPage(itemIndex)
                 )
             }
@@ -232,8 +232,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               val result = ItemDomain.countryOfDispatchReader(itemIndex).apply(Nil).run(userAnswers)
 
-              result.value.value mustBe expectedResult
-              result.value.pages mustBe Nil
+              result.value.value mustEqual expectedResult
+              result.value.pages mustEqual Nil
           }
         }
 
@@ -248,8 +248,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               val result = ItemDomain.countryOfDispatchReader(itemIndex).apply(Nil).run(userAnswers)
 
-              result.value.value mustBe expectedResult
-              result.value.pages mustBe Seq(
+              result.value.value mustEqual expectedResult
+              result.value.pages mustEqual Seq(
                 CountryOfDispatchPage(itemIndex)
               )
           }
@@ -264,8 +264,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
             val result = ItemDomain.countryOfDispatchReader(itemIndex).apply(Nil).run(userAnswers)
 
-            result.left.value.page mustBe CountryOfDispatchPage(itemIndex)
-            result.left.value.pages mustBe Seq(
+            result.left.value.page mustEqual CountryOfDispatchPage(itemIndex)
+            result.left.value.pages mustEqual Seq(
               CountryOfDispatchPage(itemIndex)
             )
           }
@@ -286,8 +286,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               val result = ItemDomain.countryOfDestinationReader(itemIndex).apply(Nil).run(userAnswers)
 
-              result.value.value mustBe expectedResult
-              result.value.pages mustBe Nil
+              result.value.value mustEqual expectedResult
+              result.value.pages mustEqual Nil
           }
         }
 
@@ -302,8 +302,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               val result = ItemDomain.countryOfDestinationReader(itemIndex).apply(Nil).run(userAnswers)
 
-              result.value.value mustBe expectedResult
-              result.value.pages mustBe Seq(
+              result.value.value mustEqual expectedResult
+              result.value.pages mustEqual Seq(
                 CountryOfDestinationPage(itemIndex)
               )
           }
@@ -317,8 +317,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           val result = ItemDomain.countryOfDestinationReader(itemIndex).apply(Nil).run(userAnswers)
 
-          result.left.value.page mustBe CountryOfDestinationPage(itemIndex)
-          result.left.value.pages mustBe Seq(
+          result.left.value.page mustEqual CountryOfDestinationPage(itemIndex)
+          result.left.value.pages mustEqual Seq(
             CountryOfDestinationPage(itemIndex)
           )
         }
@@ -338,8 +338,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               val result = ItemDomain.ucrReader(itemIndex).apply(Nil).run(userAnswers)
 
-              result.value.value mustBe expectedResult
-              result.value.pages mustBe Nil
+              result.value.value mustEqual expectedResult
+              result.value.pages mustEqual Nil
           }
         }
 
@@ -376,8 +376,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                   val result = ItemDomain.ucrReader(itemIndex).apply(Nil).run(userAnswers)
 
-                  result.value.value mustBe expectedResult
-                  result.value.pages mustBe Seq(
+                  result.value.value mustEqual expectedResult
+                  result.value.pages mustEqual Seq(
                     AddUCRYesNoPage(itemIndex),
                     UniqueConsignmentReferencePage(itemIndex)
                   )
@@ -413,8 +413,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                   val result = ItemDomain.ucrReader(itemIndex).apply(Nil).run(userAnswers)
 
-                  result.value.value mustBe expectedResult
-                  result.value.pages mustBe Seq(
+                  result.value.value mustEqual expectedResult
+                  result.value.pages mustEqual Seq(
                     AddUCRYesNoPage(itemIndex)
                   )
               }
@@ -431,8 +431,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                 val result = ItemDomain.ucrReader(itemIndex).apply(Nil).run(userAnswers)
 
-                result.value.value mustBe expectedResult
-                result.value.pages mustBe Seq(
+                result.value.value mustEqual expectedResult
+                result.value.pages mustEqual Seq(
                   UniqueConsignmentReferencePage(itemIndex)
                 )
             }
@@ -447,8 +447,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
             "and UCR page is unanswered" in {
               val result = ItemDomain.ucrReader(itemIndex).apply(Nil).run(emptyUserAnswers)
 
-              result.left.value.page mustBe UniqueConsignmentReferencePage(itemIndex)
-              result.left.value.pages mustBe Seq(
+              result.left.value.page mustEqual UniqueConsignmentReferencePage(itemIndex)
+              result.left.value.pages mustEqual Seq(
                 UniqueConsignmentReferencePage(itemIndex)
               )
             }
@@ -483,8 +483,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                   val result = ItemDomain.ucrReader(itemIndex).apply(Nil).run(userAnswers)
 
-                  result.left.value.page mustBe AddUCRYesNoPage(itemIndex)
-                  result.left.value.pages mustBe Seq(
+                  result.left.value.page mustEqual AddUCRYesNoPage(itemIndex)
+                  result.left.value.pages mustEqual Seq(
                     AddUCRYesNoPage(itemIndex)
                   )
               }
@@ -517,8 +517,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                   val result = ItemDomain.ucrReader(itemIndex).apply(Nil).run(userAnswers)
 
-                  result.left.value.page mustBe UniqueConsignmentReferencePage(itemIndex)
-                  result.left.value.pages mustBe Seq(
+                  result.left.value.page mustEqual UniqueConsignmentReferencePage(itemIndex)
+                  result.left.value.pages mustEqual Seq(
                     AddUCRYesNoPage(itemIndex),
                     UniqueConsignmentReferencePage(itemIndex)
                   )
@@ -540,8 +540,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           val result = ItemDomain.cusCodeReader(itemIndex).apply(Nil).run(userAnswers)
 
-          result.value.value mustBe expectedResult
-          result.value.pages mustBe Seq(
+          result.value.value mustEqual expectedResult
+          result.value.pages mustEqual Seq(
             AddCUSCodeYesNoPage(itemIndex)
           )
         }
@@ -557,8 +557,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               val result = ItemDomain.cusCodeReader(itemIndex).apply(Nil).run(userAnswers)
 
-              result.value.value mustBe expectedResult
-              result.value.pages mustBe Seq(
+              result.value.value mustEqual expectedResult
+              result.value.pages mustEqual Seq(
                 AddCUSCodeYesNoPage(itemIndex),
                 CustomsUnionAndStatisticsCodePage(itemIndex)
               )
@@ -570,8 +570,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         "when add CUS code yes/no is unanswered" in {
           val result = ItemDomain.cusCodeReader(itemIndex).apply(Nil).run(emptyUserAnswers)
 
-          result.left.value.page mustBe AddCUSCodeYesNoPage(itemIndex)
-          result.left.value.pages mustBe Seq(
+          result.left.value.page mustEqual AddCUSCodeYesNoPage(itemIndex)
+          result.left.value.pages mustEqual Seq(
             AddCUSCodeYesNoPage(itemIndex)
           )
         }
@@ -582,8 +582,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           val result = ItemDomain.cusCodeReader(itemIndex).apply(Nil).run(userAnswers)
 
-          result.left.value.page mustBe CustomsUnionAndStatisticsCodePage(itemIndex)
-          result.left.value.pages mustBe Seq(
+          result.left.value.page mustEqual CustomsUnionAndStatisticsCodePage(itemIndex)
+          result.left.value.pages mustEqual Seq(
             AddCUSCodeYesNoPage(itemIndex),
             CustomsUnionAndStatisticsCodePage(itemIndex)
           )
@@ -602,8 +602,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
             val result = ItemDomain.commodityCodeReader(itemIndex).apply(Nil).run(userAnswers)
 
-            result.value.value mustBe expectedResult
-            result.value.pages mustBe Nil
+            result.value.value mustEqual expectedResult
+            result.value.pages mustEqual Nil
           }
         }
 
@@ -621,8 +621,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                 val result = ItemDomain.commodityCodeReader(itemIndex).apply(Nil).run(userAnswers)
 
-                result.value.value mustBe expectedResult
-                result.value.pages mustBe Seq(
+                result.value.value mustEqual expectedResult
+                result.value.pages mustEqual Seq(
                   AddCommodityCodeYesNoPage(itemIndex),
                   CommodityCodePage(itemIndex)
                 )
@@ -644,8 +644,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                 val result = ItemDomain.commodityCodeReader(itemIndex).apply(Nil).run(userAnswers)
 
-                result.value.value mustBe expectedResult
-                result.value.pages mustBe Seq(
+                result.value.value mustEqual expectedResult
+                result.value.pages mustEqual Seq(
                   AddCommodityCodeYesNoPage(itemIndex),
                   CommodityCodePage(itemIndex)
                 )
@@ -663,8 +663,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                 val result = ItemDomain.commodityCodeReader(itemIndex).apply(Nil).run(userAnswers)
 
-                result.value.value mustBe expectedResult
-                result.value.pages mustBe Seq(
+                result.value.value mustEqual expectedResult
+                result.value.pages mustEqual Seq(
                   AddCommodityCodeYesNoPage(itemIndex)
                 )
             }
@@ -681,8 +681,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               val result = ItemDomain.commodityCodeReader(itemIndex).apply(Nil).run(userAnswers)
 
-              result.value.value mustBe expectedResult
-              result.value.pages mustBe Seq(
+              result.value.value mustEqual expectedResult
+              result.value.pages mustEqual Seq(
                 CommodityCodePage(itemIndex)
               )
           }
@@ -700,8 +700,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                 val result = ItemDomain.commodityCodeReader(itemIndex).apply(Nil).run(userAnswers)
 
-                result.left.value.page mustBe AddCommodityCodeYesNoPage(itemIndex)
-                result.left.value.pages mustBe Seq(
+                result.left.value.page mustEqual AddCommodityCodeYesNoPage(itemIndex)
+                result.left.value.pages mustEqual Seq(
                   AddCommodityCodeYesNoPage(itemIndex)
                 )
             }
@@ -716,8 +716,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                 val result = ItemDomain.commodityCodeReader(itemIndex).apply(Nil).run(userAnswers)
 
-                result.left.value.page mustBe CommodityCodePage(itemIndex)
-                result.left.value.pages mustBe Seq(
+                result.left.value.page mustEqual CommodityCodePage(itemIndex)
+                result.left.value.pages mustEqual Seq(
                   AddCommodityCodeYesNoPage(itemIndex),
                   CommodityCodePage(itemIndex)
                 )
@@ -729,8 +729,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
           "and commodity code is unanswered" in {
             val result = ItemDomain.commodityCodeReader(itemIndex).apply(Nil).run(emptyUserAnswers)
 
-            result.left.value.page mustBe CommodityCodePage(itemIndex)
-            result.left.value.pages mustBe Seq(
+            result.left.value.page mustEqual CommodityCodePage(itemIndex)
+            result.left.value.pages mustEqual Seq(
               CommodityCodePage(itemIndex)
             )
           }
@@ -750,8 +750,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
             val result = ItemDomain.combinedNomenclatureCodeReader(itemIndex).apply(Nil).run(userAnswers)
 
-            result.value.value mustBe expectedResult
-            result.value.pages mustBe Nil
+            result.value.value mustEqual expectedResult
+            result.value.pages mustEqual Nil
           }
 
           "and office of departure is not in CL112" in {
@@ -767,8 +767,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                 val result = ItemDomain.combinedNomenclatureCodeReader(itemIndex).apply(Nil).run(userAnswers)
 
-                result.value.value mustBe expectedResult
-                result.value.pages mustBe Seq(
+                result.value.value mustEqual expectedResult
+                result.value.pages mustEqual Seq(
                   AddCombinedNomenclatureCodeYesNoPage(itemIndex),
                   CombinedNomenclatureCodePage(itemIndex)
                 )
@@ -781,8 +781,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           val result = ItemDomain.combinedNomenclatureCodeReader(itemIndex).apply(Nil).run(emptyUserAnswers)
 
-          result.value.value mustBe expectedResult
-          result.value.pages mustBe Nil
+          result.value.value mustEqual expectedResult
+          result.value.pages mustEqual Nil
         }
       }
 
@@ -797,8 +797,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               val result = ItemDomain.combinedNomenclatureCodeReader(itemIndex).apply(Nil).run(userAnswers)
 
-              result.left.value.page mustBe AddCombinedNomenclatureCodeYesNoPage(itemIndex)
-              result.left.value.pages mustBe Seq(
+              result.left.value.page mustEqual AddCombinedNomenclatureCodeYesNoPage(itemIndex)
+              result.left.value.pages mustEqual Seq(
                 AddCombinedNomenclatureCodeYesNoPage(itemIndex)
               )
           }
@@ -814,8 +814,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               val result = ItemDomain.combinedNomenclatureCodeReader(itemIndex).apply(Nil).run(userAnswers)
 
-              result.left.value.page mustBe CombinedNomenclatureCodePage(itemIndex)
-              result.left.value.pages mustBe Seq(
+              result.left.value.page mustEqual CombinedNomenclatureCodePage(itemIndex)
+              result.left.value.pages mustEqual Seq(
                 AddCombinedNomenclatureCodeYesNoPage(itemIndex),
                 CombinedNomenclatureCodePage(itemIndex)
               )
@@ -843,8 +843,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               val result = ItemDomain.dangerousGoodsReader(itemIndex).apply(Nil).run(userAnswers)
 
-              result.value.value mustBe expectedResult
-              result.value.pages mustBe Seq(
+              result.value.value mustEqual expectedResult
+              result.value.pages mustEqual Seq(
                 AddDangerousGoodsYesNoPage(itemIndex),
                 UNNumberPage(itemIndex, dangerousGoodsIndex),
                 AddAnotherDangerousGoodsPage(itemIndex)
@@ -860,8 +860,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           val result = ItemDomain.dangerousGoodsReader(itemIndex).apply(Nil).run(userAnswers)
 
-          result.value.value mustBe expectedResult
-          result.value.pages mustBe Seq(
+          result.value.value mustEqual expectedResult
+          result.value.pages mustEqual Seq(
             AddDangerousGoodsYesNoPage(itemIndex)
           )
         }
@@ -871,8 +871,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         "when add dangerous goods yes/no is unanswered" in {
           val result = ItemDomain.dangerousGoodsReader(itemIndex).apply(Nil).run(emptyUserAnswers)
 
-          result.left.value.page mustBe AddDangerousGoodsYesNoPage(itemIndex)
-          result.left.value.pages mustBe Seq(
+          result.left.value.page mustEqual AddDangerousGoodsYesNoPage(itemIndex)
+          result.left.value.pages mustEqual Seq(
             AddDangerousGoodsYesNoPage(itemIndex)
           )
         }
@@ -894,8 +894,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                 val result = ItemDomain.netWeightReader(itemIndex).apply(Nil).run(userAnswers)
 
-                result.value.value mustBe expectedResult
-                result.value.pages mustBe Seq(
+                result.value.value mustEqual expectedResult
+                result.value.pages mustEqual Seq(
                   AddItemNetWeightYesNoPage(itemIndex),
                   NetWeightPage(itemIndex)
                 )
@@ -910,8 +910,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
             val result = ItemDomain.netWeightReader(itemIndex).apply(Nil).run(userAnswers)
 
-            result.value.value mustBe expectedResult
-            result.value.pages mustBe Nil
+            result.value.value mustEqual expectedResult
+            result.value.pages mustEqual Nil
           }
 
           "and reduced indicator is undefined (infer as false)" in {
@@ -925,8 +925,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                 val result = ItemDomain.netWeightReader(itemIndex).apply(Nil).run(userAnswers)
 
-                result.value.value mustBe expectedResult
-                result.value.pages mustBe Seq(
+                result.value.value mustEqual expectedResult
+                result.value.pages mustEqual Seq(
                   AddItemNetWeightYesNoPage(itemIndex),
                   NetWeightPage(itemIndex)
                 )
@@ -943,8 +943,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           val result = ItemDomain.netWeightReader(itemIndex).apply(Nil).run(userAnswers)
 
-          result.value.value mustBe expectedResult
-          result.value.pages mustBe Seq(
+          result.value.value mustEqual expectedResult
+          result.value.pages mustEqual Seq(
             AddItemNetWeightYesNoPage(itemIndex)
           )
         }
@@ -959,8 +959,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           val result = ItemDomain.netWeightReader(itemIndex).apply(Nil).run(userAnswers)
 
-          result.left.value.page mustBe AddItemNetWeightYesNoPage(itemIndex)
-          result.left.value.pages mustBe Seq(
+          result.left.value.page mustEqual AddItemNetWeightYesNoPage(itemIndex)
+          result.left.value.pages mustEqual Seq(
             AddItemNetWeightYesNoPage(itemIndex)
           )
         }
@@ -972,8 +972,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           val result = ItemDomain.netWeightReader(itemIndex).apply(Nil).run(userAnswers)
 
-          result.left.value.page mustBe NetWeightPage(itemIndex)
-          result.left.value.pages mustBe Seq(
+          result.left.value.page mustEqual NetWeightPage(itemIndex)
+          result.left.value.pages mustEqual Seq(
             AddItemNetWeightYesNoPage(itemIndex),
             NetWeightPage(itemIndex)
           )
@@ -994,8 +994,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               val result = ItemDomain.supplementaryUnitsReader(itemIndex).apply(Nil).run(userAnswers)
 
-              result.value.value mustBe expectedResult
-              result.value.pages mustBe Seq(
+              result.value.value mustEqual expectedResult
+              result.value.pages mustEqual Seq(
                 AddSupplementaryUnitsYesNoPage(itemIndex),
                 SupplementaryUnitsPage(itemIndex)
               )
@@ -1010,8 +1010,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           val result = ItemDomain.supplementaryUnitsReader(itemIndex).apply(Nil).run(userAnswers)
 
-          result.value.value mustBe expectedResult
-          result.value.pages mustBe Seq(
+          result.value.value mustEqual expectedResult
+          result.value.pages mustEqual Seq(
             AddSupplementaryUnitsYesNoPage(itemIndex)
           )
         }
@@ -1021,8 +1021,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         "when add supplementary units yes/no is unanswered" in {
           val result = ItemDomain.supplementaryUnitsReader(itemIndex).apply(Nil).run(emptyUserAnswers)
 
-          result.left.value.page mustBe AddSupplementaryUnitsYesNoPage(itemIndex)
-          result.left.value.pages mustBe Seq(
+          result.left.value.page mustEqual AddSupplementaryUnitsYesNoPage(itemIndex)
+          result.left.value.pages mustEqual Seq(
             AddSupplementaryUnitsYesNoPage(itemIndex)
           )
         }
@@ -1053,8 +1053,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               val result = ItemDomain.packagesReader(itemIndex).apply(Nil).run(userAnswers)
 
-              result.value.value mustBe expectedResult
-              result.value.pages mustBe Seq(
+              result.value.value mustEqual expectedResult
+              result.value.pages mustEqual Seq(
                 PackageTypePage(itemIndex, packageIndex),
                 NumberOfPackagesPage(itemIndex, packageIndex),
                 AddShippingMarkYesNoPage(itemIndex, packageIndex),
@@ -1085,8 +1085,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               val result = ItemDomain.packagesReader(itemIndex).apply(Nil).run(userAnswers)
 
-              result.value.value mustBe expectedResult
-              result.value.pages mustBe Seq(
+              result.value.value mustEqual expectedResult
+              result.value.pages mustEqual Seq(
                 PackageTypePage(itemIndex, packageIndex),
                 AddShippingMarkYesNoPage(itemIndex, packageIndex),
                 ShippingMarkPage(itemIndex, packageIndex),
@@ -1116,8 +1116,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               val result = ItemDomain.packagesReader(itemIndex).apply(Nil).run(userAnswers)
 
-              result.value.value mustBe expectedResult
-              result.value.pages mustBe Seq(
+              result.value.value mustEqual expectedResult
+              result.value.pages mustEqual Seq(
                 PackageTypePage(itemIndex, packageIndex),
                 NumberOfPackagesPage(itemIndex, packageIndex),
                 ShippingMarkPage(itemIndex, packageIndex),
@@ -1131,8 +1131,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         "when packages is not added" in {
           val result = ItemDomain.packagesReader(itemIndex).apply(Nil).run(emptyUserAnswers)
 
-          result.left.value.page mustBe PackageTypePage(itemIndex, packageIndex)
-          result.left.value.pages mustBe Seq(
+          result.left.value.page mustEqual PackageTypePage(itemIndex, packageIndex)
+          result.left.value.pages mustEqual Seq(
             PackageTypePage(itemIndex, packageIndex)
           )
         }
@@ -1146,7 +1146,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
             val result = ItemDomain.consigneeReader().apply(Nil).run(userAnswers)
 
             result.value.value must not be defined
-            result.value.pages mustBe Nil
+            result.value.pages mustEqual Nil
         }
       }
     }
@@ -1211,8 +1211,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                   val result = ItemDomain.documentsReader(itemIndex).apply(Nil).run(userAnswers)
 
-                  result.value.value mustBe expectedResult
-                  result.value.pages mustBe Seq(
+                  result.value.value mustEqual expectedResult
+                  result.value.pages mustEqual Seq(
                     DocumentPage(itemIndex, Index(0)),
                     AddAnotherDocumentPage(itemIndex)
                   )
@@ -1239,8 +1239,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                 val result = ItemDomain.documentsReader(itemIndex).apply(Nil).run(userAnswers)
 
-                result.value.value mustBe expectedResult
-                result.value.pages mustBe Seq(
+                result.value.value mustEqual expectedResult
+                result.value.pages mustEqual Seq(
                   DocumentPage(itemIndex, Index(0)),
                   AddAnotherDocumentPage(itemIndex)
                 )
@@ -1286,8 +1286,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                 val result = ItemDomain.documentsReader(itemIndex).apply(Nil).run(userAnswers)
 
-                result.value.value mustBe expectedResult
-                result.value.pages mustBe Seq(
+                result.value.value mustEqual expectedResult
+                result.value.pages mustEqual Seq(
                   DocumentPage(itemIndex, Index(0)),
                   AddAnotherDocumentPage(itemIndex)
                 )
@@ -1342,8 +1342,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                     val result = ItemDomain.documentsReader(itemIndex).apply(Nil).run(userAnswers)
 
-                    result.value.value mustBe expectedResult
-                    result.value.pages mustBe Seq(
+                    result.value.value mustEqual expectedResult
+                    result.value.pages mustEqual Seq(
                       DocumentPage(itemIndex, Index(0)),
                       AddAnotherDocumentPage(itemIndex)
                     )
@@ -1371,8 +1371,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                   val result = ItemDomain.documentsReader(itemIndex).apply(Nil).run(userAnswers)
 
-                  result.value.value mustBe expectedResult
-                  result.value.pages mustBe Seq(
+                  result.value.value mustEqual expectedResult
+                  result.value.pages mustEqual Seq(
                     DocumentPage(itemIndex, Index(0)),
                     AddAnotherDocumentPage(itemIndex)
                   )
@@ -1419,8 +1419,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                   val result = ItemDomain.documentsReader(itemIndex).apply(Nil).run(userAnswers)
 
-                  result.value.value mustBe expectedResult
-                  result.value.pages mustBe Seq(
+                  result.value.value mustEqual expectedResult
+                  result.value.pages mustEqual Seq(
                     DocumentPage(itemIndex, Index(0)),
                     AddAnotherDocumentPage(itemIndex)
                   )
@@ -1474,8 +1474,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                     val result = ItemDomain.documentsReader(itemIndex).apply(Nil).run(userAnswers)
 
-                    result.value.value mustBe expectedResult
-                    result.value.pages mustBe Seq(
+                    result.value.value mustEqual expectedResult
+                    result.value.pages mustEqual Seq(
                       DocumentPage(itemIndex, Index(0)),
                       AddAnotherDocumentPage(itemIndex)
                     )
@@ -1496,7 +1496,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                   val result = ItemDomain.documentsReader(itemIndex).apply(Nil).run(userAnswers)
 
                   result.value.value must not be defined
-                  result.value.pages mustBe Nil
+                  result.value.pages mustEqual Nil
               }
             }
           }
@@ -1528,8 +1528,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                   val result = ItemDomain.documentsReader(itemIndex).apply(Nil).run(userAnswers)
 
-                  result.value.value mustBe expectedResult
-                  result.value.pages mustBe Seq(
+                  result.value.value mustEqual expectedResult
+                  result.value.pages mustEqual Seq(
                     AddDocumentsYesNoPage(itemIndex),
                     DocumentPage(itemIndex, Index(0)),
                     AddAnotherDocumentPage(itemIndex)
@@ -1551,7 +1551,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                   val result = ItemDomain.documentsReader(itemIndex).apply(Nil).run(userAnswers)
 
                   result.value.value must not be defined
-                  result.value.pages mustBe Seq(
+                  result.value.pages mustEqual Seq(
                     AddDocumentsYesNoPage(itemIndex)
                   )
               }
@@ -1571,7 +1571,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                 val result = ItemDomain.documentsReader(itemIndex).apply(Nil).run(userAnswers)
 
                 result.value.value must not be defined
-                result.value.pages mustBe Nil
+                result.value.pages mustEqual Nil
             }
           }
         }
@@ -1602,8 +1602,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
                   val result = ItemDomain.documentsReader(itemIndex).apply(Nil).run(userAnswers)
 
-                  result.value.value mustBe expectedResult
-                  result.value.pages mustBe Seq(
+                  result.value.value mustEqual expectedResult
+                  result.value.pages mustEqual Seq(
                     AddDocumentsYesNoPage(itemIndex),
                     DocumentPage(itemIndex, Index(0)),
                     AddAnotherDocumentPage(itemIndex)
@@ -1625,7 +1625,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                   val result = ItemDomain.documentsReader(itemIndex).apply(Nil).run(userAnswers)
 
                   result.value.value must not be defined
-                  result.value.pages mustBe Seq(
+                  result.value.pages mustEqual Seq(
                     AddDocumentsYesNoPage(itemIndex)
                   )
               }
@@ -1644,7 +1644,7 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
                   val result = ItemDomain.documentsReader(itemIndex).apply(Nil).run(userAnswers)
 
                   result.value.value must not be defined
-                  result.value.pages mustBe Nil
+                  result.value.pages mustEqual Nil
               }
             }
           }
@@ -1672,8 +1672,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               val result = ItemDomain.additionalReferencesReader(itemIndex).apply(Nil).run(userAnswers)
 
-              result.value.value mustBe expectedResult
-              result.value.pages mustBe Seq(
+              result.value.value mustEqual expectedResult
+              result.value.pages mustEqual Seq(
                 AddAdditionalReferenceYesNoPage(itemIndex),
                 AdditionalReferencePage(itemIndex, additionalReferenceIndex),
                 AddAdditionalReferenceNumberYesNoPage(itemIndex, additionalReferenceIndex),
@@ -1690,8 +1690,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           val result = ItemDomain.additionalReferencesReader(itemIndex).apply(Nil).run(userAnswers)
 
-          result.value.value mustBe expectedResult
-          result.value.pages mustBe Seq(
+          result.value.value mustEqual expectedResult
+          result.value.pages mustEqual Seq(
             AddAdditionalReferenceYesNoPage(itemIndex)
           )
         }
@@ -1701,8 +1701,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         "when add additional references yes/no is unanswered" in {
           val result = ItemDomain.additionalReferencesReader(itemIndex).apply(Nil).run(emptyUserAnswers)
 
-          result.left.value.page mustBe AddAdditionalReferenceYesNoPage(itemIndex)
-          result.left.value.pages mustBe Seq(
+          result.left.value.page mustEqual AddAdditionalReferenceYesNoPage(itemIndex)
+          result.left.value.pages mustEqual Seq(
             AddAdditionalReferenceYesNoPage(itemIndex)
           )
         }
@@ -1729,8 +1729,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
               val result = ItemDomain.additionalInformationListReader(itemIndex).apply(Nil).run(userAnswers)
 
-              result.value.value mustBe expectedResult
-              result.value.pages mustBe Seq(
+              result.value.value mustEqual expectedResult
+              result.value.pages mustEqual Seq(
                 AddAdditionalInformationYesNoPage(itemIndex),
                 AdditionalInformationTypePage(itemIndex, additionalInformationIndex),
                 AdditionalInformationPage(itemIndex, additionalInformationIndex),
@@ -1747,8 +1747,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
           val result = ItemDomain.additionalInformationListReader(itemIndex).apply(Nil).run(userAnswers)
 
-          result.value.value mustBe expectedResult
-          result.value.pages mustBe Seq(
+          result.value.value mustEqual expectedResult
+          result.value.pages mustEqual Seq(
             AddAdditionalInformationYesNoPage(itemIndex)
           )
         }
@@ -1758,8 +1758,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
         "when add additional information yes/no is unanswered" in {
           val result = ItemDomain.additionalInformationListReader(itemIndex).apply(Nil).run(emptyUserAnswers)
 
-          result.left.value.page mustBe AddAdditionalInformationYesNoPage(itemIndex)
-          result.left.value.pages mustBe Seq(
+          result.left.value.page mustEqual AddAdditionalInformationYesNoPage(itemIndex)
+          result.left.value.pages mustEqual Seq(
             AddAdditionalInformationYesNoPage(itemIndex)
           )
         }
@@ -1777,8 +1777,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
             val result = ItemDomain.transportChargesReader().apply(Nil).run(userAnswers)
 
-            result.value.value mustBe expectedResult
-            result.value.pages mustBe Nil
+            result.value.value mustEqual expectedResult
+            result.value.pages mustEqual Nil
         }
       }
 
@@ -1793,8 +1793,8 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
 
             val result = ItemDomain.transportChargesReader().apply(Nil).run(userAnswers)
 
-            result.value.value mustBe expectedResult
-            result.value.pages mustBe Nil
+            result.value.value mustEqual expectedResult
+            result.value.pages mustEqual Nil
         }
       }
     }

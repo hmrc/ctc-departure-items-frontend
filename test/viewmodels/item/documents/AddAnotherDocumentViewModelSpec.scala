@@ -57,12 +57,12 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with BeforeAndAfterEach w
             val viewModelProvider = new AddAnotherDocumentViewModelProvider(mockDocumentsService)
             val result            = viewModelProvider.apply(userAnswers, mode, itemIndex)
 
-            result.listItems.length mustBe 1
-            result.consignmentLevelDocumentsListItems.length mustBe 0
-            result.title mustBe "You have attached 1 document to this item"
-            result.heading mustBe "You have attached 1 document to this item"
-            result.legend mustBe "Do you want to attach another document?"
-            result.maxLimitLabel mustBe "You cannot attach any more documents. To attach another, you need to remove one first."
+            result.listItems.length mustEqual 1
+            result.consignmentLevelDocumentsListItems.length mustEqual 0
+            result.title mustEqual "You have attached 1 document to this item"
+            result.heading mustEqual "You have attached 1 document to this item"
+            result.legend mustEqual "Do you want to attach another document?"
+            result.maxLimitLabel mustEqual "You cannot attach any more documents. To attach another, you need to remove one first."
         }
       }
 
@@ -81,12 +81,12 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with BeforeAndAfterEach w
             val viewModelProvider = new AddAnotherDocumentViewModelProvider(mockDocumentsService)
             val result            = viewModelProvider.apply(emptyUserAnswers, mode, itemIndex)
 
-            result.consignmentLevelDocumentsListItems.length mustBe 1
-            result.listItems.length mustBe 0
-            result.title mustBe "You have attached 1 document to this item"
-            result.heading mustBe "You have attached 1 document to this item"
-            result.legend mustBe "Do you want to attach another document?"
-            result.maxLimitLabel mustBe "You cannot attach any more documents. To attach another, you need to remove one first."
+            result.consignmentLevelDocumentsListItems.length mustEqual 1
+            result.listItems.length mustEqual 0
+            result.title mustEqual "You have attached 1 document to this item"
+            result.heading mustEqual "You have attached 1 document to this item"
+            result.legend mustEqual "Do you want to attach another document?"
+            result.maxLimitLabel mustEqual "You cannot attach any more documents. To attach another, you need to remove one first."
         }
       }
 
@@ -112,12 +112,12 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with BeforeAndAfterEach w
           val viewModelProvider = new AddAnotherDocumentViewModelProvider(mockDocumentsService)
           val result            = viewModelProvider.apply(userAnswers, mode, itemIndex)
 
-          result.listItems.length mustBe 2
-          result.consignmentLevelDocumentsListItems.length mustBe 1
-          result.title mustBe s"You have attached 3 documents to this item"
-          result.heading mustBe s"You have attached 3 documents to this item"
-          result.legend mustBe "Do you want to attach another document?"
-          result.maxLimitLabel mustBe "You cannot attach any more documents. To attach another, you need to remove one first."
+          result.listItems.length mustEqual 2
+          result.consignmentLevelDocumentsListItems.length mustEqual 1
+          result.title mustEqual s"You have attached 3 documents to this item"
+          result.heading mustEqual s"You have attached 3 documents to this item"
+          result.legend mustEqual "Do you want to attach another document?"
+          result.maxLimitLabel mustEqual "You cannot attach any more documents. To attach another, you need to remove one first."
       }
     }
 
@@ -142,9 +142,9 @@ class AddAnotherDocumentViewModelSpec extends SpecBase with BeforeAndAfterEach w
             val viewModelProvider = new AddAnotherDocumentViewModelProvider(mockDocumentsService)
             val result            = viewModelProvider.apply(userAnswers, mode, itemIndex)
 
-            result.listItems.length mustBe 2
-            result.consignmentLevelDocumentsListItems.length mustBe 1
-            result.nextIndex mustBe Index(2)
+            result.listItems.length mustEqual 2
+            result.consignmentLevelDocumentsListItems.length mustEqual 1
+            result.nextIndex mustEqual Index(2)
         }
       }
     }

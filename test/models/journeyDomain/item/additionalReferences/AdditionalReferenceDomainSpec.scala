@@ -45,8 +45,8 @@ class AdditionalReferenceDomainSpec extends SpecBase with ScalaCheckPropertyChec
 
             val result = AdditionalReferenceDomain.userAnswersReader(itemIndex, additionalReferenceIndex).apply(Nil).run(userAnswers)
 
-            result.value.value mustBe expectedResult
-            result.value.pages mustBe Seq(
+            result.value.value mustEqual expectedResult
+            result.value.pages mustEqual Seq(
               AdditionalReferencePage(itemIndex, additionalReferenceIndex),
               AddAdditionalReferenceNumberYesNoPage(itemIndex, additionalReferenceIndex),
               AdditionalReferenceNumberPage(itemIndex, additionalReferenceIndex)
@@ -60,8 +60,8 @@ class AdditionalReferenceDomainSpec extends SpecBase with ScalaCheckPropertyChec
       "when reference type unanswered" in {
         val result = AdditionalReferenceDomain.userAnswersReader(itemIndex, additionalReferenceIndex).apply(Nil).run(emptyUserAnswers)
 
-        result.left.value.page mustBe AdditionalReferencePage(itemIndex, additionalReferenceIndex)
-        result.left.value.pages mustBe Seq(
+        result.left.value.page mustEqual AdditionalReferencePage(itemIndex, additionalReferenceIndex)
+        result.left.value.pages mustEqual Seq(
           AdditionalReferencePage(itemIndex, additionalReferenceIndex)
         )
       }
@@ -75,8 +75,8 @@ class AdditionalReferenceDomainSpec extends SpecBase with ScalaCheckPropertyChec
 
               val result = AdditionalReferenceDomain.userAnswersReader(itemIndex, additionalReferenceIndex).apply(Nil).run(userAnswers)
 
-              result.left.value.page mustBe AdditionalReferenceNumberPage(itemIndex, additionalReferenceIndex)
-              result.left.value.pages mustBe Seq(
+              result.left.value.page mustEqual AdditionalReferenceNumberPage(itemIndex, additionalReferenceIndex)
+              result.left.value.pages mustEqual Seq(
                 AdditionalReferencePage(itemIndex, additionalReferenceIndex),
                 AdditionalReferenceNumberPage(itemIndex, additionalReferenceIndex)
               )
@@ -93,8 +93,8 @@ class AdditionalReferenceDomainSpec extends SpecBase with ScalaCheckPropertyChec
 
               val result = AdditionalReferenceDomain.userAnswersReader(itemIndex, additionalReferenceIndex).apply(Nil).run(userAnswers)
 
-              result.left.value.page mustBe AddAdditionalReferenceNumberYesNoPage(itemIndex, additionalReferenceIndex)
-              result.left.value.pages mustBe Seq(
+              result.left.value.page mustEqual AddAdditionalReferenceNumberYesNoPage(itemIndex, additionalReferenceIndex)
+              result.left.value.pages mustEqual Seq(
                 AdditionalReferencePage(itemIndex, additionalReferenceIndex),
                 AddAdditionalReferenceNumberYesNoPage(itemIndex, additionalReferenceIndex)
               )
@@ -110,8 +110,8 @@ class AdditionalReferenceDomainSpec extends SpecBase with ScalaCheckPropertyChec
 
               val result = AdditionalReferenceDomain.userAnswersReader(itemIndex, additionalReferenceIndex).apply(Nil).run(userAnswers)
 
-              result.left.value.page mustBe AdditionalReferenceNumberPage(itemIndex, additionalReferenceIndex)
-              result.left.value.pages mustBe Seq(
+              result.left.value.page mustEqual AdditionalReferenceNumberPage(itemIndex, additionalReferenceIndex)
+              result.left.value.pages mustEqual Seq(
                 AdditionalReferencePage(itemIndex, additionalReferenceIndex),
                 AddAdditionalReferenceNumberYesNoPage(itemIndex, additionalReferenceIndex),
                 AdditionalReferenceNumberPage(itemIndex, additionalReferenceIndex)
@@ -131,8 +131,8 @@ class AdditionalReferenceDomainSpec extends SpecBase with ScalaCheckPropertyChec
 
               val result = AdditionalReferenceDomain.userAnswersReader(itemIndex, Index(1)).apply(Nil).run(userAnswers)
 
-              result.left.value.page mustBe AdditionalReferenceNumberPage(itemIndex, Index(1))
-              result.left.value.pages mustBe Seq(
+              result.left.value.page mustEqual AdditionalReferenceNumberPage(itemIndex, Index(1))
+              result.left.value.pages mustEqual Seq(
                 AdditionalReferencePage(itemIndex, Index(1)),
                 AdditionalReferenceNumberPage(itemIndex, Index(1))
               )

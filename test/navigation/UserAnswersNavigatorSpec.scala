@@ -71,7 +71,7 @@ class UserAnswersNavigatorSpec extends SpecBase {
             .nextPage(currentPage, userAnswersReaderResult, mode)
             .apply(userAnswers, stage)
 
-          result.value.url mustBe "/foo"
+          result.value.url mustEqual "/foo"
         }
 
         "and on FooPage" - {
@@ -86,7 +86,7 @@ class UserAnswersNavigatorSpec extends SpecBase {
                 .nextPage(currentPage, userAnswersReaderResult, mode)
                 .apply(userAnswers, stage)
 
-              result.value.url mustBe "/bar"
+              result.value.url mustEqual "/bar"
             }
 
             "when BarPage unanswered" in {
@@ -97,7 +97,7 @@ class UserAnswersNavigatorSpec extends SpecBase {
                 .nextPage(currentPage, userAnswersReaderResult, mode)
                 .apply(userAnswers, stage)
 
-              result.value.url mustBe "/bar"
+              result.value.url mustEqual "/bar"
             }
           }
         }
@@ -114,7 +114,7 @@ class UserAnswersNavigatorSpec extends SpecBase {
                 .nextPage(currentPage, userAnswersReaderResult, mode)
                 .apply(userAnswers, stage)
 
-              result.value.url mustBe "/baz"
+              result.value.url mustEqual "/baz"
             }
 
             "when BazPage unanswered" in {
@@ -125,7 +125,7 @@ class UserAnswersNavigatorSpec extends SpecBase {
                 .nextPage(currentPage, userAnswersReaderResult, mode)
                 .apply(userAnswers, stage)
 
-              result.value.url mustBe "/baz"
+              result.value.url mustEqual "/baz"
             }
           }
         }
@@ -146,7 +146,7 @@ class UserAnswersNavigatorSpec extends SpecBase {
                 .nextPage(currentPage, userAnswersReaderResult, mode)
                 .apply(userAnswers, stage)
 
-              result.value.url mustBe "/bar"
+              result.value.url mustEqual "/bar"
             }
 
             "when BarPage unanswered" in {
@@ -157,7 +157,7 @@ class UserAnswersNavigatorSpec extends SpecBase {
                 .nextPage(currentPage, userAnswersReaderResult, mode)
                 .apply(userAnswers, stage)
 
-              result.value.url mustBe "/bar"
+              result.value.url mustEqual "/bar"
             }
           }
 
@@ -170,7 +170,7 @@ class UserAnswersNavigatorSpec extends SpecBase {
                 .nextPage(currentPage, userAnswersReaderResult, mode)
                 .apply(userAnswers, stage)
 
-              result.value.url mustBe "/cya"
+              result.value.url mustEqual "/cya"
             }
           }
         }
@@ -187,7 +187,7 @@ class UserAnswersNavigatorSpec extends SpecBase {
                 .nextPage(currentPage, userAnswersReaderResult, mode)
                 .apply(userAnswers, stage)
 
-              result.value.url mustBe "/baz"
+              result.value.url mustEqual "/baz"
             }
           }
 
@@ -200,7 +200,7 @@ class UserAnswersNavigatorSpec extends SpecBase {
                 .nextPage(currentPage, userAnswersReaderResult, mode)
                 .apply(userAnswers, stage)
 
-              result.value.url mustBe "/cya"
+              result.value.url mustEqual "/cya"
             }
           }
         }
@@ -217,7 +217,7 @@ class UserAnswersNavigatorSpec extends SpecBase {
                 .nextPage(currentPage, userAnswersReaderResult, mode)
                 .apply(userAnswers, stage)
 
-              result.value.url mustBe "/cya"
+              result.value.url mustEqual "/cya"
             }
           }
         }

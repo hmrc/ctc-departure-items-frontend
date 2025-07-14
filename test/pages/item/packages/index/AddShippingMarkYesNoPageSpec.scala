@@ -55,7 +55,7 @@ class AddShippingMarkYesNoPageSpec extends PageBehaviours {
 
               val result = userAnswers.setValue(AddShippingMarkYesNoPage(itemIndex, packageIndex), true)
 
-              result.get(ShippingMarkPage(itemIndex, packageIndex)) must be(defined)
+              result.get(ShippingMarkPage(itemIndex, packageIndex)) mustBe defined
           }
         }
       }

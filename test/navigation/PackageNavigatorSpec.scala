@@ -37,7 +37,7 @@ class PackageNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
             answers =>
               navigator
                 .nextPage(answers, None)
-                .mustBe(controllers.item.packages.routes.AddAnotherPackageController.onPageLoad(answers.lrn, mode, itemIndex))
+                .mustEqual(controllers.item.packages.routes.AddAnotherPackageController.onPageLoad(answers.lrn, mode, itemIndex))
           }
         }
       }
@@ -55,7 +55,7 @@ class PackageNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with G
             answers =>
               navigator
                 .nextPage(answers, None)
-                .mustBe(controllers.item.routes.CheckYourAnswersController.onPageLoad(answers.lrn, itemIndex))
+                .mustEqual(controllers.item.routes.CheckYourAnswersController.onPageLoad(answers.lrn, itemIndex))
           }
         }
       }

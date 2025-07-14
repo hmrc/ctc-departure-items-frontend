@@ -33,7 +33,7 @@ class PackagingSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           packageType =>
             val packaging = new Packaging(packageType, Some(numberOfPackages))
             val result    = packaging.forRemoveDisplay
-            result mustBe s"${numberOfPackages.toString} * ${packageType.toString}"
+            result mustEqual s"${numberOfPackages.toString} * ${packageType.toString}"
         }
       }
 
@@ -42,7 +42,7 @@ class PackagingSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           packageType =>
             val packaging = new Packaging(packageType, None)
             val result    = packaging.forRemoveDisplay
-            result mustBe s"${packageType.toString}"
+            result mustEqual s"${packageType.toString}"
         }
       }
 

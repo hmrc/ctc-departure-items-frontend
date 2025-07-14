@@ -183,7 +183,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
 
           val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
           verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-          userAnswersCaptor.getValue.get(AddAnotherDocumentPage(itemIndex)).value mustBe true
+          userAnswersCaptor.getValue.get(AddAnotherDocumentPage(itemIndex)).value mustEqual true
         }
       }
 
@@ -205,7 +205,7 @@ class AddAnotherDocumentControllerSpec extends SpecBase with AppWithDefaultMockF
 
           val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
           verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-          userAnswersCaptor.getValue.get(AddAnotherDocumentPage(itemIndex)).value mustBe false
+          userAnswersCaptor.getValue.get(AddAnotherDocumentPage(itemIndex)).value mustEqual false
         }
       }
     }

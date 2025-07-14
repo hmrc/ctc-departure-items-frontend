@@ -43,8 +43,8 @@ class AdditionalInformationDomainSpec extends SpecBase with ScalaCheckPropertyCh
 
             val result = AdditionalInformationDomain.userAnswersReader(itemIndex, additionalInformationIndex).apply(Nil).run(userAnswers)
 
-            result.value.value mustBe expectedResult
-            result.value.pages mustBe Seq(
+            result.value.value mustEqual expectedResult
+            result.value.pages mustEqual Seq(
               AdditionalInformationTypePage(itemIndex, additionalInformationIndex),
               AdditionalInformationPage(itemIndex, additionalInformationIndex)
             )
@@ -57,8 +57,8 @@ class AdditionalInformationDomainSpec extends SpecBase with ScalaCheckPropertyCh
       "when additional information type unanswered" in {
         val result = AdditionalInformationDomain.userAnswersReader(itemIndex, additionalInformationIndex).apply(Nil).run(emptyUserAnswers)
 
-        result.left.value.page mustBe AdditionalInformationTypePage(itemIndex, additionalInformationIndex)
-        result.left.value.pages mustBe Seq(
+        result.left.value.page mustEqual AdditionalInformationTypePage(itemIndex, additionalInformationIndex)
+        result.left.value.pages mustEqual Seq(
           AdditionalInformationTypePage(itemIndex, additionalInformationIndex)
         )
       }
@@ -71,8 +71,8 @@ class AdditionalInformationDomainSpec extends SpecBase with ScalaCheckPropertyCh
 
             val result = AdditionalInformationDomain.userAnswersReader(itemIndex, additionalInformationIndex).apply(Nil).run(userAnswers)
 
-            result.left.value.page mustBe AdditionalInformationPage(itemIndex, additionalInformationIndex)
-            result.left.value.pages mustBe Seq(
+            result.left.value.page mustEqual AdditionalInformationPage(itemIndex, additionalInformationIndex)
+            result.left.value.pages mustEqual Seq(
               AdditionalInformationTypePage(itemIndex, additionalInformationIndex),
               AdditionalInformationPage(itemIndex, additionalInformationIndex)
             )
