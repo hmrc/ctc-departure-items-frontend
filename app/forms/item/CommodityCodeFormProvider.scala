@@ -19,7 +19,7 @@ package forms.item
 import forms.Constants.exactCommodityCodeLength
 import forms.mappings.Mappings
 import models.RichString
-import models.domain.StringFieldRegex.alphaNumericRegex
+import models.domain.StringFieldRegex.numericRegex
 import play.api.data.Form
 
 import javax.inject.Inject
@@ -31,7 +31,7 @@ class CommodityCodeFormProvider @Inject() extends Mappings {
       "value" -> adaptedText(s"$prefix.error.required")(_.removeSpaces())
         .verifying(
           forms.StopOnFirstFail[String](
-            regexp(alphaNumericRegex, s"$prefix.error.invalidCharacters"),
+            regexp(numericRegex, s"$prefix.error.invalidCharacters"),
             exactLength(exactCommodityCodeLength, s"$prefix.error.length")
           )
         )

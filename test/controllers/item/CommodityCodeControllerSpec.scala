@@ -26,7 +26,8 @@ import pages.item.CommodityCodePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
+import services.HSCodeService
 import views.html.item.CommodityCodeView
 
 import scala.concurrent.Future
@@ -38,10 +39,17 @@ class CommodityCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
   private val mode                    = NormalMode
   private lazy val commodityCodeRoute = routes.CommodityCodeController.onPageLoad(lrn, mode, itemIndex).url
 
+  private val mockHsCodeService = mock[HSCodeService]
+
+  private val validAnswer = "010121"
+
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[ItemNavigatorProvider]).toInstance(fakeItemNavigatorProvider))
+      .overrides(
+        bind(classOf[ItemNavigatorProvider]).toInstance(fakeItemNavigatorProvider),
+        bind(classOf[HSCodeService]).toInstance(mockHsCodeService)
+      )
 
   "CommodityCode Controller" - {
 
@@ -63,14 +71,14 @@ class CommodityCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(CommodityCodePage(itemIndex), "string")
+      val userAnswers = emptyUserAnswers.setValue(CommodityCodePage(itemIndex), validAnswer)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, commodityCodeRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> "string"))
+      val filledForm = form.bind(Map("value" -> validAnswer))
 
       val view = injector.instanceOf[CommodityCodeView]
 
@@ -82,12 +90,14 @@ class CommodityCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
     "must redirect to the next page when valid data is submitted" in {
 
+      when(mockHsCodeService.doesHSCodeExist(any())(any())).thenReturn(Future.successful(true))
+
       setExistingUserAnswers(emptyUserAnswers)
 
       when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
       val request = FakeRequest(POST, commodityCodeRoute)
-        .withFormUrlEncodedBody(("value", "string"))
+        .withFormUrlEncodedBody(("value", validAnswer))
 
       val result = route(app, request).value
 
@@ -98,11 +108,13 @@ class CommodityCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
+      when(mockHsCodeService.doesHSCodeExist(any())(any())).thenReturn(Future.successful(true))
+
       setExistingUserAnswers(emptyUserAnswers)
 
       val invalidAnswer = ""
 
-      val request    = FakeRequest(POST, commodityCodeRoute).withFormUrlEncodedBody(("value", ""))
+      val request    = FakeRequest(POST, commodityCodeRoute).withFormUrlEncodedBody(("value", invalidAnswer))
       val filledForm = form.bind(Map("value" -> invalidAnswer))
 
       val result = route(app, request).value
@@ -113,6 +125,25 @@ class CommodityCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
       contentAsString(result) mustEqual
         view(filledForm, lrn, mode, itemIndex)(request, messages).toString
+    }
+
+    "must return a Bad Request and errors when unknown data is submitted" in {
+
+      when(mockHsCodeService.doesHSCodeExist(any())(any())).thenReturn(Future.successful(false))
+
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val unknownAnswer = "123456"
+
+      val request = FakeRequest(POST, commodityCodeRoute).withFormUrlEncodedBody(("value", unknownAnswer))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual BAD_REQUEST
+
+      contentAsString(result) must include(
+        "Enter a valid commodity code"
+      )
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -133,7 +164,7 @@ class CommodityCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, commodityCodeRoute)
-        .withFormUrlEncodedBody(("value", "string"))
+        .withFormUrlEncodedBody(("value", validAnswer))
 
       val result = route(app, request).value
 

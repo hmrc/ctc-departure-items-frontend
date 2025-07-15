@@ -136,6 +136,13 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     get[SupplyChainActorType](url)
   }
 
+  def getHSCode(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Response[HSCode]] = {
+    val queryParameters               = HSCode.queryParams(code)(config)
+    val url                           = url"${config.referenceDataUrl}/lists/HScode?$queryParameters"
+    implicit val reads: Reads[HSCode] = HSCode.reads(config)
+    getOne[HSCode](url)
+  }
+
   implicit def responseHandlerGeneric[A](implicit reads: Reads[A], order: Order[A]): HttpReads[Responses[A]] =
     (_: String, url: String, response: HttpResponse) =>
       response.status match {
