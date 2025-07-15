@@ -61,8 +61,8 @@ class CommodityCodeController @Inject() (
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      form
-        .bindFromRequest()
+      val boundForm = form.bindFromRequest()
+      boundForm
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex))),
           value =>
@@ -71,7 +71,7 @@ class CommodityCodeController @Inject() (
                 val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
                 CommodityCodePage(itemIndex).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
               case false =>
-                val formWithErrors = form.withError(FormError("value", s"$prefix.error.not.exists"))
+                val formWithErrors = boundForm.withError(FormError("value", s"$prefix.error.not.exists"))
                 Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex)))
             }
         )

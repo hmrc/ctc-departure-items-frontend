@@ -23,6 +23,7 @@ import navigation.ItemNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.item.CommodityCodePage
+import play.api.data.FormError
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -34,8 +35,10 @@ import scala.concurrent.Future
 
 class CommodityCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
+  private val prefix = "item.commodityCode"
+
   private val formProvider            = new CommodityCodeFormProvider()
-  private val form                    = formProvider("item.commodityCode")
+  private val form                    = formProvider(prefix)
   private val mode                    = NormalMode
   private lazy val commodityCodeRoute = routes.CommodityCodeController.onPageLoad(lrn, mode, itemIndex).url
 
@@ -135,15 +138,17 @@ class CommodityCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
       val unknownAnswer = "123456"
 
-      val request = FakeRequest(POST, commodityCodeRoute).withFormUrlEncodedBody(("value", unknownAnswer))
+      val request    = FakeRequest(POST, commodityCodeRoute).withFormUrlEncodedBody(("value", unknownAnswer))
+      val filledForm = form.bind(Map("value" -> unknownAnswer)).withError(FormError("value", s"$prefix.error.not.exists"))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      contentAsString(result) must include(
-        "Enter a valid commodity code"
-      )
+      val view = injector.instanceOf[CommodityCodeView]
+
+      contentAsString(result) mustEqual
+        view(filledForm, lrn, mode, itemIndex)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

@@ -59,8 +59,8 @@ class CustomsUnionAndStatisticsCodeController @Inject() (
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      form
-        .bindFromRequest()
+      val boundForm = form.bindFromRequest()
+      boundForm
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex))),
           value =>
@@ -69,7 +69,7 @@ class CustomsUnionAndStatisticsCodeController @Inject() (
                 val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
                 CustomsUnionAndStatisticsCodePage(itemIndex).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
               case false =>
-                val formWithErrors = form.withError(FormError("value", "item.customsUnionAndStatisticsCode.error.not.exists"))
+                val formWithErrors = boundForm.withError(FormError("value", "item.customsUnionAndStatisticsCode.error.not.exists"))
                 Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex)))
             }
         )

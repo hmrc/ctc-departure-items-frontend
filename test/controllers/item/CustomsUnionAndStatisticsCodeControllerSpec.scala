@@ -23,10 +23,11 @@ import navigation.ItemNavigatorProvider
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.when
 import pages.item.CustomsUnionAndStatisticsCodePage
+import play.api.data.FormError
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.CUSCodeService
 import views.html.item.CustomsUnionAndStatisticsCodeView
 
@@ -34,8 +35,10 @@ import scala.concurrent.Future
 
 class CustomsUnionAndStatisticsCodeControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
+  private val prefix = "item.customsUnionAndStatisticsCode"
+
   private val formProvider                            = new CUSCodeFormProvider()
-  private val form                                    = formProvider("item.customsUnionAndStatisticsCode")
+  private val form                                    = formProvider(prefix)
   private val mode                                    = NormalMode
   private lazy val customsUnionAndStatisticsCodeRoute = routes.CustomsUnionAndStatisticsCodeController.onPageLoad(lrn, mode, itemIndex).url
   private val cusCodeServiceMock: CUSCodeService      = mock[CUSCodeService]
@@ -103,12 +106,35 @@ class CustomsUnionAndStatisticsCodeControllerSpec extends SpecBase with AppWithD
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
+      when(cusCodeServiceMock.doesCUSCodeExist(anyString())(any())).thenReturn(Future.successful(true))
+
       setExistingUserAnswers(emptyUserAnswers)
 
       val invalidAnswer = ""
 
-      val request    = FakeRequest(POST, customsUnionAndStatisticsCodeRoute).withFormUrlEncodedBody(("value", ""))
+      val request    = FakeRequest(POST, customsUnionAndStatisticsCodeRoute).withFormUrlEncodedBody(("value", invalidAnswer))
       val filledForm = form.bind(Map("value" -> invalidAnswer))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual BAD_REQUEST
+
+      val view = injector.instanceOf[CustomsUnionAndStatisticsCodeView]
+
+      contentAsString(result) mustEqual
+        view(filledForm, lrn, mode, itemIndex)(request, messages).toString
+    }
+
+    "must return a Bad Request and errors when unknown data is submitted" in {
+
+      when(cusCodeServiceMock.doesCUSCodeExist(anyString())(any())).thenReturn(Future.successful(false))
+
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val unknownAnswer = "1234567-8"
+
+      val request    = FakeRequest(POST, customsUnionAndStatisticsCodeRoute).withFormUrlEncodedBody(("value", unknownAnswer))
+      val filledForm = form.bind(Map("value" -> unknownAnswer)).withError(FormError("value", s"$prefix.error.not.exists"))
 
       val result = route(app, request).value
 
