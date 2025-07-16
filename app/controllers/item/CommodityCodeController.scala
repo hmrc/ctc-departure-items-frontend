@@ -22,9 +22,11 @@ import forms.item.CommodityCodeFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{ItemNavigatorProvider, UserAnswersNavigator}
 import pages.item.CommodityCodePage
+import play.api.data.FormError
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.HSCodeService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.item.CommodityCodeView
 
@@ -38,12 +40,15 @@ class CommodityCodeController @Inject() (
   formProvider: CommodityCodeFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
-  view: CommodityCodeView
+  view: CommodityCodeView,
+  hsCodeService: HSCodeService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("item.commodityCode")
+  private val prefix: String = "item.commodityCode"
+
+  private val form = formProvider(prefix)
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
@@ -56,14 +61,19 @@ class CommodityCodeController @Inject() (
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, itemIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      form
-        .bindFromRequest()
+      val boundForm = form.bindFromRequest()
+      boundForm
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex))),
-          value => {
-            val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
-            CommodityCodePage(itemIndex).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
-          }
+          value =>
+            hsCodeService.doesHSCodeExist(value).flatMap {
+              case true =>
+                val navigator: UserAnswersNavigator = navigatorProvider(mode, itemIndex)
+                CommodityCodePage(itemIndex).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
+              case false =>
+                val formWithErrors = boundForm.withError(FormError("value", s"$prefix.error.not.exists"))
+                Future.successful(BadRequest(view(formWithErrors, lrn, mode, itemIndex)))
+            }
         )
   }
 }

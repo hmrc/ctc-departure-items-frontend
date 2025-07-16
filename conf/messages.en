@@ -152,12 +152,13 @@ item.addCommodityCodeYesNo.error.required = Select yes if you want to add a comm
 
 item.commodityCode.title = What is the commodity code?
 item.commodityCode.heading = What is the commodity code?
-item.commodityCode.hint = This will be 6 characters long and include both letters and numbers, for example 0G23AB.
+item.commodityCode.hint = This is 6 numbers long.
 item.commodityCode.checkYourAnswersLabel = Commodity code
 item.commodityCode.change.hidden = commodity code for item {0}
 item.commodityCode.error.required = Enter the commodity code
-item.commodityCode.error.length = The commodity code must be 6 characters long
-item.commodityCode.error.invalidCharacters = The commodity code must only include letters a to z and numbers 0 to 9
+item.commodityCode.error.length = The commodity code must be 6 numbers long
+item.commodityCode.error.invalidCharacters = The commodity code must only include numbers 0 to 9
+item.commodityCode.error.not.exists = Enter a valid commodity code
 
 item.addCombinedNomenclatureCodeYesNo.title = Do you want to add a combined nomenclature code?
 item.addCombinedNomenclatureCodeYesNo.heading = Do you want to add a combined nomenclature code?

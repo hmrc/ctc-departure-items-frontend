@@ -365,36 +365,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       |]
       |""".stripMargin
 
-  private val cusCodeResponseJson: String =
-    """
-      |{
-      |  "_links": {
-      |    "self": {
-      |      "href": "/customs-reference-data/lists/CUSCode"
-      |    }
-      |  },
-      |  "meta": {
-      |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
-      |    "snapshotDate": "2023-01-01"
-      |  },
-      |  "id": "CUSCode",
-      |  "data": [
-      |    {
-      |      "code": "0010001-6"
-      |    }
-      |  ]
-      |}
-      |""".stripMargin
-
-  private val cusCodeResponseP6Json: String =
-    """
-      |[
-      |    {
-      |      "key": "0010001-6"
-      |    }
-      |]
-      |""".stripMargin
-
   private val documentTypeExciseJson: String =
     """
       |{
@@ -453,12 +423,33 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
   "Reference Data" - {
 
-    "getCusCode" - {
+    "getCUSCode" - {
 
       val cusCode = "0010001-6"
 
       "when phase 5" - {
         val url = s"/$baseUrl/lists/CUSCode?data.code=$cusCode"
+
+        val json: String =
+          """
+            |{
+            |  "_links": {
+            |    "self": {
+            |      "href": "/customs-reference-data/lists/CUSCode"
+            |    }
+            |  },
+            |  "meta": {
+            |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+            |    "snapshotDate": "2023-01-01"
+            |  },
+            |  "id": "CUSCode",
+            |  "data": [
+            |    {
+            |      "code": "0010001-6"
+            |    }
+            |  ]
+            |}
+            |""".stripMargin
 
         "must return CUSCode when successful" in {
           running(phase5App) {
@@ -468,7 +459,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
               server.stubFor(
                 get(urlEqualTo(url))
                   .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-                  .willReturn(okJson(cusCodeResponseJson))
+                  .willReturn(okJson(json))
               )
 
               val expectedResult = CUSCode(cusCode)
@@ -497,6 +488,15 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       "when phase 6" - {
         val url = s"/$baseUrl/lists/CUSCode?keys=$cusCode"
 
+        val json: String =
+          """
+            |[
+            |    {
+            |      "key": "0010001-6"
+            |    }
+            |]
+            |""".stripMargin
+
         "must return CUSCode when successful" in {
           running(phase6App) {
             app =>
@@ -505,7 +505,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
               server.stubFor(
                 get(urlEqualTo(url))
                   .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
-                  .willReturn(okJson(cusCodeResponseP6Json))
+                  .willReturn(okJson(json))
               )
 
               val expectedResult = CUSCode(cusCode)
@@ -527,6 +527,116 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
             app =>
               val connector = app.injector.instanceOf[ReferenceDataConnector]
               checkErrorResponse(url, connector.getCUSCode(cusCode))
+          }
+        }
+      }
+
+    }
+
+    "getHSCode" - {
+
+      val code = "010121"
+
+      "when phase 5" - {
+        val url = s"/$baseUrl/lists/HScode?data.code=$code"
+
+        val json: String =
+          """
+            |{
+            |  "_links": {
+            |    "self": {
+            |      "href": "/customs-reference-data/lists/HScode"
+            |    }
+            |  },
+            |  "meta": {
+            |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+            |    "snapshotDate": "2023-01-01"
+            |  },
+            |  "id": "HScode",
+            |  "data": [
+            |    {
+            |      "code": "010121"
+            |    }
+            |  ]
+            |}
+            |""".stripMargin
+
+        "must return HSCode when successful" in {
+          running(phase5App) {
+            app =>
+              val connector = app.injector.instanceOf[ReferenceDataConnector]
+
+              server.stubFor(
+                get(urlEqualTo(url))
+                  .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
+                  .willReturn(okJson(json))
+              )
+
+              val expectedResult = HSCode(code)
+
+              connector.getHSCode(code).futureValue.value mustEqual expectedResult
+          }
+        }
+
+        "must throw a NoReferenceDataFoundException for an empty response" in {
+          running(phase5App) {
+            app =>
+              val connector = app.injector.instanceOf[ReferenceDataConnector]
+              checkNoReferenceDataFoundResponse(url, emptyPhase5ResponseJson, connector.getHSCode(code))
+          }
+        }
+
+        "must return an exception when an error response is returned" in {
+          running(phase5App) {
+            app =>
+              val connector = app.injector.instanceOf[ReferenceDataConnector]
+              checkErrorResponse(url, connector.getHSCode(code))
+          }
+        }
+      }
+
+      "when phase 6" - {
+        val url = s"/$baseUrl/lists/HScode?keys=$code"
+
+        val json: String =
+          """
+            |[
+            |    {
+            |      "key": "010121"
+            |    }
+            |]
+            |""".stripMargin
+
+        "must return HSCode when successful" in {
+          running(phase6App) {
+            app =>
+              val connector = app.injector.instanceOf[ReferenceDataConnector]
+
+              server.stubFor(
+                get(urlEqualTo(url))
+                  .withHeader("Accept", equalTo("application/vnd.hmrc.2.0+json"))
+                  .willReturn(okJson(json))
+              )
+
+              val expectedResult = HSCode(code)
+
+              connector.getHSCode(code).futureValue.value mustEqual expectedResult
+          }
+        }
+
+        "must throw a NoReferenceDataFoundException for an empty response" in {
+          running(phase6App) {
+            app =>
+              val connector = app.injector.instanceOf[ReferenceDataConnector]
+              checkNoReferenceDataFoundResponse(url, emptyPhase6ResponseJson, connector.getHSCode(code))
+          }
+        }
+
+        "must return an exception when an error response is returned" in {
+          running(phase6App) {
+            app =>
+              val connector = app.injector.instanceOf[ReferenceDataConnector]
+              checkErrorResponse(url, connector.getHSCode(code))
           }
         }
       }

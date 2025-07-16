@@ -18,7 +18,7 @@ package forms.item
 
 import forms.Constants.exactCommodityCodeLength
 import forms.behaviours.StringFieldBehaviours
-import models.domain.StringFieldRegex.alphaNumericRegex
+import models.domain.StringFieldRegex.numericRegex
 import org.scalacheck.Gen
 import play.api.data.FormError
 
@@ -57,7 +57,7 @@ class CommodityCodeFormProviderSpec extends StringFieldBehaviours {
     behave like fieldWithInvalidCharacters(
       form,
       fieldName,
-      error = FormError(fieldName, invalidKey, Seq(alphaNumericRegex.regex)),
+      error = FormError(fieldName, invalidKey, Seq(numericRegex.regex)),
       exactCommodityCodeLength
     )
   }

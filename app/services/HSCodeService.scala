@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package models.domain
+package services
 
-import scala.util.matching.Regex
+import connectors.ReferenceDataConnector
+import uk.gov.hmrc.http.HeaderCarrier
 
-object StringFieldRegex {
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
-  val stringFieldRegex: Regex            = "[\\sa-zA-Z0-9&'@/.\\-? ]*".r
-  val stringFieldRegexComma: Regex       = "[\\sa-zA-Z0-9&'@,/.\\-? ]*".r
-  val alphaNumericRegex: Regex           = "^[a-zA-Z0-9]*$".r
-  val numericRegex: Regex                = "^[0-9]*$".r
-  val alphaNumericWithHyphenRegex: Regex = "^[a-zA-Z0-9\\-]*$".r
-  val alphaNumericWithSpacesRegex: Regex = "^[a-zA-Z\\s0-9]*$".r
-  val eoriTcuinRegex: Regex              = "^([A-Z]{2}[a-zA-Z|\\d]{1,15})$".r
+class HSCodeService @Inject() (
+  referenceDataConnector: ReferenceDataConnector
+)(implicit ec: ExecutionContext) {
+
+  def doesHSCodeExist(code: String)(implicit hc: HeaderCarrier): Future[Boolean] =
+    referenceDataConnector
+      .getHSCode(code)
+      .map(_.isDefined)
 }

@@ -142,6 +142,13 @@ trait ModelGenerators {
       } yield CUSCode(code)
     }
 
+  implicit lazy val arbitraryHSCode: Arbitrary[HSCode] =
+    Arbitrary {
+      for {
+        code <- nonEmptyString
+      } yield HSCode(code)
+    }
+
   implicit lazy val arbitraryDocument: Arbitrary[Document] =
     Arbitrary {
       for {
