@@ -16,7 +16,7 @@
     mode: Mode,
     name: String,
     isPostalCodeRequired: Boolean
-)(implicit request: Request[_], messages: Messages)
+)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("$package$.$className;format="decap"$.title"),

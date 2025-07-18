@@ -3,7 +3,6 @@
 @import models.reference.$referenceClass$
 @import models.Selectable
 @import models.Selectable._
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import viewmodels.components.InputSelectViewModel._
 @import views.html.components.{Button, ErrorSummary, InputSelect}
 
@@ -15,7 +14,7 @@
     button: Button
 )
 
-@(form: Form[$referenceClass$], lrn: LocalReferenceNumber, $referenceClassPlural;format="decap"$: Seq[$referenceClass$], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[$referenceClass$], lrn: LocalReferenceNumber, $referenceClassPlural;format="decap"$: Seq[$referenceClass$], mode: Mode)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("$package$.$className;format="decap"$.title"),

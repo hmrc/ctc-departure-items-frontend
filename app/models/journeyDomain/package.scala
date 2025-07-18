@@ -166,9 +166,9 @@ package object journeyDomain {
 
     def append(page: Page): Pages =
       page match {
-        case _: Section[_]             => pages
-        case _: InferredPage[_]        => pages
-        case _: ReadOnlyPage[_]        => pages
+        case _: Section[?]             => pages
+        case _: InferredPage[?]        => pages
+        case _: ReadOnlyPage[?]        => pages
         case _ if pages.contains(page) => pages
         case _                         => pages :+ page
       }

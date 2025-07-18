@@ -13,7 +13,7 @@
     button: Button
 )
 
-@(form: Form[$className;format="cap"$], lrn: LocalReferenceNumber, values: Seq[$className;format="cap"$], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[$className;format="cap"$], lrn: LocalReferenceNumber, values: Seq[$className;format="cap"$], mode: Mode)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("$package$.$className;format="decap"$.title"),
