@@ -41,7 +41,8 @@ lazy val microservice = Project(appName, file("."))
       "-feature",
       "-language:implicitConversions",
       "-Wconf:src=routes/.*:s",
-      "-Wconf:src=html/.*:s"
+      "-Wconf:src=html/.*&msg=unused import:s",
+      "-Wconf:msg=Flag .* set repeatedly:s"
     ),
     Assets / pipelineStages := Seq(digest),
     ThisBuild / useSuperShell := false
