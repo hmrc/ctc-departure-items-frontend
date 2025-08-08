@@ -24,7 +24,7 @@ import java.util.UUID
 
 class TransportEquipmentsServiceSpec extends SpecBase {
 
-  private val service = injector.instanceOf[TransportEquipmentService]
+  private val service = new TransportEquipmentService()
 
   private val uuid1 = "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
   private val uuid2 = "8a081ef8-5e49-42c8-b4fc-9140018afce9"

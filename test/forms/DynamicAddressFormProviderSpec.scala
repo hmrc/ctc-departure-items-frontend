@@ -16,13 +16,13 @@
 
 package forms
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.behaviours.StringFieldBehaviours
-import models.AddressLine._
+import models.AddressLine.*
 import org.scalacheck.Gen
 import play.api.data.FormError
 
-class DynamicAddressFormProviderSpec extends StringFieldBehaviours with SpecBase {
+class DynamicAddressFormProviderSpec extends StringFieldBehaviours with SpecBase with AppWithDefaultMockFixtures {
 
   private val prefix = Gen.alphaNumStr.sample.value
   private val arg1   = Gen.alphaNumStr.sample.value

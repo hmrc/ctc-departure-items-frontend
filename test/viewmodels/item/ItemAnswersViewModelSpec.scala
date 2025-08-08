@@ -16,14 +16,18 @@
 
 package viewmodels.item
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import services.{DocumentsService, TransportEquipmentService}
 import viewmodels.item.ItemAnswersViewModel.ItemAnswersViewModelProvider
 
-class ItemAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class ItemAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
-  private val viewModelProvider = injector.instanceOf[ItemAnswersViewModelProvider]
+  private val documentService           = new DocumentsService()
+  private val transportEquipmentService = new TransportEquipmentService()
+
+  private val viewModelProvider = new ItemAnswersViewModelProvider(documentService, transportEquipmentService)
 
   "apply" - {
     "must return all sections for transition" in {

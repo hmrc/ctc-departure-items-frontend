@@ -16,7 +16,7 @@
 
 package utils.cyaHelpers.item
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.item.additionalInformation.index.routes.*
 import controllers.item.additionalReference.index.routes.*
 import controllers.item.consignee.routes.*
@@ -48,7 +48,7 @@ import play.api.libs.json.Json
 import services.{DocumentsService, TransportEquipmentService}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
-class ItemAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class ItemAnswersHelperSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   private val mode: Mode = CheckMode
 

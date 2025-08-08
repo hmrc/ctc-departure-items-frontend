@@ -16,7 +16,7 @@
 
 package utils.cyaHelpers.item.packages
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.item.packages.index.routes
 import generators.Generators
 import models.reference.PackageType
@@ -27,7 +27,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.item.packages.index.{AddShippingMarkYesNoPage, NumberOfPackagesPage, PackageTypePage, ShippingMarkPage}
 import viewmodels.ListItem
 
-class PackageAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class PackageAnswersHelperSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   "PackageAnswersHelper" - {
 

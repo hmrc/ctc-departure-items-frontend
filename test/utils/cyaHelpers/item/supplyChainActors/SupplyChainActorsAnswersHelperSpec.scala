@@ -16,7 +16,7 @@
 
 package utils.cyaHelpers.item.supplyChainActors
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.item.supplyChainActors.index.routes
 import generators.Generators
 import models.{Index, Mode}
@@ -28,7 +28,7 @@ import pages.item.AddSupplyChainActorYesNoPage
 import pages.item.supplyChainActors.index.{IdentificationNumberPage, SupplyChainActorTypePage}
 import viewmodels.ListItem
 
-class SupplyChainActorsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class SupplyChainActorsAnswersHelperSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   "SupplyChainActorsAnswersHelper" - {
 

@@ -22,11 +22,14 @@ import models.requests.DataRequest
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import play.api.mvc.{AnyContent, Result, Results}
+import services.LockService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class LockActionSpec extends SpecBase with AppWithDefaultMockFixtures {
+
+  final private val mockLockService = mock[LockService]
 
   val dataRequest: DataRequest[AnyContent] = DataRequest(fakeRequest, eoriNumber, emptyUserAnswers)
 

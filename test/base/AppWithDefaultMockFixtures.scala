@@ -16,8 +16,9 @@
 
 package base
 
+import config.FrontendAppConfig
 import controllers.actions.*
-import models.{Index, LockCheck, Mode, UserAnswers}
+import models.{Index, Mode, UserAnswers}
 import navigation.*
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -25,28 +26,38 @@ import org.scalatest.{BeforeAndAfterEach, TestSuite}
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.{GuiceFakeApplicationFactory, GuiceOneAppPerSuite}
 import play.api.Application
-import play.api.inject.bind
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.mvc.Call
+import play.api.inject.{bind, Injector}
+import play.api.mvc.{AnyContent, Call}
+import play.api.test.FakeRequest
 import repositories.SessionRepository
-import services.LockService
 
 import scala.concurrent.Future
 
 trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerSuite with GuiceFakeApplicationFactory with MockitoSugar {
   self: TestSuite & SpecBase =>
 
+  def injector: Injector = app.injector
+
+  def fakeRequest: FakeRequest[AnyContent] = FakeRequest("", "")
+
+  def messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
+
+  implicit def messages: Messages = messagesApi.preferred(fakeRequest)
+
+  implicit def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
+
   override def beforeEach(): Unit = {
-    reset(mockSessionRepository); reset(mockDataRetrievalActionProvider); reset(mockLockService)
+    reset(mockSessionRepository); reset(mockDataRetrievalActionProvider)
 
     when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
-    when(mockLockService.checkLock(any())(any())).thenReturn(Future.successful(LockCheck.Unlocked))
+    when(mockLockActionProvider.apply()).thenReturn(new FakeLockAction())
   }
 
-  final val mockSessionRepository: SessionRepository                     = mock[SessionRepository]
-  final val mockDataRetrievalActionProvider: DataRetrievalActionProvider = mock[DataRetrievalActionProvider]
-  final val mockLockActionProvider: LockActionProvider                   = mock[LockActionProvider]
-  final val mockLockService: LockService                                 = mock[LockService]
+  final val mockSessionRepository: SessionRepository                             = mock[SessionRepository]
+  final private val mockDataRetrievalActionProvider: DataRetrievalActionProvider = mock[DataRetrievalActionProvider]
+  final private val mockLockActionProvider: LockActionProvider                   = mock[LockActionProvider]
 
   final override def fakeApplication(): Application =
     guiceApplicationBuilder()
@@ -56,10 +67,8 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
 
   protected def setNoExistingUserAnswers(): Unit = setUserAnswers(None)
 
-  private def setUserAnswers(userAnswers: Option[UserAnswers]): Unit = {
-    when(mockLockActionProvider.apply()).thenReturn(new FakeLockAction(mockLockService))
+  private def setUserAnswers(userAnswers: Option[UserAnswers]): Unit =
     when(mockDataRetrievalActionProvider.apply(any())).thenReturn(new FakeDataRetrievalAction(userAnswers))
-  }
 
   protected val onwardRoute: Call = Call("GET", "/foo")
 
@@ -98,8 +107,7 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
         bind[LockActionProvider].toInstance(mockLockActionProvider),
         bind[SessionRepository].toInstance(mockSessionRepository),
         bind[DataRetrievalActionProvider].toInstance(mockDataRetrievalActionProvider),
-        bind[DependentTasksAction].to[FakeDependentTasksAction],
-        bind[LockService].toInstance(mockLockService)
+        bind[DependentTasksAction].to[FakeDependentTasksAction]
       )
 
   protected def guiceApplicationBuilder(): GuiceApplicationBuilder =

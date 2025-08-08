@@ -16,7 +16,7 @@
 
 package utils.cyaHelpers.item.documents
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.item.documents.index.routes
 import generators.Generators
 import models.{Document, Index, Mode, UserAnswers}
@@ -29,7 +29,7 @@ import pages.item.{AddDocumentsYesNoPage, InferredAddDocumentsYesNoPage}
 import services.DocumentsService
 import viewmodels.ListItem
 
-class DocumentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class DocumentAnswersHelperSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   implicit private val mockDocumentsService: DocumentsService = mock[DocumentsService]
 

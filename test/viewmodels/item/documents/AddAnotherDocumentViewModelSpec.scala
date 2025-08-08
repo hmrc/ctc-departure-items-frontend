@@ -16,7 +16,7 @@
 
 package viewmodels.item.documents
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.{Document, Index, ItemLevelDocuments, Mode}
 import org.mockito.ArgumentMatchers.any
@@ -28,7 +28,7 @@ import pages.item.documents.index.DocumentPage
 import services.DocumentsService
 import viewmodels.item.documents.AddAnotherDocumentViewModel.AddAnotherDocumentViewModelProvider
 
-class AddAnotherDocumentViewModelSpec extends SpecBase with BeforeAndAfterEach with Generators with ScalaCheckPropertyChecks {
+class AddAnotherDocumentViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with BeforeAndAfterEach with Generators with ScalaCheckPropertyChecks {
 
   implicit private val mockDocumentsService: DocumentsService = mock[DocumentsService]
 
