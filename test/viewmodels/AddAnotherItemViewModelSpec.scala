@@ -16,14 +16,14 @@
 
 package viewmodels
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.Index
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import viewmodels.AddAnotherItemViewModel.AddAnotherItemViewModelProvider
 
-class AddAnotherItemViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
+class AddAnotherItemViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with Generators with ScalaCheckPropertyChecks {
 
   "must get list items" - {
 

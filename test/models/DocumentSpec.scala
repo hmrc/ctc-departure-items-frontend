@@ -16,7 +16,7 @@
 
 package models
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.DocumentType.{Previous, Support, Transport}
 import org.scalacheck.Arbitrary.arbitrary
@@ -27,7 +27,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
 import java.util.UUID
 
-class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class DocumentSpec extends SpecBase with ScalaCheckPropertyChecks with AppWithDefaultMockFixtures with Generators {
 
   private val uuid = "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
 

@@ -16,16 +16,16 @@
 
 package models.reference
 
-import org.scalacheck.Gen
-import org.scalatest.OptionValues
-import org.scalatest.freespec.AnyFreeSpec
+import base.SpecBase
 import config.FrontendAppConfig
-import org.scalatest.matchers.must.Matchers
+import org.mockito.Mockito.when
+import org.scalacheck.Gen
+import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{Json, Reads}
-import play.api.test.Helpers.running
 
-class TransportChargesMethodOfPaymentSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
+class TransportChargesMethodOfPaymentSpec extends SpecBase with ScalaCheckPropertyChecks {
+  private val mockFrontendAppConfig = mock[FrontendAppConfig]
 
   "MethodOfPayment" - {
 
@@ -45,42 +45,36 @@ class TransportChargesMethodOfPaymentSpec extends AnyFreeSpec with Matchers with
     "must deserialise" - {
       "when reading from reference data" - {
         "when phase 5" in {
-          running(_.configure("feature-flags.phase-6-enabled" -> false)) {
-            app =>
-              val config                                                 = app.injector.instanceOf[FrontendAppConfig]
-              implicit val reads: Reads[TransportChargesMethodOfPayment] = TransportChargesMethodOfPayment.reads(config)
-              forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-                (method, description) =>
-                  val methodOfPayment = TransportChargesMethodOfPayment(method, description)
-                  Json
-                    .parse(s"""
-                         |{
-                         |  "method": "$method",
-                         |  "description": "$description"
-                         |}
-                         |""".stripMargin)
-                    .as[TransportChargesMethodOfPayment] mustEqual methodOfPayment
-              }
+          when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(false)
+          implicit val reads: Reads[TransportChargesMethodOfPayment] = TransportChargesMethodOfPayment.reads(mockFrontendAppConfig)
+          forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+            (method, description) =>
+              val methodOfPayment = TransportChargesMethodOfPayment(method, description)
+              Json
+                .parse(s"""
+                     |{
+                     |  "method": "$method",
+                     |  "description": "$description"
+                     |}
+                     |""".stripMargin)
+                .as[TransportChargesMethodOfPayment] mustEqual methodOfPayment
           }
         }
 
         "when phase 6" in {
-          running(_.configure("feature-flags.phase-6-enabled" -> true)) {
-            app =>
-              val config                                                 = app.injector.instanceOf[FrontendAppConfig]
-              implicit val reads: Reads[TransportChargesMethodOfPayment] = TransportChargesMethodOfPayment.reads(config)
-              forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-                (method, description) =>
-                  val methodOfPayment = TransportChargesMethodOfPayment(method, description)
-                  Json
-                    .parse(s"""
-                         |{
-                         |  "key": "$method",
-                         |  "value": "$description"
-                         |}
-                         |""".stripMargin)
-                    .as[TransportChargesMethodOfPayment] mustEqual methodOfPayment
-              }
+          when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(true)
+          implicit val reads: Reads[TransportChargesMethodOfPayment] = TransportChargesMethodOfPayment.reads(mockFrontendAppConfig)
+          forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+            (method, description) =>
+              val methodOfPayment = TransportChargesMethodOfPayment(method, description)
+              Json
+                .parse(s"""
+                     |{
+                     |  "key": "$method",
+                     |  "value": "$description"
+                     |}
+                     |""".stripMargin)
+                .as[TransportChargesMethodOfPayment] mustEqual methodOfPayment
           }
         }
       }

@@ -16,7 +16,7 @@
 
 package viewmodels.item.additionalReference
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
@@ -24,7 +24,7 @@ import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import viewmodels.item.additionalReference.AddAnotherAdditionalReferenceViewModel.AddAnotherAdditionalReferenceViewModelProvider
 
-class AddAnotherAdditionalReferenceViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
+class AddAnotherAdditionalReferenceViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with Generators with ScalaCheckPropertyChecks {
 
   "must get list items" - {
 

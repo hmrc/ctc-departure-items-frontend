@@ -16,13 +16,13 @@
 
 package models.journeyDomain.item.additionalInformation
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.Index
 import org.scalacheck.Gen
 import pages.item.additionalInformation.index.AddAnotherAdditionalInformationPage
 
-class AdditionalInformationListDomainSpec extends SpecBase with Generators {
+class AdditionalInformationListDomainSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   "AdditionalInformationList" - {
 

@@ -16,7 +16,7 @@
 
 package controllers.actions
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.requests.DataRequest
 import models.{TaskStatus, UserAnswers}
@@ -24,17 +24,18 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.mvc.{Result, Results}
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class DependentTasksActionSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class DependentTasksActionSpec extends SpecBase with ScalaCheckPropertyChecks with AppWithDefaultMockFixtures with Generators {
 
   private val dependentTasks = frontendAppConfig.dependentTasks
 
   def harness(userAnswers: UserAnswers): Future[Result] = {
 
-    lazy val action = app.injector.instanceOf[DependentTasksAction]
+    lazy val action = new DependentTasksActionImpl()
 
     action
       .invokeBlock(

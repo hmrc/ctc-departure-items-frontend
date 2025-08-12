@@ -16,16 +16,18 @@
 
 package models.reference
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import config.FrontendAppConfig
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{Json, Reads}
-import play.api.test.Helpers.running
+import org.mockito.Mockito.when
 import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
-class AdditionalInformationSpec extends SpecBase with ScalaCheckPropertyChecks {
+class AdditionalInformationSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks {
+
+  private val mockFrontendAppConfig = mock[FrontendAppConfig]
 
   "Additional Information" - {
 
@@ -45,44 +47,38 @@ class AdditionalInformationSpec extends SpecBase with ScalaCheckPropertyChecks {
     "must deserialise" - {
       "when reading from reference data" - {
         "when phase 5" in {
-          running(_.configure("feature-flags.phase-6-enabled" -> false)) {
-            app =>
-              val config                                       = app.injector.instanceOf[FrontendAppConfig]
-              implicit val reads: Reads[AdditionalInformation] = AdditionalInformation.reads(config)
+          when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(false)
+          implicit val reads: Reads[AdditionalInformation] = AdditionalInformation.reads(mockFrontendAppConfig)
 
-              forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-                (code, description) =>
-                  val additionalInformation = AdditionalInformation(code, description)
-                  Json
-                    .parse(s"""
-                         |{
-                         |  "code": "$code",
-                         |  "description": "$description"
-                         |}
-                         |""".stripMargin)
-                    .as[AdditionalInformation] mustEqual additionalInformation
-              }
+          forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+            (code, description) =>
+              val additionalInformation = AdditionalInformation(code, description)
+              Json
+                .parse(s"""
+                     |{
+                     |  "code": "$code",
+                     |  "description": "$description"
+                     |}
+                     |""".stripMargin)
+                .as[AdditionalInformation] mustEqual additionalInformation
           }
         }
 
         "when phase 6" in {
-          running(_.configure("feature-flags.phase-6-enabled" -> true)) {
-            app =>
-              val config                                       = app.injector.instanceOf[FrontendAppConfig]
-              implicit val reads: Reads[AdditionalInformation] = AdditionalInformation.reads(config)
+          when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(true)
+          implicit val reads: Reads[AdditionalInformation] = AdditionalInformation.reads(mockFrontendAppConfig)
 
-              forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-                (code, description) =>
-                  val additionalInformation = AdditionalInformation(code, description)
-                  Json
-                    .parse(s"""
-                         |{
-                         |  "key": "$code",
-                         |  "value": "$description"
-                         |}
-                         |""".stripMargin)
-                    .as[AdditionalInformation] mustEqual additionalInformation
-              }
+          forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+            (code, description) =>
+              val additionalInformation = AdditionalInformation(code, description)
+              Json
+                .parse(s"""
+                     |{
+                     |  "key": "$code",
+                     |  "value": "$description"
+                     |}
+                     |""".stripMargin)
+                .as[AdditionalInformation] mustEqual additionalInformation
           }
         }
       }

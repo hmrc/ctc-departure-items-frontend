@@ -22,7 +22,7 @@ import pages.sections.external.TransportEquipmentsSection
 
 import javax.inject.Inject
 
-class TransportEquipmentService @Inject() () {
+class TransportEquipmentService @Inject() {
 
   def getTransportEquipments(userAnswers: UserAnswers): SelectableList[TransportEquipment] = {
     val transportEquipments = equipmentsSection(userAnswers)

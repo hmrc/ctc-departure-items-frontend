@@ -16,19 +16,20 @@
 
 package models.reference
 
-import base.SpecBase
-import generators.Generators
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import config.FrontendAppConfig
+import generators.Generators
 import models.PackingType
 import models.PackingType.*
+import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{Json, Reads}
-import play.api.test.Helpers.running
 import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
-class PackageTypeSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class PackageTypeSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
+  private val mockFrontendAppConfig = mock[FrontendAppConfig]
 
   "PackageType" - {
 
@@ -49,40 +50,34 @@ class PackageTypeSpec extends SpecBase with ScalaCheckPropertyChecks with Genera
     "must deserialise" - {
       "when reading from reference data" - {
         "when phase 5" in {
-          running(_.configure("feature-flags.phase-6-enabled" -> false)) {
-            app =>
-              val config                             = app.injector.instanceOf[FrontendAppConfig]
-              implicit val reads: Reads[PackageType] = PackageType.reads(Bulk)(config)
-              forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-                (code, description) =>
-                  val json = Json.parse(s"""
-                       |{
-                       |  "code": "$code",
-                       |  "description": "$description",
-                       |  "type": "Bulk"
-                       |}
-                       |""".stripMargin)
-                  json.as[PackageType] mustEqual PackageType(code, description, Bulk)
-              }
+          when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(false)
+          implicit val reads: Reads[PackageType] = PackageType.reads(Bulk)(mockFrontendAppConfig)
+          forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+            (code, description) =>
+              val json = Json.parse(s"""
+                   |{
+                   |  "code": "$code",
+                   |  "description": "$description",
+                   |  "type": "Bulk"
+                   |}
+                   |""".stripMargin)
+              json.as[PackageType] mustEqual PackageType(code, description, Bulk)
           }
         }
 
         "when phase 6" in {
-          running(_.configure("feature-flags.phase-6-enabled" -> true)) {
-            app =>
-              val config                             = app.injector.instanceOf[FrontendAppConfig]
-              implicit val reads: Reads[PackageType] = PackageType.reads(Bulk)(config)
-              forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-                (code, description) =>
-                  val json = Json.parse(s"""
-                       |{
-                       |  "key": "$code",
-                       |  "value": "$description",
-                       |  "type": "Bulk"
-                       |}
-                       |""".stripMargin)
-                  json.as[PackageType] mustEqual PackageType(code, description, Bulk)
-              }
+          when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(true)
+          implicit val reads: Reads[PackageType] = PackageType.reads(Bulk)(mockFrontendAppConfig)
+          forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+            (code, description) =>
+              val json = Json.parse(s"""
+                   |{
+                   |  "key": "$code",
+                   |  "value": "$description",
+                   |  "type": "Bulk"
+                   |}
+                   |""".stripMargin)
+              json.as[PackageType] mustEqual PackageType(code, description, Bulk)
           }
         }
       }

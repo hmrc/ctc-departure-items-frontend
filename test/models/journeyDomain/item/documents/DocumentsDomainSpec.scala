@@ -16,14 +16,14 @@
 
 package models.journeyDomain.item.documents
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.Index
 import org.scalacheck.Gen
 import pages.item.InferredAddDocumentsYesNoPage
 import pages.item.documents.AddAnotherDocumentPage
 
-class DocumentsDomainSpec extends SpecBase with Generators {
+class DocumentsDomainSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   "Documents" - {
 

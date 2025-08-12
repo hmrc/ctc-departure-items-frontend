@@ -16,15 +16,15 @@
 
 package utils.cyaHelpers
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.item.routes
 import generators.Generators
 import models.Index
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.item._
+import pages.item.*
 import viewmodels.ListItem
 
-class ItemsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class ItemsAnswersHelperSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   "ItemsAnswersHelper" - {
 

@@ -16,7 +16,7 @@
 
 package utils.cyaHelpers.item.dangerousGoods
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.item.dangerousGoods.index.routes
 import generators.Generators
 import models.{Index, Mode}
@@ -26,7 +26,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.item.dangerousGoods.index.UNNumberPage
 import viewmodels.ListItem
 
-class DangerousGoodsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class DangerousGoodsAnswersHelperSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   "DangerousGoodsAnswersHelper" - {
 

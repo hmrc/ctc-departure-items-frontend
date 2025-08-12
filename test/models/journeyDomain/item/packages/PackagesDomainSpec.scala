@@ -16,13 +16,13 @@
 
 package models.journeyDomain.item.packages
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.Index
 import org.scalacheck.Gen
 import pages.item.packages.index.AddAnotherPackagePage
 
-class PackagesDomainSpec extends SpecBase with Generators {
+class PackagesDomainSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   "Packages" - {
 

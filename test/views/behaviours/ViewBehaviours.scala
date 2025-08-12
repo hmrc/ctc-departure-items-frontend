@@ -16,19 +16,19 @@
 
 package views.behaviours
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Assertion
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
-import play.twirl.api.TwirlHelperImports._
+import play.twirl.api.TwirlHelperImports.*
 import views.base.ViewSpecAssertions
 
-import scala.jdk.CollectionConverters._
+import scala.jdk.CollectionConverters.*
 
-trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
+trait ViewBehaviours extends SpecBase with AppWithDefaultMockFixtures with ViewSpecAssertions {
 
   private val path = "foo"
 

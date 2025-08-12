@@ -32,7 +32,7 @@ import java.util.UUID
 
 class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  private val service = injector.instanceOf[DocumentsService]
+  private val service = new DocumentsService()
 
   "Documents Service" - {
 

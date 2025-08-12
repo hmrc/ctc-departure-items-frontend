@@ -16,7 +16,7 @@
 
 package viewmodels.item.dangerousGoods
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
@@ -24,7 +24,7 @@ import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import viewmodels.item.dangerousGoods.AddAnotherDangerousGoodsViewModel.AddAnotherDangerousGoodsViewModelProvider
 
-class AddAnotherDangerousGoodsViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
+class AddAnotherDangerousGoodsViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with Generators with ScalaCheckPropertyChecks {
 
   "must get list items" - {
 

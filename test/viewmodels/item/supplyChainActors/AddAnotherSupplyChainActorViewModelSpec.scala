@@ -16,7 +16,7 @@
 
 package viewmodels.item.supplyChainActors
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
@@ -24,7 +24,7 @@ import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import viewmodels.item.supplyChainActors.AddAnotherSupplyChainActorViewModel.AddAnotherSupplyChainActorViewModelProvider
 
-class AddAnotherSupplyChainActorViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
+class AddAnotherSupplyChainActorViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with Generators with ScalaCheckPropertyChecks {
 
   "must get list items" - {
 

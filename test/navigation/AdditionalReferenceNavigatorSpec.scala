@@ -17,18 +17,20 @@
 package navigation
 
 import base.SpecBase
+import config.FrontendAppConfig
 import generators.Generators
-import models._
+import models.*
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 class AdditionalReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+  private val mockFrontendAppConfig = mock[FrontendAppConfig]
 
   "Additional Reference Navigator" - {
 
     "when in NormalMode" - {
 
       val mode              = NormalMode
-      val navigatorProvider = new AdditionalReferenceNavigatorProviderImpl()
+      val navigatorProvider = new AdditionalReferenceNavigatorProviderImpl()(mockFrontendAppConfig)
       val navigator         = navigatorProvider.apply(mode, itemIndex, additionalReferenceIndex)
 
       "when answers complete" - {
@@ -46,7 +48,7 @@ class AdditionalReferenceNavigatorSpec extends SpecBase with ScalaCheckPropertyC
     "when in CheckMode" - {
 
       val mode              = CheckMode
-      val navigatorProvider = new AdditionalReferenceNavigatorProviderImpl()
+      val navigatorProvider = new AdditionalReferenceNavigatorProviderImpl()(mockFrontendAppConfig)
       val navigator         = navigatorProvider.apply(mode, itemIndex, additionalReferenceIndex)
 
       "when answers complete" - {

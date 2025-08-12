@@ -17,11 +17,13 @@
 package navigation
 
 import base.SpecBase
+import config.FrontendAppConfig
 import generators.Generators
 import models.*
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 class DangerousGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+  private val mockFrontendAppConfig = mock[FrontendAppConfig]
 
   "Dangerous Goods Navigator" - {
 
@@ -30,7 +32,7 @@ class DangerousGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
       val mode = NormalMode
 
       "when answers complete" - {
-        val navigatorProvider = new DangerousGoodsNavigatorProviderImpl()(frontendAppConfig)
+        val navigatorProvider = new DangerousGoodsNavigatorProviderImpl()(mockFrontendAppConfig)
         val navigator         = navigatorProvider.apply(mode, itemIndex, dangerousGoodsIndex)
         "must redirect to add another dangerous goods page" in {
           forAll(arbitraryDangerousGoodsAnswers(emptyUserAnswers, itemIndex, dangerousGoodsIndex)) {
@@ -46,7 +48,7 @@ class DangerousGoodsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
     "when in CheckMode" - {
 
       val mode              = CheckMode
-      val navigatorProvider = new DangerousGoodsNavigatorProviderImpl
+      val navigatorProvider = new DangerousGoodsNavigatorProviderImpl()(mockFrontendAppConfig)
       val navigator         = navigatorProvider.apply(mode, itemIndex, dangerousGoodsIndex)
 
       "when answers complete" - {
