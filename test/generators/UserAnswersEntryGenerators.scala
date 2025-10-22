@@ -54,10 +54,12 @@ trait UserAnswersEntryGenerators {
   }
 
   private def generateItemAnswer: PartialFunction[Gettable[?], Gen[JsValue]] = {
-    import pages.item._
+    import pages.item.*
+    import pages.item.consignee.*
     val pf: PartialFunction[Gettable[?], Gen[JsValue]] = {
       case DescriptionPage(_)                      => Gen.alphaNumStr.map(JsString.apply)
       case DeclarationTypePage(_)                  => arbitrary[DeclarationTypeItemLevel].map(Json.toJson(_))
+      case CountryPage(_)                          => arbitrary[Country].map(Json.toJson(_))
       case CountryOfDispatchPage(_)                => arbitrary[Country].map(Json.toJson(_))
       case CountryOfDestinationPage(_)             => arbitrary[Country].map(Json.toJson(_))
       case AddCombinedNomenclatureCodeYesNoPage(_) => arbitrary[Boolean].map(JsBoolean)
@@ -69,6 +71,7 @@ trait UserAnswersEntryGenerators {
       case AddUCRYesNoPage(_)                      => arbitrary[Boolean].map(JsBoolean)
       case UniqueConsignmentReferencePage(_)       => Gen.alphaNumStr.map(JsString.apply)
       case AddDangerousGoodsYesNoPage(_)           => arbitrary[Boolean].map(JsBoolean)
+      case GrossWeightBeforeYouContinuePage(_)     => arbitrary[BigDecimal].map(Json.toJson(_))
       case GrossWeightPage(_)                      => arbitrary[BigDecimal].map(Json.toJson(_))
       case AddItemNetWeightYesNoPage(_)            => arbitrary[Boolean].map(JsBoolean)
       case NetWeightPage(_)                        => arbitrary[BigDecimal].map(Json.toJson(_))

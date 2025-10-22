@@ -32,7 +32,6 @@ import pages.item.*
 import pages.sections.external.{DocumentsSection, TransportEquipmentsSection}
 import pages.sections.{ItemSection, Section}
 import play.api.i18n.Messages
-
 import java.util.UUID
 
 case class ItemDomain(
@@ -78,7 +77,7 @@ object ItemDomain {
        commodityCodeReader(itemIndex),
        combinedNomenclatureCodeReader(itemIndex),
        dangerousGoodsReader(itemIndex),
-       GrossWeightPage(itemIndex).reader,
+       grossWeightWithZeroCheck(itemIndex),
        netWeightReader(itemIndex),
        supplementaryUnitsReader(itemIndex),
        packagesReader(itemIndex),
@@ -89,7 +88,19 @@ object ItemDomain {
        additionalInformationListReader(itemIndex),
        transportChargesReader()
       )
-    ).mapAs(ItemDomain.apply(_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _)(itemIndex))
+    ).mapAs(
+      ItemDomain
+        .apply(_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _)(itemIndex)
+    )
+
+  def grossWeightWithZeroCheck(itemIndex: Index): Read[BigDecimal] =
+    GrossWeightPage(itemIndex).reader.to {
+      case grossWeight if grossWeight.signum == 0 =>
+        GrossWeightBeforeYouContinuePage(itemIndex).reader.to(
+          _ => UserAnswersReader.pure(grossWeight)
+        )
+      case grossWeight => UserAnswersReader.pure(grossWeight)
+    }
 
   def transportEquipmentReader(itemIndex: Index): Read[Option[UUID]] =
     TransportEquipmentsSection.optionalReader.to {

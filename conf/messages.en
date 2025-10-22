@@ -283,6 +283,14 @@ item.packages.index.beforeYouContinue.bullet1 = the same shipping mark as item {
 item.packages.index.beforeYouContinue.bullet2 = at least 1 package
 item.packages.index.beforeYouContinue.p2 = If not, the office of departure will reject this declaration.
 
+item.gross.caption = Item {0} - Measurement
+item.gross.index.beforeYouContinue.title = Before you continue
+item.gross.index.beforeYouContinue.heading = Before you continue
+item.gross.index.beforeYouContinue.p1 = You entered 0 for the gross mass. This means if you need to enter 0 for the number of packages then you must add at least another item with:
+item.gross.index.beforeYouContinue.bullet1 = Gross mass having a value different from ‘0’ or  the gross mass for the current item must be different from ‘0’.
+item.gross.index.beforeYouContinue.bullet2 = at least 1 package
+item.gross.index.beforeYouContinue.p2 = If not, the office of departure will reject this declaration.
+
 item.packages.index.addShippingMarkYesNo.title = Do you want to add a shipping mark?
 item.packages.index.addShippingMarkYesNo.heading = Do you want to add a shipping mark?
 item.packages.index.addShippingMarkYesNo.paragraph = This tells carriers what type of product is inside the package and helps consignees identify the order once it’s been delivered.
