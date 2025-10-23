@@ -47,6 +47,14 @@ class GrossWeightPageSpec extends PageBehaviours {
 
           }
         }
+
+        "must clean up GrossWeightBeforeYouContinuePage" in {
+          val userAnswers = emptyUserAnswers.setValue(GrossWeightBeforeYouContinuePage(itemIndex), true)
+
+          val result = userAnswers.setValue(GrossWeightPage(itemIndex), 1)
+
+          result.get(GrossWeightBeforeYouContinuePage(itemIndex)) mustNot be(defined)
+        }
       }
 
       "when value has not changed" - {
