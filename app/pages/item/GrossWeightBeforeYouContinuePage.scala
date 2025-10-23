@@ -23,6 +23,8 @@ import pages.sections.ItemSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
+import scala.util.Try
+
 case class GrossWeightBeforeYouContinuePage(itemIndex: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = ItemSection(itemIndex).path \ toString
@@ -31,4 +33,10 @@ case class GrossWeightBeforeYouContinuePage(itemIndex: Index) extends QuestionPa
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.GrossWeightBeforeYouContinueController.onPageLoad(userAnswers.lrn, mode, itemIndex))
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(_) => userAnswers.remove(NetWeightPage(itemIndex))
+      case _       => super.cleanup(value, userAnswers)
+    }
 }
