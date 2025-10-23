@@ -23,7 +23,7 @@ import pages.sections.ItemSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-import scala.util.Try
+import scala.util.{Success, Try}
 
 case class GrossWeightPage(itemIndex: Index) extends QuestionPage[BigDecimal] {
 
@@ -36,7 +36,14 @@ case class GrossWeightPage(itemIndex: Index) extends QuestionPage[BigDecimal] {
 
   override def cleanup(value: Option[BigDecimal], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(_) => userAnswers.remove(NetWeightPage(itemIndex))
-      case _       => super.cleanup(value, userAnswers)
+      case Some(value) =>
+        userAnswers
+          .remove(NetWeightPage(itemIndex))
+          .flatMap {
+            ua =>
+              if (value > 0) ua.remove(GrossWeightBeforeYouContinuePage(itemIndex)) else Success(ua)
+          }
+
+      case _ => super.cleanup(value, userAnswers)
     }
 }
