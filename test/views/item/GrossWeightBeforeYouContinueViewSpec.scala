@@ -54,7 +54,7 @@ class GrossWeightBeforeYouContinueViewSpec extends ViewBehaviours with Generator
                              "the gross mass for the current item must be different from ‘0’."
   )
 
-  behave like pageWithContent("p", "If not, the office of departure will reject this declaration.")
+  behave like pageWithContent("p", "If not, you will not be able to submit this declaration.")
 
   behave like pageWithSubmitButton("Continue")
 }
