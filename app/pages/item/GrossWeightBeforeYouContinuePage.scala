@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,27 +23,13 @@ import pages.sections.ItemSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-import scala.util.{Success, Try}
-
-case class GrossWeightPage(itemIndex: Index) extends QuestionPage[BigDecimal] {
+case class GrossWeightBeforeYouContinuePage(itemIndex: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = ItemSection(itemIndex).path \ toString
 
-  override def toString: String = "grossWeight"
+  override def toString: String = "messageAcknowledged"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.GrossWeightController.onPageLoad(userAnswers.lrn, mode, itemIndex))
+    Some(routes.GrossWeightBeforeYouContinueController.onPageLoad(userAnswers.lrn, mode, itemIndex))
 
-  override def cleanup(value: Option[BigDecimal], userAnswers: UserAnswers): Try[UserAnswers] =
-    value match {
-      case Some(value) =>
-        userAnswers
-          .remove(NetWeightPage(itemIndex))
-          .flatMap {
-            ua =>
-              if (value > 0) ua.remove(GrossWeightBeforeYouContinuePage(itemIndex)) else Success(ua)
-          }
-
-      case _ => super.cleanup(value, userAnswers)
-    }
 }

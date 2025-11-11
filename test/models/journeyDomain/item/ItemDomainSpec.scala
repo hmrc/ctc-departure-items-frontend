@@ -63,6 +63,33 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
       }
     }
 
+    "grossWeightWithZeroCheck" - {
+      "must redirect to GrossWeightBeforeYouContinuePage" - {
+        "when 0 is entered for gross weight" in {
+          val ua = emptyUserAnswers
+            .setValue(GrossWeightPage(itemIndex), BigDecimal(0))
+
+          val result = ItemDomain.grossWeightWithZeroCheck(itemIndex).apply(Nil).run(ua)
+
+          result.left.value.page mustEqual GrossWeightBeforeYouContinuePage(itemIndex)
+        }
+      }
+
+      "must return the correct value" - {
+        "when anything more than 0 is entered" in {
+          val ua = emptyUserAnswers
+            .setValue(GrossWeightPage(itemIndex), BigDecimal(1))
+
+          val result = ItemDomain.grossWeightWithZeroCheck(itemIndex).apply(Nil).run(ua)
+
+          result.isRight mustBe true
+          result.value.value mustEqual BigDecimal(1)
+
+          result.value.pages must not contain GrossWeightBeforeYouContinuePage(itemIndex)
+        }
+      }
+    }
+
     "transportEquipmentReader" - {
       def equipments(uuid: UUID) = Json
         .parse(s"""

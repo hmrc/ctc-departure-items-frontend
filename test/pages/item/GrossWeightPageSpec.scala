@@ -30,7 +30,7 @@ class GrossWeightPageSpec extends PageBehaviours {
     beRemovable[BigDecimal](GrossWeightPage(itemIndex))
 
     "clean up" - {
-      "when value changes" - {
+      "when value is greater than 0" - {
         "must clean up net weight page" in {
           forAll(arbitrary[BigDecimal]) {
             value =>
@@ -46,6 +46,14 @@ class GrossWeightPageSpec extends PageBehaviours {
               }
 
           }
+        }
+
+        "must clean up GrossWeightBeforeYouContinuePage" in {
+          val userAnswers = emptyUserAnswers.setValue(GrossWeightBeforeYouContinuePage(itemIndex), true)
+
+          val result = userAnswers.setValue(GrossWeightPage(itemIndex), 1)
+
+          result.get(GrossWeightBeforeYouContinuePage(itemIndex)) mustNot be(defined)
         }
       }
 
@@ -65,6 +73,16 @@ class GrossWeightPageSpec extends PageBehaviours {
               }
 
           }
+        }
+      }
+
+      "when value is 0" - {
+        "must not clean up GrossWeightBeforeYouContinuePage" in {
+          val userAnswers = emptyUserAnswers.setValue(GrossWeightBeforeYouContinuePage(itemIndex), true)
+
+          val result = userAnswers.setValue(GrossWeightPage(itemIndex), 0)
+
+          result.get(GrossWeightBeforeYouContinuePage(itemIndex)) mustBe defined
         }
       }
     }

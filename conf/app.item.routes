@@ -86,6 +86,11 @@ POST       /:itemIndex/measurement/gross-weight/:lrn                        cont
 GET        /:itemIndex/measurement/change-gross-weight/:lrn                 controllers.item.GrossWeightController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
 POST       /:itemIndex/measurement/change-gross-weight/:lrn                 controllers.item.GrossWeightController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
 
+GET        /:itemIndex/measurement/gross-weight/no-gross-mass-entered/:lrn            controllers.item.GrossWeightBeforeYouContinueController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+POST       /:itemIndex/measurement/gross-weight/no-gross-mass-entered/:lrn            controllers.item.GrossWeightBeforeYouContinueController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
+GET        /:itemIndex/measurement/gross-weight/change-no-gross-mass-entered/:lrn     controllers.item.GrossWeightBeforeYouContinueController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+POST       /:itemIndex/measurement/gross-weight/change-no-gross-mass-entered/:lrn     controllers.item.GrossWeightBeforeYouContinueController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
+
 GET        /:itemIndex/measurement/add-supplementary-units/:lrn             controllers.item.AddSupplementaryUnitsYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
 POST       /:itemIndex/measurement/add-supplementary-units/:lrn             controllers.item.AddSupplementaryUnitsYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, itemIndex: Index)
 GET        /:itemIndex/measurement/change-add-supplementary-units/:lrn      controllers.item.AddSupplementaryUnitsYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, itemIndex: Index)
