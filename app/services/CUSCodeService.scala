@@ -16,18 +16,27 @@
 
 package services
 
+import config.FrontendAppConfig
 import connectors.ReferenceDataConnector
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.matching.Regex
 
 class CUSCodeService @Inject() (
+  appConfig: FrontendAppConfig,
   referenceDataConnector: ReferenceDataConnector
 )(implicit ec: ExecutionContext) {
 
+  val regex: Regex = "^\\d{7}-\\d$".r
+
   def doesCUSCodeExist(cusCode: String)(implicit hc: HeaderCarrier): Future[Boolean] =
-    referenceDataConnector
-      .getCUSCode(cusCode)
-      .map(_.isDefined)
+    if (appConfig.disableCusCodeLookup) {
+      Future.successful(regex.findFirstIn(cusCode).isDefined)
+    } else {
+      referenceDataConnector
+        .getCUSCode(cusCode)
+        .map(_.isDefined)
+    }
 }

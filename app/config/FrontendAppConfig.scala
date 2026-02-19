@@ -26,6 +26,8 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   val appName: String = configuration.get[String]("appName")
 
   val isPhase6Enabled: Boolean = configuration.get[Boolean]("feature-flags.phase-6-enabled")
+  lazy val disableCusCodeLookup: Boolean = configuration.get[Boolean]("feature-flags.disable-cus-code-lookup")
+
 
   val enrolmentProxyUrl: String      = servicesConfig.fullServiceUrl("enrolment-store-proxy")
   val eccEnrolmentSplashPage: String = configuration.get[String]("urls.eccEnrolmentSplashPage")
