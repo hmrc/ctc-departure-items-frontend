@@ -43,7 +43,7 @@ class CUSCodeServiceSpec extends SpecBase with BeforeAndAfterEach {
   "CUSCodeService" - {
     "must return true when CUSCode exists" in {
       when(mockFrontendAppConfig.disableCusCodeLookup).thenReturn(false)
-      
+
       val cusCodeItem = CUSCode("0010001-6")
 
       val cusCode = "0010001-6"
@@ -61,7 +61,7 @@ class CUSCodeServiceSpec extends SpecBase with BeforeAndAfterEach {
       service.doesCUSCodeExist(cusCode).futureValue mustEqual false
       verifyNoInteractions(mockRefDataConnector)
     }
-    
+
     "must return false when CUSCode lookup disabled and is the incorrect format" in {
       when(mockFrontendAppConfig.disableCusCodeLookup).thenReturn(true)
       val cusCode = "0010001-6"
@@ -71,7 +71,7 @@ class CUSCodeServiceSpec extends SpecBase with BeforeAndAfterEach {
 
     "must return false when CUSCode does not exist in reference data" in {
       when(mockFrontendAppConfig.disableCusCodeLookup).thenReturn(false)
-      
+
       val cusCode = "0010001-6"
 
       when(mockRefDataConnector.getCUSCode(anyString())(any(), any()))
