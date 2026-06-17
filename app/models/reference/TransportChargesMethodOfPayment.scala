@@ -34,14 +34,10 @@ case class TransportChargesMethodOfPayment(method: String, description: String) 
 object TransportChargesMethodOfPayment extends DynamicEnumerableType[TransportChargesMethodOfPayment] {
 
   def reads(config: FrontendAppConfig): Reads[TransportChargesMethodOfPayment] =
-    if (config.isPhase6Enabled) {
-      (
-        (__ \ "key").read[String] and
-          (__ \ "value").read[String]
-      )(TransportChargesMethodOfPayment.apply)
-    } else {
-      Json.reads[TransportChargesMethodOfPayment]
-    }
+    (
+      (__ \ "key").read[String] and
+        (__ \ "value").read[String]
+    )(TransportChargesMethodOfPayment.apply)
 
   implicit val format: Format[TransportChargesMethodOfPayment] = Json.format[TransportChargesMethodOfPayment]
 

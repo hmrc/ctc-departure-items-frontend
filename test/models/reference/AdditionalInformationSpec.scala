@@ -46,26 +46,8 @@ class AdditionalInformationSpec extends SpecBase with AppWithDefaultMockFixtures
 
     "must deserialise" - {
       "when reading from reference data" - {
-        "when phase 5" in {
-          when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(false)
-          implicit val reads: Reads[AdditionalInformation] = AdditionalInformation.reads(mockFrontendAppConfig)
-
-          forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-            (code, description) =>
-              val additionalInformation = AdditionalInformation(code, description)
-              Json
-                .parse(s"""
-                     |{
-                     |  "code": "$code",
-                     |  "description": "$description"
-                     |}
-                     |""".stripMargin)
-                .as[AdditionalInformation] mustEqual additionalInformation
-          }
-        }
 
         "when phase 6" in {
-          when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(true)
           implicit val reads: Reads[AdditionalInformation] = AdditionalInformation.reads(mockFrontendAppConfig)
 
           forAll(Gen.alphaNumStr, Gen.alphaNumStr) {

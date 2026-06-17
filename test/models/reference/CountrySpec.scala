@@ -46,25 +46,7 @@ class CountrySpec extends SpecBase with AppWithDefaultMockFixtures with ScalaChe
 
     "must deserialise" - {
       "when reading from reference data" - {
-        "when phase 5" in {
-          when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(false)
-          implicit val reads: Reads[Country] = Country.reads(mockFrontendAppConfig)
-          forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-            (code, description) =>
-              val country = Country(CountryCode(code), description)
-              Json
-                .parse(s"""
-                     |{
-                     |  "code": "$code",
-                     |  "description": "$description"
-                     |}
-                     |""".stripMargin)
-                .as[Country] mustEqual country
-          }
-        }
-
         "when phase 6" in {
-          when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(true)
           implicit val reads: Reads[Country] = Country.reads(mockFrontendAppConfig)
           forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
             (code, description) =>

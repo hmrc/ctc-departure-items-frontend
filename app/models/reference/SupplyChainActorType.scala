@@ -36,14 +36,10 @@ case class SupplyChainActorType(role: String, description: String) extends Radio
 object SupplyChainActorType extends DynamicEnumerableType[SupplyChainActorType] {
 
   def reads(config: FrontendAppConfig): Reads[SupplyChainActorType] =
-    if (config.isPhase6Enabled) {
-      (
-        (__ \ "key").read[String] and
-          (__ \ "value").read[String]
-      )(SupplyChainActorType.apply)
-    } else {
-      Json.reads[SupplyChainActorType]
-    }
+    (
+      (__ \ "key").read[String] and
+        (__ \ "value").read[String]
+    )(SupplyChainActorType.apply)
 
   implicit val format: Format[SupplyChainActorType] = Json.format[SupplyChainActorType]
 

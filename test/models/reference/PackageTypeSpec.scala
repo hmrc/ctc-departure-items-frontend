@@ -49,24 +49,7 @@ class PackageTypeSpec extends SpecBase with AppWithDefaultMockFixtures with Scal
 
     "must deserialise" - {
       "when reading from reference data" - {
-        "when phase 5" in {
-          when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(false)
-          implicit val reads: Reads[PackageType] = PackageType.reads(Bulk)(mockFrontendAppConfig)
-          forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-            (code, description) =>
-              val json = Json.parse(s"""
-                   |{
-                   |  "code": "$code",
-                   |  "description": "$description",
-                   |  "type": "Bulk"
-                   |}
-                   |""".stripMargin)
-              json.as[PackageType] mustEqual PackageType(code, description, Bulk)
-          }
-        }
-
         "when phase 6" in {
-          when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(true)
           implicit val reads: Reads[PackageType] = PackageType.reads(Bulk)(mockFrontendAppConfig)
           forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
             (code, description) =>

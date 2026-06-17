@@ -45,24 +45,7 @@ class HSCodeSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaChec
 
     "must deserialise" - {
       "when reading from reference data" - {
-        "when phase 5" in {
-          when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(false)
-          implicit val reads: Reads[HSCode] = HSCode.reads(mockFrontendAppConfig)
-          forAll(Gen.alphaNumStr) {
-            code =>
-              val hsCode = HSCode(code)
-              Json
-                .parse(s"""
-                     |{
-                     |  "code": "$code"
-                     |}
-                     |""".stripMargin)
-                .as[HSCode] mustEqual hsCode
-          }
-        }
-
         "when phase 6" in {
-          when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(true)
           implicit val reads: Reads[HSCode] = HSCode.reads(mockFrontendAppConfig)
           forAll(Gen.alphaNumStr) {
             code =>

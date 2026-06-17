@@ -32,14 +32,10 @@ case class AdditionalInformation(code: String, description: String) extends Sele
 object AdditionalInformation {
 
   def reads(config: FrontendAppConfig): Reads[AdditionalInformation] =
-    if (config.isPhase6Enabled) {
-      (
-        (__ \ "key").read[String] and
-          (__ \ "value").read[String]
-      )(AdditionalInformation.apply)
-    } else {
-      Json.reads[AdditionalInformation]
-    }
+    (
+      (__ \ "key").read[String] and
+        (__ \ "value").read[String]
+    )(AdditionalInformation.apply)
 
   implicit val format: OFormat[AdditionalInformation] = Json.format[AdditionalInformation]
 

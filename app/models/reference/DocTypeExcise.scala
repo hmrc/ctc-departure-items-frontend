@@ -26,19 +26,13 @@ case class DocTypeExcise(code: String, description: String)
 object DocTypeExcise {
 
   def reads(config: FrontendAppConfig): Reads[DocTypeExcise] =
-    if (config.isPhase6Enabled) {
-      (
-        (__ \ "key").read[String] and
-          (__ \ "value").read[String]
-      )(DocTypeExcise.apply)
-    } else {
-      Json.reads[DocTypeExcise]
-    }
+    (
+      (__ \ "key").read[String] and
+        (__ \ "value").read[String]
+    )(DocTypeExcise.apply)
 
-  def queryParams(code: String)(config: FrontendAppConfig): Seq[(String, String)] = {
-    val key = if (config.isPhase6Enabled) "keys" else "data.code"
-    Seq(key -> code)
-  }
+  def queryParams(code: String)(config: FrontendAppConfig): Seq[(String, String)] =
+    Seq("keys" -> code)
 
   implicit val format: OFormat[DocTypeExcise] = Json.format[DocTypeExcise]
 

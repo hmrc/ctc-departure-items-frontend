@@ -31,16 +31,10 @@ case class HSCode(code: String) extends Selectable {
 object HSCode {
 
   def reads(config: FrontendAppConfig): Reads[HSCode] =
-    if (config.isPhase6Enabled) {
-      (__ \ "key").read[String].map(HSCode.apply)
-    } else {
-      Json.reads[HSCode]
-    }
+    (__ \ "key").read[String].map(HSCode.apply)
 
-  def queryParams(code: String)(config: FrontendAppConfig): Seq[(String, String)] = {
-    val key = if (config.isPhase6Enabled) "keys" else "data.code"
-    Seq(key -> code)
-  }
+  def queryParams(code: String)(config: FrontendAppConfig): Seq[(String, String)] =
+    Seq("keys" -> code)
 
   implicit val format: OFormat[HSCode] = Json.format[HSCode]
 

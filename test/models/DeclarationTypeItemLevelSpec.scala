@@ -43,26 +43,7 @@ class DeclarationTypeItemLevelSpec extends SpecBase with ScalaCheckPropertyCheck
 
     "must deserialise" - {
       "when reading from reference data" - {
-        "when phase 5" in {
-          when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(false)
-          implicit val reads: Reads[DeclarationTypeItemLevel] = DeclarationTypeItemLevel.reads(mockFrontendAppConfig)
-
-          forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-            (code, description) =>
-              val declarationTypeItemLevel = DeclarationTypeItemLevel(code, description)
-              Json
-                .parse(s"""
-                     |{
-                     |  "code": "$code",
-                     |  "description": "$description"
-                     |}
-                     |""".stripMargin)
-                .as[DeclarationTypeItemLevel] mustEqual declarationTypeItemLevel
-          }
-        }
-
         "when phase 6" in {
-          when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(true)
           implicit val reads: Reads[DeclarationTypeItemLevel] = DeclarationTypeItemLevel.reads(mockFrontendAppConfig)
 
           forAll(Gen.alphaNumStr, Gen.alphaNumStr) {

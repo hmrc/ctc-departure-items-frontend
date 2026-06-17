@@ -32,14 +32,10 @@ case class AdditionalReference(documentType: String, description: String) extend
 object AdditionalReference {
 
   def reads(config: FrontendAppConfig): Reads[AdditionalReference] =
-    if (config.isPhase6Enabled) {
-      (
-        (__ \ "key").read[String] and
-          (__ \ "value").read[String]
-      )(AdditionalReference.apply)
-    } else {
-      Json.reads[AdditionalReference]
-    }
+    (
+      (__ \ "key").read[String] and
+        (__ \ "value").read[String]
+    )(AdditionalReference.apply)
 
   implicit val format: OFormat[AdditionalReference] = Json.format[AdditionalReference]
 

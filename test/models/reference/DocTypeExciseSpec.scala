@@ -44,25 +44,7 @@ class DocTypeExciseSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
 
     "must deserialise" - {
       "when reading from reference data" - {
-        "when phase 5" in {
-          when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(false)
-          implicit val reads: Reads[DocTypeExcise] = DocTypeExcise.reads(mockFrontendAppConfig)
-          forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-            (code, description) =>
-              val docTypeExcise = DocTypeExcise(code, description)
-              Json
-                .parse(s"""
-                     |{
-                     |  "code": "$code",
-                     |  "description": "$description"
-                     |}
-                     |""".stripMargin)
-                .as[DocTypeExcise] mustEqual docTypeExcise
-          }
-        }
-
         "when phase 6" in {
-          when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(true)
           implicit val reads: Reads[DocTypeExcise] = DocTypeExcise.reads(mockFrontendAppConfig)
           forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
             (code, description) =>

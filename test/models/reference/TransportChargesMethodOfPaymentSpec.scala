@@ -44,25 +44,7 @@ class TransportChargesMethodOfPaymentSpec extends SpecBase with ScalaCheckProper
 
     "must deserialise" - {
       "when reading from reference data" - {
-        "when phase 5" in {
-          when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(false)
-          implicit val reads: Reads[TransportChargesMethodOfPayment] = TransportChargesMethodOfPayment.reads(mockFrontendAppConfig)
-          forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-            (method, description) =>
-              val methodOfPayment = TransportChargesMethodOfPayment(method, description)
-              Json
-                .parse(s"""
-                     |{
-                     |  "method": "$method",
-                     |  "description": "$description"
-                     |}
-                     |""".stripMargin)
-                .as[TransportChargesMethodOfPayment] mustEqual methodOfPayment
-          }
-        }
-
         "when phase 6" in {
-          when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(true)
           implicit val reads: Reads[TransportChargesMethodOfPayment] = TransportChargesMethodOfPayment.reads(mockFrontendAppConfig)
           forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
             (method, description) =>

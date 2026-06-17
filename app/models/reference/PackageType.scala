@@ -36,8 +36,7 @@ case class PackageType(code: String, description: String, `type`: PackingType) e
 object PackageType {
 
   def reads(`type`: PackingType)(config: FrontendAppConfig): Reads[PackageType] = {
-    val (codeField, descriptionField) =
-      if (config.isPhase6Enabled) ("key", "value") else ("code", "description")
+    val (codeField, descriptionField) = ("key", "value")
 
     (
       (__ \ codeField).read[String] and

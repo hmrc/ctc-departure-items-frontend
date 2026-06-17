@@ -45,26 +45,8 @@ class AdditionalReferenceSpec extends SpecBase with AppWithDefaultMockFixtures w
 
     "must deserialise" - {
       "when reading from reference data" - {
-        "when phase 5" in {
-          when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(false)
-          implicit val reads: Reads[AdditionalReference] = AdditionalReference.reads(mockFrontendAppConfig)
-
-          forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-            (documentType, description) =>
-              val additionalReference = AdditionalReference(documentType, description)
-              Json
-                .parse(s"""
-                     |{
-                     |  "documentType": "$documentType",
-                     |  "description": "$description"
-                     |}
-                     |""".stripMargin)
-                .as[AdditionalReference] mustEqual additionalReference
-          }
-        }
 
         "when phase 6" in {
-          when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(true)
           implicit val reads: Reads[AdditionalReference] = AdditionalReference.reads(mockFrontendAppConfig)
 
           forAll(Gen.alphaNumStr, Gen.alphaNumStr) {

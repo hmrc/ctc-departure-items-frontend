@@ -31,16 +31,10 @@ case class CUSCode(code: String) extends Selectable {
 object CUSCode {
 
   def reads(config: FrontendAppConfig): Reads[CUSCode] =
-    if (config.isPhase6Enabled) {
-      (__ \ "key").read[String].map(CUSCode.apply)
-    } else {
-      Json.reads[CUSCode]
-    }
+    (__ \ "key").read[String].map(CUSCode.apply)
 
-  def queryParams(code: String)(config: FrontendAppConfig): Seq[(String, String)] = {
-    val key = if (config.isPhase6Enabled) "keys" else "data.code"
-    Seq(key -> code)
-  }
+  def queryParams(code: String)(config: FrontendAppConfig): Seq[(String, String)] =
+    Seq("keys" -> code)
 
   implicit val format: OFormat[CUSCode] = Json.format[CUSCode]
 

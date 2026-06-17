@@ -45,24 +45,8 @@ class CUSCodeSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaChe
 
     "must deserialise" - {
       "when reading from reference data" - {
-        "when phase 5" in {
-          when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(false)
-          implicit val reads: Reads[CUSCode] = CUSCode.reads(mockFrontendAppConfig)
-          forAll(Gen.alphaNumStr) {
-            code =>
-              val cusCode = CUSCode(code)
-              Json
-                .parse(s"""
-                     |{
-                     |  "code": "$code"
-                     |}
-                     |""".stripMargin)
-                .as[CUSCode] mustEqual cusCode
-          }
-        }
 
         "when phase 6" in {
-          when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(true)
           implicit val reads: Reads[CUSCode] = CUSCode.reads(mockFrontendAppConfig)
           forAll(Gen.alphaNumStr) {
             code =>

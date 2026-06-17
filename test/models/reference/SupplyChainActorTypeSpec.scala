@@ -43,25 +43,7 @@ class SupplyChainActorTypeSpec extends SpecBase with ScalaCheckPropertyChecks {
 
     "must deserialise" - {
       "when reading from reference data" - {
-        "when phase 5" in {
-          when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(false)
-          implicit val reads: Reads[SupplyChainActorType] = SupplyChainActorType.reads(mockFrontendAppConfig)
-          forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-            (code, description) =>
-              val supplyChainActorType = SupplyChainActorType(code, description)
-              Json
-                .parse(s"""
-                     |{
-                     |  "role": "$code",
-                     |  "description": "$description"
-                     |}
-                     |""".stripMargin)
-                .as[SupplyChainActorType] mustEqual supplyChainActorType
-          }
-        }
-
         "when phase 6" in {
-          when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(true)
           implicit val reads: Reads[SupplyChainActorType] = SupplyChainActorType.reads(mockFrontendAppConfig)
           forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
             (code, description) =>

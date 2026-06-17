@@ -46,22 +46,7 @@ class CountryCodeSpec extends SpecBase with ScalaCheckPropertyChecks {
       }
 
       "when reading from reference data" - {
-        "when phase 5" in {
-          when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(false)
-          forAll(Gen.alphaNumStr) {
-            code =>
-              Json
-                .parse(s"""
-                     |{
-                     |  "code": "$code"
-                     |}
-                     |""".stripMargin)
-                .as[CountryCode](CountryCode.reads(mockFrontendAppConfig)) mustEqual CountryCode(code)
-          }
-        }
-
         "when phase 6" in {
-          when(mockFrontendAppConfig.isPhase6Enabled).thenReturn(true)
           forAll(Gen.alphaNumStr) {
             code =>
               Json

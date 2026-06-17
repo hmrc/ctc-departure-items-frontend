@@ -41,41 +41,8 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       conf = "microservice.services.customs-reference-data.port" -> server.port()
     )
 
-  private val phase5App: GuiceApplicationBuilder => GuiceApplicationBuilder =
-    _ => guiceApplicationBuilder().configure("feature-flags.phase-6-enabled" -> false)
-
   private val phase6App: GuiceApplicationBuilder => GuiceApplicationBuilder =
-    _ => guiceApplicationBuilder().configure("feature-flags.phase-6-enabled" -> true)
-
-  private def countriesResponseJson(listName: String): String =
-    s"""
-       |{
-       |  "_links": {
-       |    "self": {
-       |      "href": "/customs-reference-data/lists/$listName"
-       |    }
-       |  },
-       |  "meta": {
-       |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
-       |    "snapshotDate": "2023-01-01"
-       |  },
-       |  "id": "$listName",
-       |  "data": [
-       |    {
-       |      "activeFrom": "2023-01-23",
-       |      "code": "GB",
-       |      "state": "valid",
-       |      "description": "United Kingdom"
-       |    },
-       |    {
-       |      "activeFrom": "2023-01-23",
-       |      "code": "AD",
-       |      "state": "valid",
-       |      "description": "Andorra"
-       |    }
-       |  ]
-       |}
-       |""".stripMargin
+    _ => guiceApplicationBuilder()
 
   private val countriesResponseP6Json: String =
     s"""
@@ -91,30 +58,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
        |]
        |""".stripMargin
 
-  private def countryResponseJson(listName: String): String =
-    s"""
-       |{
-       |  "_links": {
-       |    "self": {
-       |      "href": "/customs-reference-data/lists/$listName"
-       |    }
-       |  },
-       |  "meta": {
-       |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
-       |    "snapshotDate": "2023-01-01"
-       |  },
-       |  "id": "$listName",
-       |  "data": [
-       |    {
-       |      "activeFrom": "2023-01-23",
-       |      "code": "GB",
-       |      "state": "valid",
-       |      "description": "United Kingdom"
-       |    }
-       |  ]
-       |}
-       |""".stripMargin
-
   private val countryResponseP6Json: String =
     s"""
        |[
@@ -124,32 +67,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
        |    }
        |]
        |""".stripMargin
-
-  private def packageTypeJson(listName: String): String =
-    s"""
-      |{
-      |  "_links": {
-      |    "self": {
-      |      "href": "/customs-reference-data/lists/$listName"
-      |    }
-      |  },
-      |  "meta": {
-      |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
-      |    "snapshotDate": "2023-01-01"
-      |  },
-      |  "id": "$listName",
-      |  "data": [
-      | {
-      |    "code": "VA",
-      |    "description": "Vat"
-      |  },
-      |  {
-      |    "code": "UC",
-      |    "description": "Uncaged"
-      |  }
-      |]
-      |}
-      |""".stripMargin
 
   private val packageTypeP6Json: String =
     s"""
@@ -163,32 +80,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       |    "value": "Uncaged"
       |  }
       |]
-      |""".stripMargin
-
-  private val additionalReferenceJson: String =
-    """
-      |{
-      |  "_links": {
-      |    "self": {
-      |      "href": "/customs-reference-data/lists/AdditionalReference"
-      |    }
-      |  },
-      |  "meta": {
-      |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
-      |    "snapshotDate": "2023-01-01"
-      |  },
-      |  "id": "AdditionalReference",
-      |  "data": [
-      | {
-      |    "documentType": "documentType1",
-      |    "description": "desc1"
-      |  },
-      |  {
-      |    "documentType": "documentType2",
-      |    "description": "desc2"
-      |  }
-      |]
-      |}
       |""".stripMargin
 
   private val additionalReferenceP6Json: String =
@@ -205,32 +96,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       |]
       |""".stripMargin
 
-  private val additionalInformationJson: String =
-    """
-      |{
-      |  "_links": {
-      |    "self": {
-      |      "href": "/customs-reference-data/lists/AdditionalInformation"
-      |    }
-      |  },
-      |  "meta": {
-      |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
-      |    "snapshotDate": "2023-01-01"
-      |  },
-      |  "id": "AdditionalInformation",
-      |  "data": [
-      | {
-      |    "code": "additionalInfoCode1",
-      |    "description": "additionalInfoDesc1"
-      |  },
-      |  {
-      |    "code": "additionalInfoCode2",
-      |    "description": "additionalInfoDesc2"
-      |  }
-      |]
-      |}
-      |""".stripMargin
-
   private val additionalInformationP6Json: String =
     """
       |[
@@ -245,32 +110,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       |]
       |""".stripMargin
 
-  private val methodOfPaymentJson: String =
-    """
-      |{
-      |  "_links": {
-      |    "self": {
-      |      "href": "/customs-reference-data/lists/TransportChargesMethodOfPayment"
-      |    }
-      |  },
-      |  "meta": {
-      |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
-      |    "snapshotDate": "2023-01-01"
-      |  },
-      |  "id": "MethodOfPayment",
-      |  "data": [
-      | {
-      |    "method": "A",
-      |    "description": "Payment By Card"
-      |  },
-      |  {
-      |    "method": "B",
-      |    "description": "PayPal"
-      |  }
-      |]
-      |}
-      |""".stripMargin
-
   private val methodOfPaymentP6Json: String =
     """
       |[
@@ -283,32 +122,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       |    "value": "PayPal"
       |  }
       |]
-      |""".stripMargin
-
-  private val declarationTypesResponseJson: String =
-    """
-      |{
-      |  "_links": {
-      |    "self": {
-      |      "href": "/customs-reference-data/lists/DeclarationTypeItemLevel"
-      |    }
-      |  },
-      |  "meta": {
-      |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
-      |    "snapshotDate": "2023-01-01"
-      |  },
-      |  "id": "DeclarationTypeItemLevel",
-      |  "data": [
-      |    {
-      |      "code": "T2",
-      |      "description": "Goods having the customs status of Union goods, which are placed under the common transit procedure"
-      |    },
-      |    {
-      |      "code": "TIR",
-      |      "description": "TIR carnet"
-      |    }
-      |  ]
-      |}
       |""".stripMargin
 
   private val declarationTypesResponseP6Json: String =
@@ -365,36 +178,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       |]
       |""".stripMargin
 
-  private val documentTypeExciseJson: String =
-    """
-      |{
-      |  "_links": {
-      |    "self": {
-      |      "href": "/customs-reference-data/lists/DocumentTypeExcise"
-      |    }
-      |  },
-      |  "meta": {
-      |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
-      |    "snapshotDate": "2023-01-01"
-      |  },
-      |  "id": "DocumentTypeExcise",
-      |  "data": [
-      |  {
-      |    "activeFrom": "2024-01-01",
-      |    "code": "C651",
-      |    "state": "valid",
-      |    "description": "AAD - Administrative Accompanying Document (EMCS)"
-      |  },
-      |  {
-      |    "activeFrom": "2024-01-01",
-      |    "code": "C658",
-      |    "state": "valid",
-      |    "description": "FAD - Fallback e-AD (EMCS)"
-      |  }
-      |]
-      |}
-      |""".stripMargin
-
   private val documentTypeExciseP6Json: String =
     """
       |[
@@ -409,13 +192,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       |]
       |""".stripMargin
 
-  private val emptyPhase5ResponseJson: String =
-    """
-      |{
-      |  "data": []
-      |}
-      |""".stripMargin
-
   private val emptyPhase6ResponseJson: String =
     """
       |[]
@@ -426,64 +202,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
     "getCUSCode" - {
 
       val cusCode = "0010001-6"
-
-      "when phase 5" - {
-        val url = s"/$baseUrl/lists/CUSCode?data.code=$cusCode"
-
-        val json: String =
-          """
-            |{
-            |  "_links": {
-            |    "self": {
-            |      "href": "/customs-reference-data/lists/CUSCode"
-            |    }
-            |  },
-            |  "meta": {
-            |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
-            |    "snapshotDate": "2023-01-01"
-            |  },
-            |  "id": "CUSCode",
-            |  "data": [
-            |    {
-            |      "code": "0010001-6"
-            |    }
-            |  ]
-            |}
-            |""".stripMargin
-
-        "must return CUSCode when successful" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-
-              server.stubFor(
-                get(urlEqualTo(url))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-                  .willReturn(okJson(json))
-              )
-
-              val expectedResult = CUSCode(cusCode)
-
-              connector.getCUSCode(cusCode).futureValue.value mustEqual expectedResult
-          }
-        }
-
-        "must throw a NoReferenceDataFoundException for an empty response" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkNoReferenceDataFoundResponse(url, emptyPhase5ResponseJson, connector.getCUSCode(cusCode))
-          }
-        }
-
-        "must return an exception when an error response is returned" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkErrorResponse(url, connector.getCUSCode(cusCode))
-          }
-        }
-      }
 
       "when phase 6" - {
         val url = s"/$baseUrl/lists/CUSCode?keys=$cusCode"
@@ -537,64 +255,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
       val code = "010121"
 
-      "when phase 5" - {
-        val url = s"/$baseUrl/lists/HScode?data.code=$code"
-
-        val json: String =
-          """
-            |{
-            |  "_links": {
-            |    "self": {
-            |      "href": "/customs-reference-data/lists/HScode"
-            |    }
-            |  },
-            |  "meta": {
-            |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
-            |    "snapshotDate": "2023-01-01"
-            |  },
-            |  "id": "HScode",
-            |  "data": [
-            |    {
-            |      "code": "010121"
-            |    }
-            |  ]
-            |}
-            |""".stripMargin
-
-        "must return HSCode when successful" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-
-              server.stubFor(
-                get(urlEqualTo(url))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-                  .willReturn(okJson(json))
-              )
-
-              val expectedResult = HSCode(code)
-
-              connector.getHSCode(code).futureValue.value mustEqual expectedResult
-          }
-        }
-
-        "must throw a NoReferenceDataFoundException for an empty response" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkNoReferenceDataFoundResponse(url, emptyPhase5ResponseJson, connector.getHSCode(code))
-          }
-        }
-
-        "must return an exception when an error response is returned" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkErrorResponse(url, connector.getHSCode(code))
-          }
-        }
-      }
-
       "when phase 6" - {
         val url = s"/$baseUrl/lists/HScode?keys=$code"
 
@@ -646,45 +306,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
     "getDocumentTypeExcise" - {
       val code = "C651"
 
-      "when phase 5" - {
-        val url = s"/$baseUrl/lists/DocumentTypeExcise?data.code=$code"
-
-        "must return DocumentTypeExcise when successful" in {
-
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-
-              server.stubFor(
-                get(urlEqualTo(url))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-                  .willReturn(okJson(documentTypeExciseJson))
-              )
-
-              val expectedResult =
-                DocTypeExcise(code = "C651", description = "AAD - Administrative Accompanying Document (EMCS)")
-
-              connector.getDocumentTypeExcise(code).futureValue.value mustEqual expectedResult
-          }
-        }
-
-        "must throw a NoReferenceDataFoundException for an empty response" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkNoReferenceDataFoundResponse(url, emptyPhase5ResponseJson, connector.getDocumentTypeExcise(code))
-          }
-        }
-
-        "must return an exception when an error response is returned" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkErrorResponse(url, connector.getDocumentTypeExcise(code))
-          }
-        }
-      }
-
       "when phase 6" - {
         val url = s"/$baseUrl/lists/DocumentTypeExcise?keys=$code"
 
@@ -727,46 +348,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
     "getDeclarationTypeItemLevel" - {
       val url = s"/$baseUrl/lists/DeclarationTypeItemLevel"
-
-      "when phase 5" - {
-        "must return Seq of declaration types when successful" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              server.stubFor(
-                get(urlEqualTo(url))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-                  .willReturn(okJson(declarationTypesResponseJson))
-              )
-
-              val expectedResult = NonEmptySet.of(
-                DeclarationTypeItemLevel("T2", "Goods having the customs status of Union goods, which are placed under the common transit procedure"),
-                DeclarationTypeItemLevel("TIR", "TIR carnet")
-              )
-
-              val res = connector.getDeclarationTypeItemLevel().futureValue.value
-
-              res mustEqual expectedResult
-          }
-        }
-
-        "must throw a NoReferenceDataFoundException for an empty response" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkNoReferenceDataFoundResponse(url, emptyPhase5ResponseJson, connector.getDeclarationTypeItemLevel())
-          }
-
-        }
-
-        "must return an exception when an error response is returned" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkErrorResponse(url, connector.getDeclarationTypeItemLevel())
-          }
-        }
-      }
 
       "when phase 6" - {
         "must return Seq of declaration types when successful" in {
@@ -811,46 +392,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
     "getCountries" - {
       val url = s"/$baseUrl/lists/CountryCodesFullList"
-
-      "when phase 5" - {
-
-        "must return Seq of Country when successful" in {
-
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              server.stubFor(
-                get(urlEqualTo(url))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-                  .willReturn(okJson(countriesResponseJson("CountryCodesFullList")))
-              )
-
-              val expectedResult = NonEmptySet.of(
-                Country(CountryCode("GB"), "United Kingdom"),
-                Country(CountryCode("AD"), "Andorra")
-              )
-
-              connector.getCountries().futureValue.value mustEqual expectedResult
-          }
-
-        }
-
-        "must throw a NoReferenceDataFoundException for an empty response" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkNoReferenceDataFoundResponse(url, emptyPhase5ResponseJson, connector.getCountries())
-          }
-        }
-
-        "must return an exception when an error response is returned" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkErrorResponse(url, connector.getCountries())
-          }
-        }
-      }
 
       "when phase 6" - {
 
@@ -897,44 +438,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
     "getCountryCodesForAddress" - {
       val url = s"/$baseUrl/lists/CountryCodesForAddress"
 
-      "when phase 5" - {
-
-        "must return Seq of Country when successful" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              server.stubFor(
-                get(urlEqualTo(url))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-                  .willReturn(okJson(countriesResponseJson("CountryCodesForAddress")))
-              )
-
-              val expectedResult = NonEmptySet.of(
-                Country(CountryCode("GB"), "United Kingdom"),
-                Country(CountryCode("AD"), "Andorra")
-              )
-
-              connector.getCountryCodesForAddress().futureValue.value mustEqual expectedResult
-          }
-        }
-
-        "must throw a NoReferenceDataFoundException for an empty response" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkNoReferenceDataFoundResponse(url, emptyPhase5ResponseJson, connector.getCountryCodesForAddress())
-          }
-        }
-
-        "must return an exception when an error response is returned" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkErrorResponse(url, connector.getCountryCodesForAddress())
-          }
-        }
-      }
-
       "when phase 6" - {
 
         "must return Seq of Country when successful" in {
@@ -975,50 +478,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
     }
 
     "getCountryCodeCommonTransit" - {
-
-      "when phase 5" - {
-        def url(code: String) = s"/$baseUrl/lists/CountryCodesCommonTransit?data.code=$code"
-
-        "must return Country when successful" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              val code      = "GB"
-
-              server.stubFor(
-                get(urlEqualTo(url(code)))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-                  .willReturn(okJson(countryResponseJson("CountryCodesCommonTransit")))
-              )
-
-              val country = Country(CountryCode(code), "United Kingdom")
-
-              connector.getCountryCodeCommonTransit(country).futureValue.value mustEqual country
-          }
-        }
-
-        "must throw a NoReferenceDataFoundException for an empty response" in {
-          running(phase5App) {
-            app =>
-              val code      = "FR"
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-
-              val country = Country(CountryCode(code), "France")
-
-              checkNoReferenceDataFoundResponse(url(code), emptyPhase5ResponseJson, connector.getCountryCodeCommonTransit(country))
-          }
-        }
-
-        "must return an exception when an error response is returned" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              val code      = "GB"
-              val country   = Country(CountryCode(code), "United Kingdom")
-              checkErrorResponse(url(code), connector.getCountryCodeCommonTransit(country))
-          }
-        }
-      }
 
       "when phase 6" - {
         def url(code: String) = s"/$baseUrl/lists/CountryCodesCommonTransit?keys=$code"
@@ -1067,46 +526,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
     "getCountriesWithoutZipCountry" - {
 
-      "when phase 5" - {
-        def url(countryId: String) = s"/$baseUrl/lists/CountryWithoutZip?data.code=$countryId"
-
-        "must return Seq of Country when successful" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              val countryId = "GB"
-              server.stubFor(
-                get(urlEqualTo(url(countryId)))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-                  .willReturn(okJson(countryResponseJson("CountryWithoutZip")))
-              )
-
-              val expectedResult = CountryCode(countryId)
-
-              connector.getCountriesWithoutZipCountry(countryId).futureValue.value mustEqual expectedResult
-          }
-        }
-
-        "must throw a NoReferenceDataFoundException for an empty response" in {
-          running(phase5App) {
-            app =>
-              val countryId = "FR"
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-
-              checkNoReferenceDataFoundResponse(url(countryId), emptyPhase5ResponseJson, connector.getCountriesWithoutZipCountry(countryId))
-          }
-        }
-
-        "must return an exception when an error response is returned" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              val countryId = "FR"
-              checkErrorResponse(url(countryId), connector.getCountriesWithoutZipCountry(countryId))
-          }
-        }
-      }
-
       "when phase 6" - {
         def url(countryId: String) = s"/$baseUrl/lists/CountryWithoutZip?keys=$countryId"
 
@@ -1151,45 +570,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
     "getPackageTypes" - {
       val url = s"/$baseUrl/lists/KindOfPackages"
 
-      "when phase 5" - {
-
-        "must return list of package types when successful" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              server.stubFor(
-                get(urlEqualTo(url))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-                  .willReturn(okJson(packageTypeJson("KindOfPackages")))
-              )
-
-              val expectResult = NonEmptySet.of(
-                PackageType("VA", "Vat", PackingType.Other),
-                PackageType("UC", "Uncaged", PackingType.Other)
-              )
-
-              connector.getPackageTypes().futureValue.value mustEqual expectResult
-          }
-        }
-
-        "must throw a NoReferenceDataFoundException for an empty response" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkNoReferenceDataFoundResponse(url, emptyPhase5ResponseJson, connector.getPackageTypes())
-          }
-        }
-
-        "must return an exception when an error response is returned" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkErrorResponse(url, connector.getPackageTypes())
-          }
-
-        }
-      }
-
       "when phase 6" - {
 
         "must return list of package types when successful" in {
@@ -1233,46 +613,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
     "getPackageTypesBulk" - {
       val url = s"/$baseUrl/lists/KindOfPackagesBulk"
-
-      "when phase 5" - {
-
-        "must return list of package types when successful" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-
-              server.stubFor(
-                get(urlEqualTo(url))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-                  .willReturn(okJson(packageTypeJson("KindOfPackagesBulk")))
-              )
-
-              val expectResult = NonEmptySet.of(
-                PackageType("VA", "Vat", PackingType.Bulk),
-                PackageType("UC", "Uncaged", PackingType.Bulk)
-              )
-
-              connector.getPackageTypesBulk().futureValue.value mustEqual expectResult
-          }
-        }
-
-        "must throw a NoReferenceDataFoundException for an empty response" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-
-              checkNoReferenceDataFoundResponse(url, emptyPhase5ResponseJson, connector.getPackageTypesBulk())
-          }
-        }
-
-        "must return an exception when an error response is returned" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkErrorResponse(url, connector.getPackageTypesBulk())
-          }
-        }
-      }
 
       "when phase 6" - {
 
@@ -1320,46 +660,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
     "getPackageTypesUnpacked" - {
       val url = s"/$baseUrl/lists/KindOfPackagesUnpacked"
 
-      "when phase 5" - {
-        "must return list of package types when successful" in {
-
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-
-              server.stubFor(
-                get(urlEqualTo(url))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-                  .willReturn(okJson(packageTypeJson("KindOfPackagesUnpacked")))
-              )
-
-              val expectResult = NonEmptySet.of(
-                PackageType("VA", "Vat", PackingType.Unpacked),
-                PackageType("UC", "Uncaged", PackingType.Unpacked)
-              )
-
-              connector.getPackageTypesUnpacked().futureValue.value mustEqual expectResult
-          }
-        }
-
-        "must throw a NoReferenceDataFoundException for an empty response" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-
-              checkNoReferenceDataFoundResponse(url, emptyPhase5ResponseJson, connector.getPackageTypesUnpacked())
-          }
-        }
-
-        "must return an exception when an error response is returned" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkErrorResponse(url, connector.getPackageTypesUnpacked())
-          }
-        }
-      }
-
       "when phase 6" - {
         "must return list of package types when successful" in {
 
@@ -1404,45 +704,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
     "getAdditionalReferences" - {
       val url = s"/$baseUrl/lists/AdditionalReference"
 
-      "when phase 5" - {
-        "must return Seq of AdditionalReference when successful" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-
-              server.stubFor(
-                get(urlEqualTo(url))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-                  .willReturn(okJson(additionalReferenceJson))
-              )
-
-              val expectedResult = NonEmptySet.of(
-                AdditionalReference("documentType1", "desc1"),
-                AdditionalReference("documentType2", "desc2")
-              )
-
-              connector.getAdditionalReferences().futureValue.value mustEqual expectedResult
-          }
-        }
-
-        "must throw a NoReferenceDataFoundException for an empty response" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-
-              checkNoReferenceDataFoundResponse(url, emptyPhase5ResponseJson, connector.getAdditionalReferences())
-          }
-        }
-
-        "must return an exception when an error response is returned" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkErrorResponse(url, connector.getAdditionalReferences())
-          }
-        }
-      }
-
       "when phase 6" - {
         "must return Seq of AdditionalReference when successful" in {
           running(phase6App) {
@@ -1485,45 +746,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
     "getAdditionalInformationTypes" - {
       val url = s"/$baseUrl/lists/AdditionalInformation"
-
-      "when phase 5" - {
-        "must return list of additional information types when successful" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-
-              server.stubFor(
-                get(urlEqualTo(url))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-                  .willReturn(okJson(additionalInformationJson))
-              )
-
-              val expectResult = NonEmptySet.of(
-                AdditionalInformation("additionalInfoCode1", "additionalInfoDesc1"),
-                AdditionalInformation("additionalInfoCode2", "additionalInfoDesc2")
-              )
-
-              connector.getAdditionalInformationTypes().futureValue.value mustEqual expectResult
-          }
-
-        }
-
-        "must throw a NoReferenceDataFoundException for an empty response" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkNoReferenceDataFoundResponse(url, emptyPhase5ResponseJson, connector.getAdditionalInformationTypes())
-          }
-        }
-
-        "must return an exception when an error response is returned" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkErrorResponse(url, connector.getAdditionalInformationTypes())
-          }
-        }
-      }
 
       "when phase 6" - {
         "must return list of additional information types when successful" in {
@@ -1568,44 +790,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
     "getMethodOfPaymentTypes" - {
       val url = s"/$baseUrl/lists/TransportChargesMethodOfPayment"
 
-      "when phase 5" - {
-        "must return Seq of MethodOfPayments when successful" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-
-              server.stubFor(
-                get(urlEqualTo(url))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-                  .willReturn(okJson(methodOfPaymentJson))
-              )
-
-              val expectedResult = NonEmptySet.of(
-                TransportChargesMethodOfPayment("A", "Payment By Card"),
-                TransportChargesMethodOfPayment("B", "PayPal")
-              )
-
-              connector.getTransportChargesMethodOfPaymentTypes().futureValue.value mustEqual expectedResult
-          }
-        }
-
-        "must throw a NoReferenceDataFoundException for an empty response" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkNoReferenceDataFoundResponse(url, emptyPhase5ResponseJson, connector.getTransportChargesMethodOfPaymentTypes())
-          }
-        }
-
-        "must return an exception when an error response is returned" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkErrorResponse(url, connector.getTransportChargesMethodOfPaymentTypes())
-          }
-        }
-      }
-
       "when phase 6" - {
         "must return Seq of MethodOfPayments when successful" in {
           running(phase6App) {
@@ -1647,44 +831,6 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
     "getSupplyChainActorTypes" - {
       val url: String = s"/$baseUrl/lists/AdditionalSupplyChainActorRoleCode"
-
-      "when phase 5" - {
-        "must return Seq of SupplyChainActorType when successful" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-
-              server.stubFor(
-                get(urlEqualTo(url))
-                  .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
-                  .willReturn(okJson(supplyChainActorTypesResponseJson))
-              )
-
-              val expectedResult = NonEmptySet.of(
-                SupplyChainActorType("CS", "Consolidator"),
-                SupplyChainActorType("MF", "Manufacturer")
-              )
-
-              connector.getSupplyChainActorTypes().futureValue.value mustEqual expectedResult
-          }
-        }
-
-        "must throw a NoReferenceDataFoundException for an empty response" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkNoReferenceDataFoundResponse(url, emptyPhase5ResponseJson, connector.getSupplyChainActorTypes())
-          }
-        }
-
-        "must return an exception when an error response is returned" in {
-          running(phase5App) {
-            app =>
-              val connector = app.injector.instanceOf[ReferenceDataConnector]
-              checkErrorResponse(url, connector.getSupplyChainActorTypes())
-          }
-        }
-      }
 
       "when phase 6" - {
         "must return Seq of SupplyChainActorType when successful" in {
