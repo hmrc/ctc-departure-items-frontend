@@ -55,7 +55,7 @@ trait ViewBehaviours extends SpecBase with AppWithDefaultMockFixtures with ViewS
       .find(_.text() == "Accessibility statement")
       .get
 
-    getElementHref(link) mustEqual s"http://localhost:12346/accessibility-statement/manage-transit-movements?referrerUrl=$path"
+    getElementHref(link) mustEqual s"http://localhost:12346/accessibility-statement/manage-transit-movements?referrerUrl=$path&useServiceNavigation"
   }
 
   "must not render language toggle" in {
@@ -66,7 +66,7 @@ trait ViewBehaviours extends SpecBase with AppWithDefaultMockFixtures with ViewS
     val link = getElementByClass(doc, "hmrc-report-technical-issue")
 
     assertElementContainsText(link, "Is this page not working properly? (opens in new tab)")
-    getElementHref(link) mustEqual s"http://localhost:9250/contact/report-technical-problem?service=CTCTraders&referrerUrl=$path"
+    getElementHref(link) mustEqual s"http://localhost:9250/contact/report-technical-problem?service=CTCTraders&referrerUrl=$path&useServiceNavigation"
   }
 
   def pageWithTitle(args: Any*): Unit =
