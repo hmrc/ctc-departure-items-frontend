@@ -184,15 +184,33 @@ object ItemDomain {
     AddDangerousGoodsYesNoPage(itemIndex)
       .filterOptionalDependent(identity)(DangerousGoodsListDomain.userAnswersReader(itemIndex))
 
-  def netWeightReader(itemIndex: Index): Read[Option[BigDecimal]] =
-    ApprovedOperatorPage.optionalReader.to {
-      case Some(true) =>
-        UserAnswersReader.none
-      case _ =>
-        AddItemNetWeightYesNoPage(itemIndex).filterOptionalDependent(identity) {
-          NetWeightPage(itemIndex).reader
+  def netWeightReader(itemIndex: Index): Read[Option[BigDecimal]] = {
+
+    def netWeightReaderForItem(itemIndex: Index): Read[Option[BigDecimal]] =
+      ApprovedOperatorPage.optionalReader.to {
+        case Some(true) =>
+          UserAnswersReader.none
+        case _ =>
+          AddItemNetWeightYesNoPage(itemIndex).filterOptionalDependent(identity) {
+            NetWeightPage(itemIndex).reader
+          }
+      }
+
+    DocumentsSection.arrayReader.to {
+      array =>
+        val documents = array.validateAsListOf[Document]
+
+        val hasConsignmentLevelPreviousExportDocument = documents.exists(
+          x => x.attachToAllItems && x.`type`.isPreviousExport
+        )
+
+        if (hasConsignmentLevelPreviousExportDocument) {
+          NetWeightPage(itemIndex).reader.toOption
+        } else {
+          netWeightReaderForItem(itemIndex)
         }
     }
+  }
 
   def supplementaryUnitsReader(itemIndex: Index): Read[Option[BigDecimal]] =
     AddSupplementaryUnitsYesNoPage(itemIndex).filterOptionalDependent(identity) {

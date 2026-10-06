@@ -21,7 +21,7 @@ import config.Constants.AdditionalReference.*
 import config.Constants.DeclarationType.*
 import models.*
 import models.AddressLine.{Country as _, *}
-import models.DocumentType.{Previous, Support, Transport}
+import models.DocumentType.{Previous, PreviousExport, Support, Transport}
 import models.LockCheck.{LockCheckFailure, Locked, Unlocked}
 import models.reference.*
 import org.scalacheck.Arbitrary.arbitrary
@@ -192,6 +192,17 @@ trait ModelGenerators {
         referenceNumber  <- nonEmptyString
         uuid             <- arbitrary[UUID]
       } yield Document(attachToAllItems, Previous, code, description, referenceNumber, uuid)
+    }
+
+  lazy val arbitraryPreviousExportDocument: Arbitrary[Document] =
+    Arbitrary {
+      for {
+        attachToAllItems <- arbitrary[Boolean]
+        code             <- nonEmptyString
+        description      <- Gen.option(nonEmptyString)
+        referenceNumber  <- nonEmptyString
+        uuid             <- arbitrary[UUID]
+      } yield Document(attachToAllItems, PreviousExport, code, description, referenceNumber, uuid)
     }
 
   implicit lazy val arbitraryLocalReferenceNumber: Arbitrary[LocalReferenceNumber] =
