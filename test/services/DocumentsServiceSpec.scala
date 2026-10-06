@@ -606,7 +606,7 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
             val result = service.getItemLevelDocuments(userAnswers, Index(0), Some(Index(0)))
 
-            result mustEqual ItemLevelDocuments(0, 0, 0)
+            result mustEqual ItemLevelDocuments(0, 0, 0, 0)
           }
 
           "when supporting document" in {
@@ -642,7 +642,7 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
             val result = service.getItemLevelDocuments(userAnswers, Index(0), Some(Index(0)))
 
-            result mustEqual ItemLevelDocuments(0, 0, 0)
+            result mustEqual ItemLevelDocuments(0, 0, 0, 0)
           }
 
           "when transport document" in {
@@ -678,7 +678,7 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
             val result = service.getItemLevelDocuments(userAnswers, Index(0), Some(Index(0)))
 
-            result mustEqual ItemLevelDocuments(0, 0, 0)
+            result mustEqual ItemLevelDocuments(0, 0, 0, 0)
           }
         }
 
@@ -717,7 +717,7 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
             val result = service.getItemLevelDocuments(userAnswers, Index(0), None)
 
-            result mustEqual ItemLevelDocuments(1, 0, 0)
+            result mustEqual ItemLevelDocuments(1, 0, 0, 0)
           }
 
           "when supporting document" in {
@@ -753,7 +753,7 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
             val result = service.getItemLevelDocuments(userAnswers, Index(0), None)
 
-            result mustEqual ItemLevelDocuments(0, 1, 0)
+            result mustEqual ItemLevelDocuments(0, 1, 0, 0)
           }
 
           "when transport document" in {
@@ -789,7 +789,7 @@ class DocumentsServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
             val result = service.getItemLevelDocuments(userAnswers, Index(0), None)
 
-            result mustEqual ItemLevelDocuments(0, 0, 1)
+            result mustEqual ItemLevelDocuments(0, 0, 1, 0)
           }
         }
       }

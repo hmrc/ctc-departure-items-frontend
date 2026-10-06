@@ -61,12 +61,13 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   lazy val maxDangerousGoods: Int = configuration.get[Int]("limits.maxDangerousGoods")
   lazy val maxPackages: Int       = configuration.get[Int]("limits.maxPackages")
 
-  lazy val maxPreviousDocuments: Int     = configuration.get[Int]("limits.maxPreviousDocuments")
-  lazy val maxSupportingDocuments: Int   = configuration.get[Int]("limits.maxSupportingDocuments")
-  lazy val maxTransportDocuments: Int    = configuration.get[Int]("limits.maxTransportDocuments")
-  lazy val maxAdditionalReferences: Int  = configuration.get[Int]("limits.maxAdditionalReferences")
-  lazy val maxAdditionalInformation: Int = configuration.get[Int]("limits.maxAdditionalInformation")
-  lazy val maxSupplyChainActors: Int     = configuration.get[Int]("limits.maxSupplyChainActors")
+  lazy val maxPreviousDocuments: Int       = configuration.get[Int]("limits.maxPreviousDocuments")
+  lazy val maxPreviousExportDocuments: Int = configuration.get[Int]("limits.maxPreviousExportDocuments")
+  lazy val maxSupportingDocuments: Int     = configuration.get[Int]("limits.maxSupportingDocuments")
+  lazy val maxTransportDocuments: Int      = configuration.get[Int]("limits.maxTransportDocuments")
+  lazy val maxAdditionalReferences: Int    = configuration.get[Int]("limits.maxAdditionalReferences")
+  lazy val maxAdditionalInformation: Int   = configuration.get[Int]("limits.maxAdditionalInformation")
+  lazy val maxSupplyChainActors: Int       = configuration.get[Int]("limits.maxSupplyChainActors")
 
   def taskListUrl(lrn: LocalReferenceNumber): String = s"$departureHubUrl/$lrn/declaration-summary"
 
