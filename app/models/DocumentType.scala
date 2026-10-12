@@ -20,9 +20,10 @@ import play.api.libs.json.*
 
 sealed trait DocumentType {
   val display: String
-  def isSupport: Boolean   = this == DocumentType.Support
-  def isTransport: Boolean = this == DocumentType.Transport
-  def isPrevious: Boolean  = this == DocumentType.Previous
+  def isSupport: Boolean        = this == DocumentType.Support
+  def isTransport: Boolean      = this == DocumentType.Transport
+  def isPrevious: Boolean       = this == DocumentType.Previous
+  def isPreviousExport: Boolean = this == DocumentType.PreviousExport
 }
 
 object DocumentType {
@@ -39,18 +40,24 @@ object DocumentType {
     val display = "Previous"
   }
 
-  val values: Seq[DocumentType] = Seq(Support, Transport, Previous)
+  case object PreviousExport extends DocumentType {
+    val display = "PreviousExport"
+  }
+
+  val values: Seq[DocumentType] = Seq(Support, Transport, Previous, PreviousExport)
 
   implicit val reads: Reads[DocumentType] = Reads {
-    case JsString("Support")   => JsSuccess(Support)
-    case JsString("Transport") => JsSuccess(Transport)
-    case JsString("Previous")  => JsSuccess(Previous)
-    case _                     => JsError("Unexpected document type")
+    case JsString("Support")        => JsSuccess(Support)
+    case JsString("Transport")      => JsSuccess(Transport)
+    case JsString("Previous")       => JsSuccess(Previous)
+    case JsString("PreviousExport") => JsSuccess(PreviousExport)
+    case _                          => JsError("Unexpected document type")
   }
 
   implicit val writes: Writes[DocumentType] = Writes {
-    case Support   => JsString("Support")
-    case Transport => JsString("Transport")
-    case Previous  => JsString("Previous")
+    case Support        => JsString("Support")
+    case Transport      => JsString("Transport")
+    case Previous       => JsString("Previous")
+    case PreviousExport => JsString("PreviousExport")
   }
 }

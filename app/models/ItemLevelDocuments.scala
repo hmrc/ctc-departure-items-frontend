@@ -17,22 +17,24 @@
 package models
 
 import config.FrontendAppConfig
-import models.DocumentType.{Previous, Support, Transport}
+import models.DocumentType.{Previous, PreviousExport, Support, Transport}
 
 case class ItemLevelDocuments(
   previous: Int,
   support: Int,
-  transport: Int
+  transport: Int,
+  previousExport: Int
 ) {
 
   def canAdd(documentType: DocumentType)(implicit config: FrontendAppConfig): Boolean = documentType match {
-    case Previous  => previous < config.maxPreviousDocuments
-    case Support   => support < config.maxSupportingDocuments
-    case Transport => transport < config.maxTransportDocuments
+    case Previous       => previous < config.maxPreviousDocuments
+    case Support        => support < config.maxSupportingDocuments
+    case Transport      => transport < config.maxTransportDocuments
+    case PreviousExport => previousExport < config.maxPreviousExportDocuments
   }
 
   def cannotAddAnyMore(implicit config: FrontendAppConfig): Boolean =
-    !canAdd(Previous) && !canAdd(Support) && !canAdd(Transport)
+    !canAdd(Previous) && !canAdd(Support) && !canAdd(Transport) && !canAdd(PreviousExport)
 
   def noPreviousDocuments: Boolean = previous == 0
 }
@@ -43,6 +45,7 @@ object ItemLevelDocuments {
     new ItemLevelDocuments(
       previous = itemLevelDocuments.count(_.`type`.isPrevious),
       support = itemLevelDocuments.count(_.`type`.isSupport),
-      transport = itemLevelDocuments.count(_.`type`.isTransport)
+      transport = itemLevelDocuments.count(_.`type`.isTransport),
+      previousExport = itemLevelDocuments.count(_.`type`.isPreviousExport)
     )
 }

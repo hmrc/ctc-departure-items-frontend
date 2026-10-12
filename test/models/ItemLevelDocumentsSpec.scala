@@ -47,7 +47,8 @@ class ItemLevelDocumentsSpec extends SpecBase with AppWithDefaultMockFixtures wi
               val ild = ItemLevelDocuments(
                 previous = previous,
                 support = 0,
-                transport = 0
+                transport = 0,
+                previousExport = 0
               )
               ild.canAdd(DocumentType.Previous)(frontendAppConfig) mustEqual false
           }
@@ -59,7 +60,8 @@ class ItemLevelDocumentsSpec extends SpecBase with AppWithDefaultMockFixtures wi
               val ild = ItemLevelDocuments(
                 previous = 0,
                 support = support,
-                transport = 0
+                transport = 0,
+                previousExport = 0
               )
               ild.canAdd(DocumentType.Support)(frontendAppConfig) mustEqual false
           }
@@ -71,9 +73,23 @@ class ItemLevelDocumentsSpec extends SpecBase with AppWithDefaultMockFixtures wi
               val ild = ItemLevelDocuments(
                 previous = 0,
                 support = 0,
-                transport = transport
+                transport = transport,
+                previousExport = 0
               )
               ild.canAdd(DocumentType.Transport)(frontendAppConfig) mustEqual false
+          }
+        }
+
+        "and previousExport document" in {
+          forAll(Gen.choose(frontendAppConfig.maxPreviousExportDocuments, Int.MaxValue)) {
+            previousExport =>
+              val ild = ItemLevelDocuments(
+                previous = 0,
+                support = 0,
+                transport = 0,
+                previousExport = previousExport
+              )
+              ild.canAdd(DocumentType.PreviousExport)(frontendAppConfig) mustEqual false
           }
         }
       }
@@ -87,7 +103,8 @@ class ItemLevelDocumentsSpec extends SpecBase with AppWithDefaultMockFixtures wi
               val ild = ItemLevelDocuments(
                 previous = previous,
                 support = 0,
-                transport = 0
+                transport = 0,
+                previousExport = 0
               )
               ild.canAdd(DocumentType.Previous)(frontendAppConfig) mustEqual true
           }
@@ -99,7 +116,8 @@ class ItemLevelDocumentsSpec extends SpecBase with AppWithDefaultMockFixtures wi
               val ild = ItemLevelDocuments(
                 previous = 0,
                 support = support,
-                transport = 0
+                transport = 0,
+                previousExport = 0
               )
               ild.canAdd(DocumentType.Support)(frontendAppConfig) mustEqual true
           }
@@ -111,9 +129,23 @@ class ItemLevelDocumentsSpec extends SpecBase with AppWithDefaultMockFixtures wi
               val ild = ItemLevelDocuments(
                 previous = 0,
                 support = 0,
-                transport = transport
+                transport = transport,
+                previousExport = 0
               )
               ild.canAdd(DocumentType.Transport)(frontendAppConfig) mustEqual true
+          }
+        }
+
+        "and previousExport document" in {
+          forAll(Gen.choose(0, frontendAppConfig.maxPreviousExportDocuments - 1)) {
+            previousExport =>
+              val ild = ItemLevelDocuments(
+                previous = 0,
+                support = 0,
+                transport = 0,
+                previousExport = previousExport
+              )
+              ild.canAdd(DocumentType.PreviousExport)(frontendAppConfig) mustEqual true
           }
         }
       }

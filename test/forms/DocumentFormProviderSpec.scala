@@ -72,7 +72,7 @@ class DocumentFormProviderSpec extends SpecBase with AppWithDefaultMockFixtures 
         val document1          = arbitrary[Document](arbitraryPreviousDocument).sample.value
         val document2          = arbitrary[Document](arbitraryPreviousDocument).sample.value
         val documents          = SelectableList(Seq(document1, document2))
-        val itemLevelDocuments = ItemLevelDocuments(frontendAppConfig.maxPreviousDocuments, 0, 0)
+        val itemLevelDocuments = ItemLevelDocuments(frontendAppConfig.maxPreviousDocuments, 0, 0, 0)
         val form               = new DocumentFormProvider()(prefix, documents, itemLevelDocuments, arg)
         val boundForm          = form.bind(Map(fieldName -> document2.toString))
         val field              = boundForm(fieldName)
@@ -83,7 +83,7 @@ class DocumentFormProviderSpec extends SpecBase with AppWithDefaultMockFixtures 
         val document1          = arbitrary[Document](arbitrarySupportingDocument).sample.value
         val document2          = arbitrary[Document](arbitrarySupportingDocument).sample.value
         val documents          = SelectableList(Seq(document1, document2))
-        val itemLevelDocuments = ItemLevelDocuments(0, frontendAppConfig.maxSupportingDocuments, 0)
+        val itemLevelDocuments = ItemLevelDocuments(0, frontendAppConfig.maxSupportingDocuments, 0, 0)
         val form               = new DocumentFormProvider()(prefix, documents, itemLevelDocuments, arg)
         val boundForm          = form.bind(Map(fieldName -> document2.toString))
         val field              = boundForm(fieldName)
@@ -94,7 +94,18 @@ class DocumentFormProviderSpec extends SpecBase with AppWithDefaultMockFixtures 
         val document1          = arbitrary[Document](arbitraryTransportDocument).sample.value
         val document2          = arbitrary[Document](arbitraryTransportDocument).sample.value
         val documents          = SelectableList(Seq(document1, document2))
-        val itemLevelDocuments = ItemLevelDocuments(0, 0, frontendAppConfig.maxTransportDocuments)
+        val itemLevelDocuments = ItemLevelDocuments(0, 0, frontendAppConfig.maxTransportDocuments, 0)
+        val form               = new DocumentFormProvider()(prefix, documents, itemLevelDocuments, arg)
+        val boundForm          = form.bind(Map(fieldName -> document2.toString))
+        val field              = boundForm(fieldName)
+        field.errors must contain(FormError(fieldName, maxLimitReachedKey))
+      }
+
+      "when previousExport" in {
+        val document1          = arbitrary[Document](arbitraryPreviousExportDocument).sample.value
+        val document2          = arbitrary[Document](arbitraryPreviousExportDocument).sample.value
+        val documents          = SelectableList(Seq(document1, document2))
+        val itemLevelDocuments = ItemLevelDocuments(0, 0, 0, frontendAppConfig.maxPreviousExportDocuments)
         val form               = new DocumentFormProvider()(prefix, documents, itemLevelDocuments, arg)
         val boundForm          = form.bind(Map(fieldName -> document2.toString))
         val field              = boundForm(fieldName)
@@ -107,7 +118,7 @@ class DocumentFormProviderSpec extends SpecBase with AppWithDefaultMockFixtures 
       val transportDocument = arbitrary[Document](arbitraryTransportDocument).sample.value
       val documents         = SelectableList(Seq(previousDocument, transportDocument))
       val itemLevelDocuments =
-        ItemLevelDocuments(frontendAppConfig.maxPreviousDocuments, frontendAppConfig.maxSupportingDocuments, 0)
+        ItemLevelDocuments(frontendAppConfig.maxPreviousDocuments, frontendAppConfig.maxSupportingDocuments, 0, 0)
       val form      = new DocumentFormProvider()(prefix, documents, itemLevelDocuments, arg)
       val boundForm = form.bind(Map(fieldName -> transportDocument.toString))
       val field     = boundForm(fieldName)

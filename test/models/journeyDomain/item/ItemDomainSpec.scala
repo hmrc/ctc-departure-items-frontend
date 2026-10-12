@@ -909,6 +909,43 @@ class ItemDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generat
     "netWeightReader" - {
       "can be read from user answers" - {
         "when net weight is defined" - {
+          "and previousExport Document exists" in {
+            forAll(positiveBigDecimals, arbitrary[UUID]) {
+              (netWeight, documentUUID) =>
+                val documents = Json
+                  .parse(s"""
+                       |[
+                       |    {
+                       |      "attachToAllItems" : true,
+                       |      "type" : {
+                       |        "type" : "PreviousExport",
+                       |        "code" : "Code 1",
+                       |        "description" : "Description 1"
+                       |      },
+                       |      "details" : {
+                       |        "documentReferenceNumber" : "Ref no. 1",
+                       |        "uuid" : "$documentUUID"
+                       |      }
+                       |    }
+                       |]
+                       |""".stripMargin)
+                  .as[JsArray]
+
+                val userAnswers = emptyUserAnswers
+                  .setValue(external.DocumentsSection, documents)
+                  .setValue(NetWeightPage(itemIndex), netWeight)
+
+                val expectedResult = Some(netWeight)
+
+                val result = ItemDomain.netWeightReader(itemIndex).apply(Nil).run(userAnswers)
+
+                result.value.value mustEqual expectedResult
+                result.value.pages mustEqual Seq(
+                  NetWeightPage(itemIndex)
+                )
+            }
+          }
+
           "and reduced data indicator is 0" in {
             forAll(positiveBigDecimals) {
               netWeight =>
