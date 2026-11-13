@@ -11,10 +11,6 @@ ThisBuild / scalafmtOnCompile := true
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
-  .configs(A11yTest)
-  .settings(inConfig(A11yTest)(org.scalafmt.sbt.ScalafmtPlugin.scalafmtConfigSettings) *)
-  .settings(headerSettings(A11yTest) *)
-  .settings(automateHeaderSettings(A11yTest))
   .settings(
     name := appName,
     RoutesKeys.routesImport ++= Seq(
